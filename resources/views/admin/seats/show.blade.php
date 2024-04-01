@@ -1,0 +1,111 @@
+@extends('layouts.admin')
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.show') }} {{ trans('cruds.seat.title') }}
+    </div>
+
+    <div class="card-body">
+        <div class="form-group">
+            <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.seats.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div>
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.id') }}
+                        </th>
+                        <td>
+                            {{ $seat->id }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.name') }}
+                        </th>
+                        <td>
+                            {{ $seat->name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.title') }}
+                        </th>
+                        <td>
+                            {{ $seat->title }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.has_files') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $seat->has_files ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.has_office_with_employees') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $seat->has_office_with_employees ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.level') }}
+                        </th>
+                        <td>
+                            {{ $seat->level }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.is_js_as_ss') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $seat->is_js_as_ss ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.is_controlling_officer') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $seat->is_controlling_officer ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.seats.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.relatedData') }}
+    </div>
+    <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="#seats_attendance_routings" role="tab" data-toggle="tab">
+                {{ trans('cruds.attendanceRouting.title') }}
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" role="tabpanel" id="seats_attendance_routings">
+            @includeIf('admin.seats.relationships.seatsAttendanceRoutings', ['attendanceRoutings' => $seat->seatsAttendanceRoutings])
+        </div>
+    </div>
+</div>
+
+@endsection
