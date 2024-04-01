@@ -20,7 +20,7 @@ return [
     'home'                           => 'Home',
     'list'                           => 'List',
     'login'                          => 'Login',
-    'login_email'                    => 'Email',
+    'login_name'                    => 'Username',
     'login_password'                 => 'Password',
     'login_password_confirmation'    => 'Password confirmation',
     'logout'                         => 'Logout',
