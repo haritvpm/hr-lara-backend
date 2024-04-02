@@ -25,6 +25,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
+    Route::post('users/parse-csv-import', 'UsersController@parseCsvImport')->name('users.parseCsvImport');
+    Route::post('users/process-csv-import', 'UsersController@processCsvImport')->name('users.processCsvImport');
     Route::resource('users', 'UsersController');
 
     // Designation Line
@@ -77,12 +79,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('attendance-books/destroy', 'AttendanceBookController@massDestroy')->name('attendance-books.massDestroy');
     Route::resource('attendance-books', 'AttendanceBookController');
 
-    // Section Employee
-    Route::delete('section-employees/destroy', 'SectionEmployeeController@massDestroy')->name('section-employees.massDestroy');
-    Route::post('section-employees/parse-csv-import', 'SectionEmployeeController@parseCsvImport')->name('section-employees.parseCsvImport');
-    Route::post('section-employees/process-csv-import', 'SectionEmployeeController@processCsvImport')->name('section-employees.processCsvImport');
-    Route::resource('section-employees', 'SectionEmployeeController');
-
     // Success Punching
     Route::delete('success-punchings/destroy', 'SuccessPunchingController@massDestroy')->name('success-punchings.massDestroy');
     Route::resource('success-punchings', 'SuccessPunchingController');
@@ -103,10 +99,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Seniority
     Route::delete('seniorities/destroy', 'SeniorityController@massDestroy')->name('seniorities.massDestroy');
     Route::resource('seniorities', 'SeniorityController');
-
-    // Employee At Seat
-    Route::delete('employee-at-seats/destroy', 'EmployeeAtSeatController@massDestroy')->name('employee-at-seats.massDestroy');
-    Route::resource('employee-at-seats', 'EmployeeAtSeatController');
 
     // Dept Designations
     Route::delete('dept-designations/destroy', 'DeptDesignationsController@massDestroy')->name('dept-designations.massDestroy');
@@ -142,11 +134,92 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Ot Routing
     Route::delete('ot-routings/destroy', 'OtRoutingController@massDestroy')->name('ot-routings.massDestroy');
+    Route::post('ot-routings/parse-csv-import', 'OtRoutingController@parseCsvImport')->name('ot-routings.parseCsvImport');
+    Route::post('ot-routings/process-csv-import', 'OtRoutingController@processCsvImport')->name('ot-routings.processCsvImport');
     Route::resource('ot-routings', 'OtRoutingController');
 
     // Attendance Routing
     Route::delete('attendance-routings/destroy', 'AttendanceRoutingController@massDestroy')->name('attendance-routings.massDestroy');
     Route::resource('attendance-routings', 'AttendanceRoutingController');
+
+    // Office Location
+    Route::post('office-locations/parse-csv-import', 'OfficeLocationController@parseCsvImport')->name('office-locations.parseCsvImport');
+    Route::post('office-locations/process-csv-import', 'OfficeLocationController@processCsvImport')->name('office-locations.processCsvImport');
+    Route::resource('office-locations', 'OfficeLocationController', ['except' => ['destroy']]);
+
+    // Employee Seat History
+    Route::delete('employee-seat-histories/destroy', 'EmployeeSeatHistoryController@massDestroy')->name('employee-seat-histories.massDestroy');
+    Route::resource('employee-seat-histories', 'EmployeeSeatHistoryController');
+
+    // Employee Section History
+    Route::delete('employee-section-histories/destroy', 'EmployeeSectionHistoryController@massDestroy')->name('employee-section-histories.massDestroy');
+    Route::post('employee-section-histories/parse-csv-import', 'EmployeeSectionHistoryController@parseCsvImport')->name('employee-section-histories.parseCsvImport');
+    Route::post('employee-section-histories/process-csv-import', 'EmployeeSectionHistoryController@processCsvImport')->name('employee-section-histories.processCsvImport');
+    Route::resource('employee-section-histories', 'EmployeeSectionHistoryController');
+
+    // Employee To Seat
+    Route::delete('employee-to-seats/destroy', 'EmployeeToSeatController@massDestroy')->name('employee-to-seats.massDestroy');
+    Route::post('employee-to-seats/parse-csv-import', 'EmployeeToSeatController@parseCsvImport')->name('employee-to-seats.parseCsvImport');
+    Route::post('employee-to-seats/process-csv-import', 'EmployeeToSeatController@processCsvImport')->name('employee-to-seats.processCsvImport');
+    Route::resource('employee-to-seats', 'EmployeeToSeatController');
+
+    // Employee To Section
+    Route::delete('employee-to-sections/destroy', 'EmployeeToSectionController@massDestroy')->name('employee-to-sections.massDestroy');
+    Route::post('employee-to-sections/parse-csv-import', 'EmployeeToSectionController@parseCsvImport')->name('employee-to-sections.parseCsvImport');
+    Route::post('employee-to-sections/process-csv-import', 'EmployeeToSectionController@processCsvImport')->name('employee-to-sections.processCsvImport');
+    Route::resource('employee-to-sections', 'EmployeeToSectionController');
+
+    // Employee Details
+    Route::delete('employee-details/destroy', 'EmployeeDetailsController@massDestroy')->name('employee-details.massDestroy');
+    Route::post('employee-details/parse-csv-import', 'EmployeeDetailsController@parseCsvImport')->name('employee-details.parseCsvImport');
+    Route::post('employee-details/process-csv-import', 'EmployeeDetailsController@processCsvImport')->name('employee-details.processCsvImport');
+    Route::resource('employee-details', 'EmployeeDetailsController');
+
+    // Employee Ot Data
+    Route::delete('employee-ot-datas/destroy', 'EmployeeOtDataController@massDestroy')->name('employee-ot-datas.massDestroy');
+    Route::post('employee-ot-datas/parse-csv-import', 'EmployeeOtDataController@parseCsvImport')->name('employee-ot-datas.parseCsvImport');
+    Route::post('employee-ot-datas/process-csv-import', 'EmployeeOtDataController@processCsvImport')->name('employee-ot-datas.processCsvImport');
+    Route::resource('employee-ot-datas', 'EmployeeOtDataController');
+
+    // Employee Designation History
+    Route::delete('employee-designation-histories/destroy', 'EmployeeDesignationHistoryController@massDestroy')->name('employee-designation-histories.massDestroy');
+    Route::resource('employee-designation-histories', 'EmployeeDesignationHistoryController');
+
+    // Employee To Designation
+    Route::delete('employee-to-designations/destroy', 'EmployeeToDesignationController@massDestroy')->name('employee-to-designations.massDestroy');
+    Route::post('employee-to-designations/parse-csv-import', 'EmployeeToDesignationController@parseCsvImport')->name('employee-to-designations.parseCsvImport');
+    Route::post('employee-to-designations/process-csv-import', 'EmployeeToDesignationController@processCsvImport')->name('employee-to-designations.processCsvImport');
+    Route::resource('employee-to-designations', 'EmployeeToDesignationController');
+
+    // Employee Status
+    Route::delete('employee-statuses/destroy', 'EmployeeStatusController@massDestroy')->name('employee-statuses.massDestroy');
+    Route::post('employee-statuses/parse-csv-import', 'EmployeeStatusController@parseCsvImport')->name('employee-statuses.parseCsvImport');
+    Route::post('employee-statuses/process-csv-import', 'EmployeeStatusController@processCsvImport')->name('employee-statuses.processCsvImport');
+    Route::resource('employee-statuses', 'EmployeeStatusController');
+
+    // Acquittance
+    Route::delete('acquittances/destroy', 'AcquittanceController@massDestroy')->name('acquittances.massDestroy');
+    Route::post('acquittances/parse-csv-import', 'AcquittanceController@parseCsvImport')->name('acquittances.parseCsvImport');
+    Route::post('acquittances/process-csv-import', 'AcquittanceController@processCsvImport')->name('acquittances.processCsvImport');
+    Route::resource('acquittances', 'AcquittanceController');
+
+    // Employee To Acquittance
+    Route::delete('employee-to-acquittances/destroy', 'EmployeeToAcquittanceController@massDestroy')->name('employee-to-acquittances.massDestroy');
+    Route::post('employee-to-acquittances/parse-csv-import', 'EmployeeToAcquittanceController@parseCsvImport')->name('employee-to-acquittances.parseCsvImport');
+    Route::post('employee-to-acquittances/process-csv-import', 'EmployeeToAcquittanceController@processCsvImport')->name('employee-to-acquittances.processCsvImport');
+    Route::resource('employee-to-acquittances', 'EmployeeToAcquittanceController');
+
+    // Ddo
+    Route::delete('ddos/destroy', 'DdoController@massDestroy')->name('ddos.massDestroy');
+    Route::resource('ddos', 'DdoController');
+
+    // Shifts
+    Route::delete('shifts/destroy', 'ShiftsController@massDestroy')->name('shifts.massDestroy');
+    Route::resource('shifts', 'ShiftsController');
+
+    // Employee To Shift
+    Route::delete('employee-to-shifts/destroy', 'EmployeeToShiftController@massDestroy')->name('employee-to-shifts.massDestroy');
+    Route::resource('employee-to-shifts', 'EmployeeToShiftController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

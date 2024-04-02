@@ -29,6 +29,7 @@ class PunchingTrace extends Model
         'err_code',
         'att_date',
         'att_time',
+        'day_offset',
         'created_at',
         'updated_at',
         'deleted_at',

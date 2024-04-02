@@ -30,6 +30,10 @@ class UpdateSectionRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'office_location_id' => [
+                'required',
+                'integer',
+            ],
         ];
     }
 }

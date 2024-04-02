@@ -8,6 +8,7 @@ use App\Http\Requests\MassDestroySectionRequest;
 use App\Http\Requests\StoreSectionRequest;
 use App\Http\Requests\UpdateSectionRequest;
 use App\Models\AdministrativeOffice;
+use App\Models\OfficeLocation;
 use App\Models\Seat;
 use App\Models\Section;
 use Gate;
@@ -22,7 +23,7 @@ class SectionController extends Controller
     {
         abort_if(Gate::denies('section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sections = Section::with(['administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer'])->get();
+        $sections = Section::with(['administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer', 'office_location'])->get();
 
         return view('admin.sections.index', compact('sections'));
     }
@@ -37,7 +38,9 @@ class SectionController extends Controller
 
         $seat_of_reporting_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.sections.create', compact('administrative_offices', 'seat_of_controling_officers', 'seat_of_reporting_officers'));
+        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.sections.create', compact('administrative_offices', 'office_locations', 'seat_of_controling_officers', 'seat_of_reporting_officers'));
     }
 
     public function store(StoreSectionRequest $request)
@@ -57,9 +60,11 @@ class SectionController extends Controller
 
         $seat_of_reporting_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $section->load('administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer');
+        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.sections.edit', compact('administrative_offices', 'seat_of_controling_officers', 'seat_of_reporting_officers', 'section'));
+        $section->load('administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer', 'office_location');
+
+        return view('admin.sections.edit', compact('administrative_offices', 'office_locations', 'seat_of_controling_officers', 'seat_of_reporting_officers', 'section'));
     }
 
     public function update(UpdateSectionRequest $request, Section $section)
@@ -73,7 +78,7 @@ class SectionController extends Controller
     {
         abort_if(Gate::denies('section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $section->load('administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer', 'sectionAttendanceBooks');
+        $section->load('administrative_office', 'seat_of_controling_officer', 'seat_of_reporting_officer', 'office_location', 'sectionAttendanceBooks');
 
         return view('admin.sections.show', compact('section'));
     }

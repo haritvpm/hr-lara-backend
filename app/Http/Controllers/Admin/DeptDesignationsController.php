@@ -30,7 +30,7 @@ class DeptDesignationsController extends Controller
     {
         abort_if(Gate::denies('dept_designation_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::pluck('username', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.deptDesignations.create', compact('users'));
     }
@@ -46,7 +46,7 @@ class DeptDesignationsController extends Controller
     {
         abort_if(Gate::denies('dept_designation_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $users = User::pluck('username', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $deptDesignation->load('user');
 

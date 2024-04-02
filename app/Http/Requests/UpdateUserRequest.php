@@ -33,6 +33,11 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'array',
             ],
+            'mobile' => [
+                'string',
+                'min:10',
+                'nullable',
+            ],
         ];
     }
 }

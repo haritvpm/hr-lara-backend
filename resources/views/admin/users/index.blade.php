@@ -6,6 +6,10 @@
             <a class="btn btn-success" href="{{ route('admin.users.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
             </a>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                {{ trans('global.app_csvImport') }}
+            </button>
+            @include('csvImport.modal', ['model' => 'User', 'route' => 'admin.users.parseCsvImport'])
         </div>
     </div>
 @endcan
@@ -26,16 +30,10 @@
                             {{ trans('cruds.user.fields.id') }}
                         </th>
                         <th>
+                            {{ trans('cruds.user.fields.username') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.user.fields.name') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.user.fields.email') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.user.fields.roles') }}
                         </th>
                         <th>
                             {{ trans('cruds.user.fields.employee') }}
@@ -45,6 +43,18 @@
                         </th>
                         <th>
                             {{ trans('cruds.employee.fields.aadhaarid') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.email') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.roles') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.mobile') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.user.fields.email_verified_at') }}
                         </th>
                         <th>
                             &nbsp;
@@ -61,18 +71,10 @@
                                 {{ $user->id ?? '' }}
                             </td>
                             <td>
+                                {{ $user->username ?? '' }}
+                            </td>
+                            <td>
                                 {{ $user->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $user->email ?? '' }}
-                            </td>
-                            <td>
-                                {{ $user->email_verified_at ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($user->roles as $key => $item)
-                                    <span class="badge badge-info">{{ $item->title }}</span>
-                                @endforeach
                             </td>
                             <td>
                                 {{ $user->employee->name ?? '' }}
@@ -82,6 +84,20 @@
                             </td>
                             <td>
                                 {{ $user->employee->aadhaarid ?? '' }}
+                            </td>
+                            <td>
+                                {{ $user->email ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($user->roles as $key => $item)
+                                    <span class="badge badge-info">{{ $item->title }}</span>
+                                @endforeach
+                            </td>
+                            <td>
+                                {{ $user->mobile ?? '' }}
+                            </td>
+                            <td>
+                                {{ $user->email_verified_at ?? '' }}
                             </td>
                             <td>
                                 @can('user_show')

@@ -62,6 +62,9 @@ class PunchingTraceController extends Controller
             $table->editColumn('att_time', function ($row) {
                 return $row->att_time ? $row->att_time : '';
             });
+            $table->editColumn('day_offset', function ($row) {
+                return $row->day_offset ? $row->day_offset : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder']);
 

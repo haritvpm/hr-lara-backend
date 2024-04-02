@@ -45,6 +45,9 @@
                             {{ trans('cruds.section.fields.type') }}
                         </th>
                         <th>
+                            {{ trans('cruds.section.fields.office_location') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -72,6 +75,9 @@
                             </td>
                             <td>
                                 {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
+                            </td>
+                            <td>
+                                {{ $section->office_location->location ?? '' }}
                             </td>
                             <td>
                                 @can('section_show')

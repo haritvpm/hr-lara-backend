@@ -21,9 +21,11 @@ class UpdateOtRoutingRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'routes' => [
-                'string',
-                'nullable',
+            'routing_seats.*' => [
+                'integer',
+            ],
+            'routing_seats' => [
+                'array',
             ],
             'last_forwarded_to' => [
                 'string',

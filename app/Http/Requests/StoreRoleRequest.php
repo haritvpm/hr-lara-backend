@@ -20,6 +20,7 @@ class StoreRoleRequest extends FormRequest
             'title' => [
                 'string',
                 'required',
+                'unique:roles',
             ],
             'permissions.*' => [
                 'integer',

@@ -24,14 +24,22 @@
                 <span class="help-block">{{ trans('cruds.otRouting.fields.seat_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="routes">{{ trans('cruds.otRouting.fields.routes') }}</label>
-                <input class="form-control {{ $errors->has('routes') ? 'is-invalid' : '' }}" type="text" name="routes" id="routes" value="{{ old('routes', '') }}">
-                @if($errors->has('routes'))
+                <label for="routing_seats">{{ trans('cruds.otRouting.fields.routing_seats') }}</label>
+                <div style="padding-bottom: 4px">
+                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
+                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
+                </div>
+                <select class="form-control select2 {{ $errors->has('routing_seats') ? 'is-invalid' : '' }}" name="routing_seats[]" id="routing_seats" multiple>
+                    @foreach($routing_seats as $id => $routing_seat)
+                        <option value="{{ $id }}" {{ in_array($id, old('routing_seats', [])) ? 'selected' : '' }}>{{ $routing_seat }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('routing_seats'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('routes') }}
+                        {{ $errors->first('routing_seats') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.otRouting.fields.routes_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.otRouting.fields.routing_seats_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="last_forwarded_to">{{ trans('cruds.otRouting.fields.last_forwarded_to') }}</label>

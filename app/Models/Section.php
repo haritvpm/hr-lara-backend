@@ -24,6 +24,7 @@ class Section extends Model
         'seat_of_controling_officer_id',
         'seat_of_reporting_officer_id',
         'type',
+        'office_location_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -63,5 +64,10 @@ class Section extends Model
     public function seat_of_reporting_officer()
     {
         return $this->belongsTo(Seat::class, 'seat_of_reporting_officer_id');
+    }
+
+    public function office_location()
+    {
+        return $this->belongsTo(OfficeLocation::class, 'office_location_id');
     }
 }

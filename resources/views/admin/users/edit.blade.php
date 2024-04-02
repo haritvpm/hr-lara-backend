@@ -11,14 +11,38 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="name">{{ trans('cruds.user.fields.name') }}</label>
-                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required>
+                <label class="required" for="username">{{ trans('cruds.user.fields.username') }}</label>
+                <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" required>
+                @if($errors->has('username'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('username') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.username_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="name">{{ trans('cruds.user.fields.name') }}</label>
+                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $user->name) }}">
                 @if($errors->has('name'))
                     <div class="invalid-feedback">
                         {{ $errors->first('name') }}
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.user.fields.name_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="employee_id">{{ trans('cruds.user.fields.employee') }}</label>
+                <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id">
+                    @foreach($employees as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('employee_id') ? old('employee_id') : $user->employee->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('employee'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('employee') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.user.fields.employee_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="email">{{ trans('cruds.user.fields.email') }}</label>
@@ -59,18 +83,14 @@
                 <span class="help-block">{{ trans('cruds.user.fields.roles_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="employee_id">{{ trans('cruds.user.fields.employee') }}</label>
-                <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id">
-                    @foreach($employees as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('employee_id') ? old('employee_id') : $user->employee->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('employee'))
+                <label for="mobile">{{ trans('cruds.user.fields.mobile') }}</label>
+                <input class="form-control {{ $errors->has('mobile') ? 'is-invalid' : '' }}" type="text" name="mobile" id="mobile" value="{{ old('mobile', $user->mobile) }}">
+                @if($errors->has('mobile'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
+                        {{ $errors->first('mobile') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.user.fields.employee_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.user.fields.mobile_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

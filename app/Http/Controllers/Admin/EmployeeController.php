@@ -7,9 +7,8 @@ use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\MassDestroyEmployeeRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
-use App\Models\Designation;
 use App\Models\Employee;
-use App\Models\OtCategory;
+use App\Models\EmployeeStatus;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +23,7 @@ class EmployeeController extends Controller
         abort_if(Gate::denies('employee_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Employee::with(['designation', 'category'])->select(sprintf('%s.*', (new Employee)->table));
+            $query = Employee::with(['status'])->select(sprintf('%s.*', (new Employee)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -60,25 +59,11 @@ class EmployeeController extends Controller
             $table->editColumn('pen', function ($row) {
                 return $row->pen ? $row->pen : '';
             });
-            $table->addColumn('designation_designation', function ($row) {
-                return $row->designation ? $row->designation->designation : '';
-            });
-
-            $table->addColumn('category_category', function ($row) {
-                return $row->category ? $row->category->category : '';
-            });
-
             $table->editColumn('aadhaarid', function ($row) {
                 return $row->aadhaarid ? $row->aadhaarid : '';
             });
-            $table->editColumn('has_punching', function ($row) {
-                return $row->has_punching ? $row->has_punching : '';
-            });
-            $table->editColumn('status', function ($row) {
-                return $row->status ? Employee::STATUS_SELECT[$row->status] : '';
-            });
-            $table->editColumn('ot_data_entry_by_admin', function ($row) {
-                return '<input type="checkbox" disabled ' . ($row->ot_data_entry_by_admin ? 'checked' : null) . '>';
+            $table->editColumn('employee_type', function ($row) {
+                return $row->employee_type ? Employee::EMPLOYEE_TYPE_SELECT[$row->employee_type] : '';
             });
             $table->editColumn('desig_display', function ($row) {
                 return $row->desig_display ? $row->desig_display : '';
@@ -86,11 +71,14 @@ class EmployeeController extends Controller
             $table->editColumn('pan', function ($row) {
                 return $row->pan ? $row->pan : '';
             });
-            $table->editColumn('employee_type', function ($row) {
-                return $row->employee_type ? Employee::EMPLOYEE_TYPE_SELECT[$row->employee_type] : '';
+            $table->editColumn('has_punching', function ($row) {
+                return $row->has_punching ? $row->has_punching : '';
+            });
+            $table->addColumn('status_status', function ($row) {
+                return $row->status ? $row->status->status : '';
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'designation', 'category', 'ot_data_entry_by_admin']);
+            $table->rawColumns(['actions', 'placeholder', 'status']);
 
             return $table->make(true);
         }
@@ -102,11 +90,9 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $statuses = EmployeeStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = OtCategory::pluck('category', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.employees.create', compact('categories', 'designations'));
+        return view('admin.employees.create', compact('statuses'));
     }
 
     public function store(StoreEmployeeRequest $request)
@@ -120,13 +106,11 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $statuses = EmployeeStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $categories = OtCategory::pluck('category', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employee->load('status');
 
-        $employee->load('designation', 'category');
-
-        return view('admin.employees.edit', compact('categories', 'designations', 'employee'));
+        return view('admin.employees.edit', compact('employee', 'statuses'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
@@ -140,7 +124,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employee->load('designation', 'category');
+        $employee->load('status', 'employeeEmployeeToDesignations');
 
         return view('admin.employees.show', compact('employee'));
     }

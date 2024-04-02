@@ -44,7 +44,7 @@
                             {{ trans('cruds.deptDesignation.fields.user') }}
                         </th>
                         <td>
-                            {{ $deptDesignation->user->name ?? '' }}
+                            {{ $deptDesignation->user->username ?? '' }}
                         </td>
                     </tr>
                 </tbody>

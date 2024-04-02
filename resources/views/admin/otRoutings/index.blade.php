@@ -6,6 +6,10 @@
             <a class="btn btn-success" href="{{ route('admin.ot-routings.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.otRouting.title_singular') }}
             </a>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                {{ trans('global.app_csvImport') }}
+            </button>
+            @include('csvImport.modal', ['model' => 'OtRouting', 'route' => 'admin.ot-routings.parseCsvImport'])
         </div>
     </div>
 @endcan
@@ -29,7 +33,7 @@
                             {{ trans('cruds.otRouting.fields.seat') }}
                         </th>
                         <th>
-                            {{ trans('cruds.otRouting.fields.routes') }}
+                            {{ trans('cruds.otRouting.fields.routing_seats') }}
                         </th>
                         <th>
                             {{ trans('cruds.otRouting.fields.last_forwarded_to') }}
@@ -52,7 +56,9 @@
                                 {{ $otRouting->seat->title ?? '' }}
                             </td>
                             <td>
-                                {{ $otRouting->routes ?? '' }}
+                                @foreach($otRouting->routing_seats as $key => $item)
+                                    <span class="badge badge-info">{{ $item->name }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 {{ $otRouting->last_forwarded_to ?? '' }}

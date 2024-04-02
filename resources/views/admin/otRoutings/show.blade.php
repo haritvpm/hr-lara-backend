@@ -33,10 +33,12 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.otRouting.fields.routes') }}
+                            {{ trans('cruds.otRouting.fields.routing_seats') }}
                         </th>
                         <td>
-                            {{ $otRouting->routes }}
+                            @foreach($otRouting->routing_seats as $key => $routing_seats)
+                                <span class="label label-info">{{ $routing_seats->name }}</span>
+                            @endforeach
                         </td>
                     </tr>
                     <tr>

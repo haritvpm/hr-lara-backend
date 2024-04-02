@@ -20,6 +20,7 @@ class UpdateRoleRequest extends FormRequest
             'title' => [
                 'string',
                 'required',
+                'unique:roles,title,' . request()->route('role')->id,
             ],
             'permissions.*' => [
                 'integer',

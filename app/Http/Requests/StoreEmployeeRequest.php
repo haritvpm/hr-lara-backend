@@ -31,14 +31,6 @@ class StoreEmployeeRequest extends FormRequest
                 'min:5',
                 'nullable',
             ],
-            'designation_id' => [
-                'required',
-                'integer',
-            ],
-            'category_id' => [
-                'required',
-                'integer',
-            ],
             'aadhaarid' => [
                 'string',
                 'min:8',
@@ -46,11 +38,8 @@ class StoreEmployeeRequest extends FormRequest
                 'required',
                 'unique:employees',
             ],
-            'has_punching' => [
-                'nullable',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
+            'employee_type' => [
+                'required',
             ],
             'desig_display' => [
                 'string',
@@ -59,6 +48,16 @@ class StoreEmployeeRequest extends FormRequest
             'pan' => [
                 'string',
                 'nullable',
+            ],
+            'has_punching' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'status_id' => [
+                'required',
+                'integer',
             ],
         ];
     }

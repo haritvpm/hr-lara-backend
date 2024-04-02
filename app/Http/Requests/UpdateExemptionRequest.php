@@ -25,6 +25,10 @@ class UpdateExemptionRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
+            'forwarded_by' => [
+                'string',
+                'nullable',
+            ],
         ];
     }
 }

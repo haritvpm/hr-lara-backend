@@ -78,6 +78,20 @@
                 <span class="help-block">{{ trans('cruds.section.fields.type_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="office_location_id">{{ trans('cruds.section.fields.office_location') }}</label>
+                <select class="form-control select2 {{ $errors->has('office_location') ? 'is-invalid' : '' }}" name="office_location_id" id="office_location_id" required>
+                    @foreach($office_locations as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('office_location_id') ? old('office_location_id') : $section->office_location->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('office_location'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('office_location') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.section.fields.office_location_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

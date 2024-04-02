@@ -63,6 +63,14 @@
                             {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.office_location') }}
+                        </th>
+                        <td>
+                            {{ $section->office_location->location ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
