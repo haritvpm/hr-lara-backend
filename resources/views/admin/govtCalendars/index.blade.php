@@ -6,6 +6,13 @@
         {{ trans('cruds.govtCalendar.title_singular') }} {{ trans('global.list') }}
     </div>
 
+    <form action="{{url('admin/govt-calendars/fetchmonth')}}" method="post" id="filter" class="form-inline">
+      @csrf
+      <button type="submit" class="btn btn-primary">FetchMonth</button>
+
+      </form>
+
+
     <div class="card-body">
         <div class="table-responsive">
             <table class=" table table-bordered table-striped table-hover datatable datatable-GovtCalendar">

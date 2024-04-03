@@ -9,6 +9,10 @@ use App\Models\Session;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Jobs\AebasFetchDay;
+use Carbon\Carbon;
+use App\Services\PunchingService;
+
 
 class GovtCalendarController extends Controller
 {
@@ -46,5 +50,41 @@ class GovtCalendarController extends Controller
         $govtCalendar->load('session');
 
         return view('admin.govtCalendars.show', compact('govtCalendar'));
+    }
+
+
+    public function fetchmonth(Request $request)
+    {
+        
+       \Log::info("fetchmonth attendance trace !. " );
+       // (new PunchingService())->fetchTodayTrace($reportdate);
+       $today = today(); 
+       $dates = []; 
+   
+       for($i=1; $i < $today->daysInMonth + 1; ++$i) 
+       {
+           $date = Carbon::createFromDate($today->year, $today->month, $i,0,0,0); 
+           $date_string = $date->format('Y-m-d');
+            \Log::info("fetchmonth --".  $date->toString());
+           
+           if($date > now()) break;
+
+           \Log::info("call AebasFetchDay --".  $date_string);
+         
+           //AebasFetch::dispatch($date)->delay(now()->addMinutes($i));
+
+           //dont forget to set queue driver in env
+           //QUEUE_CONNECTION=database
+ 
+          // $this->dispatch($job);
+          //AebasFetchDay::dispatch($date)->delay(now()->addMinutes($i));
+          AebasFetchDay::dispatch($date_string);
+          //(new PunchingService())->fetchTrace( $date);
+
+
+          //break; //test
+       }
+
+        return redirect()->back();
     }
 }

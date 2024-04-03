@@ -59,6 +59,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('sessions', 'SessionController');
 
     // Govt Calendar
+    Route::post('govt-calendars/fetchmonth', 'GovtCalendarController@fetchmonth')->name('govt-calendars.fetchmonth');
     Route::resource('govt-calendars', 'GovtCalendarController', ['except' => ['create', 'store', 'destroy']]);
 
     // Administrative Office
