@@ -3,13 +3,13 @@
 
 <div class="card">
     <div class="card-header">
-        {{ trans('global.show') }} {{ trans('cruds.punchingRegister.title') }}
+        {{ trans('global.show') }} {{ trans('cruds.punching.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.punching-registers.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.punchings.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
@@ -17,90 +17,104 @@
                 <tbody>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.id') }}
+                            {{ trans('cruds.punching.fields.id') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->id }}
+                            {{ $punching->id }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.date') }}
+                            {{ trans('cruds.punching.fields.date') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->date }}
+                            {{ $punching->date }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.employee') }}
+                            {{ trans('cruds.punching.fields.employee') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->employee->name ?? '' }}
+                            {{ $punching->employee->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.duration') }}
+                            {{ trans('cruds.punching.fields.duration') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->duration }}
+                            {{ $punching->duration }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.flexi') }}
+                            {{ trans('cruds.punching.fields.flexi') }}
                         </th>
                         <td>
-                            {{ App\Models\PunchingRegister::FLEXI_SELECT[$punchingRegister->flexi] ?? '' }}
+                            {{ App\Models\Punching::FLEXI_SELECT[$punching->flexi] ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.grace_min') }}
+                            {{ trans('cruds.punching.fields.designation') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->grace_min }}
+                            {{ $punching->designation }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.extra_min') }}
+                            {{ trans('cruds.punching.fields.grace') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->extra_min }}
+                            {{ $punching->grace }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.success_punching') }}
+                            {{ trans('cruds.punching.fields.extra') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->success_punching->date ?? '' }}
+                            {{ $punching->extra }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.punching_trace') }}
+                            {{ trans('cruds.punching.fields.remarks') }}
                         </th>
                         <td>
-                            @foreach($punchingRegister->punching_traces as $key => $punching_trace)
-                                <span class="label label-info">{{ $punching_trace->att_date }}</span>
-                            @endforeach
+                            {{ $punching->remarks }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punchingRegister.fields.designation') }}
+                            {{ trans('cruds.punching.fields.calc_complete') }}
                         </th>
                         <td>
-                            {{ $punchingRegister->designation }}
+                            {{ $punching->calc_complete }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.punchin_trace') }}
+                        </th>
+                        <td>
+                            {{ $punching->punchin_trace->att_time ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.punchout_trace') }}
+                        </th>
+                        <td>
+                            {{ $punching->punchout_trace->att_time ?? '' }}
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="form-group">
-                <a class="btn btn-default" href="{{ route('admin.punching-registers.index') }}">
+                <a class="btn btn-default" href="{{ route('admin.punchings.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>

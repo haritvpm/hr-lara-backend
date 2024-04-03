@@ -13,9 +13,7 @@
                 <label class="required" for="location">{{ trans('cruds.officeLocation.fields.location') }}</label>
                 <input class="form-control {{ $errors->has('location') ? 'is-invalid' : '' }}" type="text" name="location" id="location" value="{{ old('location', '') }}" required>
                 @if($errors->has('location'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('location') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('location') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.officeLocation.fields.location_helper') }}</span>
             </div>

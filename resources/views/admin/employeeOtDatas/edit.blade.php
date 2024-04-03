@@ -18,9 +18,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeOtData.fields.employee_helper') }}</span>
             </div>
@@ -31,9 +29,7 @@
                     <label class="form-check-label" for="is_admin_data_entry">{{ trans('cruds.employeeOtData.fields.is_admin_data_entry') }}</label>
                 </div>
                 @if($errors->has('is_admin_data_entry'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('is_admin_data_entry') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('is_admin_data_entry') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeOtData.fields.is_admin_data_entry_helper') }}</span>
             </div>
@@ -45,9 +41,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('ot_excel_category'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('ot_excel_category') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('ot_excel_category') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeOtData.fields.ot_excel_category_helper') }}</span>
             </div>

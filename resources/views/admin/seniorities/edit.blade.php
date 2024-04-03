@@ -18,9 +18,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seniority.fields.employee_helper') }}</span>
             </div>
@@ -28,9 +26,7 @@
                 <label class="required" for="sortindex">{{ trans('cruds.seniority.fields.sortindex') }}</label>
                 <input class="form-control {{ $errors->has('sortindex') ? 'is-invalid' : '' }}" type="number" name="sortindex" id="sortindex" value="{{ old('sortindex', $seniority->sortindex) }}" step="1" required>
                 @if($errors->has('sortindex'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('sortindex') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('sortindex') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seniority.fields.sortindex_helper') }}</span>
             </div>

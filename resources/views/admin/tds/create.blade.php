@@ -13,9 +13,7 @@
                 <label class="required" for="pan">{{ trans('cruds.td.fields.pan') }}</label>
                 <input class="form-control {{ $errors->has('pan') ? 'is-invalid' : '' }}" type="text" name="pan" id="pan" value="{{ old('pan', '') }}" required>
                 @if($errors->has('pan'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('pan') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('pan') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.pan_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label class="required" for="pen">{{ trans('cruds.td.fields.pen') }}</label>
                 <input class="form-control {{ $errors->has('pen') ? 'is-invalid' : '' }}" type="text" name="pen" id="pen" value="{{ old('pen', '') }}" required>
                 @if($errors->has('pen'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('pen') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('pen') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.pen_helper') }}</span>
             </div>
@@ -33,9 +29,7 @@
                 <label class="required" for="name">{{ trans('cruds.td.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
                 @if($errors->has('name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.name_helper') }}</span>
             </div>
@@ -43,9 +37,7 @@
                 <label class="required" for="gross">{{ trans('cruds.td.fields.gross') }}</label>
                 <input class="form-control {{ $errors->has('gross') ? 'is-invalid' : '' }}" type="number" name="gross" id="gross" value="{{ old('gross', '') }}" step="0.01" required>
                 @if($errors->has('gross'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('gross') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('gross') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.gross_helper') }}</span>
             </div>
@@ -53,9 +45,7 @@
                 <label class="required" for="tds">{{ trans('cruds.td.fields.tds') }}</label>
                 <input class="form-control {{ $errors->has('tds') ? 'is-invalid' : '' }}" type="number" name="tds" id="tds" value="{{ old('tds', '') }}" step="0.01" required>
                 @if($errors->has('tds'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('tds') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('tds') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.tds_helper') }}</span>
             </div>
@@ -63,9 +53,7 @@
                 <label for="slno">{{ trans('cruds.td.fields.slno') }}</label>
                 <input class="form-control {{ $errors->has('slno') ? 'is-invalid' : '' }}" type="number" name="slno" id="slno" value="{{ old('slno', '') }}" step="1">
                 @if($errors->has('slno'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('slno') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('slno') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.slno_helper') }}</span>
             </div>
@@ -77,9 +65,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.date_helper') }}</span>
             </div>
@@ -91,9 +77,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('created_by'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('created_by') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('created_by') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.created_by_helper') }}</span>
             </div>
@@ -101,9 +85,7 @@
                 <label for="remarks">{{ trans('cruds.td.fields.remarks') }}</label>
                 <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', '') }}">
                 @if($errors->has('remarks'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('remarks') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('remarks') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.td.fields.remarks_helper') }}</span>
             </div>

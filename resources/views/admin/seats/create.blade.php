@@ -13,9 +13,7 @@
                 <label class="required" for="name">{{ trans('cruds.seat.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', '') }}" required>
                 @if($errors->has('name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.name_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label class="required" for="title">{{ trans('cruds.seat.fields.title') }}</label>
                 <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', '') }}" required>
                 @if($errors->has('title'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('title') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('title') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.title_helper') }}</span>
             </div>
@@ -36,9 +32,7 @@
                     <label class="form-check-label" for="has_files">{{ trans('cruds.seat.fields.has_files') }}</label>
                 </div>
                 @if($errors->has('has_files'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('has_files') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('has_files') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.has_files_helper') }}</span>
             </div>
@@ -49,9 +43,7 @@
                     <label class="form-check-label" for="has_office_with_employees">{{ trans('cruds.seat.fields.has_office_with_employees') }}</label>
                 </div>
                 @if($errors->has('has_office_with_employees'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('has_office_with_employees') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('has_office_with_employees') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.has_office_with_employees_helper') }}</span>
             </div>
@@ -59,9 +51,7 @@
                 <label for="level">{{ trans('cruds.seat.fields.level') }}</label>
                 <input class="form-control {{ $errors->has('level') ? 'is-invalid' : '' }}" type="number" name="level" id="level" value="{{ old('level', '') }}" step="1">
                 @if($errors->has('level'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('level') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('level') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.level_helper') }}</span>
             </div>
@@ -72,9 +62,7 @@
                     <label class="form-check-label" for="is_js_as_ss">{{ trans('cruds.seat.fields.is_js_as_ss') }}</label>
                 </div>
                 @if($errors->has('is_js_as_ss'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('is_js_as_ss') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('is_js_as_ss') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.is_js_as_ss_helper') }}</span>
             </div>
@@ -85,9 +73,7 @@
                     <label class="form-check-label" for="is_controlling_officer">{{ trans('cruds.seat.fields.is_controlling_officer') }}</label>
                 </div>
                 @if($errors->has('is_controlling_officer'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('is_controlling_officer') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('is_controlling_officer') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.is_controlling_officer_helper') }}</span>
             </div>

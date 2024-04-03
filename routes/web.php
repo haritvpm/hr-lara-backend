@@ -52,6 +52,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('employees', 'EmployeeController');
 
     // Punching Trace
+    Route::post('punching-traces/parse-csv-import', 'PunchingTraceController@parseCsvImport')->name('punching-traces.parseCsvImport');
+    Route::post('punching-traces/process-csv-import', 'PunchingTraceController@processCsvImport')->name('punching-traces.processCsvImport');
     Route::resource('punching-traces', 'PunchingTraceController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
     // Session
@@ -83,9 +85,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Success Punching
     Route::delete('success-punchings/destroy', 'SuccessPunchingController@massDestroy')->name('success-punchings.massDestroy');
     Route::resource('success-punchings', 'SuccessPunchingController');
-
-    // Punching Register
-    Route::resource('punching-registers', 'PunchingRegisterController', ['except' => ['destroy']]);
 
     // Punching Device
     Route::delete('punching-devices/destroy', 'PunchingDeviceController@massDestroy')->name('punching-devices.massDestroy');
@@ -192,12 +191,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('employee-to-designations/process-csv-import', 'EmployeeToDesignationController@processCsvImport')->name('employee-to-designations.processCsvImport');
     Route::resource('employee-to-designations', 'EmployeeToDesignationController');
 
-    // Employee Status
-    Route::delete('employee-statuses/destroy', 'EmployeeStatusController@massDestroy')->name('employee-statuses.massDestroy');
-    Route::post('employee-statuses/parse-csv-import', 'EmployeeStatusController@parseCsvImport')->name('employee-statuses.parseCsvImport');
-    Route::post('employee-statuses/process-csv-import', 'EmployeeStatusController@processCsvImport')->name('employee-statuses.processCsvImport');
-    Route::resource('employee-statuses', 'EmployeeStatusController');
-
     // Acquittance
     Route::delete('acquittances/destroy', 'AcquittanceController@massDestroy')->name('acquittances.massDestroy');
     Route::post('acquittances/parse-csv-import', 'AcquittanceController@parseCsvImport')->name('acquittances.parseCsvImport');
@@ -229,6 +222,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Tax Entries
     Route::delete('tax-entries/destroy', 'TaxEntriesController@massDestroy')->name('tax-entries.massDestroy');
     Route::resource('tax-entries', 'TaxEntriesController');
+
+    // Punching
+    Route::resource('punchings', 'PunchingController', ['except' => ['destroy']]);
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

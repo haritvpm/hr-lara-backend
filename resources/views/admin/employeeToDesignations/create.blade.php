@@ -17,9 +17,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeToDesignation.fields.employee_helper') }}</span>
             </div>
@@ -31,9 +29,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('designation'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeToDesignation.fields.designation_helper') }}</span>
             </div>

@@ -19,6 +19,8 @@ class CreateEmployeesTable extends Migration
             $table->string('desig_display')->nullable();
             $table->string('pan')->nullable();
             $table->integer('has_punching')->nullable();
+            $table->string('status');
+            $table->boolean('is_shift')->default(0)->nullable();
             $table->timestamps();
         });
     }

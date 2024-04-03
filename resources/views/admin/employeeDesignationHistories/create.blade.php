@@ -17,9 +17,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDesignationHistory.fields.employee_helper') }}</span>
             </div>
@@ -31,9 +29,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('designation'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDesignationHistory.fields.designation_helper') }}</span>
             </div>
@@ -41,9 +37,7 @@
                 <label class="required" for="start_date">{{ trans('cruds.employeeDesignationHistory.fields.start_date') }}</label>
                 <input class="form-control date {{ $errors->has('start_date') ? 'is-invalid' : '' }}" type="text" name="start_date" id="start_date" value="{{ old('start_date') }}" required>
                 @if($errors->has('start_date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('start_date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('start_date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDesignationHistory.fields.start_date_helper') }}</span>
             </div>
@@ -51,9 +45,7 @@
                 <label for="end_date">{{ trans('cruds.employeeDesignationHistory.fields.end_date') }}</label>
                 <input class="form-control date {{ $errors->has('end_date') ? 'is-invalid' : '' }}" type="text" name="end_date" id="end_date" value="{{ old('end_date') }}">
                 @if($errors->has('end_date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('end_date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('end_date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDesignationHistory.fields.end_date_helper') }}</span>
             </div>
@@ -61,9 +53,7 @@
                 <label for="remarks">{{ trans('cruds.employeeDesignationHistory.fields.remarks') }}</label>
                 <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', '') }}">
                 @if($errors->has('remarks'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('remarks') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('remarks') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDesignationHistory.fields.remarks_helper') }}</span>
             </div>

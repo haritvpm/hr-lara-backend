@@ -1,31 +1,31 @@
 @extends('layouts.admin')
 @section('content')
-@can('punching_register_create')
+@can('punching_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.punching-registers.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.punchingRegister.title_singular') }}
+            <a class="btn btn-success" href="{{ route('admin.punchings.create') }}">
+                {{ trans('global.add') }} {{ trans('cruds.punching.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.punchingRegister.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.punching.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-PunchingRegister">
+        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Punching">
             <thead>
                 <tr>
                     <th width="10">
 
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.date') }}
+                        {{ trans('cruds.punching.fields.date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.employee') }}
+                        {{ trans('cruds.punching.fields.employee') }}
                     </th>
                     <th>
                         {{ trans('cruds.employee.fields.pen') }}
@@ -34,25 +34,37 @@
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.duration') }}
+                        {{ trans('cruds.punching.fields.duration') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.flexi') }}
+                        {{ trans('cruds.punching.fields.flexi') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.grace_min') }}
+                        {{ trans('cruds.punching.fields.designation') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.extra_min') }}
+                        {{ trans('cruds.punching.fields.grace') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.success_punching') }}
+                        {{ trans('cruds.punching.fields.extra') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.punching_trace') }}
+                        {{ trans('cruds.punching.fields.remarks') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punchingRegister.fields.designation') }}
+                        {{ trans('cruds.punching.fields.calc_complete') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.punchin_trace') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punchingTrace.fields.att_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.punchout_trace') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punchingTrace.fields.att_date') }}
                     </th>
                     <th>
                         &nbsp;
@@ -78,7 +90,7 @@
     serverSide: true,
     retrieve: true,
     aaSorting: [],
-    ajax: "{{ route('admin.punching-registers.index') }}",
+    ajax: "{{ route('admin.punchings.index') }}",
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'date', name: 'date' },
@@ -87,18 +99,22 @@
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'duration', name: 'duration' },
 { data: 'flexi', name: 'flexi' },
-{ data: 'grace_min', name: 'grace_min' },
-{ data: 'extra_min', name: 'extra_min' },
-{ data: 'success_punching_date', name: 'success_punching.date' },
-{ data: 'punching_trace', name: 'punching_traces.att_date' },
 { data: 'designation', name: 'designation' },
+{ data: 'grace', name: 'grace' },
+{ data: 'extra', name: 'extra' },
+{ data: 'remarks', name: 'remarks' },
+{ data: 'calc_complete', name: 'calc_complete' },
+{ data: 'punchin_trace_att_time', name: 'punchin_trace.att_time' },
+{ data: 'punchin_trace.att_date', name: 'punchin_trace.att_date' },
+{ data: 'punchout_trace_att_time', name: 'punchout_trace.att_time' },
+{ data: 'punchout_trace.att_date', name: 'punchout_trace.att_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
     order: [[ 2, 'desc' ]],
     pageLength: 100,
   };
-  let table = $('.datatable-PunchingRegister').DataTable(dtOverrideGlobals);
+  let table = $('.datatable-Punching').DataTable(dtOverrideGlobals);
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\PunchingRegister;
+use App\Models\Punching;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
-class MassDestroyPunchingRegisterRequest extends FormRequest
+class MassDestroyPunchingRequest extends FormRequest
 {
     public function authorize()
     {
-        abort_if(Gate::denies('punching_register_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('punching_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return true;
     }
@@ -20,7 +20,7 @@ class MassDestroyPunchingRegisterRequest extends FormRequest
     {
         return [
             'ids'   => 'required|array',
-            'ids.*' => 'exists:punching_registers,id',
+            'ids.*' => 'exists:punchings,id',
         ];
     }
 }

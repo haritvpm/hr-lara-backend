@@ -13,9 +13,7 @@
                 <label class="required" for="date">{{ trans('cruds.taxEntry.fields.date') }}</label>
                 <input class="form-control date {{ $errors->has('date') ? 'is-invalid' : '' }}" type="text" name="date" id="date" value="{{ old('date') }}" required>
                 @if($errors->has('date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.taxEntry.fields.date_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label for="status">{{ trans('cruds.taxEntry.fields.status') }}</label>
                 <input class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" type="text" name="status" id="status" value="{{ old('status', '') }}">
                 @if($errors->has('status'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('status') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('status') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.taxEntry.fields.status_helper') }}</span>
             </div>
@@ -33,9 +29,7 @@
                 <label for="acquittance">{{ trans('cruds.taxEntry.fields.acquittance') }}</label>
                 <input class="form-control {{ $errors->has('acquittance') ? 'is-invalid' : '' }}" type="text" name="acquittance" id="acquittance" value="{{ old('acquittance', '') }}">
                 @if($errors->has('acquittance'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('acquittance') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('acquittance') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.taxEntry.fields.acquittance_helper') }}</span>
             </div>
@@ -47,9 +41,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('created_by'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('created_by') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('created_by') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.taxEntry.fields.created_by_helper') }}</span>
             </div>
@@ -57,9 +49,7 @@
                 <label for="sparkcode">{{ trans('cruds.taxEntry.fields.sparkcode') }}</label>
                 <input class="form-control {{ $errors->has('sparkcode') ? 'is-invalid' : '' }}" type="text" name="sparkcode" id="sparkcode" value="{{ old('sparkcode', '') }}">
                 @if($errors->has('sparkcode'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('sparkcode') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('sparkcode') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.taxEntry.fields.sparkcode_helper') }}</span>
             </div>

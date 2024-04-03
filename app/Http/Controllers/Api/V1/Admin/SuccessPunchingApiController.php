@@ -17,7 +17,7 @@ class SuccessPunchingApiController extends Controller
     {
         abort_if(Gate::denies('success_punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SuccessPunchingResource(SuccessPunching::all());
+        return new SuccessPunchingResource(SuccessPunching::with(['punching'])->get());
     }
 
     public function store(StoreSuccessPunchingRequest $request)
@@ -33,7 +33,7 @@ class SuccessPunchingApiController extends Controller
     {
         abort_if(Gate::denies('success_punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SuccessPunchingResource($successPunching);
+        return new SuccessPunchingResource($successPunching->load(['punching']));
     }
 
     public function update(UpdateSuccessPunchingRequest $request, SuccessPunching $successPunching)

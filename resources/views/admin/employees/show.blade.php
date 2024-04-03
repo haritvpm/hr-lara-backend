@@ -100,7 +100,15 @@
                             {{ trans('cruds.employee.fields.status') }}
                         </th>
                         <td>
-                            {{ $employee->status->status ?? '' }}
+                            {{ App\Models\Employee::STATUS_SELECT[$employee->status] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.is_shift') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $employee->is_shift ? 'checked' : '' }}>
                         </td>
                     </tr>
                 </tbody>

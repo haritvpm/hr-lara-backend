@@ -30,6 +30,7 @@ class PunchingTrace extends Model
         'att_date',
         'att_time',
         'day_offset',
+        'punching_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -49,4 +50,9 @@ class PunchingTrace extends Model
     // {
     //     $this->attributes['att_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     // }
+
+    public function punching()
+    {
+        return $this->belongsTo(Punching::class, 'punching_id');
+    }
 }

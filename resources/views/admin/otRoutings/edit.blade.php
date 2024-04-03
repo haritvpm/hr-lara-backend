@@ -18,9 +18,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('seat'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('seat') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('seat') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.otRouting.fields.seat_helper') }}</span>
             </div>
@@ -36,9 +34,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('routing_seats'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('routing_seats') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('routing_seats') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.otRouting.fields.routing_seats_helper') }}</span>
             </div>
@@ -46,9 +42,7 @@
                 <label for="last_forwarded_to">{{ trans('cruds.otRouting.fields.last_forwarded_to') }}</label>
                 <input class="form-control {{ $errors->has('last_forwarded_to') ? 'is-invalid' : '' }}" type="text" name="last_forwarded_to" id="last_forwarded_to" value="{{ old('last_forwarded_to', $otRouting->last_forwarded_to) }}">
                 @if($errors->has('last_forwarded_to'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('last_forwarded_to') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('last_forwarded_to') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.otRouting.fields.last_forwarded_to_helper') }}</span>
             </div>

@@ -14,9 +14,7 @@
                 <label class="required" for="title">{{ trans('cruds.acquittance.fields.title') }}</label>
                 <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $acquittance->title) }}" required>
                 @if($errors->has('title'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('title') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('title') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.acquittance.fields.title_helper') }}</span>
             </div>
@@ -28,9 +26,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('office'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('office') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('office') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.acquittance.fields.office_helper') }}</span>
             </div>

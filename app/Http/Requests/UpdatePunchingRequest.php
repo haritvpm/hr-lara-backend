@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
-use App\Models\PunchingRegister;
+use App\Models\Punching;
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Response;
 
-class UpdatePunchingRegisterRequest extends FormRequest
+class UpdatePunchingRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('punching_register_edit');
+        return Gate::allows('punching_edit');
     }
 
     public function rules()
@@ -29,23 +29,31 @@ class UpdatePunchingRegisterRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'grace_min' => [
-                'string',
-                'nullable',
-            ],
-            'extra_min' => [
-                'string',
-                'nullable',
-            ],
-            'punching_traces.*' => [
-                'integer',
-            ],
-            'punching_traces' => [
-                'array',
-            ],
             'designation' => [
                 'string',
                 'required',
+            ],
+            'grace' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'extra' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'remarks' => [
+                'string',
+                'nullable',
+            ],
+            'calc_complete' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
             ],
         ];
     }

@@ -25,6 +25,7 @@ class Section extends Model
         'seat_of_reporting_officer_id',
         'type',
         'office_location_id',
+        'works_nights_during_session',
         'created_at',
         'updated_at',
         'deleted_at',

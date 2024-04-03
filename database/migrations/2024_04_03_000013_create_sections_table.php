@@ -12,6 +12,7 @@ class CreateSectionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->string('type')->nullable();
+            $table->boolean('works_nights_during_session')->default(0)->nullable();
             $table->timestamps();
         });
     }

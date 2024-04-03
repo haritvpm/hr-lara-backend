@@ -14,9 +14,7 @@
                 <label class="required" for="code">{{ trans('cruds.ddo.fields.code') }}</label>
                 <input class="form-control {{ $errors->has('code') ? 'is-invalid' : '' }}" type="text" name="code" id="code" value="{{ old('code', $ddo->code) }}" required>
                 @if($errors->has('code'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('code') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('code') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.ddo.fields.code_helper') }}</span>
             </div>
@@ -28,9 +26,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('acquittance'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('acquittance') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('acquittance') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.ddo.fields.acquittance_helper') }}</span>
             </div>

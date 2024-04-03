@@ -1,92 +1,92 @@
-@can('employee_to_designation_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.employee-to-designations.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.employeeToDesignation.title_singular') }}
-            </a>
+<div class="m-3">
+    @can('employee_to_designation_create')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('admin.employee-to-designations.create') }}">
+                    {{ trans('global.add') }} {{ trans('cruds.employeeToDesignation.title_singular') }}
+                </a>
+            </div>
         </div>
-    </div>
-@endcan
+    @endcan
+    <div class="card">
+        <div class="card-header">
+            {{ trans('cruds.employeeToDesignation.title_singular') }} {{ trans('global.list') }}
+        </div>
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.employeeToDesignation.title_singular') }} {{ trans('global.list') }}
-    </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class=" table table-bordered table-striped table-hover datatable datatable-employeeEmployeeToDesignations">
+                    <thead>
+                        <tr>
+                            <th width="10">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-employeeEmployeeToDesignations">
-                <thead>
-                    <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.employeeToDesignation.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.employeeToDesignation.fields.employee') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.employee.fields.pen') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.employeeToDesignation.fields.designation') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($employeeToDesignations as $key => $employeeToDesignation)
-                        <tr data-entry-id="{{ $employeeToDesignation->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $employeeToDesignation->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $employeeToDesignation->employee->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $employeeToDesignation->employee->pen ?? '' }}
-                            </td>
-                            <td>
-                                {{ $employeeToDesignation->designation->designation ?? '' }}
-                            </td>
-                            <td>
-                                @can('employee_to_designation_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.employee-to-designations.show', $employeeToDesignation->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('employee_to_designation_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.employee-to-designations.edit', $employeeToDesignation->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('employee_to_designation_delete')
-                                    <form action="{{ route('admin.employee-to-designations.destroy', $employeeToDesignation->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.id') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.employee') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employee.fields.pen') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.designation') }}
+                            </th>
+                            <th>
+                                &nbsp;
+                            </th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($employeeToDesignations as $key => $employeeToDesignation)
+                            <tr data-entry-id="{{ $employeeToDesignation->id }}">
+                                <td>
+
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->id ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->employee->name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->employee->pen ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->designation->designation ?? '' }}
+                                </td>
+                                <td>
+                                    @can('employee_to_designation_show')
+                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.employee-to-designations.show', $employeeToDesignation->id) }}">
+                                            {{ trans('global.view') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('employee_to_designation_edit')
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.employee-to-designations.edit', $employeeToDesignation->id) }}">
+                                            {{ trans('global.edit') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('employee_to_designation_delete')
+                                        <form action="{{ route('admin.employee-to-designations.destroy', $employeeToDesignation->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        </form>
+                                    @endcan
+
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
 @section('scripts')
 @parent
 <script>

@@ -59,6 +59,9 @@
                         {{ trans('cruds.employee.fields.status') }}
                     </th>
                     <th>
+                        {{ trans('cruds.employee.fields.is_shift') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -124,7 +127,8 @@
 { data: 'desig_display', name: 'desig_display' },
 { data: 'pan', name: 'pan' },
 { data: 'has_punching', name: 'has_punching' },
-{ data: 'status_status', name: 'status.status' },
+{ data: 'status', name: 'status' },
+{ data: 'is_shift', name: 'is_shift' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

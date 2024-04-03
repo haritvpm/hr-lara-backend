@@ -74,4 +74,8 @@ class SuccessPunching extends Model
     // {
     //     $this->attributes['out_time'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
     // }
+    public function punching()
+    {
+        return $this->belongsTo(Punching::class, 'punching_id');
+    }
 }

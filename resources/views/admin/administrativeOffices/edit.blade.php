@@ -14,9 +14,7 @@
                 <label class="required" for="office_name">{{ trans('cruds.administrativeOffice.fields.office_name') }}</label>
                 <input class="form-control {{ $errors->has('office_name') ? 'is-invalid' : '' }}" type="text" name="office_name" id="office_name" value="{{ old('office_name', $administrativeOffice->office_name) }}" required>
                 @if($errors->has('office_name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('office_name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('office_name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.administrativeOffice.fields.office_name_helper') }}</span>
             </div>

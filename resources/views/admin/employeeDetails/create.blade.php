@@ -17,9 +17,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDetail.fields.employee_helper') }}</span>
             </div>
@@ -27,9 +25,7 @@
                 <label class="required" for="election">{{ trans('cruds.employeeDetail.fields.election') }}</label>
                 <input class="form-control {{ $errors->has('election') ? 'is-invalid' : '' }}" type="text" name="election" id="election" value="{{ old('election', '') }}" required>
                 @if($errors->has('election'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('election') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('election') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDetail.fields.election_helper') }}</span>
             </div>
@@ -37,9 +33,7 @@
                 <label for="kla_id_no">{{ trans('cruds.employeeDetail.fields.kla_id_no') }}</label>
                 <input class="form-control {{ $errors->has('kla_id_no') ? 'is-invalid' : '' }}" type="text" name="kla_id_no" id="kla_id_no" value="{{ old('kla_id_no', '') }}">
                 @if($errors->has('kla_id_no'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('kla_id_no') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('kla_id_no') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeDetail.fields.kla_id_no_helper') }}</span>
             </div>

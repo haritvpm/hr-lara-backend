@@ -65,9 +65,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Success Punching
     Route::apiResource('success-punchings', 'SuccessPunchingApiController');
 
-    // Punching Register
-    Route::apiResource('punching-registers', 'PunchingRegisterApiController', ['except' => ['destroy']]);
-
     // Punching Device
     Route::apiResource('punching-devices', 'PunchingDeviceApiController');
 
@@ -131,9 +128,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Employee To Designation
     Route::apiResource('employee-to-designations', 'EmployeeToDesignationApiController');
 
-    // Employee Status
-    Route::apiResource('employee-statuses', 'EmployeeStatusApiController');
-
     // Acquittance
     Route::apiResource('acquittances', 'AcquittanceApiController');
 
@@ -154,4 +148,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Tax Entries
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
+
+    // Punching
+    Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
 });

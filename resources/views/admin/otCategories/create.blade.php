@@ -13,9 +13,7 @@
                 <label class="required" for="category">{{ trans('cruds.otCategory.fields.category') }}</label>
                 <input class="form-control {{ $errors->has('category') ? 'is-invalid' : '' }}" type="text" name="category" id="category" value="{{ old('category', '') }}" required>
                 @if($errors->has('category'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('category') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('category') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.otCategory.fields.category_helper') }}</span>
             </div>
@@ -26,9 +24,7 @@
                     <label class="form-check-label" for="has_punching">{{ trans('cruds.otCategory.fields.has_punching') }}</label>
                 </div>
                 @if($errors->has('has_punching'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('has_punching') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('has_punching') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.otCategory.fields.has_punching_helper') }}</span>
             </div>

@@ -87,6 +87,22 @@
                             {{ $punchingTrace->att_time }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punchingTrace.fields.day_offset') }}
+                        </th>
+                        <td>
+                            {{ $punchingTrace->day_offset }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punchingTrace.fields.punching') }}
+                        </th>
+                        <td>
+                            {{ $punchingTrace->punching->date ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

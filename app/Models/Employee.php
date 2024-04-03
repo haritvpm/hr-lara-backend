@@ -24,6 +24,13 @@ class Employee extends Model
         'Kum' => 'Kum',
     ];
 
+    public const STATUS_SELECT = [
+        'active'   => 'active',
+        'retired'  => 'retired',
+        'relieved' => 'relieved',
+        'onleave'  => 'onleave',
+    ];
+
     public const EMPLOYEE_TYPE_SELECT = [
         'contract'  => 'Contract',
         'permanent' => 'Permanent',
@@ -41,7 +48,8 @@ class Employee extends Model
         'desig_display',
         'pan',
         'has_punching',
-        'status_id',
+        'status',
+        'is_shift',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -55,10 +63,5 @@ class Employee extends Model
     public function employeeEmployeeToDesignations()
     {
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
-    }
-
-    public function status()
-    {
-        return $this->belongsTo(EmployeeStatus::class, 'status_id');
     }
 }

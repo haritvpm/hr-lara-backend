@@ -7,11 +7,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PunchingRegister extends Model
+class Punching extends Model
 {
     use HasFactory;
 
-    public $table = 'punching_registers';
+    public $table = 'punchings';
 
     protected $dates = [
         'date',
@@ -31,10 +31,13 @@ class PunchingRegister extends Model
         'employee_id',
         'duration',
         'flexi',
-        'grace_min',
-        'extra_min',
-        'success_punching_id',
         'designation',
+        'grace',
+        'extra',
+        'remarks',
+        'calc_complete',
+        'punchin_trace_id',
+        'punchout_trace_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -60,13 +63,13 @@ class PunchingRegister extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function success_punching()
+    public function punchin_trace()
     {
-        return $this->belongsTo(SuccessPunching::class, 'success_punching_id');
+        return $this->belongsTo(PunchingTrace::class, 'punchin_trace_id');
     }
 
-    public function punching_traces()
+    public function punchout_trace()
     {
-        return $this->belongsToMany(PunchingTrace::class);
+        return $this->belongsTo(PunchingTrace::class, 'punchout_trace_id');
     }
 }
