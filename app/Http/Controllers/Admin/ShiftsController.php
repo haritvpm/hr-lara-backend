@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyShiftRequest;
 use App\Http\Requests\StoreShiftRequest;
 use App\Http\Requests\UpdateShiftRequest;
+use App\Models\AdministrativeOffice;
 use App\Models\Shift;
 use Gate;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class ShiftsController extends Controller
     {
         abort_if(Gate::denies('shift_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $shifts = Shift::all();
+        $shifts = Shift::with(['office'])->get();
 
         return view('admin.shifts.index', compact('shifts'));
     }
@@ -26,7 +27,9 @@ class ShiftsController extends Controller
     {
         abort_if(Gate::denies('shift_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.shifts.create');
+        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.shifts.create', compact('offices'));
     }
 
     public function store(StoreShiftRequest $request)
@@ -40,7 +43,11 @@ class ShiftsController extends Controller
     {
         abort_if(Gate::denies('shift_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.shifts.edit', compact('shift'));
+        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $shift->load('office');
+
+        return view('admin.shifts.edit', compact('offices', 'shift'));
     }
 
     public function update(UpdateShiftRequest $request, Shift $shift)
@@ -53,6 +60,8 @@ class ShiftsController extends Controller
     public function show(Shift $shift)
     {
         abort_if(Gate::denies('shift_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $shift->load('office');
 
         return view('admin.shifts.show', compact('shift'));
     }

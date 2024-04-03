@@ -1,41 +1,43 @@
-@extends('layouts.admin')
-@section('content')
-@can('shift_create')
+@can('tax_entry_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.shifts.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.shift.title_singular') }}
+            <a class="btn btn-success" href="{{ route('admin.tax-entries.create') }}">
+                {{ trans('global.add') }} {{ trans('cruds.taxEntry.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
+
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.shift.title_singular') }} {{ trans('global.list') }}
+        {{ trans('cruds.taxEntry.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
         <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Shift">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-createdByTaxEntries">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.shift.fields.id') }}
+                            {{ trans('cruds.taxEntry.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.shift.fields.name') }}
+                            {{ trans('cruds.taxEntry.fields.date') }}
                         </th>
                         <th>
-                            {{ trans('cruds.shift.fields.from') }}
+                            {{ trans('cruds.taxEntry.fields.status') }}
                         </th>
                         <th>
-                            {{ trans('cruds.shift.fields.upto') }}
+                            {{ trans('cruds.taxEntry.fields.acquittance') }}
                         </th>
                         <th>
-                            {{ trans('cruds.shift.fields.office') }}
+                            {{ trans('cruds.taxEntry.fields.created_by') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.taxEntry.fields.sparkcode') }}
                         </th>
                         <th>
                             &nbsp;
@@ -43,41 +45,44 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($shifts as $key => $shift)
-                        <tr data-entry-id="{{ $shift->id }}">
+                    @foreach($taxEntries as $key => $taxEntry)
+                        <tr data-entry-id="{{ $taxEntry->id }}">
                             <td>
 
                             </td>
                             <td>
-                                {{ $shift->id ?? '' }}
+                                {{ $taxEntry->id ?? '' }}
                             </td>
                             <td>
-                                {{ $shift->name ?? '' }}
+                                {{ $taxEntry->date ?? '' }}
                             </td>
                             <td>
-                                {{ $shift->from ?? '' }}
+                                {{ $taxEntry->status ?? '' }}
                             </td>
                             <td>
-                                {{ $shift->upto ?? '' }}
+                                {{ $taxEntry->acquittance ?? '' }}
                             </td>
                             <td>
-                                {{ $shift->office->office_name ?? '' }}
+                                {{ $taxEntry->created_by->title ?? '' }}
                             </td>
                             <td>
-                                @can('shift_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.shifts.show', $shift->id) }}">
+                                {{ $taxEntry->sparkcode ?? '' }}
+                            </td>
+                            <td>
+                                @can('tax_entry_show')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.tax-entries.show', $taxEntry->id) }}">
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
 
-                                @can('shift_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.shifts.edit', $shift->id) }}">
+                                @can('tax_entry_edit')
+                                    <a class="btn btn-xs btn-info" href="{{ route('admin.tax-entries.edit', $taxEntry->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan
 
-                                @can('shift_delete')
-                                    <form action="{{ route('admin.shifts.destroy', $shift->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                @can('tax_entry_delete')
+                                    <form action="{{ route('admin.tax-entries.destroy', $taxEntry->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
@@ -94,19 +99,16 @@
     </div>
 </div>
 
-
-
-@endsection
 @section('scripts')
 @parent
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-@can('shift_delete')
+@can('tax_entry_delete')
   let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
   let deleteButton = {
     text: deleteButtonTrans,
-    url: "{{ route('admin.shifts.massDestroy') }}",
+    url: "{{ route('admin.tax-entries.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
       var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
@@ -137,7 +139,7 @@
     order: [[ 1, 'desc' ]],
     pageLength: 100,
   });
-  let table = $('.datatable-Shift:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  let table = $('.datatable-createdByTaxEntries:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();

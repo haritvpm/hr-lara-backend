@@ -26,6 +26,7 @@ class Shift extends Model
         'name',
         'from',
         'upto',
+        'office_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -54,5 +55,10 @@ class Shift extends Model
     public function setUptoAttribute($value)
     {
         $this->attributes['upto'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(AdministrativeOffice::class, 'office_id');
     }
 }

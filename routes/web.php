@@ -220,6 +220,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Employee To Shift
     Route::delete('employee-to-shifts/destroy', 'EmployeeToShiftController@massDestroy')->name('employee-to-shifts.massDestroy');
     Route::resource('employee-to-shifts', 'EmployeeToShiftController');
+
+    // Tds
+    Route::delete('tds/destroy', 'TdsController@massDestroy')->name('tds.massDestroy');
+    Route::resource('tds', 'TdsController');
+
+    // Tax Entries
+    Route::delete('tax-entries/destroy', 'TaxEntriesController@massDestroy')->name('tax-entries.massDestroy');
+    Route::resource('tax-entries', 'TaxEntriesController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

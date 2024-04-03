@@ -41,6 +41,20 @@
                 <span class="help-block">{{ trans('cruds.shift.fields.upto_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="office_id">{{ trans('cruds.shift.fields.office') }}</label>
+                <select class="form-control select2 {{ $errors->has('office') ? 'is-invalid' : '' }}" name="office_id" id="office_id">
+                    @foreach($offices as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('office_id') ? old('office_id') : $shift->office->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('office'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('office') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.shift.fields.office_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

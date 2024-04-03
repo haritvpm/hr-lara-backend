@@ -6,11 +6,11 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Seat extends Model
+class Td extends Model
 {
     use HasFactory;
 
-    public $table = 'seats';
+    public $table = 'tds';
 
     protected $dates = [
         'created_at',
@@ -19,13 +19,15 @@ class Seat extends Model
     ];
 
     protected $fillable = [
+        'pan',
+        'pen',
         'name',
-        'title',
-        'has_files',
-        'has_office_with_employees',
-        'level',
-        'is_js_as_ss',
-        'is_controlling_officer',
+        'gross',
+        'tds',
+        'slno',
+        'date_id',
+        'created_by_id',
+        'remarks',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -36,13 +38,13 @@ class Seat extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function createdByTaxEntries()
+    public function date()
     {
-        return $this->hasMany(TaxEntry::class, 'created_by_id', 'id');
+        return $this->belongsTo(TaxEntry::class, 'date_id');
     }
 
-    public function seatsAttendanceRoutings()
+    public function created_by()
     {
-        return $this->belongsToMany(AttendanceRouting::class);
+        return $this->belongsTo(Seat::class, 'created_by_id');
     }
 }

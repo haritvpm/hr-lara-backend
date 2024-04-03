@@ -20,7 +20,7 @@ class OtCategory extends Model
 
     protected $fillable = [
         'category',
-        'punching',
+        'has_punching',
         'created_at',
         'updated_at',
         'deleted_at',

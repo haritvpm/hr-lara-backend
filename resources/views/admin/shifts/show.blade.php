@@ -47,6 +47,14 @@
                             {{ $shift->upto }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.shift.fields.office') }}
+                        </th>
+                        <td>
+                            {{ $shift->office->office_name ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

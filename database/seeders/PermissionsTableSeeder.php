@@ -876,6 +876,46 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 217,
+                'title' => 'td_create',
+            ],
+            [
+                'id'    => 218,
+                'title' => 'td_edit',
+            ],
+            [
+                'id'    => 219,
+                'title' => 'td_show',
+            ],
+            [
+                'id'    => 220,
+                'title' => 'td_delete',
+            ],
+            [
+                'id'    => 221,
+                'title' => 'td_access',
+            ],
+            [
+                'id'    => 222,
+                'title' => 'tax_entry_create',
+            ],
+            [
+                'id'    => 223,
+                'title' => 'tax_entry_edit',
+            ],
+            [
+                'id'    => 224,
+                'title' => 'tax_entry_show',
+            ],
+            [
+                'id'    => 225,
+                'title' => 'tax_entry_delete',
+            ],
+            [
+                'id'    => 226,
+                'title' => 'tax_entry_access',
+            ],
+            [
+                'id'    => 227,
                 'title' => 'profile_password_edit',
             ],
         ];

@@ -11,7 +11,7 @@ class CreateOtCategoriesTable extends Migration
         Schema::create('ot_categories', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('category')->unique();
-            $table->boolean('punching')->default(0)->nullable();
+            $table->boolean('has_punching')->default(0)->nullable();
             $table->timestamps();
         });
     }

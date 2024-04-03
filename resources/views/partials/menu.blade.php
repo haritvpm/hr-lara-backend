@@ -480,7 +480,7 @@
             </li>
         @endcan
         @can('account_access')
-            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/ddos*") ? "c-show" : "" }} {{ request()->is("admin/acquittances*") ? "c-show" : "" }} {{ request()->is("admin/employee-to-acquittances*") ? "c-show" : "" }}">
+            <li class="c-sidebar-nav-dropdown {{ request()->is("admin/ddos*") ? "c-show" : "" }} {{ request()->is("admin/acquittances*") ? "c-show" : "" }} {{ request()->is("admin/employee-to-acquittances*") ? "c-show" : "" }} {{ request()->is("admin/tax-entries*") ? "c-show" : "" }} {{ request()->is("admin/tds*") ? "c-show" : "" }}">
                 <a class="c-sidebar-nav-dropdown-toggle" href="#">
                     <i class="fa-fw fas fa-dollar-sign c-sidebar-nav-icon">
 
@@ -515,6 +515,26 @@
 
                                 </i>
                                 {{ trans('cruds.employeeToAcquittance.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('tax_entry_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.tax-entries.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/tax-entries") || request()->is("admin/tax-entries/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.taxEntry.title') }}
+                            </a>
+                        </li>
+                    @endcan
+                    @can('td_access')
+                        <li class="c-sidebar-nav-item">
+                            <a href="{{ route("admin.tds.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/tds") || request()->is("admin/tds/*") ? "c-active" : "" }}">
+                                <i class="fa-fw fas fa-cogs c-sidebar-nav-icon">
+
+                                </i>
+                                {{ trans('cruds.td.title') }}
                             </a>
                         </li>
                     @endcan

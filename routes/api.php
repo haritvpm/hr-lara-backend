@@ -148,4 +148,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Employee To Shift
     Route::apiResource('employee-to-shifts', 'EmployeeToShiftApiController');
+
+    // Tds
+    Route::apiResource('tds', 'TdsApiController');
+
+    // Tax Entries
+    Route::apiResource('tax-entries', 'TaxEntriesApiController');
 });

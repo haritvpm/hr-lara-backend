@@ -17,7 +17,7 @@ class ShiftsApiController extends Controller
     {
         abort_if(Gate::denies('shift_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new ShiftResource(Shift::all());
+        return new ShiftResource(Shift::with(['office'])->get());
     }
 
     public function store(StoreShiftRequest $request)
@@ -33,7 +33,7 @@ class ShiftsApiController extends Controller
     {
         abort_if(Gate::denies('shift_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new ShiftResource($shift);
+        return new ShiftResource($shift->load(['office']));
     }
 
     public function update(UpdateShiftRequest $request, Shift $shift)
