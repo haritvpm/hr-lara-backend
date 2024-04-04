@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Models\PunchingTrace;
 use Gate;
 use Illuminate\Http\Request;
@@ -11,12 +12,14 @@ use Yajra\DataTables\Facades\DataTables;
 
 class PunchingTraceController extends Controller
 {
+    use CsvImportTrait;
+
     public function index(Request $request)
     {
         abort_if(Gate::denies('punching_trace_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = PunchingTrace::query()->select(sprintf('%s.*', (new PunchingTrace)->table));
+            $query = PunchingTrace::with(['punching'])->select(sprintf('%s.*', (new PunchingTrace)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -65,8 +68,11 @@ class PunchingTraceController extends Controller
             $table->editColumn('day_offset', function ($row) {
                 return $row->day_offset ? $row->day_offset : '';
             });
+            $table->addColumn('punching_date', function ($row) {
+                return $row->punching ? $row->punching->date : '';
+            });
 
-            $table->rawColumns(['actions', 'placeholder']);
+            $table->rawColumns(['actions', 'placeholder', 'punching']);
 
             return $table->make(true);
         }

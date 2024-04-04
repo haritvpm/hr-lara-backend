@@ -8,7 +8,6 @@ use App\Http\Requests\MassDestroyEmployeeRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
-use App\Models\EmployeeStatus;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +22,7 @@ class EmployeeController extends Controller
         abort_if(Gate::denies('employee_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Employee::with(['status'])->select(sprintf('%s.*', (new Employee)->table));
+            $query = Employee::query()->select(sprintf('%s.*', (new Employee)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -74,11 +73,14 @@ class EmployeeController extends Controller
             $table->editColumn('has_punching', function ($row) {
                 return $row->has_punching ? $row->has_punching : '';
             });
-            $table->addColumn('status_status', function ($row) {
-                return $row->status ? $row->status->status : '';
+            $table->editColumn('status', function ($row) {
+                return $row->status ? Employee::STATUS_SELECT[$row->status] : '';
+            });
+            $table->editColumn('is_shift', function ($row) {
+                return '<input type="checkbox" disabled ' . ($row->is_shift ? 'checked' : null) . '>';
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'status']);
+            $table->rawColumns(['actions', 'placeholder', 'is_shift']);
 
             return $table->make(true);
         }
@@ -90,9 +92,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $statuses = EmployeeStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.employees.create', compact('statuses'));
+        return view('admin.employees.create');
     }
 
     public function store(StoreEmployeeRequest $request)
@@ -106,11 +106,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $statuses = EmployeeStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $employee->load('status');
-
-        return view('admin.employees.edit', compact('employee', 'statuses'));
+        return view('admin.employees.edit', compact('employee'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
@@ -124,7 +120,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employee->load('status', 'employeeEmployeeToDesignations');
+        $employee->load('employeeEmployeeToDesignations');
 
         return view('admin.employees.show', compact('employee'));
     }

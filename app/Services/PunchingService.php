@@ -28,7 +28,7 @@ class PunchingService
 
     public function fetchSuccessAttendance($reportdate)
     {
-        
+
         $apikey =  env('AEBAS_KEY');
         $offset = 0;
 
@@ -37,17 +37,17 @@ class PunchingService
 
         // should be in format 2024-02-11
         if (!$this->validateDate($reportdate)) {
-            //date is in dd-mm-yy 
+            //date is in dd-mm-yy
             $reportdate = Carbon::createFromFormat(config('app.date_format'), $reportdate)->format('Y-m-d');
         }
 
         $insertedcount = 0;
         $pen_to_aadhaarid = [];
 
-        $govtcalender = $this->getGovtCalender($reportdate); 
+        $govtcalender = $this->getGovtCalender($reportdate);
         if( $govtcalender->success_attendance_fetched){
-            $offset = $govtcalender->success_attendance_rows_fetched; 
-        
+            $offset = $govtcalender->success_attendance_rows_fetched;
+
         }
 
         for (;; $offset += $count) {
@@ -82,7 +82,7 @@ class PunchingService
                 $this->processPunchingData($jsonData[$i], $dateIn, $intime, $dateOut, $outtime);
                 //user may punchin but not punchout. so treat these separately
 
-                //org_emp_code from api can be klaid, mobilenumber or empty. 
+                //org_emp_code from api can be klaid, mobilenumber or empty.
                 $org_emp_code = $dataItem['org_emp_code'];
                 $attendanceId = $dataItem['emp_id'];
                 if ('0000-00-00 00:00:00' == $dataItem['in_time'])  $dataItem['in_time'] = null;
@@ -152,8 +152,8 @@ class PunchingService
             $calenderdate->update(['punching' => 'AEBAS']);
         }
 
-        $totalrowsindb  = PunchingTrace::where('date',$reportdate)->count(); 
-        
+        $totalrowsindb  = PunchingTrace::where('date',$reportdate)->count();
+
         $govtcalender->update([
 
             'success_attendance_fetched' =>  $calender->success_attendance_fetched+1,
@@ -165,7 +165,7 @@ class PunchingService
         if($insertedcount){
             $this->makePunchingRegister($reportdate);
         }
-        
+
         if (count($pen_to_aadhaarid)) {
             //Update our employee db with aadhaarid from api
             //since org_emp_code can be empty or even mobile number, make sure this is our pen
@@ -239,7 +239,7 @@ class PunchingService
         'grace_min',
         'extra_min',
     */
-            //find employee 
+            //find employee
             $emp = Employee::where('aadhaarid',  $dataItem->emp_id)->first();
             if(!$emp) continue;
             $duration = "0";
@@ -300,7 +300,7 @@ class PunchingService
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/orgshift/{$apikey}";
                 $returnkey = "orgshift";
             }else if ($apinum == (14 + 9)) {
-                
+
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/detailsbydistrictid/districtid/00581/offset/{$offset}/count/{$count}/apikey/{$apikey}";
                 $returnkey = "DeviceDetailsDistrictId";
             }
@@ -344,10 +344,15 @@ class PunchingService
             {
             \Log::info('calendear date exists-' . $reportdate);
 
-               // $offset = $calender->attendance_today_trace_rows_fetched; 
+               // $offset = $calender->attendance_today_trace_rows_fetched;
             }
         } else {
+            \Log::info('calendear date not exists-' . $reportdate);
+
             $calender = new GovtCalendar();
+          //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
+            \Log::info('calendear date ncreated -' . $reportdate);
+
             $calender->date = $reportdate;
 
             //$calender->attendance_today_trace_fetched = 0;
@@ -362,7 +367,7 @@ class PunchingService
 
         return  $calender;
     }
-  
+
     public function fetchTrace($fetchdate = null)
     {
        $apikey =  env('AEBAS_KEY');
@@ -371,7 +376,7 @@ class PunchingService
        $offset = 0;
        $count = 500; //make it to 500 in prod
 
-      
+
         // should be in format 2024-02-11
         $reportdate = Carbon::now()->format('Y-m-d'); //today
         $returnkey = "attendancetodaytrace";
@@ -379,7 +384,7 @@ class PunchingService
           $returnkey = "attendancetrace";
         // should be in format 2024-02-11
             if (!$this->validateDate($fetchdate)) {
-            //date is in dd-mm-yy 
+            //date is in dd-mm-yy
                 $reportdate = Carbon::createFromFormat(config('app.date_format'), $fetchdate)->format('Y-m-d');
             } else {
                 $reportdate = $fetchdate;
@@ -389,16 +394,16 @@ class PunchingService
 
         //check calender for this date's count.
 
-        $govtcalender = $this->getGovtCalender($reportdate); 
-        $offset = $govtcalender->attendance_today_trace_rows_fetched; 
-                
-       
+        $govtcalender = $this->getGovtCalender($reportdate);
+        $offset = $govtcalender->attendance_today_trace_rows_fetched;
+
+
         $insertedcount = 0;
 
         for (; ; $offset += $count) {
 
             $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/attendancetodaytrace/offset/{$offset}/count/{$count}/apikey/{$apikey}";
-            
+
             if($fetchdate){
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/trace/offset/{$offset}/count/{$count}/reportdate/{$reportdate}/apikey/{$apikey}";
             }
@@ -426,7 +431,7 @@ class PunchingService
             $datatoinsert = [];
             for ($i = 0; $i < count($jsonData); $i++) {
                 //ignore errors
-                   
+
 
 
                 //if(  $jsonData['attendance_type'] != 'E' && $jsonData['auth_status'] == 'Y'  )
@@ -436,27 +441,27 @@ class PunchingService
                 }
             }
 
-            //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index. 
+            //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
             //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-            PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);      
+            PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);
 
-            
+
             $insertedcount += count($jsonData);
-          
-          
+
+
 
             //if reached end of data, break
             if (count($jsonData) < $count) {
 
                 break;
             }
-            
+
         }
-        
+
         \Log::info('Newly fetched rows:' . $insertedcount);
 
-        //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count(); 
-        
+        //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
+
         $govtcalender->update([
 
 //            'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
@@ -464,12 +469,12 @@ class PunchingService
             'attendancetodaytrace_lastfetchtime' => Carbon::now()->format(config('app.date_format')) //today
 
         ]);
-        
+
     }
 
     private function mapTraceToDBFields($traceItem)
     {
-            
+
         $trace = [];
         $trace['aadhaarid']= $traceItem['emp_id'];
         $trace['device']= $traceItem['device_id'];
@@ -478,7 +483,7 @@ class PunchingService
         $trace['err_code']= $traceItem['err_code'];
         $trace['att_date']= $traceItem['att_date'];
         $trace['att_time']= $traceItem['att_time'];
-       
+
         return $trace;
        // $trace->save();
     }

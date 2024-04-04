@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroySuccessPunchingRequest;
 use App\Http\Requests\StoreSuccessPunchingRequest;
 use App\Http\Requests\UpdateSuccessPunchingRequest;
+use App\Models\Punching;
 use App\Models\SuccessPunching;
 use Gate;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class SuccessPunchingController extends Controller
         abort_if(Gate::denies('success_punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = SuccessPunching::query()->select(sprintf('%s.*', (new SuccessPunching)->table));
+            $query = SuccessPunching::with(['punching'])->select(sprintf('%s.*', (new SuccessPunching)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -73,8 +74,11 @@ class SuccessPunchingController extends Controller
             $table->editColumn('aadhaarid', function ($row) {
                 return $row->aadhaarid ? $row->aadhaarid : '';
             });
+            $table->addColumn('punching_date', function ($row) {
+                return $row->punching ? $row->punching->date : '';
+            });
 
-            $table->rawColumns(['actions', 'placeholder']);
+            $table->rawColumns(['actions', 'placeholder', 'punching']);
 
             return $table->make(true);
         }
@@ -86,7 +90,9 @@ class SuccessPunchingController extends Controller
     {
         abort_if(Gate::denies('success_punching_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.successPunchings.create');
+        $punchings = Punching::pluck('date', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.successPunchings.create', compact('punchings'));
     }
 
     public function store(StoreSuccessPunchingRequest $request)
@@ -100,7 +106,11 @@ class SuccessPunchingController extends Controller
     {
         abort_if(Gate::denies('success_punching_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.successPunchings.edit', compact('successPunching'));
+        $punchings = Punching::pluck('date', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $successPunching->load('punching');
+
+        return view('admin.successPunchings.edit', compact('punchings', 'successPunching'));
     }
 
     public function update(UpdateSuccessPunchingRequest $request, SuccessPunching $successPunching)
@@ -113,6 +123,8 @@ class SuccessPunchingController extends Controller
     public function show(SuccessPunching $successPunching)
     {
         abort_if(Gate::denies('success_punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $successPunching->load('punching');
 
         return view('admin.successPunchings.show', compact('successPunching'));
     }

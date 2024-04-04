@@ -13,14 +13,14 @@ class GovtCalendar extends Model
 
     public $table = 'govt_calendars';
 
-    protected $dates = [
-        'date',
-        'success_attendance_lastfetchtime',
-        'attendancetodaytrace_lastfetchtime',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
+    // protected $dates = [
+    //     'date',
+    //     'success_attendance_lastfetchtime',
+    //     'attendancetodaytrace_lastfetchtime',
+    //     'created_at',
+    //     'updated_at',
+    //     'deleted_at',
+    // ];
 
     protected $fillable = [
         'date',
@@ -42,20 +42,20 @@ class GovtCalendar extends Model
         'deleted_at',
     ];
 
-    // protected function serializeDate(DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
+
+    // public function getDateAttribute($value)
     // {
-    //     return $date->format('Y-m-d H:i:s');
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
     // }
 
-    public function getDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
-
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
     public function getSuccessAttendanceLastfetchtimeAttribute($value)
     {
