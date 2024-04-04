@@ -378,20 +378,21 @@ class PunchingService
 
 
         // should be in format 2024-02-11
+        $date = Carbon::now();
         $reportdate = Carbon::now()->format('Y-m-d'); //today
-        $returnkey = "attendancetodaytrace";
         if($fetchdate){
-          $returnkey = "attendancetrace";
         // should be in format 2024-02-11
             if (!$this->validateDate($fetchdate)) {
-            //date is in dd-mm-yy
-                $reportdate = Carbon::createFromFormat(config('app.date_format'), $fetchdate)->format('Y-m-d');
+                //date is in dd-mm-yy
+                $date =  Carbon::createFromFormat(config('app.date_format'), $fetchdate);
+                $reportdate = $date->format('Y-m-d');
             } else {
+                $date =  Carbon::createFromFormat('Y-m-d', $fetchdate);
                 $reportdate = $fetchdate;
             }
         }
 
-
+       
         //check calender for this date's count.
 
         $govtcalender = $this->getGovtCalender($reportdate);
@@ -403,10 +404,15 @@ class PunchingService
         for (; ; $offset += $count) {
 
             $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/attendancetodaytrace/offset/{$offset}/count/{$count}/apikey/{$apikey}";
+            $returnkey = "attendancetodaytrace";
 
-            if($fetchdate){
+            if($fetchdate && !$date->isToday()){
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/trace/offset/{$offset}/count/{$count}/reportdate/{$reportdate}/apikey/{$apikey}";
+                $returnkey = "attendancetrace";
             }
+
+            
+
             // $url = 'http://localhost:3000/data';
             \Log::info($url);
             $response = Http::withHeaders([

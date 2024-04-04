@@ -72,8 +72,8 @@ return [
         ],
     ],
     'employeeManagement' => [
-        'title'          => 'Employee Management',
-        'title_singular' => 'Employee Management',
+        'title'          => 'Employee Related',
+        'title_singular' => 'Employee Related',
     ],
     'designationLine' => [
         'title'          => 'Designation Line',
@@ -176,8 +176,8 @@ return [
         ],
     ],
     'punchingManagement' => [
-        'title'          => 'Punching Management',
-        'title_singular' => 'Punching Management',
+        'title'          => 'Punching Related',
+        'title_singular' => 'Punching Related',
     ],
     'punchingTrace' => [
         'title'          => 'Punching Trace',
@@ -730,8 +730,8 @@ return [
         ],
     ],
     'employeeSeatHistory' => [
-        'title'          => 'Employee Seat History',
-        'title_singular' => 'Employee Seat History',
+        'title'          => 'Seat History',
+        'title_singular' => 'Seat History',
         'fields'         => [
             'id'                => 'ID',
             'id_helper'         => ' ',
@@ -754,8 +754,8 @@ return [
         ],
     ],
     'employeeSectionHistory' => [
-        'title'          => 'Employee Section History',
-        'title_singular' => 'Employee Section History',
+        'title'          => 'Section History',
+        'title_singular' => 'Section History',
         'fields'         => [
             'id'                  => 'ID',
             'id_helper'           => ' ',
@@ -856,8 +856,8 @@ return [
         ],
     ],
     'employeeDesignationHistory' => [
-        'title'          => 'Employee Designation History',
-        'title_singular' => 'Employee Designation History',
+        'title'          => 'Designation History',
+        'title_singular' => 'Designation History',
         'fields'         => [
             'id'                 => 'ID',
             'id_helper'          => ' ',
