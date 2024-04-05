@@ -507,4 +507,18 @@ class PunchingService
         return $trace;
        // $trace->save();
     }
+
+    public function calculate($date)
+    {
+
+       $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'d-m-Y', $request->date )
+                : Carbon::now(); //today
+
+       $punchings_for_this_day = PunchingTrace::where('att_date', $date->format('Y-m-d'))->get();
+
+       foreach ($punchings_for_this_day as $key => $punching) {
+        # code...
+       }
+
+    }
 }
