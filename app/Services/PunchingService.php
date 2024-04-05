@@ -11,7 +11,7 @@ use App\Models\Calender;
 use App\Models\Employee;
 use App\Models\User;
 use App\Services\EmployeeService;
-
+use Illuminate\Support\Facades\DB;
 class PunchingService
 {
     // private EmployeeService $employeeService;
@@ -447,17 +447,26 @@ class PunchingService
                 }
             }
 
-            //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
-            //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-            PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);
 
 
-            $insertedcount += count($jsonData);
+            $error = 0;
+            try {
+                //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
+                  //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
+                //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
+                PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);
+                $insertedcount += count($jsonData);
+              //  });
+
+            } catch (Exception $e) {
+              //  $error = 1;
+                throw new Exception($e->getMessage());
+            }
 
 
 
             //if reached end of data, break
-            if (count($jsonData) < $count) {
+            if ( $error ||  (count($jsonData) < $count)) {
 
                 break;
             }
@@ -468,13 +477,17 @@ class PunchingService
 
         //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
 
-        $govtcalender->update([
+        if($insertedcount){
+            $govtcalender->update([
 
-//            'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
-            'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched+$insertedcount,
-            'attendancetodaytrace_lastfetchtime' => Carbon::now()->format(config('app.date_format')) //today
+    //            'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
+                'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched+$insertedcount,
+                'attendancetodaytrace_lastfetchtime' => Carbon::now()->format(config('app.date_format')) //today
 
-        ]);
+            ]);
+        }
+
+        return $insertedcount;
 
     }
 

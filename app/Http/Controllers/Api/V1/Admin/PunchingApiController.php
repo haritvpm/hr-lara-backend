@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
+use App\Models\PunchingTrace;
 use App\Models\Punching;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Carbon\Carbon;
 
 class PunchingApiController extends Controller
 {
@@ -44,4 +46,22 @@ class PunchingApiController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
+    public function getpunchings(Request $request)
+    {
+
+        //this has to be rewritten. we need to give emp data from Punchings which has to calculated after 
+        //we call our api refresh.
+      $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'d-m-Y', $request->date )
+                             : Carbon::now(); //today
+
+     //  \Log::info("got" . $request->date);
+  
+      $punchingstest = PunchingTrace::where('att_date', $date->format('Y-m-d'))->get();
+      return response()->json([
+        'status' => 'success',
+        'punchings' => $punchingstest
+        ]);
+
+    }
+    
 }

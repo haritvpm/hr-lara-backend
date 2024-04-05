@@ -150,5 +150,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
 
     // Punching
+    Route::get('/punchings/{date?}', 'PunchingApiController@getpunchings');
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
 });

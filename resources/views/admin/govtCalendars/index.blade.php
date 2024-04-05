@@ -27,18 +27,18 @@
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.govtholidaystatus') }}
-                        </th>
-                        <th>
+                        </th> -->
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.restrictedholidaystatus') }}
-                        </th>
-                        <th>
+                        </th> -->
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.bankholidaystatus') }}
-                        </th>
-                        <th>
+                        </th> -->
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.festivallist') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.govtCalendar.fields.success_attendance_lastfetchtime') }}
                         </th>
@@ -81,20 +81,25 @@
                                 {{ $govtCalendar->id ?? '' }}
                             </td>
                             <td>
+                                @if($govtCalendar->govtholidaystatus==1)
+                                <span class="badge badge-danger">{{ $govtCalendar->date ?? '' }}</span>
+                              
+                                @else
                                 {{ $govtCalendar->date ?? '' }}
+                                @endif
                             </td>
-                            <td>
+                            <!-- <td>
                                 {{ $govtCalendar->govtholidaystatus ?? '' }}
-                            </td>
-                            <td>
+                            </td> -->
+                            <!-- <td>
                                 {{ $govtCalendar->restrictedholidaystatus ?? '' }}
-                            </td>
-                            <td>
+                            </td> -->
+                            <!-- <td>
                                 {{ $govtCalendar->bankholidaystatus ?? '' }}
-                            </td>
-                            <td>
+                            </td> -->
+                            <!-- <td>
                                 {{ $govtCalendar->festivallist ?? '' }}
-                            </td>
+                            </td> -->
                             <td>
                                 {{ $govtCalendar->success_attendance_lastfetchtime ?? '' }}
                             </td>
@@ -130,6 +135,8 @@
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
+                           
+                                <a href="{{ route('admin.govt-calendars.fetch', $govtCalendar->date ) }}"  class="btn btn-sm btn-danger">Fetch</a>
 
                                 @can('govt_calendar_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
