@@ -443,7 +443,7 @@ class PunchingService
                 //if(  $jsonData['attendance_type'] != 'E' && $jsonData['auth_status'] == 'Y'  )
                 {
                 // assert($reportdate === $jsonData[$i]['att_date']);
-                 $datatoinsert[] = $this->mapTraceToDBFields($jsonData[$i]);
+                 $datatoinsert[] = $this->mapTraceToDBFields($offset + $i ,$jsonData[$i]);
                 }
             }
 
@@ -478,7 +478,7 @@ class PunchingService
 
     }
 
-    private function mapTraceToDBFields($traceItem)
+    private function mapTraceToDBFields($day_offset,$traceItem)
     {
 
         $trace = [];
@@ -489,7 +489,8 @@ class PunchingService
         $trace['err_code']= $traceItem['err_code'];
         $trace['att_date']= $traceItem['att_date'];
         $trace['att_time']= $traceItem['att_time'];
-
+        $trace['day_offset']= $day_offset;
+        
         return $trace;
        // $trace->save();
     }
