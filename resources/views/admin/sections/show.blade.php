@@ -33,14 +33,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.section.fields.administrative_office') }}
-                        </th>
-                        <td>
-                            {{ $section->administrative_office->office_name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.section.fields.seat_of_controling_officer') }}
                         </th>
                         <td>

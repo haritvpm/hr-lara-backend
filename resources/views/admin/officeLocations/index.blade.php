@@ -33,6 +33,9 @@
                             {{ trans('cruds.officeLocation.fields.location') }}
                         </th>
                         <th>
+                            {{ trans('cruds.officeLocation.fields.administrative_office') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -48,6 +51,9 @@
                             </td>
                             <td>
                                 {{ $officeLocation->location ?? '' }}
+                            </td>
+                            <td>
+                                {{ $officeLocation->administrative_office->office_name ?? '' }}
                             </td>
                             <td>
                                 @can('office_location_show')

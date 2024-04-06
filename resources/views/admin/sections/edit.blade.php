@@ -19,18 +19,6 @@
                 <span class="help-block">{{ trans('cruds.section.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="administrative_office_id">{{ trans('cruds.section.fields.administrative_office') }}</label>
-                <select class="form-control select2 {{ $errors->has('administrative_office') ? 'is-invalid' : '' }}" name="administrative_office_id" id="administrative_office_id" required>
-                    @foreach($administrative_offices as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('administrative_office_id') ? old('administrative_office_id') : $section->administrative_office->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('administrative_office'))
-                    <span class="text-danger">{{ $errors->first('administrative_office') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.section.fields.administrative_office_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label class="required" for="seat_of_controling_officer_id">{{ trans('cruds.section.fields.seat_of_controling_officer') }}</label>
                 <select class="form-control select2 {{ $errors->has('seat_of_controling_officer') ? 'is-invalid' : '' }}" name="seat_of_controling_officer_id" id="seat_of_controling_officer_id" required>
                     @foreach($seat_of_controling_officers as $id => $entry)

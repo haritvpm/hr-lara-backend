@@ -18,6 +18,18 @@
                 <span class="help-block">{{ trans('cruds.officeLocation.fields.location_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="administrative_office_id">{{ trans('cruds.officeLocation.fields.administrative_office') }}</label>
+                <select class="form-control select2 {{ $errors->has('administrative_office') ? 'is-invalid' : '' }}" name="administrative_office_id" id="administrative_office_id" required>
+                    @foreach($administrative_offices as $id => $entry)
+                        <option value="{{ $id }}" {{ old('administrative_office_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('administrative_office'))
+                    <span class="text-danger">{{ $errors->first('administrative_office') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.officeLocation.fields.administrative_office_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

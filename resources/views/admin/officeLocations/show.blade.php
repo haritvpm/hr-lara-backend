@@ -31,6 +31,14 @@
                             {{ $officeLocation->location }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.officeLocation.fields.administrative_office') }}
+                        </th>
+                        <td>
+                            {{ $officeLocation->administrative_office->office_name ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

@@ -29,10 +29,6 @@ class StorePunchingRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'designation' => [
-                'string',
-                'required',
-            ],
             'grace' => [
                 'nullable',
                 'integer',
@@ -66,6 +62,14 @@ class StorePunchingRequest extends FormRequest
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
+            ],
+            'designation_id' => [
+                'required',
+                'integer',
+            ],
+            'section_id' => [
+                'required',
+                'integer',
             ],
         ];
     }

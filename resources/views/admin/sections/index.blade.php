@@ -33,9 +33,6 @@
                             {{ trans('cruds.section.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.administrative_office') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.section.fields.seat_of_controling_officer') }}
                         </th>
                         <th>
@@ -66,9 +63,6 @@
                             </td>
                             <td>
                                 {{ $section->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $section->administrative_office->office_name ?? '' }}
                             </td>
                             <td>
                                 {{ $section->seat_of_controling_officer->title ?? '' }}
