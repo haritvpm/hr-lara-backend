@@ -10,7 +10,7 @@ class AddRelationshipFieldsToGovtCalendarsTable extends Migration
     {
         Schema::table('govt_calendars', function (Blueprint $table) {
             $table->unsignedBigInteger('session_id')->nullable();
-            $table->foreign('session_id', 'session_fk_9649445')->references('id')->on('sessions');
+            $table->foreign('session_id', 'session_fk_9664918')->references('id')->on('assembly_sessions');
         });
     }
 }

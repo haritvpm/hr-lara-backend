@@ -17,7 +17,7 @@ class OfficeLocationApiController extends Controller
     {
         abort_if(Gate::denies('office_location_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OfficeLocationResource(OfficeLocation::all());
+        return new OfficeLocationResource(OfficeLocation::with(['administrative_office'])->get());
     }
 
     public function store(StoreOfficeLocationRequest $request)
@@ -33,7 +33,7 @@ class OfficeLocationApiController extends Controller
     {
         abort_if(Gate::denies('office_location_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OfficeLocationResource($officeLocation);
+        return new OfficeLocationResource($officeLocation->load(['administrative_office']));
     }
 
     public function update(UpdateOfficeLocationRequest $request, OfficeLocation $officeLocation)

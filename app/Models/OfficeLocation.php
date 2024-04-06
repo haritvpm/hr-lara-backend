@@ -21,6 +21,7 @@ class OfficeLocation extends Model
 
     protected $fillable = [
         'location',
+        'administrative_office_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -29,5 +30,10 @@ class OfficeLocation extends Model
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function administrative_office()
+    {
+        return $this->belongsTo(AdministrativeOffice::class, 'administrative_office_id');
     }
 }

@@ -226,6 +226,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Punching
     Route::resource('punchings', 'PunchingController', ['except' => ['destroy']]);
+
+    // Assembly Session
+    Route::delete('assembly-sessions/destroy', 'AssemblySessionController@massDestroy')->name('assembly-sessions.massDestroy');
+    Route::resource('assembly-sessions', 'AssemblySessionController');
+
+    // Leave
+    Route::delete('leaves/destroy', 'LeaveController@massDestroy')->name('leaves.massDestroy');
+    Route::resource('leaves', 'LeaveController');
+
+    // Office Times
+    Route::delete('office-times/destroy', 'OfficeTimesController@massDestroy')->name('office-times.massDestroy');
+    Route::resource('office-times', 'OfficeTimesController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

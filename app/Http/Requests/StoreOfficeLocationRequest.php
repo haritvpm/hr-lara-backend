@@ -22,6 +22,10 @@ class StoreOfficeLocationRequest extends FormRequest
                 'required',
                 'unique:office_locations',
             ],
+            'administrative_office_id' => [
+                'required',
+                'integer',
+            ],
         ];
     }
 }

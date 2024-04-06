@@ -22,7 +22,7 @@ class CreateGovtCalendarsTable extends Migration
             $table->boolean('is_in_session_period')->default(0)->nullable();
             $table->boolean('is_sitting_day')->default(0)->nullable();
             $table->integer('punching')->nullable();
-            $table->time('ends_at_time')->nullable();
+            $table->time('office_ends_at_time')->nullable();
             $table->timestamps();
         });
     }

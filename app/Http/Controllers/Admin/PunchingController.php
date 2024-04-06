@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Models\Employee;
+use App\Models\Leaf;
 use App\Models\Punching;
 use App\Models\PunchingTrace;
 use Gate;
@@ -20,7 +21,7 @@ class PunchingController extends Controller
         abort_if(Gate::denies('punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Punching::with(['employee', 'punchin_trace', 'punchout_trace'])->select(sprintf('%s.*', (new Punching)->table));
+            $query = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])->select(sprintf('%s.*', (new Punching)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -86,8 +87,24 @@ class PunchingController extends Controller
             $table->editColumn('punchout_trace.att_date', function ($row) {
                 return $row->punchout_trace ? (is_string($row->punchout_trace) ? $row->punchout_trace : $row->punchout_trace->att_date) : '';
             });
+            $table->editColumn('ot_claimed_minutes', function ($row) {
+                return $row->ot_claimed_minutes ? $row->ot_claimed_minutes : '';
+            });
+            $table->editColumn('punching_status', function ($row) {
+                return $row->punching_status ? $row->punching_status : '';
+            });
+            $table->addColumn('leave_reason', function ($row) {
+                return $row->leave ? $row->leave->reason : '';
+            });
 
-            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace']);
+            $table->editColumn('leave.start_date', function ($row) {
+                return $row->leave ? (is_string($row->leave) ? $row->leave : $row->leave->start_date) : '';
+            });
+            $table->editColumn('leave.end_date', function ($row) {
+                return $row->leave ? (is_string($row->leave) ? $row->leave : $row->leave->end_date) : '';
+            });
+
+            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave']);
 
             return $table->make(true);
         }
@@ -105,7 +122,9 @@ class PunchingController extends Controller
 
         $punchout_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.punchings.create', compact('employees', 'punchin_traces', 'punchout_traces'));
+        $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.punchings.create', compact('employees', 'leaves', 'punchin_traces', 'punchout_traces'));
     }
 
     public function store(StorePunchingRequest $request)
@@ -125,9 +144,11 @@ class PunchingController extends Controller
 
         $punchout_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $punching->load('employee', 'punchin_trace', 'punchout_trace');
+        $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.punchings.edit', compact('employees', 'punchin_traces', 'punching', 'punchout_traces'));
+        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave');
+
+        return view('admin.punchings.edit', compact('employees', 'leaves', 'punchin_traces', 'punching', 'punchout_traces'));
     }
 
     public function update(UpdatePunchingRequest $request, Punching $punching)
@@ -141,7 +162,7 @@ class PunchingController extends Controller
     {
         abort_if(Gate::denies('punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $punching->load('employee', 'punchin_trace', 'punchout_trace');
+        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave');
 
         return view('admin.punchings.show', compact('punching'));
     }

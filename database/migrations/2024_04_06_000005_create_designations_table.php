@@ -14,7 +14,6 @@ class CreateDesignationsTable extends Migration
             $table->string('designation_mal')->nullable();
             $table->integer('sort_index')->nullable();
             $table->integer('has_punching')->nullable();
-            $table->integer('normal_office_hours')->nullable();
             $table->timestamps();
         });
     }

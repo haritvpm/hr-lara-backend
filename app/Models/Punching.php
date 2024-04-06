@@ -38,6 +38,9 @@ class Punching extends Model
         'calc_complete',
         'punchin_trace_id',
         'punchout_trace_id',
+        'ot_claimed_minutes',
+        'punching_status',
+        'leave_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -71,5 +74,10 @@ class Punching extends Model
     public function punchout_trace()
     {
         return $this->belongsTo(PunchingTrace::class, 'punchout_trace_id');
+    }
+
+    public function leave()
+    {
+        return $this->belongsTo(Leaf::class, 'leave_id');
     }
 }

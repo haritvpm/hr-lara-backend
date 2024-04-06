@@ -9,8 +9,8 @@ class AddRelationshipFieldsToOtRoutingsTable extends Migration
     public function up()
     {
         Schema::table('ot_routings', function (Blueprint $table) {
-            $table->unsignedBigInteger('seat_id')->nullable();
-            $table->foreign('seat_id', 'seat_fk_9649626')->references('id')->on('seats');
+            $table->unsignedBigInteger('from_seat_id')->nullable();
+            $table->foreign('from_seat_id', 'from_seat_fk_9664920')->references('id')->on('seats');
         });
     }
 }

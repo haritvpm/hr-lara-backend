@@ -20,7 +20,6 @@ class Section extends Model
 
     protected $fillable = [
         'name',
-        'administrative_office_id',
         'seat_of_controling_officer_id',
         'seat_of_reporting_officer_id',
         'type',
@@ -50,11 +49,6 @@ class Section extends Model
     public function sectionAttendanceBooks()
     {
         return $this->hasMany(AttendanceBook::class, 'section_id', 'id');
-    }
-
-    public function administrative_office()
-    {
-        return $this->belongsTo(AdministrativeOffice::class, 'administrative_office_id');
     }
 
     public function seat_of_controling_officer()

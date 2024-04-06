@@ -22,10 +22,6 @@ class UpdateSectionRequest extends FormRequest
                 'required',
                 'unique:sections,name,' . request()->route('section')->id,
             ],
-            'administrative_office_id' => [
-                'required',
-                'integer',
-            ],
             'seat_of_controling_officer_id' => [
                 'required',
                 'integer',

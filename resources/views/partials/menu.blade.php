@@ -1,14 +1,12 @@
-<aside class="main-sidebar sidebar-light-secondary " style="min-height: 917px;">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="min-height: 917px;">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
         <span class="brand-text font-weight-light">{{ trans('panel.site_title') }}</span>
     </a>
 
     <!-- Sidebar -->
-    <div class="sidebar text-sm">
+    <div class="sidebar">
         <!-- Sidebar user (optional) -->
-
-
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
@@ -149,8 +147,8 @@
                     </li>
                 @endcan
                 @can('attendance_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-books*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/attendance-books*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-books*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/attendance-books*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon far fa-calendar-check">
 
                             </i>
@@ -180,6 +178,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.attendanceBook.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('leaf_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.leaves.index") }}" class="nav-link {{ request()->is("admin/leaves") || request()->is("admin/leaves/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.leaf.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -425,8 +435,8 @@
                     </li>
                 @endcan
                 @can('overtime_related_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/employee-ot-datas*") ? "menu-open" : "" }} {{ request()->is("admin/sessions*") ? "menu-open" : "" }} {{ request()->is("admin/ot-categories*") ? "menu-open" : "" }} {{ request()->is("admin/dept-employees*") ? "menu-open" : "" }} {{ request()->is("admin/dept-designations*") ? "menu-open" : "" }} {{ request()->is("admin/ot-forms*") ? "menu-open" : "" }} {{ request()->is("admin/ot-form-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtimes*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-sittings*") ? "menu-open" : "" }} {{ request()->is("admin/ot-routings*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employee-ot-datas*") ? "active" : "" }} {{ request()->is("admin/sessions*") ? "active" : "" }} {{ request()->is("admin/ot-categories*") ? "active" : "" }} {{ request()->is("admin/dept-employees*") ? "active" : "" }} {{ request()->is("admin/dept-designations*") ? "active" : "" }} {{ request()->is("admin/ot-forms*") ? "active" : "" }} {{ request()->is("admin/ot-form-others*") ? "active" : "" }} {{ request()->is("admin/overtimes*") ? "active" : "" }} {{ request()->is("admin/overtime-others*") ? "active" : "" }} {{ request()->is("admin/overtime-sittings*") ? "active" : "" }} {{ request()->is("admin/ot-routings*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/employee-ot-datas*") ? "menu-open" : "" }} {{ request()->is("admin/sessions*") ? "menu-open" : "" }} {{ request()->is("admin/ot-categories*") ? "menu-open" : "" }} {{ request()->is("admin/dept-employees*") ? "menu-open" : "" }} {{ request()->is("admin/dept-designations*") ? "menu-open" : "" }} {{ request()->is("admin/ot-forms*") ? "menu-open" : "" }} {{ request()->is("admin/ot-form-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtimes*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-sittings*") ? "menu-open" : "" }} {{ request()->is("admin/ot-routings*") ? "menu-open" : "" }} {{ request()->is("admin/assembly-sessions*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employee-ot-datas*") ? "active" : "" }} {{ request()->is("admin/sessions*") ? "active" : "" }} {{ request()->is("admin/ot-categories*") ? "active" : "" }} {{ request()->is("admin/dept-employees*") ? "active" : "" }} {{ request()->is("admin/dept-designations*") ? "active" : "" }} {{ request()->is("admin/ot-forms*") ? "active" : "" }} {{ request()->is("admin/ot-form-others*") ? "active" : "" }} {{ request()->is("admin/overtimes*") ? "active" : "" }} {{ request()->is("admin/overtime-others*") ? "active" : "" }} {{ request()->is("admin/overtime-sittings*") ? "active" : "" }} {{ request()->is("admin/ot-routings*") ? "active" : "" }} {{ request()->is("admin/assembly-sessions*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-money-bill-wave">
 
                             </i>
@@ -568,6 +578,18 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('assembly_session_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.assembly-sessions.index") }}" class="nav-link {{ request()->is("admin/assembly-sessions") || request()->is("admin/assembly-sessions/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-asterisk">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.assemblySession.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan
@@ -646,14 +668,14 @@
                         </ul>
                     </li>
                 @endcan
-                @can('shift_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }}" href="#">
+                @can('time_management_access')
+                    <li class="nav-item has-treeview {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }} {{ request()->is("admin/office-times*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }} {{ request()->is("admin/office-times*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon far fa-clock">
 
                             </i>
                             <p>
-                                {{ trans('cruds.shiftManagement.title') }}
+                                {{ trans('cruds.timeManagement.title') }}
                                 <i class="right fa fa-fw fa-angle-left nav-icon"></i>
                             </p>
                         </a>
@@ -678,6 +700,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.employeeToShift.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('office_time_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.office-times.index") }}" class="nav-link {{ request()->is("admin/office-times") || request()->is("admin/office-times/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.officeTime.title') }}
                                         </p>
                                     </a>
                                 </li>

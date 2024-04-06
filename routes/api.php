@@ -152,4 +152,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Punching
     Route::get('/punchings/{date?}', 'PunchingApiController@getpunchings');
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
+
+    // Assembly Session
+    Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 });

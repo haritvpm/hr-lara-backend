@@ -19,7 +19,7 @@ class PunchingApiController extends Controller
     {
         abort_if(Gate::denies('punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PunchingResource(Punching::with(['employee', 'punchin_trace', 'punchout_trace'])->get());
+        return new PunchingResource(Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])->get());
     }
 
     public function store(StorePunchingRequest $request)
@@ -35,7 +35,7 @@ class PunchingApiController extends Controller
     {
         abort_if(Gate::denies('punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PunchingResource($punching->load(['employee', 'punchin_trace', 'punchout_trace']));
+        return new PunchingResource($punching->load(['employee', 'punchin_trace', 'punchout_trace', 'leave']));
     }
 
     public function update(UpdatePunchingRequest $request, Punching $punching)

@@ -54,8 +54,6 @@ class AdministrativeOfficeController extends Controller
     {
         abort_if(Gate::denies('administrative_office_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $administrativeOffice->load('administrativeOfficeSections');
-
         return view('admin.administrativeOffices.show', compact('administrativeOffice'));
     }
 

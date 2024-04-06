@@ -12,7 +12,7 @@ class AddRelationshipFieldsToExemptionsTable extends Migration
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->foreign('employee_id', 'employee_fk_9649523')->references('id')->on('employees');
             $table->unsignedBigInteger('session_id')->nullable();
-            $table->foreign('session_id', 'session_fk_9654975')->references('id')->on('sessions');
+            $table->foreign('session_id', 'session_fk_9664919')->references('id')->on('assembly_sessions');
         });
     }
 }

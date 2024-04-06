@@ -22,6 +22,10 @@ class UpdateOfficeLocationRequest extends FormRequest
                 'required',
                 'unique:office_locations,location,' . request()->route('office_location')->id,
             ],
+            'administrative_office_id' => [
+                'required',
+                'integer',
+            ],
         ];
     }
 }

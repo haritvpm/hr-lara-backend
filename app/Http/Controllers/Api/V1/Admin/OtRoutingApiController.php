@@ -17,13 +17,13 @@ class OtRoutingApiController extends Controller
     {
         abort_if(Gate::denies('ot_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OtRoutingResource(OtRouting::with(['seat', 'routing_seats'])->get());
+        return new OtRoutingResource(OtRouting::with(['from_seat', 'to_seats'])->get());
     }
 
     public function store(StoreOtRoutingRequest $request)
     {
         $otRouting = OtRouting::create($request->all());
-        $otRouting->routing_seats()->sync($request->input('routing_seats', []));
+        $otRouting->to_seats()->sync($request->input('to_seats', []));
 
         return (new OtRoutingResource($otRouting))
             ->response()
@@ -34,13 +34,13 @@ class OtRoutingApiController extends Controller
     {
         abort_if(Gate::denies('ot_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OtRoutingResource($otRouting->load(['seat', 'routing_seats']));
+        return new OtRoutingResource($otRouting->load(['from_seat', 'to_seats']));
     }
 
     public function update(UpdateOtRoutingRequest $request, OtRouting $otRouting)
     {
         $otRouting->update($request->all());
-        $otRouting->routing_seats()->sync($request->input('routing_seats', []));
+        $otRouting->to_seats()->sync($request->input('to_seats', []));
 
         return (new OtRoutingResource($otRouting))
             ->response()

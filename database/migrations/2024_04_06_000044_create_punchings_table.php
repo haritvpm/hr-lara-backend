@@ -18,6 +18,8 @@ class CreatePunchingsTable extends Migration
             $table->integer('extra')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('calc_complete')->nullable();
+            $table->integer('ot_claimed_minutes')->nullable();
+            $table->integer('punching_status')->nullable();
             $table->timestamps();
         });
     }

@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyExemptionRequest;
 use App\Http\Requests\StoreExemptionRequest;
 use App\Http\Requests\UpdateExemptionRequest;
+use App\Models\AssemblySession;
 use App\Models\Employee;
 use App\Models\Exemption;
-use App\Models\Session;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +30,7 @@ class ExemptionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $sessions = Session::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.exemptions.create', compact('employees', 'sessions'));
     }
@@ -48,7 +48,7 @@ class ExemptionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $sessions = Session::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $exemption->load('employee', 'session');
 

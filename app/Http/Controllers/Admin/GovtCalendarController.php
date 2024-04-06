@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateGovtCalendarRequest;
+use App\Models\AssemblySession;
 use App\Models\GovtCalendar;
 use App\Models\Session;
 use Gate;

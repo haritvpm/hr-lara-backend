@@ -23,8 +23,8 @@ class Designation extends Model
         'designation_mal',
         'sort_index',
         'has_punching',
-        'normal_office_hours',
         'desig_line_id',
+        'office_times_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -38,5 +38,10 @@ class Designation extends Model
     public function desig_line()
     {
         return $this->belongsTo(DesignationLine::class, 'desig_line_id');
+    }
+
+    public function office_times()
+    {
+        return $this->belongsTo(OfficeTime::class, 'office_times_id');
     }
 }

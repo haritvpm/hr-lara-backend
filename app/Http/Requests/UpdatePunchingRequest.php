@@ -55,6 +55,18 @@ class UpdatePunchingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
+            'ot_claimed_minutes' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'punching_status' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
         ];
     }
 }

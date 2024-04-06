@@ -4,7 +4,7 @@ namespace App\Http\Resources\Admin;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmployeeStatusResource extends JsonResource
+class AssemblySessionResource extends JsonResource
 {
     public function toArray($request)
     {

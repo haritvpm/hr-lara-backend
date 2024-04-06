@@ -17,14 +17,10 @@ class StoreOtRoutingRequest extends FormRequest
     public function rules()
     {
         return [
-            'seat_id' => [
-                'required',
+            'to_seats.*' => [
                 'integer',
             ],
-            'routing_seats.*' => [
-                'integer',
-            ],
-            'routing_seats' => [
+            'to_seats' => [
                 'array',
             ],
             'last_forwarded_to' => [

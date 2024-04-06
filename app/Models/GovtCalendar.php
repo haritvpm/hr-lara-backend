@@ -13,14 +13,14 @@ class GovtCalendar extends Model
 
     public $table = 'govt_calendars';
 
-    // protected $dates = [
-    //     'date',
-    //     'success_attendance_lastfetchtime',
-    //     'attendancetodaytrace_lastfetchtime',
-    //     'created_at',
-    //     'updated_at',
-    //     'deleted_at',
-    // ];
+    protected $dates = [
+        'date',
+        'success_attendance_lastfetchtime',
+        'attendancetodaytrace_lastfetchtime',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
 
     protected $fillable = [
         'date',
@@ -35,8 +35,8 @@ class GovtCalendar extends Model
         'is_in_session_period',
         'is_sitting_day',
         'punching',
-        'ends_at_time',
         'session_id',
+        'office_ends_at_time',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -47,15 +47,15 @@ class GovtCalendar extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    // public function getDateAttribute($value)
-    // {
-    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    // }
+    public function getDateAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
 
-    // public function setDateAttribute($value)
-    // {
-    //     $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    // }
+    public function setDateAttribute($value)
+    {
+        $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
 
     public function getSuccessAttendanceLastfetchtimeAttribute($value)
     {
@@ -79,6 +79,6 @@ class GovtCalendar extends Model
 
     public function session()
     {
-        return $this->belongsTo(Session::class, 'session_id');
+        return $this->belongsTo(AssemblySession::class, 'session_id');
     }
 }

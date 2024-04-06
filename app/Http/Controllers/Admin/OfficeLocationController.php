@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\StoreOfficeLocationRequest;
 use App\Http\Requests\UpdateOfficeLocationRequest;
+use App\Models\AdministrativeOffice;
 use App\Models\OfficeLocation;
 use Gate;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class OfficeLocationController extends Controller
     {
         abort_if(Gate::denies('office_location_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $officeLocations = OfficeLocation::all();
+        $officeLocations = OfficeLocation::with(['administrative_office'])->get();
 
         return view('admin.officeLocations.index', compact('officeLocations'));
     }
@@ -28,7 +29,9 @@ class OfficeLocationController extends Controller
     {
         abort_if(Gate::denies('office_location_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.officeLocations.create');
+        $administrative_offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.officeLocations.create', compact('administrative_offices'));
     }
 
     public function store(StoreOfficeLocationRequest $request)
@@ -42,7 +45,11 @@ class OfficeLocationController extends Controller
     {
         abort_if(Gate::denies('office_location_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.officeLocations.edit', compact('officeLocation'));
+        $administrative_offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $officeLocation->load('administrative_office');
+
+        return view('admin.officeLocations.edit', compact('administrative_offices', 'officeLocation'));
     }
 
     public function update(UpdateOfficeLocationRequest $request, OfficeLocation $officeLocation)
@@ -55,6 +62,8 @@ class OfficeLocationController extends Controller
     public function show(OfficeLocation $officeLocation)
     {
         abort_if(Gate::denies('office_location_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $officeLocation->load('administrative_office');
 
         return view('admin.officeLocations.show', compact('officeLocation'));
     }

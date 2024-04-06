@@ -25,9 +25,9 @@ class Exemption extends Model
         'employee_id',
         'date_from',
         'date_to',
-        'session_id',
         'forwarded_by',
         'submitted_to_services',
+        'session_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -65,6 +65,6 @@ class Exemption extends Model
 
     public function session()
     {
-        return $this->belongsTo(Session::class, 'session_id');
+        return $this->belongsTo(AssemblySession::class, 'session_id');
     }
 }

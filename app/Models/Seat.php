@@ -45,4 +45,9 @@ class Seat extends Model
     {
         return $this->belongsToMany(AttendanceRouting::class);
     }
+
+    public function toSeatsOtRoutings()
+    {
+        return $this->belongsToMany(OtRouting::class);
+    }
 }
