@@ -336,7 +336,7 @@ class PunchingService
         return $data;
     }
 
-    private function getGovtCalender($reportdate)
+    public function getGovtCalender($reportdate)
     {
         $calender = GovtCalendar::where('date',$reportdate)->first();
         if($calender){
@@ -371,14 +371,15 @@ class PunchingService
     public function fetchTrace($fetchdate = null)
     {
        $apikey =  env('AEBAS_KEY');
-       \Log::info('fetchTrace');
+     // \Log::info($apikey );
+
 
        $offset = 0;
        $count = 500; //make it to 500 in prod
 
 
         // should be in format 2024-02-11
-        $date = Carbon::now();
+        $date = Carbon::now()->endOfDay();
         $reportdate = Carbon::now()->format('Y-m-d'); //today
         if($fetchdate){
         // should be in format 2024-02-11
@@ -392,13 +393,32 @@ class PunchingService
             }
         }
 
+        //do not call trace if this is a future date
+
+        if( $date > Carbon::now()->endOfDay() )
+        {
+            \Log::info('fetchTrace - future date ignoring');
+            return 0;
+        }
+
        
         //check calender for this date's count.
 
         $govtcalender = $this->getGovtCalender($reportdate);
         $offset = $govtcalender->attendance_today_trace_rows_fetched;
 
+        //check last fetch time. if it less than 5 minutes, dont fetch
 
+        if( $govtcalender->attendancetodaytrace_lastfetchtime ){
+            $lastfetch =  Carbon::parse($govtcalender->attendancetodaytrace_lastfetchtime);
+            $diff = Carbon::now()->diffInMinutes($lastfetch);
+            \Log::info('diff='.$diff);
+            if($diff < 5){
+                \Log::info('fetchTrace - last fetched in less than five minutes- ignoring');
+                return 0;
+            } 
+        }
+        
         $insertedcount = 0;
 
         for (; ; $offset += $count) {
@@ -415,7 +435,7 @@ class PunchingService
 
             // $url = 'http://localhost:3000/data';
             \Log::info($url);
-            $response = Http::withHeaders([
+            $response = Http::timeout(60)->retry(3, 100)->withHeaders([
                 'Access-Control-Allow-Origin' => '*',
                 'Content-Type' => 'application/json',
             ])->withOptions([
@@ -480,9 +500,9 @@ class PunchingService
         if($insertedcount){
             $govtcalender->update([
 
-    //            'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
+    //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
                 'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched+$insertedcount,
-                'attendancetodaytrace_lastfetchtime' => Carbon::now()->format(config('app.date_format')) //today
+                'attendancetodaytrace_lastfetchtime' => Carbon::now()//today
 
             ]);
         }
