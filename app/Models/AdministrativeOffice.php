@@ -29,9 +29,4 @@ class AdministrativeOffice extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
-
-    public function administrativeOfficeSections()
-    {
-        return $this->hasMany(Section::class, 'administrative_office_id', 'id');
-    }
 }

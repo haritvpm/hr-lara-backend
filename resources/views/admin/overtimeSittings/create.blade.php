@@ -13,9 +13,7 @@
                 <label for="date">{{ trans('cruds.overtimeSitting.fields.date') }}</label>
                 <input class="form-control date {{ $errors->has('date') ? 'is-invalid' : '' }}" type="text" name="date" id="date" value="{{ old('date') }}">
                 @if($errors->has('date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeSitting.fields.date_helper') }}</span>
             </div>
@@ -26,9 +24,7 @@
                     <label class="form-check-label" for="checked">{{ trans('cruds.overtimeSitting.fields.checked') }}</label>
                 </div>
                 @if($errors->has('checked'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('checked') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('checked') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeSitting.fields.checked_helper') }}</span>
             </div>
@@ -40,9 +36,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('overtime'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('overtime') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('overtime') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeSitting.fields.overtime_helper') }}</span>
             </div>

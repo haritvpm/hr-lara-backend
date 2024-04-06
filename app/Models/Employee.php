@@ -18,21 +18,24 @@ class Employee extends Model
         'deleted_at',
     ];
 
-    public const STATUS_SELECT = [
-        'retired'  => 'Retired',
-        'relieved' => 'Relieved',
-    ];
-
     public const SRISMT_SELECT = [
         'Sri' => 'Sri',
         'Smt' => 'Smt',
         'Kum' => 'Kum',
     ];
 
+    public const STATUS_SELECT = [
+        'active'   => 'active',
+        'retired'  => 'retired',
+        'relieved' => 'relieved',
+        'onleave'  => 'onleave',
+    ];
+
     public const EMPLOYEE_TYPE_SELECT = [
-        'Contract'  => 'Contract',
-        'Permanent' => 'Permanent',
-        'DailyWage' => 'DailyWage',
+        'contract'  => 'Contract',
+        'permanent' => 'Permanent',
+        'dailywage' => 'DailyWage',
+        'temporary' => 'Temporary',
     ];
 
     protected $fillable = [
@@ -40,15 +43,13 @@ class Employee extends Model
         'name',
         'name_mal',
         'pen',
-        'designation_id',
-        'category_id',
         'aadhaarid',
-        'has_punching',
-        'status',
-        'ot_data_entry_by_admin',
+        'employee_type',
         'desig_display',
         'pan',
-        'employee_type',
+        'has_punching',
+        'status',
+        'is_shift',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -59,13 +60,8 @@ class Employee extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function designation()
+    public function employeeEmployeeToDesignations()
     {
-        return $this->belongsTo(Designation::class, 'designation_id');
-    }
-
-    public function category()
-    {
-        return $this->belongsTo(OtCategory::class, 'category_id');
+        return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
     }
 }

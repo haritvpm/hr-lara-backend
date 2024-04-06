@@ -17,7 +17,7 @@ class DesignationApiController extends Controller
     {
         abort_if(Gate::denies('designation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new DesignationResource(Designation::with(['desig_line'])->get());
+        return new DesignationResource(Designation::with(['desig_line', 'office_times'])->get());
     }
 
     public function store(StoreDesignationRequest $request)
@@ -33,7 +33,7 @@ class DesignationApiController extends Controller
     {
         abort_if(Gate::denies('designation_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new DesignationResource($designation->load(['desig_line']));
+        return new DesignationResource($designation->load(['desig_line', 'office_times']));
     }
 
     public function update(UpdateDesignationRequest $request, Designation $designation)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\MassDestroyOtRoutingRequest;
 use App\Http\Requests\StoreOtRoutingRequest;
 use App\Http\Requests\UpdateOtRoutingRequest;
@@ -14,11 +15,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OtRoutingController extends Controller
 {
+    use CsvImportTrait;
+
     public function index()
     {
         abort_if(Gate::denies('ot_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $otRoutings = OtRouting::with(['seat'])->get();
+        $otRoutings = OtRouting::with(['from_seat', 'to_seats'])->get();
 
         return view('admin.otRoutings.index', compact('otRoutings'));
     }
@@ -27,14 +30,17 @@ class OtRoutingController extends Controller
     {
         abort_if(Gate::denies('ot_routing_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $from_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.otRoutings.create', compact('seats'));
+        $to_seats = Seat::pluck('title', 'id');
+
+        return view('admin.otRoutings.create', compact('from_seats', 'to_seats'));
     }
 
     public function store(StoreOtRoutingRequest $request)
     {
         $otRouting = OtRouting::create($request->all());
+        $otRouting->to_seats()->sync($request->input('to_seats', []));
 
         return redirect()->route('admin.ot-routings.index');
     }
@@ -43,16 +49,19 @@ class OtRoutingController extends Controller
     {
         abort_if(Gate::denies('ot_routing_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $from_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $otRouting->load('seat');
+        $to_seats = Seat::pluck('title', 'id');
 
-        return view('admin.otRoutings.edit', compact('otRouting', 'seats'));
+        $otRouting->load('from_seat', 'to_seats');
+
+        return view('admin.otRoutings.edit', compact('from_seats', 'otRouting', 'to_seats'));
     }
 
     public function update(UpdateOtRoutingRequest $request, OtRouting $otRouting)
     {
         $otRouting->update($request->all());
+        $otRouting->to_seats()->sync($request->input('to_seats', []));
 
         return redirect()->route('admin.ot-routings.index');
     }
@@ -61,7 +70,7 @@ class OtRoutingController extends Controller
     {
         abort_if(Gate::denies('ot_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $otRouting->load('seat');
+        $otRouting->load('from_seat', 'to_seats');
 
         return view('admin.otRoutings.show', compact('otRouting'));
     }

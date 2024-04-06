@@ -96,12 +96,20 @@
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
         <li class="nav-item">
+            <a class="nav-link" href="#created_by_tax_entries" role="tab" data-toggle="tab">
+                {{ trans('cruds.taxEntry.title') }}
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="#seats_attendance_routings" role="tab" data-toggle="tab">
                 {{ trans('cruds.attendanceRouting.title') }}
             </a>
         </li>
     </ul>
     <div class="tab-content">
+        <div class="tab-pane" role="tabpanel" id="created_by_tax_entries">
+            @includeIf('admin.seats.relationships.createdByTaxEntries', ['taxEntries' => $seat->createdByTaxEntries])
+        </div>
         <div class="tab-pane" role="tabpanel" id="seats_attendance_routings">
             @includeIf('admin.seats.relationships.seatsAttendanceRoutings', ['attendanceRoutings' => $seat->seatsAttendanceRoutings])
         </div>

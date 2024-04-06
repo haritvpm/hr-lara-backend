@@ -15,6 +15,6 @@ class PunchingTraceApiController extends Controller
     {
         abort_if(Gate::denies('punching_trace_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PunchingTraceResource(PunchingTrace::all());
+        return new PunchingTraceResource(PunchingTrace::with(['punching'])->get());
     }
 }

@@ -41,6 +41,12 @@
                         {{ trans('cruds.punchingTrace.fields.att_time') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punchingTrace.fields.day_offset') }}
+                    </th>
+                    <!-- <th>
+                        {{ trans('cruds.punchingTrace.fields.punching') }}
+                    </th> -->
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -76,6 +82,8 @@
 { data: 'err_code', name: 'err_code' },
 { data: 'att_date', name: 'att_date' },
 { data: 'att_time', name: 'att_time' },
+{ data: 'day_offset', name: 'day_offset' },
+//{ data: 'punching_date', name: 'punching.date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

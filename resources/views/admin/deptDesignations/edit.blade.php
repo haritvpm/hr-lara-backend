@@ -14,9 +14,7 @@
                 <label class="required" for="title">{{ trans('cruds.deptDesignation.fields.title') }}</label>
                 <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $deptDesignation->title) }}" required>
                 @if($errors->has('title'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('title') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('title') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptDesignation.fields.title_helper') }}</span>
             </div>
@@ -24,9 +22,7 @@
                 <label for="max_persons">{{ trans('cruds.deptDesignation.fields.max_persons') }}</label>
                 <input class="form-control {{ $errors->has('max_persons') ? 'is-invalid' : '' }}" type="number" name="max_persons" id="max_persons" value="{{ old('max_persons', $deptDesignation->max_persons) }}" step="1">
                 @if($errors->has('max_persons'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('max_persons') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('max_persons') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptDesignation.fields.max_persons_helper') }}</span>
             </div>
@@ -38,9 +34,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('user'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('user') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('user') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptDesignation.fields.user_helper') }}</span>
             </div>

@@ -25,6 +25,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.user.fields.username') }}
+                        </th>
+                        <td>
+                            {{ $user->username }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.user.fields.name') }}
                         </th>
                         <td>
@@ -33,18 +41,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.email') }}
+                            {{ trans('cruds.user.fields.employee') }}
                         </th>
                         <td>
-                            {{ $user->email }}
+                            {{ $user->employee->name ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.email_verified_at') }}
+                            {{ trans('cruds.user.fields.email') }}
                         </th>
                         <td>
-                            {{ $user->email_verified_at }}
+                            {{ $user->email }}
                         </td>
                     </tr>
                     <tr>
@@ -59,10 +67,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.user.fields.employee') }}
+                            {{ trans('cruds.user.fields.mobile') }}
                         </th>
                         <td>
-                            {{ $user->employee->name ?? '' }}
+                            {{ $user->mobile }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.user.fields.email_verified_at') }}
+                        </th>
+                        <td>
+                            {{ $user->email_verified_at }}
                         </td>
                     </tr>
                 </tbody>

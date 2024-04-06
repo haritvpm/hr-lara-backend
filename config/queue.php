@@ -13,7 +13,11 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'sync'),
+    //hari: also make sure to call php artisan queue:table and then migrate for Lara 10 or less. Check Doc for 11 cahnges
+    //also set QUEUE_CONNECTION=database in env
+
+
+    'default' => env('QUEUE_CONNECTION', 'database'),
 
     /*
     |--------------------------------------------------------------------------

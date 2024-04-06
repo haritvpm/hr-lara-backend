@@ -49,6 +49,16 @@ class StorePunchingTraceRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.time_format'),
             ],
+            'day_offset' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'punching_id' => [
+                'required',
+                'integer',
+            ],
         ];
     }
 }

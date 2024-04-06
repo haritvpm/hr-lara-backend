@@ -47,6 +47,30 @@
                             {{ $exemption->date_to }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.session') }}
+                        </th>
+                        <td>
+                            {{ $exemption->session->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.forwarded_by') }}
+                        </th>
+                        <td>
+                            {{ $exemption->forwarded_by }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.submitted_to_services') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $exemption->submitted_to_services ? 'checked' : '' }}>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

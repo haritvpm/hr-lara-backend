@@ -29,7 +29,7 @@
                             {{ trans('cruds.otCategory.fields.category') }}
                         </th>
                         <th>
-                            {{ trans('cruds.otCategory.fields.punching') }}
+                            {{ trans('cruds.otCategory.fields.has_punching') }}
                         </th>
                         <th>
                             &nbsp;
@@ -49,8 +49,8 @@
                                 {{ $otCategory->category ?? '' }}
                             </td>
                             <td>
-                                <span style="display:none">{{ $otCategory->punching ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $otCategory->punching ? 'checked' : '' }}>
+                                <span style="display:none">{{ $otCategory->has_punching ?? '' }}</span>
+                                <input type="checkbox" disabled="disabled" {{ $otCategory->has_punching ? 'checked' : '' }}>
                             </td>
                             <td>
                                 @can('ot_category_show')

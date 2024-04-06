@@ -119,6 +119,14 @@
                             {{ $successPunching->aadhaarid }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.successPunching.fields.punching') }}
+                        </th>
+                        <td>
+                            {{ $successPunching->punching->date ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

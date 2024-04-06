@@ -21,9 +21,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('seats'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('seats') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('seats') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.attendanceRouting.fields.seats_helper') }}</span>
             </div>

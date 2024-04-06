@@ -60,14 +60,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Attendance Book
     Route::apiResource('attendance-books', 'AttendanceBookApiController');
 
-    // Section Employee
-    Route::apiResource('section-employees', 'SectionEmployeeApiController');
+
 
     // Success Punching
     Route::apiResource('success-punchings', 'SuccessPunchingApiController');
-
-    // Punching Register
-    Route::apiResource('punching-registers', 'PunchingRegisterApiController', ['except' => ['destroy']]);
 
     // Punching Device
     Route::apiResource('punching-devices', 'PunchingDeviceApiController');
@@ -77,9 +73,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Seniority
     Route::apiResource('seniorities', 'SeniorityApiController');
-
-    // Employee At Seat
-    Route::apiResource('employee-at-seats', 'EmployeeAtSeatApiController');
 
     // Dept Designations
     Route::apiResource('dept-designations', 'DeptDesignationsApiController');
@@ -107,4 +100,59 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Attendance Routing
     Route::apiResource('attendance-routings', 'AttendanceRoutingApiController');
+
+    // Office Location
+    Route::apiResource('office-locations', 'OfficeLocationApiController', ['except' => ['destroy']]);
+
+    // Employee Seat History
+    Route::apiResource('employee-seat-histories', 'EmployeeSeatHistoryApiController');
+
+    // Employee Section History
+    Route::apiResource('employee-section-histories', 'EmployeeSectionHistoryApiController');
+
+    // Employee To Seat
+    Route::apiResource('employee-to-seats', 'EmployeeToSeatApiController');
+
+    // Employee To Section
+    Route::apiResource('employee-to-sections', 'EmployeeToSectionApiController');
+
+    // Employee Details
+    Route::apiResource('employee-details', 'EmployeeDetailsApiController');
+
+    // Employee Ot Data
+    Route::apiResource('employee-ot-datas', 'EmployeeOtDataApiController');
+
+    // Employee Designation History
+    Route::apiResource('employee-designation-histories', 'EmployeeDesignationHistoryApiController');
+
+    // Employee To Designation
+    Route::apiResource('employee-to-designations', 'EmployeeToDesignationApiController');
+
+    // Acquittance
+    Route::apiResource('acquittances', 'AcquittanceApiController');
+
+    // Employee To Acquittance
+    Route::apiResource('employee-to-acquittances', 'EmployeeToAcquittanceApiController');
+
+    // Ddo
+    Route::apiResource('ddos', 'DdoApiController');
+
+    // Shifts
+    Route::apiResource('shifts', 'ShiftsApiController');
+
+    // Employee To Shift
+    Route::apiResource('employee-to-shifts', 'EmployeeToShiftApiController');
+
+    // Tds
+    Route::apiResource('tds', 'TdsApiController');
+
+    // Tax Entries
+    Route::apiResource('tax-entries', 'TaxEntriesApiController');
+
+    // Punching
+    Route::get('/punchings/{date?}', 'PunchingApiController@getpunchings');
+    Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
+
+    // Assembly Session
+    Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 });

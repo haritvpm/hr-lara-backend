@@ -19,9 +19,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('srismt'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('srismt') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('srismt') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptEmployee.fields.srismt_helper') }}</span>
             </div>
@@ -29,9 +27,7 @@
                 <label class="required" for="name">{{ trans('cruds.deptEmployee.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $deptEmployee->name) }}" required>
                 @if($errors->has('name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptEmployee.fields.name_helper') }}</span>
             </div>
@@ -39,9 +35,7 @@
                 <label class="required" for="pen">{{ trans('cruds.deptEmployee.fields.pen') }}</label>
                 <input class="form-control {{ $errors->has('pen') ? 'is-invalid' : '' }}" type="text" name="pen" id="pen" value="{{ old('pen', $deptEmployee->pen) }}" required>
                 @if($errors->has('pen'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('pen') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('pen') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptEmployee.fields.pen_helper') }}</span>
             </div>
@@ -53,9 +47,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('designation'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.deptEmployee.fields.designation_helper') }}</span>
             </div>

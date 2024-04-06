@@ -61,6 +61,9 @@
                         {{ trans('cruds.successPunching.fields.aadhaarid') }}
                     </th>
                     <th>
+                        {{ trans('cruds.successPunching.fields.punching') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -129,6 +132,7 @@
 { data: 'at_type', name: 'at_type' },
 { data: 'duration', name: 'duration' },
 { data: 'aadhaarid', name: 'aadhaarid' },
+{ data: 'punching_date', name: 'punching.date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

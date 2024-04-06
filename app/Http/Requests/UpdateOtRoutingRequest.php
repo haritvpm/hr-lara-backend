@@ -17,13 +17,11 @@ class UpdateOtRoutingRequest extends FormRequest
     public function rules()
     {
         return [
-            'seat_id' => [
-                'required',
+            'to_seats.*' => [
                 'integer',
             ],
-            'routes' => [
-                'string',
-                'nullable',
+            'to_seats' => [
+                'array',
             ],
             'last_forwarded_to' => [
                 'string',

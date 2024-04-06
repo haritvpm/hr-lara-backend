@@ -17,7 +17,7 @@ class ExemptionApiController extends Controller
     {
         abort_if(Gate::denies('exemption_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new ExemptionResource(Exemption::with(['employee'])->get());
+        return new ExemptionResource(Exemption::with(['employee', 'session'])->get());
     }
 
     public function store(StoreExemptionRequest $request)
@@ -33,7 +33,7 @@ class ExemptionApiController extends Controller
     {
         abort_if(Gate::denies('exemption_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new ExemptionResource($exemption->load(['employee']));
+        return new ExemptionResource($exemption->load(['employee', 'session']));
     }
 
     public function update(UpdateExemptionRequest $request, Exemption $exemption)

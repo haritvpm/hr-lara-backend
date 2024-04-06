@@ -38,11 +38,9 @@ class UpdateDesignationRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'normal_office_hours' => [
-                'nullable',
+            'office_times_id' => [
+                'required',
                 'integer',
-                'min:-2147483648',
-                'max:2147483647',
             ],
         ];
     }

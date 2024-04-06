@@ -19,8 +19,7 @@ class OtRouting extends Model
     ];
 
     protected $fillable = [
-        'seat_id',
-        'routes',
+        'from_seat_id',
         'last_forwarded_to',
         'created_at',
         'updated_at',
@@ -32,8 +31,13 @@ class OtRouting extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function seat()
+    public function from_seat()
     {
-        return $this->belongsTo(Seat::class, 'seat_id');
+        return $this->belongsTo(Seat::class, 'from_seat_id');
+    }
+
+    public function to_seats()
+    {
+        return $this->belongsToMany(Seat::class);
     }
 }

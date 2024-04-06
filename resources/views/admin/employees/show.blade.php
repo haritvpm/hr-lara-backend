@@ -57,22 +57,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.designation') }}
-                        </th>
-                        <td>
-                            {{ $employee->designation->designation ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.category') }}
-                        </th>
-                        <td>
-                            {{ $employee->category->category ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.employee.fields.aadhaarid') }}
                         </th>
                         <td>
@@ -81,26 +65,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.has_punching') }}
+                            {{ trans('cruds.employee.fields.employee_type') }}
                         </th>
                         <td>
-                            {{ $employee->has_punching }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.status') }}
-                        </th>
-                        <td>
-                            {{ App\Models\Employee::STATUS_SELECT[$employee->status] ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.ot_data_entry_by_admin') }}
-                        </th>
-                        <td>
-                            <input type="checkbox" disabled="disabled" {{ $employee->ot_data_entry_by_admin ? 'checked' : '' }}>
+                            {{ App\Models\Employee::EMPLOYEE_TYPE_SELECT[$employee->employee_type] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -121,10 +89,26 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.employee_type') }}
+                            {{ trans('cruds.employee.fields.has_punching') }}
                         </th>
                         <td>
-                            {{ App\Models\Employee::EMPLOYEE_TYPE_SELECT[$employee->employee_type] ?? '' }}
+                            {{ $employee->has_punching }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.status') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Employee::STATUS_SELECT[$employee->status] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.is_shift') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $employee->is_shift ? 'checked' : '' }}>
                         </td>
                     </tr>
                 </tbody>
@@ -138,6 +122,22 @@
     </div>
 </div>
 
-
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.relatedData') }}
+    </div>
+    <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="#employee_employee_to_designations" role="tab" data-toggle="tab">
+                {{ trans('cruds.employeeToDesignation.title') }}
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" role="tabpanel" id="employee_employee_to_designations">
+            @includeIf('admin.employees.relationships.employeeEmployeeToDesignations', ['employeeToDesignations' => $employee->employeeEmployeeToDesignations])
+        </div>
+    </div>
+</div>
 
 @endsection

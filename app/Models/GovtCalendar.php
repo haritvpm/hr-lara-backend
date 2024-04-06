@@ -35,8 +35,8 @@ class GovtCalendar extends Model
         'is_in_session_period',
         'is_sitting_day',
         'punching',
-        'ends_at_time',
         'session_id',
+        'office_ends_at_time',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -79,6 +79,6 @@ class GovtCalendar extends Model
 
     public function session()
     {
-        return $this->belongsTo(Session::class, 'session_id');
+        return $this->belongsTo(AssemblySession::class, 'session_id');
     }
 }

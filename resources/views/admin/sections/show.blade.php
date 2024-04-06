@@ -63,6 +63,22 @@
                             {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.office_location') }}
+                        </th>
+                        <td>
+                            {{ $section->office_location->location ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.works_nights_during_session') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $section->works_nights_during_session ? 'checked' : '' }}>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

@@ -20,6 +20,7 @@ class UpdatePermissionRequest extends FormRequest
             'title' => [
                 'string',
                 'required',
+                'unique:permissions,title,' . request()->route('permission')->id,
             ],
         ];
     }

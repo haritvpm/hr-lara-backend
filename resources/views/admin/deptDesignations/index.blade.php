@@ -59,7 +59,7 @@
                                 {{ $deptDesignation->max_persons ?? '' }}
                             </td>
                             <td>
-                                {{ $deptDesignation->user->name ?? '' }}
+                                {{ $deptDesignation->user->username ?? '' }}
                             </td>
                             <td>
                                 @can('dept_designation_show')

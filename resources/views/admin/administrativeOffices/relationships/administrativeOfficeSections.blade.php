@@ -1,104 +1,117 @@
-@can('section_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.sections.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.section.title_singular') }}
-            </a>
+<div class="m-3">
+    @can('section_create')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('admin.sections.create') }}">
+                    {{ trans('global.add') }} {{ trans('cruds.section.title_singular') }}
+                </a>
+            </div>
         </div>
-    </div>
-@endcan
+    @endcan
+    <div class="card">
+        <div class="card-header">
+            {{ trans('cruds.section.title_singular') }} {{ trans('global.list') }}
+        </div>
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.section.title_singular') }} {{ trans('global.list') }}
-    </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class=" table table-bordered table-striped table-hover datatable datatable-administrativeOfficeSections">
+                    <thead>
+                        <tr>
+                            <th width="10">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-administrativeOfficeSections">
-                <thead>
-                    <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.name') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.administrative_office') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.seat_of_controling_officer') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.seat_of_reporting_officer') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.section.fields.type') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($sections as $key => $section)
-                        <tr data-entry-id="{{ $section->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $section->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $section->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $section->administrative_office->office_name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $section->seat_of_controling_officer->title ?? '' }}
-                            </td>
-                            <td>
-                                {{ $section->seat_of_reporting_officer->title ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
-                            </td>
-                            <td>
-                                @can('section_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.sections.show', $section->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('section_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.sections.edit', $section->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('section_delete')
-                                    <form action="{{ route('admin.sections.destroy', $section->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.id') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.name') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.administrative_office') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.seat_of_controling_officer') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.seat_of_reporting_officer') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.type') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.office_location') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.section.fields.works_nights_during_session') }}
+                            </th>
+                            <th>
+                                &nbsp;
+                            </th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($sections as $key => $section)
+                            <tr data-entry-id="{{ $section->id }}">
+                                <td>
+
+                                </td>
+                                <td>
+                                    {{ $section->id ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $section->name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $section->administrative_office->office_name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $section->seat_of_controling_officer->title ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $section->seat_of_reporting_officer->title ?? '' }}
+                                </td>
+                                <td>
+                                    {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $section->office_location->location ?? '' }}
+                                </td>
+                                <td>
+                                    <span style="display:none">{{ $section->works_nights_during_session ?? '' }}</span>
+                                    <input type="checkbox" disabled="disabled" {{ $section->works_nights_during_session ? 'checked' : '' }}>
+                                </td>
+                                <td>
+                                    @can('section_show')
+                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.sections.show', $section->id) }}">
+                                            {{ trans('global.view') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('section_edit')
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.sections.edit', $section->id) }}">
+                                            {{ trans('global.edit') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('section_delete')
+                                        <form action="{{ route('admin.sections.destroy', $section->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        </form>
+                                    @endcan
+
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
 @section('scripts')
 @parent
 <script>

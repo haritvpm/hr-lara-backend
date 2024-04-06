@@ -65,7 +65,7 @@ class UpdateGovtCalendarRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'ends_at_time' => [
+            'office_ends_at_time' => [
                 'date_format:' . config('panel.time_format'),
                 'nullable',
             ],

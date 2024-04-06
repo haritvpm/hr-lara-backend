@@ -33,10 +33,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.otCategory.fields.punching') }}
+                            {{ trans('cruds.otCategory.fields.has_punching') }}
                         </th>
                         <td>
-                            <input type="checkbox" disabled="disabled" {{ $otCategory->punching ? 'checked' : '' }}>
+                            <input type="checkbox" disabled="disabled" {{ $otCategory->has_punching ? 'checked' : '' }}>
                         </td>
                     </tr>
                 </tbody>

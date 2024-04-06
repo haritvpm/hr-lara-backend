@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateGovtCalendarRequest;
+use App\Models\AssemblySession;
 use App\Models\GovtCalendar;
 use App\Models\Session;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Jobs\AebasFetchDay;
+use Carbon\Carbon;
+use App\Services\PunchingService;
+
 
 class GovtCalendarController extends Controller
 {
@@ -46,5 +51,31 @@ class GovtCalendarController extends Controller
         $govtCalendar->load('session');
 
         return view('admin.govtCalendars.show', compact('govtCalendar'));
+    }
+
+
+    
+    public function fetch(Request $request)
+    {
+        $date = $request->query('date');
+     
+        if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
+
+        \Log::info("fetch attendance trace !. " .  $date);
+        $insertedcount = (new PunchingService())->fetchTrace($date);
+
+        \Session::flash('message', 'Updated ' . $insertedcount . ' rows for' . $date ); 
+
+        return redirect()->back();
+    }
+
+    public function fetchmonth(Request $request)
+    {
+        $date = date;
+
+       \Log::info("fetchmonth attendance trace !. " );
+       
+
+        return redirect()->back();
     }
 }

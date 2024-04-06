@@ -13,9 +13,7 @@
                 <label class="required" for="designation">{{ trans('cruds.designation.fields.designation') }}</label>
                 <input class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" type="text" name="designation" id="designation" value="{{ old('designation', '') }}" required>
                 @if($errors->has('designation'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.designation_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label for="designation_mal">{{ trans('cruds.designation.fields.designation_mal') }}</label>
                 <input class="form-control {{ $errors->has('designation_mal') ? 'is-invalid' : '' }}" type="text" name="designation_mal" id="designation_mal" value="{{ old('designation_mal', '') }}">
                 @if($errors->has('designation_mal'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation_mal') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation_mal') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.designation_mal_helper') }}</span>
             </div>
@@ -33,9 +29,7 @@
                 <label for="sort_index">{{ trans('cruds.designation.fields.sort_index') }}</label>
                 <input class="form-control {{ $errors->has('sort_index') ? 'is-invalid' : '' }}" type="number" name="sort_index" id="sort_index" value="{{ old('sort_index', '') }}" step="1">
                 @if($errors->has('sort_index'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('sort_index') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('sort_index') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.sort_index_helper') }}</span>
             </div>
@@ -43,9 +37,7 @@
                 <label for="has_punching">{{ trans('cruds.designation.fields.has_punching') }}</label>
                 <input class="form-control {{ $errors->has('has_punching') ? 'is-invalid' : '' }}" type="number" name="has_punching" id="has_punching" value="{{ old('has_punching', '1') }}" step="1">
                 @if($errors->has('has_punching'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('has_punching') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('has_punching') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.has_punching_helper') }}</span>
             </div>
@@ -53,9 +45,7 @@
                 <label for="normal_office_hours">{{ trans('cruds.designation.fields.normal_office_hours') }}</label>
                 <input class="form-control {{ $errors->has('normal_office_hours') ? 'is-invalid' : '' }}" type="number" name="normal_office_hours" id="normal_office_hours" value="{{ old('normal_office_hours', '7') }}" step="1">
                 @if($errors->has('normal_office_hours'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('normal_office_hours') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('normal_office_hours') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.normal_office_hours_helper') }}</span>
             </div>
@@ -67,9 +57,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('desig_line'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('desig_line') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('desig_line') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.desig_line_helper') }}</span>
             </div>

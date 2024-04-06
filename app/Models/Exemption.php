@@ -25,6 +25,9 @@ class Exemption extends Model
         'employee_id',
         'date_from',
         'date_to',
+        'forwarded_by',
+        'submitted_to_services',
+        'session_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -58,5 +61,10 @@ class Exemption extends Model
     public function setDateToAttribute($value)
     {
         $this->attributes['date_to'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(AssemblySession::class, 'session_id');
     }
 }

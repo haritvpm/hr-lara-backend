@@ -22,11 +22,11 @@ class StoreSectionRequest extends FormRequest
                 'required',
                 'unique:sections',
             ],
-            'administrative_office_id' => [
+            'seat_of_controling_officer_id' => [
                 'required',
                 'integer',
             ],
-            'seat_of_controling_officer_id' => [
+            'office_location_id' => [
                 'required',
                 'integer',
             ],

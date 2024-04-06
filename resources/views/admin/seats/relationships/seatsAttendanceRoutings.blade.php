@@ -1,82 +1,82 @@
-@can('attendance_routing_create')
-    <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.attendance-routings.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.attendanceRouting.title_singular') }}
-            </a>
+<div class="m-3">
+    @can('attendance_routing_create')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('admin.attendance-routings.create') }}">
+                    {{ trans('global.add') }} {{ trans('cruds.attendanceRouting.title_singular') }}
+                </a>
+            </div>
         </div>
-    </div>
-@endcan
+    @endcan
+    <div class="card">
+        <div class="card-header">
+            {{ trans('cruds.attendanceRouting.title_singular') }} {{ trans('global.list') }}
+        </div>
 
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.attendanceRouting.title_singular') }} {{ trans('global.list') }}
-    </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class=" table table-bordered table-striped table-hover datatable datatable-seatsAttendanceRoutings">
+                    <thead>
+                        <tr>
+                            <th width="10">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-seatsAttendanceRoutings">
-                <thead>
-                    <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.attendanceRouting.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.attendanceRouting.fields.seats') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($attendanceRoutings as $key => $attendanceRouting)
-                        <tr data-entry-id="{{ $attendanceRouting->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $attendanceRouting->id ?? '' }}
-                            </td>
-                            <td>
-                                @foreach($attendanceRouting->seats as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
-                                @endforeach
-                            </td>
-                            <td>
-                                @can('attendance_routing_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.attendance-routings.show', $attendanceRouting->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('attendance_routing_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.attendance-routings.edit', $attendanceRouting->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('attendance_routing_delete')
-                                    <form action="{{ route('admin.attendance-routings.destroy', $attendanceRouting->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
+                            </th>
+                            <th>
+                                {{ trans('cruds.attendanceRouting.fields.id') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.attendanceRouting.fields.seats') }}
+                            </th>
+                            <th>
+                                &nbsp;
+                            </th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach($attendanceRoutings as $key => $attendanceRouting)
+                            <tr data-entry-id="{{ $attendanceRouting->id }}">
+                                <td>
+
+                                </td>
+                                <td>
+                                    {{ $attendanceRouting->id ?? '' }}
+                                </td>
+                                <td>
+                                    @foreach($attendanceRouting->seats as $key => $item)
+                                        <span class="badge badge-info">{{ $item->name }}</span>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @can('attendance_routing_show')
+                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.attendance-routings.show', $attendanceRouting->id) }}">
+                                            {{ trans('global.view') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('attendance_routing_edit')
+                                        <a class="btn btn-xs btn-info" href="{{ route('admin.attendance-routings.edit', $attendanceRouting->id) }}">
+                                            {{ trans('global.edit') }}
+                                        </a>
+                                    @endcan
+
+                                    @can('attendance_routing_delete')
+                                        <form action="{{ route('admin.attendance-routings.destroy', $attendanceRouting->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                        </form>
+                                    @endcan
+
+                                </td>
+
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-
 @section('scripts')
 @parent
 <script>

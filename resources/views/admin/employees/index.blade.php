@@ -41,22 +41,10 @@
                         {{ trans('cruds.employee.fields.pen') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employee.fields.designation') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.category') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employee.fields.has_punching') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.status') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.employee.fields.ot_data_entry_by_admin') }}
+                        {{ trans('cruds.employee.fields.employee_type') }}
                     </th>
                     <th>
                         {{ trans('cruds.employee.fields.desig_display') }}
@@ -65,7 +53,13 @@
                         {{ trans('cruds.employee.fields.pan') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employee.fields.employee_type') }}
+                        {{ trans('cruds.employee.fields.has_punching') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employee.fields.status') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employee.fields.is_shift') }}
                     </th>
                     <th>
                         &nbsp;
@@ -128,15 +122,13 @@
 { data: 'name', name: 'name' },
 { data: 'name_mal', name: 'name_mal' },
 { data: 'pen', name: 'pen' },
-{ data: 'designation_designation', name: 'designation.designation' },
-{ data: 'category_category', name: 'category.category' },
 { data: 'aadhaarid', name: 'aadhaarid' },
-{ data: 'has_punching', name: 'has_punching' },
-{ data: 'status', name: 'status' },
-{ data: 'ot_data_entry_by_admin', name: 'ot_data_entry_by_admin' },
+{ data: 'employee_type', name: 'employee_type' },
 { data: 'desig_display', name: 'desig_display' },
 { data: 'pan', name: 'pan' },
-{ data: 'employee_type', name: 'employee_type' },
+{ data: 'has_punching', name: 'has_punching' },
+{ data: 'status', name: 'status' },
+{ data: 'is_shift', name: 'is_shift' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

@@ -13,9 +13,7 @@
                 <label class="required" for="aadhaarid">{{ trans('cruds.punchingTrace.fields.aadhaarid') }}</label>
                 <input class="form-control {{ $errors->has('aadhaarid') ? 'is-invalid' : '' }}" type="text" name="aadhaarid" id="aadhaarid" value="{{ old('aadhaarid', '') }}" required>
                 @if($errors->has('aadhaarid'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('aadhaarid') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('aadhaarid') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.aadhaarid_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label for="org_emp_code">{{ trans('cruds.punchingTrace.fields.org_emp_code') }}</label>
                 <input class="form-control {{ $errors->has('org_emp_code') ? 'is-invalid' : '' }}" type="text" name="org_emp_code" id="org_emp_code" value="{{ old('org_emp_code', '') }}">
                 @if($errors->has('org_emp_code'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('org_emp_code') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('org_emp_code') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.org_emp_code_helper') }}</span>
             </div>
@@ -33,9 +29,7 @@
                 <label for="device">{{ trans('cruds.punchingTrace.fields.device') }}</label>
                 <input class="form-control {{ $errors->has('device') ? 'is-invalid' : '' }}" type="text" name="device" id="device" value="{{ old('device', '') }}">
                 @if($errors->has('device'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('device') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('device') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.device_helper') }}</span>
             </div>
@@ -43,9 +37,7 @@
                 <label for="attendance_type">{{ trans('cruds.punchingTrace.fields.attendance_type') }}</label>
                 <input class="form-control {{ $errors->has('attendance_type') ? 'is-invalid' : '' }}" type="text" name="attendance_type" id="attendance_type" value="{{ old('attendance_type', '') }}">
                 @if($errors->has('attendance_type'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('attendance_type') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('attendance_type') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.attendance_type_helper') }}</span>
             </div>
@@ -53,9 +45,7 @@
                 <label for="auth_status">{{ trans('cruds.punchingTrace.fields.auth_status') }}</label>
                 <input class="form-control {{ $errors->has('auth_status') ? 'is-invalid' : '' }}" type="text" name="auth_status" id="auth_status" value="{{ old('auth_status', '') }}">
                 @if($errors->has('auth_status'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('auth_status') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('auth_status') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.auth_status_helper') }}</span>
             </div>
@@ -63,9 +53,7 @@
                 <label for="err_code">{{ trans('cruds.punchingTrace.fields.err_code') }}</label>
                 <input class="form-control {{ $errors->has('err_code') ? 'is-invalid' : '' }}" type="text" name="err_code" id="err_code" value="{{ old('err_code', '') }}">
                 @if($errors->has('err_code'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('err_code') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('err_code') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.err_code_helper') }}</span>
             </div>
@@ -73,9 +61,7 @@
                 <label class="required" for="att_date">{{ trans('cruds.punchingTrace.fields.att_date') }}</label>
                 <input class="form-control date {{ $errors->has('att_date') ? 'is-invalid' : '' }}" type="text" name="att_date" id="att_date" value="{{ old('att_date') }}" required>
                 @if($errors->has('att_date'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('att_date') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('att_date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.att_date_helper') }}</span>
             </div>
@@ -83,11 +69,29 @@
                 <label class="required" for="att_time">{{ trans('cruds.punchingTrace.fields.att_time') }}</label>
                 <input class="form-control timepicker {{ $errors->has('att_time') ? 'is-invalid' : '' }}" type="text" name="att_time" id="att_time" value="{{ old('att_time') }}" required>
                 @if($errors->has('att_time'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('att_time') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('att_time') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingTrace.fields.att_time_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="day_offset">{{ trans('cruds.punchingTrace.fields.day_offset') }}</label>
+                <input class="form-control {{ $errors->has('day_offset') ? 'is-invalid' : '' }}" type="number" name="day_offset" id="day_offset" value="{{ old('day_offset', '') }}" step="1">
+                @if($errors->has('day_offset'))
+                    <span class="text-danger">{{ $errors->first('day_offset') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punchingTrace.fields.day_offset_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="punching_id">{{ trans('cruds.punchingTrace.fields.punching') }}</label>
+                <select class="form-control select2 {{ $errors->has('punching') ? 'is-invalid' : '' }}" name="punching_id" id="punching_id" required>
+                    @foreach($punchings as $id => $entry)
+                        <option value="{{ $id }}" {{ old('punching_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('punching'))
+                    <span class="text-danger">{{ $errors->first('punching') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punchingTrace.fields.punching_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

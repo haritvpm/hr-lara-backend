@@ -13,9 +13,7 @@
                 <label class="required" for="device">{{ trans('cruds.punchingDevice.fields.device') }}</label>
                 <input class="form-control {{ $errors->has('device') ? 'is-invalid' : '' }}" type="text" name="device" id="device" value="{{ old('device', '') }}" required>
                 @if($errors->has('device'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('device') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('device') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingDevice.fields.device_helper') }}</span>
             </div>
@@ -23,9 +21,7 @@
                 <label for="loc_name">{{ trans('cruds.punchingDevice.fields.loc_name') }}</label>
                 <input class="form-control {{ $errors->has('loc_name') ? 'is-invalid' : '' }}" type="text" name="loc_name" id="loc_name" value="{{ old('loc_name', '') }}">
                 @if($errors->has('loc_name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('loc_name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('loc_name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingDevice.fields.loc_name_helper') }}</span>
             </div>
@@ -33,9 +29,7 @@
                 <label for="entry_name">{{ trans('cruds.punchingDevice.fields.entry_name') }}</label>
                 <input class="form-control {{ $errors->has('entry_name') ? 'is-invalid' : '' }}" type="text" name="entry_name" id="entry_name" value="{{ old('entry_name', '') }}">
                 @if($errors->has('entry_name'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('entry_name') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('entry_name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punchingDevice.fields.entry_name_helper') }}</span>
             </div>

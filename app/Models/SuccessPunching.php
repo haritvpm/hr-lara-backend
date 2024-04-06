@@ -35,6 +35,7 @@ class SuccessPunching extends Model
         'at_type',
         'duration',
         'aadhaarid',
+        'punching_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -73,5 +74,10 @@ class SuccessPunching extends Model
     public function setOutTimeAttribute($value)
     {
         $this->attributes['out_time'] = $value ? Carbon::createFromFormat(config('panel.date_format') . ' ' . config('panel.time_format'), $value)->format('Y-m-d H:i:s') : null;
+    }
+
+    public function punching()
+    {
+        return $this->belongsTo(Punching::class, 'punching_id');
     }
 }

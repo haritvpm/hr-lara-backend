@@ -17,9 +17,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('employee'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('employee') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.employee_helper') }}</span>
             </div>
@@ -27,9 +25,7 @@
                 <label class="required" for="designation">{{ trans('cruds.overtimeOther.fields.designation') }}</label>
                 <input class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" type="text" name="designation" id="designation" value="{{ old('designation', '') }}" required>
                 @if($errors->has('designation'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('designation') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.designation_helper') }}</span>
             </div>
@@ -37,9 +33,7 @@
                 <label for="from">{{ trans('cruds.overtimeOther.fields.from') }}</label>
                 <input class="form-control {{ $errors->has('from') ? 'is-invalid' : '' }}" type="text" name="from" id="from" value="{{ old('from', '') }}">
                 @if($errors->has('from'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('from') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('from') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.from_helper') }}</span>
             </div>
@@ -47,9 +41,7 @@
                 <label for="to">{{ trans('cruds.overtimeOther.fields.to') }}</label>
                 <input class="form-control {{ $errors->has('to') ? 'is-invalid' : '' }}" type="text" name="to" id="to" value="{{ old('to', '') }}">
                 @if($errors->has('to'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('to') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('to') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.to_helper') }}</span>
             </div>
@@ -57,9 +49,7 @@
                 <label for="count">{{ trans('cruds.overtimeOther.fields.count') }}</label>
                 <input class="form-control {{ $errors->has('count') ? 'is-invalid' : '' }}" type="text" name="count" id="count" value="{{ old('count', '') }}">
                 @if($errors->has('count'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('count') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('count') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.count_helper') }}</span>
             </div>
@@ -71,9 +61,7 @@
                     @endforeach
                 </select>
                 @if($errors->has('form'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('form') }}
-                    </div>
+                    <span class="text-danger">{{ $errors->first('form') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.overtimeOther.fields.form_helper') }}</span>
             </div>
