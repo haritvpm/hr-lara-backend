@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,5 +27,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Paginator::useBootstrap();
 
+        date_default_timezone_set('Asia/Kolkata');
+        Carbon::setLocale(config('app.locale'));
     }
 }

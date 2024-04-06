@@ -51,7 +51,7 @@ class PunchingApiController extends Controller
 
         //this has to be rewritten. we need to give emp data from Punchings which has to calculated after 
         //we call our api refresh.
-      $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'d-m-Y', $request->date )
+      $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'Y-m-d', $request->date )
                              : Carbon::now(); //today
 
      //  \Log::info("got" . $request->date);

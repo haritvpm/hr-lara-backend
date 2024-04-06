@@ -61,7 +61,7 @@
                             {{ trans('cruds.govtCalendar.fields.punching') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.ends_at_time') }}
+                            {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.session') }}
@@ -136,7 +136,7 @@
                                     </a>
                                 @endcan
                            
-                                <a href="{{ route('admin.govt-calendars.fetch', $govtCalendar->date ) }}"  class="btn btn-sm btn-danger">Fetch</a>
+                                <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
 
                                 @can('govt_calendar_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">

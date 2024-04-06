@@ -57,7 +57,8 @@ class GovtCalendarController extends Controller
     
     public function fetch(Request $request)
     {
-        $date = $request->query('date');
+        $date = $request->date;
+        \Log::info("fetch attendance tr !. " .  $date);
      
         if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
 
@@ -71,10 +72,36 @@ class GovtCalendarController extends Controller
 
     public function fetchmonth(Request $request)
     {
-        $date = date;
-
        \Log::info("fetchmonth attendance trace !. " );
-       
+       // (new PunchingService())->fetchTodayTrace($reportdate);
+       $today = today(); 
+       $dates = []; 
+       $punchingservice = new PunchingService();
+
+       for($i=1; $i <= $today->daysInMonth; ++$i) 
+       {
+           $date = Carbon::createFromDate($today->year, $today->month, $i,0,0,0); 
+           $date_string = $date->format('Y-m-d');
+
+           $calender = $punchingservice->getGovtCalender($date_string);
+
+           \Log::info("fetchmonth --".  $date->toString());
+           
+           if($date > now()) break;
+
+           //\Log::info("call AebasFetchDay --".  $date_string);
+         
+           //AebasFetch::dispatch($date)->delay(now()->addMinutes($i));
+
+           //dont forget to set queue driver in env
+           //QUEUE_CONNECTION=database
+ 
+          // $this->dispatch($job);
+          //AebasFetchDay::dispatch($date)->delay(now()->addMinutes($i));
+          //AebasFetchDay::dispatch($date_string);
+          //(new PunchingService())->fetchTrace( $date);
+         
+       }
 
         return redirect()->back();
     }
