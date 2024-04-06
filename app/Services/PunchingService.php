@@ -499,12 +499,13 @@ class PunchingService
 
         if($insertedcount){
             $govtcalender->update([
-
     //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
                 'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched+$insertedcount,
                 'attendancetodaytrace_lastfetchtime' => Carbon::now()//today
 
             ]);
+
+          //  $this->calculate($reportdate);
         }
 
         return $insertedcount;
@@ -531,14 +532,34 @@ class PunchingService
     public function calculate($date)
     {
 
-       $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'d-m-Y', $request->date )
-                : Carbon::now(); //today
+       $punchingtraces = PunchingTrace::where('att_date', $date->format('Y-m-d'))
+                ->where('auth_status', 'Y')
+                ->orderBy('created_at', 'asc')
+                
+                ->get()->groupBy('aadhaarid');
 
-       $punchings_for_this_day = PunchingTrace::where('att_date', $date->format('Y-m-d'))->get();
+  
+    
+       $data = [];
+         
+       foreach ($punchingtraces as $key => $punching) {
+        
+        $item = [];
+        \Log::info('hgggjhg:' . $key);
+        \Log::info('wewewew:' . $punching);
 
-       foreach ($punchings_for_this_day as $key => $punching) {
-        # code...
+        $empid = $key;
+        $punch_count =  count($punching);
+
+        $item['aadhaarid'] = $key;
+        $item['in'] = $punch_count ? $punching[0]['att_time'] : '';
+        $item['out'] = $punch_count >= 2 ? $punching[ $punch_count-1 ]['att_time']  : '';
+           
+        $data[] = $item ;
+
        }
+
+       return $data ;
 
     }
 }
