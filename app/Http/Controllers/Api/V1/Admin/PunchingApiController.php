@@ -12,6 +12,8 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
+use App\Services\PunchingService;
+
 
 class PunchingApiController extends Controller
 {
@@ -48,20 +50,29 @@ class PunchingApiController extends Controller
     }
     public function getpunchings(Request $request)
     {
-
+  
+  
         //this has to be rewritten. we need to give emp data from Punchings which has to calculated after 
         //we call our api refresh.
-      $date = $request->date ? Carbon::createFromFormat(/*config('app.date_format')*/'Y-m-d', $request->date )
-                             : Carbon::now(); //today
+        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date )
+            : Carbon::now(); //today
 
-     //  \Log::info("got" . $request->date);
-  
-      $punchingstest = PunchingTrace::where('att_date', $date->format('Y-m-d'))->get();
+        
+        $data = (new PunchingService())->calculate($date);
+        return response()->json([
+            'status' => 'success',
+            'punchings' => $data
+            ]);
+
+       //  \Log::info("got" . $request->date);
+  /*
+      $punchingstest = Punching::where('date', $date->format('Y-m-d'))->get();
       return response()->json([
         'status' => 'success',
         'punchings' => $punchingstest
         ]);
 
+        */
     }
     
 }
