@@ -22,7 +22,7 @@ class UpdateDdoRequest extends FormRequest
                 'required',
                 'unique:ddos,code,' . request()->route('ddo')->id,
             ],
-            'acquittance_id' => [
+            'office_id' => [
                 'required',
                 'integer',
             ],

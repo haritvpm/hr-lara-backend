@@ -22,6 +22,7 @@ class Acquittance extends Model
     protected $fillable = [
         'title',
         'office_id',
+        'ddo_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -35,5 +36,10 @@ class Acquittance extends Model
     public function office()
     {
         return $this->belongsTo(AdministrativeOffice::class, 'office_id');
+    }
+
+    public function ddo()
+    {
+        return $this->belongsTo(Ddo::class, 'ddo_id');
     }
 }

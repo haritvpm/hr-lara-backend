@@ -19,13 +19,13 @@ class Seat extends Model
     ];
 
     protected $fillable = [
-        'name',
+        'slug',
         'title',
         'has_files',
         'has_office_with_employees',
-        'level',
         'is_js_as_ss',
         'is_controlling_officer',
+        'level',
         'created_at',
         'updated_at',
         'deleted_at',

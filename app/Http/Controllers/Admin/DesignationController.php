@@ -9,6 +9,7 @@ use App\Http\Requests\StoreDesignationRequest;
 use App\Http\Requests\UpdateDesignationRequest;
 use App\Models\Designation;
 use App\Models\DesignationLine;
+use App\Models\DesignationWithoutGrade;
 use App\Models\OfficeTime;
 use Gate;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::with(['desig_line', 'office_times'])->get();
+        $designations = Designation::with(['desig_line', 'office_times', 'designation_wo_grade'])->get();
 
         return view('admin.designations.index', compact('designations'));
     }
@@ -35,7 +36,9 @@ class DesignationController extends Controller
 
         $office_times = OfficeTime::pluck('description', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.designations.create', compact('desig_lines', 'office_times'));
+        $designation_wo_grades = DesignationWithoutGrade::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.designations.create', compact('desig_lines', 'designation_wo_grades', 'office_times'));
     }
 
     public function store(StoreDesignationRequest $request)
@@ -53,9 +56,11 @@ class DesignationController extends Controller
 
         $office_times = OfficeTime::pluck('description', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $designation->load('desig_line', 'office_times');
+        $designation_wo_grades = DesignationWithoutGrade::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.designations.edit', compact('desig_lines', 'designation', 'office_times'));
+        $designation->load('desig_line', 'office_times', 'designation_wo_grade');
+
+        return view('admin.designations.edit', compact('desig_lines', 'designation', 'designation_wo_grades', 'office_times'));
     }
 
     public function update(UpdateDesignationRequest $request, Designation $designation)
@@ -69,7 +74,7 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designation->load('desig_line', 'office_times');
+        $designation->load('desig_line', 'office_times', 'designation_wo_grade');
 
         return view('admin.designations.show', compact('designation'));
     }

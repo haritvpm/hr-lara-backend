@@ -33,10 +33,16 @@
                             {{ trans('cruds.section.fields.name') }}
                         </th>
                         <th>
+                            {{ trans('cruds.section.fields.short_code') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.section.fields.seat_of_controling_officer') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.seat_of_reporting_officer') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.js_as_ss_employee') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.type') }}
@@ -65,10 +71,16 @@
                                 {{ $section->name ?? '' }}
                             </td>
                             <td>
+                                {{ $section->short_code ?? '' }}
+                            </td>
+                            <td>
                                 {{ $section->seat_of_controling_officer->title ?? '' }}
                             </td>
                             <td>
                                 {{ $section->seat_of_reporting_officer->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ $section->js_as_ss_employee->name ?? '' }}
                             </td>
                             <td>
                                 {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}

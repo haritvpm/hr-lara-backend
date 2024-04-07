@@ -57,14 +57,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punching.fields.designation') }}
-                        </th>
-                        <td>
-                            {{ $punching->designation }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.punching.fields.grace') }}
                         </th>
                         <td>
@@ -109,6 +101,54 @@
                         </th>
                         <td>
                             {{ $punching->punchout_trace->att_time ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_claimed_mins') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_claimed_mins }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_extra_mins') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_extra_mins }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.punching_status') }}
+                        </th>
+                        <td>
+                            {{ $punching->punching_status }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.leave') }}
+                        </th>
+                        <td>
+                            {{ $punching->leave->reason ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.designation') }}
+                        </th>
+                        <td>
+                            {{ $punching->designation->designation ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.section') }}
+                        </th>
+                        <td>
+                            {{ $punching->section->name ?? '' }}
                         </td>
                     </tr>
                 </tbody>

@@ -22,7 +22,7 @@ class StoreDdoRequest extends FormRequest
                 'required',
                 'unique:ddos',
             ],
-            'acquittance_id' => [
+            'office_id' => [
                 'required',
                 'integer',
             ],

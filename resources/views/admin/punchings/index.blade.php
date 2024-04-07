@@ -40,9 +40,6 @@
                         {{ trans('cruds.punching.fields.flexi') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.designation') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.punching.fields.grace') }}
                     </th>
                     <th>
@@ -65,6 +62,30 @@
                     </th>
                     <th>
                         {{ trans('cruds.punchingTrace.fields.att_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_claimed_mins') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_extra_mins') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.punching_status') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.leave') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.start_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.end_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.designation') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.section') }}
                     </th>
                     <th>
                         &nbsp;
@@ -99,7 +120,6 @@
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'duration', name: 'duration' },
 { data: 'flexi', name: 'flexi' },
-{ data: 'designation', name: 'designation' },
 { data: 'grace', name: 'grace' },
 { data: 'extra', name: 'extra' },
 { data: 'remarks', name: 'remarks' },
@@ -108,6 +128,14 @@
 { data: 'punchin_trace.att_date', name: 'punchin_trace.att_date' },
 { data: 'punchout_trace_att_time', name: 'punchout_trace.att_time' },
 { data: 'punchout_trace.att_date', name: 'punchout_trace.att_date' },
+{ data: 'ot_claimed_mins', name: 'ot_claimed_mins' },
+{ data: 'ot_extra_mins', name: 'ot_extra_mins' },
+{ data: 'punching_status', name: 'punching_status' },
+{ data: 'leave_reason', name: 'leave.reason' },
+{ data: 'leave.start_date', name: 'leave.start_date' },
+{ data: 'leave.end_date', name: 'leave.end_date' },
+{ data: 'designation_designation', name: 'designation.designation' },
+{ data: 'section_name', name: 'section.name' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

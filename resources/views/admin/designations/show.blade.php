@@ -57,18 +57,26 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.normal_office_hours') }}
-                        </th>
-                        <td>
-                            {{ $designation->normal_office_hours }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.designation.fields.desig_line') }}
                         </th>
                         <td>
                             {{ $designation->desig_line->title ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.designation.fields.office_times') }}
+                        </th>
+                        <td>
+                            {{ $designation->office_times->description ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
+                        </th>
+                        <td>
+                            {{ $designation->designation_wo_grade->title ?? '' }}
                         </td>
                     </tr>
                 </tbody>

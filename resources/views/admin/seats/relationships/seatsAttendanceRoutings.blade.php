@@ -28,6 +28,15 @@
                                 {{ trans('cruds.attendanceRouting.fields.seats') }}
                             </th>
                             <th>
+                                {{ trans('cruds.attendanceRouting.fields.js') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.attendanceRouting.fields.as') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.attendanceRouting.fields.ss') }}
+                            </th>
+                            <th>
                                 &nbsp;
                             </th>
                         </tr>
@@ -43,8 +52,17 @@
                                 </td>
                                 <td>
                                     @foreach($attendanceRouting->seats as $key => $item)
-                                        <span class="badge badge-info">{{ $item->name }}</span>
+                                        <span class="badge badge-info">{{ $item->title }}</span>
                                     @endforeach
+                                </td>
+                                <td>
+                                    {{ $attendanceRouting->js->name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $attendanceRouting->as->name ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $attendanceRouting->ss->name ?? '' }}
                                 </td>
                                 <td>
                                     @can('attendance_routing_show')

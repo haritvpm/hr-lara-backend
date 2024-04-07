@@ -25,19 +25,19 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.otRouting.fields.seat') }}
+                            {{ trans('cruds.otRouting.fields.from_seat') }}
                         </th>
                         <td>
-                            {{ $otRouting->seat->title ?? '' }}
+                            {{ $otRouting->from_seat->title ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.otRouting.fields.routing_seats') }}
+                            {{ trans('cruds.otRouting.fields.to_seats') }}
                         </th>
                         <td>
-                            @foreach($otRouting->routing_seats as $key => $routing_seats)
-                                <span class="label label-info">{{ $routing_seats->name }}</span>
+                            @foreach($otRouting->to_seats as $key => $to_seats)
+                                <span class="label label-info">{{ $to_seats->title }}</span>
                             @endforeach
                         </td>
                     </tr>
@@ -47,6 +47,14 @@
                         </th>
                         <td>
                             {{ $otRouting->last_forwarded_to }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.otRouting.fields.js_as_ss') }}
+                        </th>
+                        <td>
+                            {{ $otRouting->js_as_ss->name ?? '' }}
                         </td>
                     </tr>
                 </tbody>

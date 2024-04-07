@@ -49,14 +49,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.exemption.fields.session') }}
-                        </th>
-                        <td>
-                            {{ $exemption->session->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.exemption.fields.forwarded_by') }}
                         </th>
                         <td>
@@ -69,6 +61,30 @@
                         </th>
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $exemption->submitted_to_services ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.session') }}
+                        </th>
+                        <td>
+                            {{ $exemption->session->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.approval_status') }}
+                        </th>
+                        <td>
+                            {{ $exemption->approval_status }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.owner') }}
+                        </th>
+                        <td>
+                            {{ $exemption->owner->title ?? '' }}
                         </td>
                     </tr>
                 </tbody>

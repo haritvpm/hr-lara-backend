@@ -36,6 +36,9 @@
                             {{ trans('cruds.acquittance.fields.office') }}
                         </th>
                         <th>
+                            {{ trans('cruds.acquittance.fields.ddo') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -54,6 +57,9 @@
                             </td>
                             <td>
                                 {{ $acquittance->office->office_name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $acquittance->ddo->code ?? '' }}
                             </td>
                             <td>
                                 @can('acquittance_show')

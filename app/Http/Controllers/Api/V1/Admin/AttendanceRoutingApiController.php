@@ -17,7 +17,7 @@ class AttendanceRoutingApiController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AttendanceRoutingResource(AttendanceRouting::with(['seats'])->get());
+        return new AttendanceRoutingResource(AttendanceRouting::with(['seats', 'js', 'as', 'ss'])->get());
     }
 
     public function store(StoreAttendanceRoutingRequest $request)
@@ -34,7 +34,7 @@ class AttendanceRoutingApiController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AttendanceRoutingResource($attendanceRouting->load(['seats']));
+        return new AttendanceRoutingResource($attendanceRouting->load(['seats', 'js', 'as', 'ss']));
     }
 
     public function update(UpdateAttendanceRoutingRequest $request, AttendanceRouting $attendanceRouting)

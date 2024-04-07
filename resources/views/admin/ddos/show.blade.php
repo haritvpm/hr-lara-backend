@@ -33,10 +33,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.ddo.fields.acquittance') }}
+                            {{ trans('cruds.ddo.fields.office') }}
                         </th>
                         <td>
-                            {{ $ddo->acquittance->title ?? '' }}
+                            {{ $ddo->office->office_name ?? '' }}
                         </td>
                     </tr>
                 </tbody>

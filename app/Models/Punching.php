@@ -31,16 +31,18 @@ class Punching extends Model
         'employee_id',
         'duration',
         'flexi',
-        'designation',
         'grace',
         'extra',
         'remarks',
         'calc_complete',
         'punchin_trace_id',
         'punchout_trace_id',
-        'ot_claimed_minutes',
+        'ot_claimed_mins',
+        'ot_extra_mins',
         'punching_status',
         'leave_id',
+        'designation_id',
+        'section_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -79,5 +81,15 @@ class Punching extends Model
     public function leave()
     {
         return $this->belongsTo(Leaf::class, 'leave_id');
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
 }

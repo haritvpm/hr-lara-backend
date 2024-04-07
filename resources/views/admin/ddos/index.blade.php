@@ -29,7 +29,7 @@
                             {{ trans('cruds.ddo.fields.code') }}
                         </th>
                         <th>
-                            {{ trans('cruds.ddo.fields.acquittance') }}
+                            {{ trans('cruds.ddo.fields.office') }}
                         </th>
                         <th>
                             &nbsp;
@@ -49,7 +49,7 @@
                                 {{ $ddo->code ?? '' }}
                             </td>
                             <td>
-                                {{ $ddo->acquittance->title ?? '' }}
+                                {{ $ddo->office->office_name ?? '' }}
                             </td>
                             <td>
                                 @can('ddo_show')

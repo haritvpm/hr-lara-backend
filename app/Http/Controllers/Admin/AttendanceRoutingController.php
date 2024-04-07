@@ -8,6 +8,7 @@ use App\Http\Requests\StoreAttendanceRoutingRequest;
 use App\Http\Requests\UpdateAttendanceRoutingRequest;
 use App\Models\AttendanceRouting;
 use App\Models\Seat;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +19,7 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $attendanceRoutings = AttendanceRouting::with(['seats'])->get();
+        $attendanceRoutings = AttendanceRouting::with(['seats', 'js', 'as', 'ss'])->get();
 
         return view('admin.attendanceRoutings.index', compact('attendanceRoutings'));
     }
@@ -27,9 +28,15 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('name', 'id');
+        $seats = Seat::pluck('title', 'id');
 
-        return view('admin.attendanceRoutings.create', compact('seats'));
+        $js = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $as = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.attendanceRoutings.create', compact('as', 'js', 'seats', 'sses'));
     }
 
     public function store(StoreAttendanceRoutingRequest $request)
@@ -44,11 +51,17 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('name', 'id');
+        $seats = Seat::pluck('title', 'id');
 
-        $attendanceRouting->load('seats');
+        $js = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.attendanceRoutings.edit', compact('attendanceRouting', 'seats'));
+        $as = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $attendanceRouting->load('seats', 'js', 'as', 'ss');
+
+        return view('admin.attendanceRoutings.edit', compact('as', 'attendanceRouting', 'js', 'seats', 'sses'));
     }
 
     public function update(UpdateAttendanceRoutingRequest $request, AttendanceRouting $attendanceRouting)
@@ -63,7 +76,7 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $attendanceRouting->load('seats');
+        $attendanceRouting->load('seats', 'js', 'as', 'ss');
 
         return view('admin.attendanceRoutings.show', compact('attendanceRouting'));
     }

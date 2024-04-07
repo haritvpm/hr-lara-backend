@@ -84,8 +84,8 @@
                     </li>
                 @endcan
                 @can('punching_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/govt-calendars*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-address-card">
 
                             </i>
@@ -143,21 +143,6 @@
                                     </a>
                                 </li>
                             @endcan
-                        </ul>
-                    </li>
-                @endcan
-                @can('attendance_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-books*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/attendance-books*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }}" href="#">
-                            <i class="fa-fw nav-icon far fa-calendar-check">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.attendance.title') }}
-                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
                             @can('govt_calendar_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.govt-calendars.index") }}" class="nav-link {{ request()->is("admin/govt-calendars") || request()->is("admin/govt-calendars/*") ? "active" : "" }}">
@@ -170,6 +155,21 @@
                                     </a>
                                 </li>
                             @endcan
+                        </ul>
+                    </li>
+                @endcan
+                @can('attendance_access')
+                    <li class="nav-item has-treeview {{ request()->is("admin/attendance-books*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/attendance-books*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }}" href="#">
+                            <i class="fa-fw nav-icon far fa-calendar-check">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.attendance.title') }}
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
                             @can('attendance_book_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.attendance-books.index") }}" class="nav-link {{ request()->is("admin/attendance-books") || request()->is("admin/attendance-books/*") ? "active" : "" }}">
@@ -198,8 +198,8 @@
                     </li>
                 @endcan
                 @can('employee_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/designation-lines*") ? "menu-open" : "" }} {{ request()->is("admin/employee-seat-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-section-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-designation-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-details*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/designation-lines*") ? "active" : "" }} {{ request()->is("admin/employee-seat-histories*") ? "active" : "" }} {{ request()->is("admin/employee-section-histories*") ? "active" : "" }} {{ request()->is("admin/employee-designation-histories*") ? "active" : "" }} {{ request()->is("admin/employee-details*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/designation-lines*") ? "menu-open" : "" }} {{ request()->is("admin/employee-seat-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-section-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-designation-histories*") ? "menu-open" : "" }} {{ request()->is("admin/employee-details*") ? "menu-open" : "" }} {{ request()->is("admin/designation-without-grades*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/designation-lines*") ? "active" : "" }} {{ request()->is("admin/employee-seat-histories*") ? "active" : "" }} {{ request()->is("admin/employee-section-histories*") ? "active" : "" }} {{ request()->is("admin/employee-designation-histories*") ? "active" : "" }} {{ request()->is("admin/employee-details*") ? "active" : "" }} {{ request()->is("admin/designation-without-grades*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
@@ -221,14 +221,26 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('employee_to_designation_access')
+                            @can('seat_to_js_as_ss_access')
                                 <li class="nav-item">
-                                    <a href="{{ route("admin.employee-to-designations.index") }}" class="nav-link {{ request()->is("admin/employee-to-designations") || request()->is("admin/employee-to-designations/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-address-book">
+                                    <a href="{{ route("admin.seat-to-js-as-sses.index") }}" class="nav-link {{ request()->is("admin/seat-to-js-as-sses") || request()->is("admin/seat-to-js-as-sses/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-chess-king">
 
                                         </i>
                                         <p>
-                                            {{ trans('cruds.employeeToDesignation.title') }}
+                                            {{ trans('cruds.seatToJsAsSs.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('employee_to_seat_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.employee-to-seats.index") }}" class="nav-link {{ request()->is("admin/employee-to-seats") || request()->is("admin/employee-to-seats/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-chess-king">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.employeeToSeat.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -245,14 +257,14 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('employee_to_seat_access')
+                            @can('employee_to_designation_access')
                                 <li class="nav-item">
-                                    <a href="{{ route("admin.employee-to-seats.index") }}" class="nav-link {{ request()->is("admin/employee-to-seats") || request()->is("admin/employee-to-seats/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-chess-king">
+                                    <a href="{{ route("admin.employee-to-designations.index") }}" class="nav-link {{ request()->is("admin/employee-to-designations") || request()->is("admin/employee-to-designations/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-address-book">
 
                                         </i>
                                         <p>
-                                            {{ trans('cruds.employeeToSeat.title') }}
+                                            {{ trans('cruds.employeeToDesignation.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -337,6 +349,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.employeeDetail.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('designation_without_grade_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.designation-without-grades.index") }}" class="nav-link {{ request()->is("admin/designation-without-grades") || request()->is("admin/designation-without-grades/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.designationWithoutGrade.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -435,8 +459,8 @@
                     </li>
                 @endcan
                 @can('overtime_related_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/employee-ot-datas*") ? "menu-open" : "" }} {{ request()->is("admin/sessions*") ? "menu-open" : "" }} {{ request()->is("admin/ot-categories*") ? "menu-open" : "" }} {{ request()->is("admin/dept-employees*") ? "menu-open" : "" }} {{ request()->is("admin/dept-designations*") ? "menu-open" : "" }} {{ request()->is("admin/ot-forms*") ? "menu-open" : "" }} {{ request()->is("admin/ot-form-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtimes*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-sittings*") ? "menu-open" : "" }} {{ request()->is("admin/ot-routings*") ? "menu-open" : "" }} {{ request()->is("admin/assembly-sessions*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employee-ot-datas*") ? "active" : "" }} {{ request()->is("admin/sessions*") ? "active" : "" }} {{ request()->is("admin/ot-categories*") ? "active" : "" }} {{ request()->is("admin/dept-employees*") ? "active" : "" }} {{ request()->is("admin/dept-designations*") ? "active" : "" }} {{ request()->is("admin/ot-forms*") ? "active" : "" }} {{ request()->is("admin/ot-form-others*") ? "active" : "" }} {{ request()->is("admin/overtimes*") ? "active" : "" }} {{ request()->is("admin/overtime-others*") ? "active" : "" }} {{ request()->is("admin/overtime-sittings*") ? "active" : "" }} {{ request()->is("admin/ot-routings*") ? "active" : "" }} {{ request()->is("admin/assembly-sessions*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/ot-categories*") ? "menu-open" : "" }} {{ request()->is("admin/dept-employees*") ? "menu-open" : "" }} {{ request()->is("admin/dept-designations*") ? "menu-open" : "" }} {{ request()->is("admin/ot-forms*") ? "menu-open" : "" }} {{ request()->is("admin/ot-form-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtimes*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-sittings*") ? "menu-open" : "" }} {{ request()->is("admin/ot-routings*") ? "menu-open" : "" }} {{ request()->is("admin/assembly-sessions*") ? "menu-open" : "" }} {{ request()->is("admin/employee-ot-settings*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/ot-categories*") ? "active" : "" }} {{ request()->is("admin/dept-employees*") ? "active" : "" }} {{ request()->is("admin/dept-designations*") ? "active" : "" }} {{ request()->is("admin/ot-forms*") ? "active" : "" }} {{ request()->is("admin/ot-form-others*") ? "active" : "" }} {{ request()->is("admin/overtimes*") ? "active" : "" }} {{ request()->is("admin/overtime-others*") ? "active" : "" }} {{ request()->is("admin/overtime-sittings*") ? "active" : "" }} {{ request()->is("admin/ot-routings*") ? "active" : "" }} {{ request()->is("admin/assembly-sessions*") ? "active" : "" }} {{ request()->is("admin/employee-ot-settings*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-money-bill-wave">
 
                             </i>
@@ -446,30 +470,6 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview">
-                            @can('employee_ot_data_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.employee-ot-datas.index") }}" class="nav-link {{ request()->is("admin/employee-ot-datas") || request()->is("admin/employee-ot-datas/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-user-circle">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.employeeOtData.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('session_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.sessions.index") }}" class="nav-link {{ request()->is("admin/sessions") || request()->is("admin/sessions/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-asterisk">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.session.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
                             @can('ot_category_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.ot-categories.index") }}" class="nav-link {{ request()->is("admin/ot-categories") || request()->is("admin/ot-categories/*") ? "active" : "" }}">
@@ -586,6 +586,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.assemblySession.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('employee_ot_setting_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.employee-ot-settings.index") }}" class="nav-link {{ request()->is("admin/employee-ot-settings") || request()->is("admin/employee-ot-settings/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-user-circle">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.employeeOtSetting.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -717,6 +729,18 @@
                                 </li>
                             @endcan
                         </ul>
+                    </li>
+                @endcan
+                @can('monthly_attendance_access')
+                    <li class="nav-item">
+                        <a href="{{ route("admin.monthly-attendances.index") }}" class="nav-link {{ request()->is("admin/monthly-attendances") || request()->is("admin/monthly-attendances/*") ? "active" : "" }}">
+                            <i class="fa-fw nav-icon fas fa-cogs">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.monthlyAttendance.title') }}
+                            </p>
+                        </a>
                     </li>
                 @endcan
                 @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))

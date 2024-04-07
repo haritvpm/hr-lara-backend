@@ -29,8 +29,32 @@
                         </th>
                         <td>
                             @foreach($attendanceRouting->seats as $key => $seats)
-                                <span class="label label-info">{{ $seats->name }}</span>
+                                <span class="label label-info">{{ $seats->title }}</span>
                             @endforeach
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.js') }}
+                        </th>
+                        <td>
+                            {{ $attendanceRouting->js->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.as') }}
+                        </th>
+                        <td>
+                            {{ $attendanceRouting->as->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.ss') }}
+                        </th>
+                        <td>
+                            {{ $attendanceRouting->ss->name ?? '' }}
                         </td>
                     </tr>
                 </tbody>

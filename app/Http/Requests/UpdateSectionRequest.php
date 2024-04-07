@@ -22,6 +22,12 @@ class UpdateSectionRequest extends FormRequest
                 'required',
                 'unique:sections,name,' . request()->route('section')->id,
             ],
+            'short_code' => [
+                'string',
+                'min:2',
+                'required',
+                'unique:sections,short_code,' . request()->route('section')->id,
+            ],
             'seat_of_controling_officer_id' => [
                 'required',
                 'integer',

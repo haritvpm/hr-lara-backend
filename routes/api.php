@@ -42,8 +42,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Punching Trace
     Route::apiResource('punching-traces', 'PunchingTraceApiController', ['except' => ['store', 'show', 'update', 'destroy']]);
 
-    // Session
-    Route::apiResource('sessions', 'SessionApiController');
 
     // Govt Calendar
     Route::apiResource('govt-calendars', 'GovtCalendarApiController', ['except' => ['store', 'destroy']]);
@@ -119,8 +117,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Employee Details
     Route::apiResource('employee-details', 'EmployeeDetailsApiController');
 
-    // Employee Ot Data
-    Route::apiResource('employee-ot-datas', 'EmployeeOtDataApiController');
+
 
     // Employee Designation History
     Route::apiResource('employee-designation-histories', 'EmployeeDesignationHistoryApiController');
@@ -155,4 +152,22 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Assembly Session
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
+
+    // Leave
+    Route::apiResource('leaves', 'LeaveApiController');
+
+    // Office Times
+    Route::apiResource('office-times', 'OfficeTimesApiController');
+
+    // Designation Without Grade
+    Route::apiResource('designation-without-grades', 'DesignationWithoutGradeApiController');
+
+    // Seat To Js As Ss
+    Route::apiResource('seat-to-js-as-sses', 'SeatToJsAsSsApiController');
+
+    // Employee Ot Setting
+    Route::apiResource('employee-ot-settings', 'EmployeeOtSettingApiController');
+
+    // Monthly Attendance
+    Route::apiResource('monthly-attendances', 'MonthlyAttendanceApiController');
 });

@@ -42,10 +42,13 @@
                             {{ trans('cruds.designation.fields.has_punching') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.normal_office_hours') }}
+                            {{ trans('cruds.designation.fields.desig_line') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.desig_line') }}
+                            {{ trans('cruds.designation.fields.office_times') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
                         </th>
                         <th>
                             &nbsp;
@@ -74,10 +77,13 @@
                                 {{ $designation->has_punching ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->normal_office_hours ?? '' }}
+                                {{ $designation->desig_line->title ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->desig_line->title ?? '' }}
+                                {{ $designation->office_times->description ?? '' }}
+                            </td>
+                            <td>
+                                {{ $designation->designation_wo_grade->title ?? '' }}
                             </td>
                             <td>
                                 @can('designation_show')

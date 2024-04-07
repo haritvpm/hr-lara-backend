@@ -31,4 +31,9 @@ class AssemblySession extends Model
     {
         return $date->format('Y-m-d H:i:s');
     }
+
+    public function sessionGovtCalendars()
+    {
+        return $this->hasMany(GovtCalendar::class, 'session_id', 'id');
+    }
 }

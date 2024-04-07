@@ -44,6 +44,10 @@ class UpdateLeafRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'in_lieu_of' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
         ];
     }
 }

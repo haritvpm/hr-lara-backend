@@ -17,7 +17,7 @@ class StoreSeatRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
+            'slug' => [
                 'string',
                 'required',
                 'unique:seats',
@@ -28,7 +28,7 @@ class StoreSeatRequest extends FormRequest
                 'unique:seats',
             ],
             'level' => [
-                'nullable',
+                'required',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',

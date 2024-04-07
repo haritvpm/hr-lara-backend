@@ -19,6 +19,7 @@ class StoreUserRequest extends FormRequest
         return [
             'username' => [
                 'string',
+                'min:3',
                 'required',
                 'unique:users',
             ],

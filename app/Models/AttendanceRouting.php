@@ -19,6 +19,9 @@ class AttendanceRouting extends Model
     ];
 
     protected $fillable = [
+        'js_id',
+        'as_id',
+        'ss_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -32,5 +35,20 @@ class AttendanceRouting extends Model
     public function seats()
     {
         return $this->belongsToMany(Seat::class);
+    }
+
+    public function js()
+    {
+        return $this->belongsTo(User::class, 'js_id');
+    }
+
+    public function as()
+    {
+        return $this->belongsTo(User::class, 'as_id');
+    }
+
+    public function ss()
+    {
+        return $this->belongsTo(User::class, 'ss_id');
     }
 }

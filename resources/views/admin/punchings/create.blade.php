@@ -51,14 +51,6 @@
                 <span class="help-block">{{ trans('cruds.punching.fields.flexi_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="designation">{{ trans('cruds.punching.fields.designation') }}</label>
-                <input class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" type="text" name="designation" id="designation" value="{{ old('designation', '') }}" required>
-                @if($errors->has('designation'))
-                    <span class="text-danger">{{ $errors->first('designation') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.punching.fields.designation_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="grace">{{ trans('cruds.punching.fields.grace') }}</label>
                 <input class="form-control {{ $errors->has('grace') ? 'is-invalid' : '' }}" type="number" name="grace" id="grace" value="{{ old('grace', '0') }}" step="1">
                 @if($errors->has('grace'))
@@ -113,6 +105,66 @@
                     <span class="text-danger">{{ $errors->first('punchout_trace') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punching.fields.punchout_trace_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ot_claimed_mins">{{ trans('cruds.punching.fields.ot_claimed_mins') }}</label>
+                <input class="form-control {{ $errors->has('ot_claimed_mins') ? 'is-invalid' : '' }}" type="number" name="ot_claimed_mins" id="ot_claimed_mins" value="{{ old('ot_claimed_mins', '') }}" step="1">
+                @if($errors->has('ot_claimed_mins'))
+                    <span class="text-danger">{{ $errors->first('ot_claimed_mins') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.ot_claimed_mins_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ot_extra_mins">{{ trans('cruds.punching.fields.ot_extra_mins') }}</label>
+                <input class="form-control {{ $errors->has('ot_extra_mins') ? 'is-invalid' : '' }}" type="number" name="ot_extra_mins" id="ot_extra_mins" value="{{ old('ot_extra_mins', '') }}" step="1">
+                @if($errors->has('ot_extra_mins'))
+                    <span class="text-danger">{{ $errors->first('ot_extra_mins') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.ot_extra_mins_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="punching_status">{{ trans('cruds.punching.fields.punching_status') }}</label>
+                <input class="form-control {{ $errors->has('punching_status') ? 'is-invalid' : '' }}" type="number" name="punching_status" id="punching_status" value="{{ old('punching_status', '') }}" step="1">
+                @if($errors->has('punching_status'))
+                    <span class="text-danger">{{ $errors->first('punching_status') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.punching_status_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="leave_id">{{ trans('cruds.punching.fields.leave') }}</label>
+                <select class="form-control select2 {{ $errors->has('leave') ? 'is-invalid' : '' }}" name="leave_id" id="leave_id">
+                    @foreach($leaves as $id => $entry)
+                        <option value="{{ $id }}" {{ old('leave_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('leave'))
+                    <span class="text-danger">{{ $errors->first('leave') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.leave_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="designation_id">{{ trans('cruds.punching.fields.designation') }}</label>
+                <select class="form-control select2 {{ $errors->has('designation') ? 'is-invalid' : '' }}" name="designation_id" id="designation_id" required>
+                    @foreach($designations as $id => $entry)
+                        <option value="{{ $id }}" {{ old('designation_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('designation'))
+                    <span class="text-danger">{{ $errors->first('designation') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.designation_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="section_id">{{ trans('cruds.punching.fields.section') }}</label>
+                <select class="form-control select2 {{ $errors->has('section') ? 'is-invalid' : '' }}" name="section_id" id="section_id" required>
+                    @foreach($sections as $id => $entry)
+                        <option value="{{ $id }}" {{ old('section_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('section'))
+                    <span class="text-danger">{{ $errors->first('section') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.section_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

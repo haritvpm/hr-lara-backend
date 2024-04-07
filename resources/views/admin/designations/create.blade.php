@@ -42,14 +42,6 @@
                 <span class="help-block">{{ trans('cruds.designation.fields.has_punching_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="normal_office_hours">{{ trans('cruds.designation.fields.normal_office_hours') }}</label>
-                <input class="form-control {{ $errors->has('normal_office_hours') ? 'is-invalid' : '' }}" type="number" name="normal_office_hours" id="normal_office_hours" value="{{ old('normal_office_hours', '7') }}" step="1">
-                @if($errors->has('normal_office_hours'))
-                    <span class="text-danger">{{ $errors->first('normal_office_hours') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.designation.fields.normal_office_hours_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="desig_line_id">{{ trans('cruds.designation.fields.desig_line') }}</label>
                 <select class="form-control select2 {{ $errors->has('desig_line') ? 'is-invalid' : '' }}" name="desig_line_id" id="desig_line_id">
                     @foreach($desig_lines as $id => $entry)
@@ -60,6 +52,30 @@
                     <span class="text-danger">{{ $errors->first('desig_line') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.designation.fields.desig_line_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="office_times_id">{{ trans('cruds.designation.fields.office_times') }}</label>
+                <select class="form-control select2 {{ $errors->has('office_times') ? 'is-invalid' : '' }}" name="office_times_id" id="office_times_id" required>
+                    @foreach($office_times as $id => $entry)
+                        <option value="{{ $id }}" {{ old('office_times_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('office_times'))
+                    <span class="text-danger">{{ $errors->first('office_times') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.designation.fields.office_times_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="designation_wo_grade_id">{{ trans('cruds.designation.fields.designation_wo_grade') }}</label>
+                <select class="form-control select2 {{ $errors->has('designation_wo_grade') ? 'is-invalid' : '' }}" name="designation_wo_grade_id" id="designation_wo_grade_id">
+                    @foreach($designation_wo_grades as $id => $entry)
+                        <option value="{{ $id }}" {{ old('designation_wo_grade_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('designation_wo_grade'))
+                    <span class="text-danger">{{ $errors->first('designation_wo_grade') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.designation.fields.designation_wo_grade_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

@@ -39,6 +39,22 @@
                             {{ $employeeToAcquittance->acquittance->title ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.start_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToAcquittance->start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.end_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToAcquittance->end_date }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

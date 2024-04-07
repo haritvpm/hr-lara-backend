@@ -97,14 +97,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.is_in_session_period') }}
-                        </th>
-                        <td>
-                            <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_in_session_period ? 'checked' : '' }}>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <td>
@@ -121,18 +113,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.ends_at_time') }}
-                        </th>
-                        <td>
-                            {{ $govtCalendar->ends_at_time }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <td>
                             {{ $govtCalendar->session->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
+                        </th>
+                        <td>
+                            {{ $govtCalendar->office_ends_at_time }}
                         </td>
                     </tr>
                 </tbody>

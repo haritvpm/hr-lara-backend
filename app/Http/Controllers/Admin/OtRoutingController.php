@@ -9,6 +9,7 @@ use App\Http\Requests\StoreOtRoutingRequest;
 use App\Http\Requests\UpdateOtRoutingRequest;
 use App\Models\OtRouting;
 use App\Models\Seat;
+use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class OtRoutingController extends Controller
     {
         abort_if(Gate::denies('ot_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $otRoutings = OtRouting::with(['from_seat', 'to_seats'])->get();
+        $otRoutings = OtRouting::with(['from_seat', 'to_seats', 'js_as_ss'])->get();
 
         return view('admin.otRoutings.index', compact('otRoutings'));
     }
@@ -34,7 +35,9 @@ class OtRoutingController extends Controller
 
         $to_seats = Seat::pluck('title', 'id');
 
-        return view('admin.otRoutings.create', compact('from_seats', 'to_seats'));
+        $js_as_sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.otRoutings.create', compact('from_seats', 'js_as_sses', 'to_seats'));
     }
 
     public function store(StoreOtRoutingRequest $request)
@@ -53,9 +56,11 @@ class OtRoutingController extends Controller
 
         $to_seats = Seat::pluck('title', 'id');
 
-        $otRouting->load('from_seat', 'to_seats');
+        $js_as_sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.otRoutings.edit', compact('from_seats', 'otRouting', 'to_seats'));
+        $otRouting->load('from_seat', 'to_seats', 'js_as_ss');
+
+        return view('admin.otRoutings.edit', compact('from_seats', 'js_as_sses', 'otRouting', 'to_seats'));
     }
 
     public function update(UpdateOtRoutingRequest $request, OtRouting $otRouting)
@@ -70,7 +75,7 @@ class OtRoutingController extends Controller
     {
         abort_if(Gate::denies('ot_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $otRouting->load('from_seat', 'to_seats');
+        $otRouting->load('from_seat', 'to_seats', 'js_as_ss');
 
         return view('admin.otRoutings.show', compact('otRouting'));
     }

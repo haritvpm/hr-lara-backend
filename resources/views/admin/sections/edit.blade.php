@@ -19,6 +19,14 @@
                 <span class="help-block">{{ trans('cruds.section.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="short_code">{{ trans('cruds.section.fields.short_code') }}</label>
+                <input class="form-control {{ $errors->has('short_code') ? 'is-invalid' : '' }}" type="text" name="short_code" id="short_code" value="{{ old('short_code', $section->short_code) }}" required>
+                @if($errors->has('short_code'))
+                    <span class="text-danger">{{ $errors->first('short_code') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.section.fields.short_code_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="seat_of_controling_officer_id">{{ trans('cruds.section.fields.seat_of_controling_officer') }}</label>
                 <select class="form-control select2 {{ $errors->has('seat_of_controling_officer') ? 'is-invalid' : '' }}" name="seat_of_controling_officer_id" id="seat_of_controling_officer_id" required>
                     @foreach($seat_of_controling_officers as $id => $entry)
@@ -41,6 +49,18 @@
                     <span class="text-danger">{{ $errors->first('seat_of_reporting_officer') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.section.fields.seat_of_reporting_officer_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="js_as_ss_employee_id">{{ trans('cruds.section.fields.js_as_ss_employee') }}</label>
+                <select class="form-control select2 {{ $errors->has('js_as_ss_employee') ? 'is-invalid' : '' }}" name="js_as_ss_employee_id" id="js_as_ss_employee_id">
+                    @foreach($js_as_ss_employees as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('js_as_ss_employee_id') ? old('js_as_ss_employee_id') : $section->js_as_ss_employee->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('js_as_ss_employee'))
+                    <span class="text-danger">{{ $errors->first('js_as_ss_employee') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.section.fields.js_as_ss_employee_helper') }}</span>
             </div>
             <div class="form-group">
                 <label>{{ trans('cruds.section.fields.type') }}</label>

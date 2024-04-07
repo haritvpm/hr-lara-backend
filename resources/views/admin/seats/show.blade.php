@@ -25,10 +25,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.seat.fields.name') }}
+                            {{ trans('cruds.seat.fields.slug') }}
                         </th>
                         <td>
-                            {{ $seat->name }}
+                            {{ $seat->slug }}
                         </td>
                     </tr>
                     <tr>
@@ -57,14 +57,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.seat.fields.level') }}
-                        </th>
-                        <td>
-                            {{ $seat->level }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.seat.fields.is_js_as_ss') }}
                         </th>
                         <td>
@@ -77,6 +69,14 @@
                         </th>
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $seat->is_controlling_officer ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.level') }}
+                        </th>
+                        <td>
+                            {{ $seat->level }}
                         </td>
                     </tr>
                 </tbody>
@@ -105,6 +105,11 @@
                 {{ trans('cruds.attendanceRouting.title') }}
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#to_seats_ot_routings" role="tab" data-toggle="tab">
+                {{ trans('cruds.otRouting.title') }}
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane" role="tabpanel" id="created_by_tax_entries">
@@ -112,6 +117,9 @@
         </div>
         <div class="tab-pane" role="tabpanel" id="seats_attendance_routings">
             @includeIf('admin.seats.relationships.seatsAttendanceRoutings', ['attendanceRoutings' => $seat->seatsAttendanceRoutings])
+        </div>
+        <div class="tab-pane" role="tabpanel" id="to_seats_ot_routings">
+            @includeIf('admin.seats.relationships.toSeatsOtRoutings', ['otRoutings' => $seat->toSeatsOtRoutings])
         </div>
     </div>
 </div>

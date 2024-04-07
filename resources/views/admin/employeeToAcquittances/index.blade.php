@@ -39,6 +39,12 @@
                             {{ trans('cruds.employeeToAcquittance.fields.acquittance') }}
                         </th>
                         <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.start_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.end_date') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -60,6 +66,12 @@
                             </td>
                             <td>
                                 {{ $employeeToAcquittance->acquittance->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToAcquittance->start_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToAcquittance->end_date ?? '' }}
                             </td>
                             <td>
                                 @can('employee_to_acquittance_show')

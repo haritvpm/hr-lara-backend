@@ -56,9 +56,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('punching-traces/process-csv-import', 'PunchingTraceController@processCsvImport')->name('punching-traces.processCsvImport');
     Route::resource('punching-traces', 'PunchingTraceController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
-    // Session
-    Route::delete('sessions/destroy', 'SessionController@massDestroy')->name('sessions.massDestroy');
-    Route::resource('sessions', 'SessionController');
+
 
     // Govt Calendar
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarController@fetch')->name('govt-calendars.fetch');
@@ -176,11 +174,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('employee-details/process-csv-import', 'EmployeeDetailsController@processCsvImport')->name('employee-details.processCsvImport');
     Route::resource('employee-details', 'EmployeeDetailsController');
 
-    // Employee Ot Data
-    Route::delete('employee-ot-datas/destroy', 'EmployeeOtDataController@massDestroy')->name('employee-ot-datas.massDestroy');
-    Route::post('employee-ot-datas/parse-csv-import', 'EmployeeOtDataController@parseCsvImport')->name('employee-ot-datas.parseCsvImport');
-    Route::post('employee-ot-datas/process-csv-import', 'EmployeeOtDataController@processCsvImport')->name('employee-ot-datas.processCsvImport');
-    Route::resource('employee-ot-datas', 'EmployeeOtDataController');
+ 
 
     // Employee Designation History
     Route::delete('employee-designation-histories/destroy', 'EmployeeDesignationHistoryController@massDestroy')->name('employee-designation-histories.massDestroy');
@@ -238,6 +232,28 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Office Times
     Route::delete('office-times/destroy', 'OfficeTimesController@massDestroy')->name('office-times.massDestroy');
     Route::resource('office-times', 'OfficeTimesController');
+
+    // Designation Without Grade
+    Route::delete('designation-without-grades/destroy', 'DesignationWithoutGradeController@massDestroy')->name('designation-without-grades.massDestroy');
+    Route::post('designation-without-grades/parse-csv-import', 'DesignationWithoutGradeController@parseCsvImport')->name('designation-without-grades.parseCsvImport');
+    Route::post('designation-without-grades/process-csv-import', 'DesignationWithoutGradeController@processCsvImport')->name('designation-without-grades.processCsvImport');
+    Route::resource('designation-without-grades', 'DesignationWithoutGradeController');
+
+    // Seat To Js As Ss
+    Route::delete('seat-to-js-as-sses/destroy', 'SeatToJsAsSsController@massDestroy')->name('seat-to-js-as-sses.massDestroy');
+    Route::post('seat-to-js-as-sses/parse-csv-import', 'SeatToJsAsSsController@parseCsvImport')->name('seat-to-js-as-sses.parseCsvImport');
+    Route::post('seat-to-js-as-sses/process-csv-import', 'SeatToJsAsSsController@processCsvImport')->name('seat-to-js-as-sses.processCsvImport');
+    Route::resource('seat-to-js-as-sses', 'SeatToJsAsSsController');
+
+    // Employee Ot Setting
+    Route::delete('employee-ot-settings/destroy', 'EmployeeOtSettingController@massDestroy')->name('employee-ot-settings.massDestroy');
+    Route::post('employee-ot-settings/parse-csv-import', 'EmployeeOtSettingController@parseCsvImport')->name('employee-ot-settings.parseCsvImport');
+    Route::post('employee-ot-settings/process-csv-import', 'EmployeeOtSettingController@processCsvImport')->name('employee-ot-settings.processCsvImport');
+    Route::resource('employee-ot-settings', 'EmployeeOtSettingController');
+
+    // Monthly Attendance
+    Route::delete('monthly-attendances/destroy', 'MonthlyAttendanceController@massDestroy')->name('monthly-attendances.massDestroy');
+    Route::resource('monthly-attendances', 'MonthlyAttendanceController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

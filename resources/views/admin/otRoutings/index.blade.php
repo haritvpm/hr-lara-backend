@@ -30,13 +30,19 @@
                             {{ trans('cruds.otRouting.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.otRouting.fields.seat') }}
+                            {{ trans('cruds.otRouting.fields.from_seat') }}
                         </th>
                         <th>
-                            {{ trans('cruds.otRouting.fields.routing_seats') }}
+                            {{ trans('cruds.seat.fields.name') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.otRouting.fields.to_seats') }}
                         </th>
                         <th>
                             {{ trans('cruds.otRouting.fields.last_forwarded_to') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.otRouting.fields.js_as_ss') }}
                         </th>
                         <th>
                             &nbsp;
@@ -53,15 +59,21 @@
                                 {{ $otRouting->id ?? '' }}
                             </td>
                             <td>
-                                {{ $otRouting->seat->title ?? '' }}
+                                {{ $otRouting->from_seat->title ?? '' }}
                             </td>
                             <td>
-                                @foreach($otRouting->routing_seats as $key => $item)
-                                    <span class="badge badge-info">{{ $item->name }}</span>
+                                {{ $otRouting->from_seat->name ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($otRouting->to_seats as $key => $item)
+                                    <span class="badge badge-info">{{ $item->title }}</span>
                                 @endforeach
                             </td>
                             <td>
                                 {{ $otRouting->last_forwarded_to ?? '' }}
+                            </td>
+                            <td>
+                                {{ $otRouting->js_as_ss->name ?? '' }}
                             </td>
                             <td>
                                 @can('ot_routing_show')

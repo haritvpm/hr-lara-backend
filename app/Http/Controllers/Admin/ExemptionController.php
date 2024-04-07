@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateExemptionRequest;
 use App\Models\AssemblySession;
 use App\Models\Employee;
 use App\Models\Exemption;
+use App\Models\Seat;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +20,7 @@ class ExemptionController extends Controller
     {
         abort_if(Gate::denies('exemption_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $exemptions = Exemption::with(['employee', 'session'])->get();
+        $exemptions = Exemption::with(['employee', 'session', 'owner'])->get();
 
         return view('admin.exemptions.index', compact('exemptions'));
     }
@@ -32,7 +33,9 @@ class ExemptionController extends Controller
 
         $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.exemptions.create', compact('employees', 'sessions'));
+        $owners = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.exemptions.create', compact('employees', 'owners', 'sessions'));
     }
 
     public function store(StoreExemptionRequest $request)
@@ -50,9 +53,11 @@ class ExemptionController extends Controller
 
         $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $exemption->load('employee', 'session');
+        $owners = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.exemptions.edit', compact('employees', 'exemption', 'sessions'));
+        $exemption->load('employee', 'session', 'owner');
+
+        return view('admin.exemptions.edit', compact('employees', 'exemption', 'owners', 'sessions'));
     }
 
     public function update(UpdateExemptionRequest $request, Exemption $exemption)
@@ -66,7 +71,7 @@ class ExemptionController extends Controller
     {
         abort_if(Gate::denies('exemption_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $exemption->load('employee', 'session');
+        $exemption->load('employee', 'session', 'owner');
 
         return view('admin.exemptions.show', compact('exemption'));
     }

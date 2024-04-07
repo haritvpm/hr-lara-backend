@@ -28,6 +28,8 @@ class Exemption extends Model
         'forwarded_by',
         'submitted_to_services',
         'session_id',
+        'approval_status',
+        'owner_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -66,5 +68,10 @@ class Exemption extends Model
     public function session()
     {
         return $this->belongsTo(AssemblySession::class, 'session_id');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Seat::class, 'owner_id');
     }
 }

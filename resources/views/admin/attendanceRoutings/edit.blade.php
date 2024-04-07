@@ -27,6 +27,42 @@
                 <span class="help-block">{{ trans('cruds.attendanceRouting.fields.seats_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="js_id">{{ trans('cruds.attendanceRouting.fields.js') }}</label>
+                <select class="form-control select2 {{ $errors->has('js') ? 'is-invalid' : '' }}" name="js_id" id="js_id">
+                    @foreach($js as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('js_id') ? old('js_id') : $attendanceRouting->js->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('js'))
+                    <span class="text-danger">{{ $errors->first('js') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.attendanceRouting.fields.js_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="as_id">{{ trans('cruds.attendanceRouting.fields.as') }}</label>
+                <select class="form-control select2 {{ $errors->has('as') ? 'is-invalid' : '' }}" name="as_id" id="as_id">
+                    @foreach($as as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('as_id') ? old('as_id') : $attendanceRouting->as->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('as'))
+                    <span class="text-danger">{{ $errors->first('as') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.attendanceRouting.fields.as_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ss_id">{{ trans('cruds.attendanceRouting.fields.ss') }}</label>
+                <select class="form-control select2 {{ $errors->has('ss') ? 'is-invalid' : '' }}" name="ss_id" id="ss_id">
+                    @foreach($sses as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('ss_id') ? old('ss_id') : $attendanceRouting->ss->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('ss'))
+                    <span class="text-danger">{{ $errors->first('ss') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.attendanceRouting.fields.ss_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

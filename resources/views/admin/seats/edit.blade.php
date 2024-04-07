@@ -11,12 +11,12 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="name">{{ trans('cruds.seat.fields.name') }}</label>
-                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $seat->name) }}" required>
-                @if($errors->has('name'))
-                    <span class="text-danger">{{ $errors->first('name') }}</span>
+                <label class="required" for="slug">{{ trans('cruds.seat.fields.slug') }}</label>
+                <input class="form-control {{ $errors->has('slug') ? 'is-invalid' : '' }}" type="text" name="slug" id="slug" value="{{ old('slug', $seat->slug) }}" required>
+                @if($errors->has('slug'))
+                    <span class="text-danger">{{ $errors->first('slug') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.seat.fields.name_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.seat.fields.slug_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="title">{{ trans('cruds.seat.fields.title') }}</label>
@@ -49,14 +49,6 @@
                 <span class="help-block">{{ trans('cruds.seat.fields.has_office_with_employees_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="level">{{ trans('cruds.seat.fields.level') }}</label>
-                <input class="form-control {{ $errors->has('level') ? 'is-invalid' : '' }}" type="number" name="level" id="level" value="{{ old('level', $seat->level) }}" step="1">
-                @if($errors->has('level'))
-                    <span class="text-danger">{{ $errors->first('level') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.seat.fields.level_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <div class="form-check {{ $errors->has('is_js_as_ss') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="is_js_as_ss" value="0">
                     <input class="form-check-input" type="checkbox" name="is_js_as_ss" id="is_js_as_ss" value="1" {{ $seat->is_js_as_ss || old('is_js_as_ss', 0) === 1 ? 'checked' : '' }}>
@@ -77,6 +69,14 @@
                     <span class="text-danger">{{ $errors->first('is_controlling_officer') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.seat.fields.is_controlling_officer_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="level">{{ trans('cruds.seat.fields.level') }}</label>
+                <input class="form-control {{ $errors->has('level') ? 'is-invalid' : '' }}" type="number" name="level" id="level" value="{{ old('level', $seat->level) }}" step="1" required>
+                @if($errors->has('level'))
+                    <span class="text-danger">{{ $errors->first('level') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.seat.fields.level_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

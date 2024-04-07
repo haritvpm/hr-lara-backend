@@ -27,18 +27,9 @@
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
-                        <!-- <th>
+                        <th>
                             {{ trans('cruds.govtCalendar.fields.govtholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.restrictedholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.bankholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.festivallist') }}
-                        </th> -->
+                        </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.success_attendance_lastfetchtime') }}
                         </th>
@@ -52,19 +43,13 @@
                             {{ trans('cruds.govtCalendar.fields.attendance_today_trace_rows_fetched') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.is_in_session_period') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.punching') }}
+                            {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
                             &nbsp;
@@ -88,18 +73,9 @@
                                 {{ $govtCalendar->date ?? '' }}
                                 @endif
                             </td>
-                            <!-- <td>
+                            <td>
                                 {{ $govtCalendar->govtholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->restrictedholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->bankholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->festivallist ?? '' }}
-                            </td> -->
+                            </td>
                             <td>
                                 {{ $govtCalendar->success_attendance_lastfetchtime ?? '' }}
                             </td>
@@ -113,21 +89,14 @@
                                 {{ $govtCalendar->attendance_today_trace_rows_fetched ?? '' }}
                             </td>
                             <td>
-                                <span style="display:none">{{ $govtCalendar->is_in_session_period ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_in_session_period ? 'checked' : '' }}>
-                            </td>
-                            <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}>
                             </td>
                             <td>
-                                {{ $govtCalendar->punching ?? '' }}
-                            </td>
-                            <td>
-                                {{ $govtCalendar->ends_at_time ?? '' }}
-                            </td>
-                            <td>
                                 {{ $govtCalendar->session->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $govtCalendar->office_ends_at_time ?? '' }}
                             </td>
                             <td>
                                 @can('govt_calendar_show')

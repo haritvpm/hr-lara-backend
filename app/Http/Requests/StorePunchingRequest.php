@@ -51,7 +51,13 @@ class StorePunchingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'ot_claimed_minutes' => [
+            'ot_claimed_mins' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'ot_extra_mins' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',

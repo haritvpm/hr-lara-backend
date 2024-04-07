@@ -54,7 +54,7 @@ class OtFormOther extends Model
 
     public function session()
     {
-        return $this->belongsTo(Session::class, 'session_id');
+        return $this->belongsTo(AssemblySession::class, 'session_id');
     }
 
     public function getSubmittedOnAttribute($value)

@@ -17,7 +17,7 @@ class DdoApiController extends Controller
     {
         abort_if(Gate::denies('ddo_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new DdoResource(Ddo::with(['acquittance'])->get());
+        return new DdoResource(Ddo::with(['office'])->get());
     }
 
     public function store(StoreDdoRequest $request)
@@ -33,7 +33,7 @@ class DdoApiController extends Controller
     {
         abort_if(Gate::denies('ddo_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new DdoResource($ddo->load(['acquittance']));
+        return new DdoResource($ddo->load(['office']));
     }
 
     public function update(UpdateDdoRequest $request, Ddo $ddo)

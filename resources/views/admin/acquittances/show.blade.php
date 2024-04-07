@@ -39,6 +39,14 @@
                             {{ $acquittance->office->office_name ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.acquittance.fields.ddo') }}
+                        </th>
+                        <td>
+                            {{ $acquittance->ddo->code ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
