@@ -26,10 +26,10 @@
                             {{ trans('cruds.officeTime.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.description') }}
+                            {{ trans('cruds.officeTime.fields.time_group') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.office') }}
+                            {{ trans('cruds.officeTime.fields.description') }}
                         </th>
                         <th>
                             {{ trans('cruds.officeTime.fields.full_from') }}
@@ -73,10 +73,10 @@
                                 {{ $officeTime->id ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->description ?? '' }}
+                                {{ $officeTime->time_group->groupname ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->office->office_name ?? '' }}
+                                {{ $officeTime->description ?? '' }}
                             </td>
                             <td>
                                 {{ $officeTime->full_from ?? '' }}

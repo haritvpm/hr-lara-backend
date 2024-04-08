@@ -65,18 +65,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.office_times') }}
-                        </th>
-                        <td>
-                            {{ $designation->office_times->description ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.designation.fields.designation_wo_grade') }}
                         </th>
                         <td>
                             {{ $designation->designation_wo_grade->title ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.designation.fields.time_group') }}
+                        </th>
+                        <td>
+                            {{ $designation->time_group->groupname ?? '' }}
                         </td>
                     </tr>
                 </tbody>

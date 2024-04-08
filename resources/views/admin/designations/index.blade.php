@@ -45,10 +45,10 @@
                             {{ trans('cruds.designation.fields.desig_line') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.office_times') }}
+                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
+                            {{ trans('cruds.designation.fields.time_group') }}
                         </th>
                         <th>
                             &nbsp;
@@ -80,10 +80,10 @@
                                 {{ $designation->desig_line->title ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->office_times->description ?? '' }}
+                                {{ $designation->designation_wo_grade->title ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->designation_wo_grade->title ?? '' }}
+                                {{ $designation->time_group->groupname ?? '' }}
                             </td>
                             <td>
                                 @can('designation_show')

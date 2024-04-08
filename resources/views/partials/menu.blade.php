@@ -728,6 +728,18 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('office_time_group_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.office-time-groups.index") }}" class="nav-link {{ request()->is("admin/office-time-groups") || request()->is("admin/office-time-groups/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.officeTimeGroup.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan

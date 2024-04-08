@@ -20,8 +20,8 @@ class OfficeTime extends Model
     ];
 
     protected $fillable = [
+        'time_group_id',
         'description',
-        'office_id',
         'full_from',
         'full_to',
         'office_hours',
@@ -41,8 +41,8 @@ class OfficeTime extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function office()
+    public function time_group()
     {
-        return $this->belongsTo(AdministrativeOffice::class, 'office_id');
+        return $this->belongsTo(OfficeTimeGroup::class, 'time_group_id');
     }
 }

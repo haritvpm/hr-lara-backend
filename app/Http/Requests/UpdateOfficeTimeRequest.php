@@ -17,14 +17,13 @@ class UpdateOfficeTimeRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => [
-                'string',
-                'required',
-                'unique:office_times,description,' . request()->route('office_time')->id,
-            ],
-            'office_id' => [
+            'time_group_id' => [
                 'required',
                 'integer',
+            ],
+            'description' => [
+                'string',
+                'nullable',
             ],
             'full_from' => [
                 'required',

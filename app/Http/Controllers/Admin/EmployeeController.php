@@ -12,6 +12,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
 {
@@ -144,4 +145,10 @@ class EmployeeController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+    public function aebasfetch($request)
+    {
+        (new EmployeeService())->syncEmployeeDataFromAebas();
+
+    }
+    
 }

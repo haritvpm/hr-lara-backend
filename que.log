@@ -84,3 +84,291 @@
   2024-04-05 05:43:19 App\Jobs\AebasFetchDay ........................ 15s DONE
   2024-04-05 05:43:19 App\Jobs\AebasFetchDay ........................ 15s DONE
   2024-04-05 05:43:31 App\Jobs\AebasFetchDay ........................ 27s DONE
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+
+
+In EmployeeService.php line 11:
+                                                                               
+  App\Services\EmployeeService::__construct(): Argument #1 ($aebasFetchServic  
+  e) must be of type App\Services\AebasFetchService, Illuminate\Foundation\Ap  
+  plication given, called in /home/kla/hrApp/hrmsapp-lara/vendor/laravel/fram  
+  ework/src/Illuminate/Foundation/ProviderRepository.php on line 206           
+                                                                               
+

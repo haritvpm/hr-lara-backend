@@ -195,6 +195,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //Hari's custom 
+        // App\Services\EmployeeService::class,
+        // App\Services\PunchingService::class,
+        // App\Services\AebasFetchService::class,
+        
     ],
 
     /*

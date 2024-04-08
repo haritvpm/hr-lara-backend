@@ -3,10 +3,15 @@
 namespace App\Services;
 use Carbon\Carbon;
 use App\Employee;
+use App\Services\AebasFetchService;
 
 class EmployeeService {
 
-  
+    // private AebasFetchService $aebasFetchService;
+    // public function __construct(AebasFetchService $aebasFetchService)
+    // {
+    //     $this->aebasFetchService = $aebasFetchService;
+    // }
     public  function getEmployeeType(Employee $emp) 
     {
     
@@ -26,5 +31,10 @@ class EmployeeService {
 
         return [$isPartime,$isFulltime,  $isWatchnward,  $isNormal];
     }
-   
+    public  function syncEmployeeDataFromAebas() 
+    {
+        $aebas_employees = (new AebasFetchService())->fetchApi(1,0);
+        \Log::info('got emp' . count($aebas_employees));
+
+    }
 }

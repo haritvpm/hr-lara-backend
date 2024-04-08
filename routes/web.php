@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('ot-categories', 'OtCategoryController');
 
     // Employee
+    Route::get('employees/aebasfetch', 'EmployeeController@aebasfetch')->name('employees.aebasfetch');
     Route::delete('employees/destroy', 'EmployeeController@massDestroy')->name('employees.massDestroy');
     Route::post('employees/parse-csv-import', 'EmployeeController@parseCsvImport')->name('employees.parseCsvImport');
     Route::post('employees/process-csv-import', 'EmployeeController@processCsvImport')->name('employees.processCsvImport');
@@ -254,6 +255,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Monthly Attendance
     Route::delete('monthly-attendances/destroy', 'MonthlyAttendanceController@massDestroy')->name('monthly-attendances.massDestroy');
     Route::resource('monthly-attendances', 'MonthlyAttendanceController');
+
+    // Office Time Group
+    Route::delete('office-time-groups/destroy', 'OfficeTimeGroupController@massDestroy')->name('office-time-groups.massDestroy');
+    Route::resource('office-time-groups', 'OfficeTimeGroupController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

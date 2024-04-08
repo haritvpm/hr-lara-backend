@@ -25,18 +25,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.description') }}
+                            {{ trans('cruds.officeTime.fields.time_group') }}
                         </th>
                         <td>
-                            {{ $officeTime->description }}
+                            {{ $officeTime->time_group->groupname ?? '' }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.office') }}
+                            {{ trans('cruds.officeTime.fields.description') }}
                         </th>
                         <td>
-                            {{ $officeTime->office->office_name ?? '' }}
+                            {{ $officeTime->description }}
                         </td>
                     </tr>
                     <tr>

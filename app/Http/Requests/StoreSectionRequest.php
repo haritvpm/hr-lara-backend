@@ -22,12 +22,7 @@ class StoreSectionRequest extends FormRequest
                 'required',
                 'unique:sections',
             ],
-            'short_code' => [
-                'string',
-                'min:2',
-                'required',
-                'unique:sections',
-            ],
+        
             'seat_of_controling_officer_id' => [
                 'required',
                 'integer',

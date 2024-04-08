@@ -113,10 +113,10 @@ return [
             'desig_line_helper'           => ' ',
             'designation_mal'             => 'Designation Mal',
             'designation_mal_helper'      => ' ',
-            'office_times'                => 'Office Times',
-            'office_times_helper'         => ' ',
             'designation_wo_grade'        => 'Designation Wo Grade',
             'designation_wo_grade_helper' => ' ',
+            'time_group'                  => 'Time Group',
+            'time_group_helper'           => ' ',
         ],
     ],
     'overtimeRelated' => [
@@ -1143,8 +1143,6 @@ return [
         'fields'         => [
             'id'                  => 'ID',
             'id_helper'           => ' ',
-            'office'              => 'Office',
-            'office_helper'       => ' ',
             'created_at'          => 'Created at',
             'created_at_helper'   => ' ',
             'updated_at'          => 'Updated at',
@@ -1171,6 +1169,8 @@ return [
             'flexi_from_helper'   => ' ',
             'flexi_to'            => 'Flexi To',
             'flexi_to_helper'     => ' ',
+            'time_group'          => 'Time Group',
+            'time_group_helper'   => ' ',
         ],
     ],
     'designationWithoutGrade' => [
@@ -1251,6 +1251,22 @@ return [
             'updated_at_helper'               => ' ',
             'deleted_at'                      => 'Deleted at',
             'deleted_at_helper'               => ' ',
+        ],
+    ],
+    'officeTimeGroup' => [
+        'title'          => 'Office Time Group',
+        'title_singular' => 'Office Time Group',
+        'fields'         => [
+            'id'                => 'ID',
+            'id_helper'         => ' ',
+            'groupname'         => 'Groupname',
+            'groupname_helper'  => ' ',
+            'created_at'        => 'Created at',
+            'created_at_helper' => ' ',
+            'updated_at'        => 'Updated at',
+            'updated_at_helper' => ' ',
+            'deleted_at'        => 'Deleted at',
+            'deleted_at_helper' => ' ',
         ],
     ],
 

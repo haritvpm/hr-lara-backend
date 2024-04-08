@@ -13,6 +13,17 @@
         </div>
     </div>
 @endcan
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Actions
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item"  href="{{ route('admin.employees.aebasfetch') }}">Sync From AEBAS</a>
+    <!-- <a class="dropdown-item" href="#">Another action</a> -->
+  </div>
+</div>
+
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.employee.title_singular') }} {{ trans('global.list') }}

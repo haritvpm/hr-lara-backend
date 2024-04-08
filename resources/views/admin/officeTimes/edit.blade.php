@@ -11,24 +11,24 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="description">{{ trans('cruds.officeTime.fields.description') }}</label>
-                <input class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" type="text" name="description" id="description" value="{{ old('description', $officeTime->description) }}" required>
+                <label class="required" for="time_group_id">{{ trans('cruds.officeTime.fields.time_group') }}</label>
+                <select class="form-control select2 {{ $errors->has('time_group') ? 'is-invalid' : '' }}" name="time_group_id" id="time_group_id" required>
+                    @foreach($time_groups as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('time_group_id') ? old('time_group_id') : $officeTime->time_group->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('time_group'))
+                    <span class="text-danger">{{ $errors->first('time_group') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.officeTime.fields.time_group_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="description">{{ trans('cruds.officeTime.fields.description') }}</label>
+                <input class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" type="text" name="description" id="description" value="{{ old('description', $officeTime->description) }}">
                 @if($errors->has('description'))
                     <span class="text-danger">{{ $errors->first('description') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.officeTime.fields.description_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="office_id">{{ trans('cruds.officeTime.fields.office') }}</label>
-                <select class="form-control select2 {{ $errors->has('office') ? 'is-invalid' : '' }}" name="office_id" id="office_id" required>
-                    @foreach($offices as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('office_id') ? old('office_id') : $officeTime->office->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('office'))
-                    <span class="text-danger">{{ $errors->first('office') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.office_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="full_from">{{ trans('cruds.officeTime.fields.full_from') }}</label>

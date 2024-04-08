@@ -24,8 +24,8 @@ class Designation extends Model
         'sort_index',
         'has_punching',
         'desig_line_id',
-        'office_times_id',
         'designation_wo_grade_id',
+        'time_group_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -41,13 +41,13 @@ class Designation extends Model
         return $this->belongsTo(DesignationLine::class, 'desig_line_id');
     }
 
-    public function office_times()
-    {
-        return $this->belongsTo(OfficeTime::class, 'office_times_id');
-    }
-
     public function designation_wo_grade()
     {
         return $this->belongsTo(DesignationWithoutGrade::class, 'designation_wo_grade_id');
+    }
+
+    public function time_group()
+    {
+        return $this->belongsTo(OfficeTimeGroup::class, 'time_group_id');
     }
 }

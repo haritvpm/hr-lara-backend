@@ -10,7 +10,7 @@ class CreateOfficeTimesTable extends Migration
     {
         Schema::create('office_times', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('description')->unique();
+            $table->string('description')->nullable();
             $table->time('full_from');
             $table->time('full_to');
             $table->integer('office_hours');

@@ -170,4 +170,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Monthly Attendance
     Route::apiResource('monthly-attendances', 'MonthlyAttendanceApiController');
+
+    // Office Time Group
+    Route::apiResource('office-time-groups', 'OfficeTimeGroupApiController');
 });
