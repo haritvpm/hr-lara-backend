@@ -64,4 +64,14 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
     }
+
+    public static function getEmployeeWithAadhaar()
+    {
+        $employees = Employee::all()
+            ->mapWithKeys(function ($employee) {
+                return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid];
+                });
+
+         return $employees;
+    }
 }
