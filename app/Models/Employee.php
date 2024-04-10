@@ -31,25 +31,19 @@ class Employee extends Model
         'onleave'  => 'onleave',
     ];
 
-    public const EMPLOYEE_TYPE_SELECT = [
-        'contract'  => 'Contract',
-        'permanent' => 'Permanent',
-        'dailywage' => 'DailyWage',
-        'temporary' => 'Temporary',
-    ];
-
     protected $fillable = [
         'srismt',
         'name',
         'name_mal',
-        'pen',
         'aadhaarid',
-        'employee_type',
+        'pen',
         'desig_display',
         'pan',
         'has_punching',
         'status',
         'is_shift',
+        'klaid',
+        'electionid',
         'created_at',
         'updated_at',
         'deleted_at',

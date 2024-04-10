@@ -26,16 +26,16 @@
                             {{ trans('cruds.officeTime.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.time_group') }}
+                            {{ trans('cruds.officeTime.fields.groupname') }}
                         </th>
                         <th>
                             {{ trans('cruds.officeTime.fields.description') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.full_from') }}
+                            {{ trans('cruds.officeTime.fields.day_from') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.full_to') }}
+                            {{ trans('cruds.officeTime.fields.day_to') }}
                         </th>
                         <th>
                             {{ trans('cruds.officeTime.fields.office_hours') }}
@@ -53,10 +53,7 @@
                             {{ trans('cruds.officeTime.fields.an_to') }}
                         </th>
                         <th>
-                            {{ trans('cruds.officeTime.fields.flexi_from') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.officeTime.fields.flexi_to') }}
+                            {{ trans('cruds.officeTime.fields.flexi_minutes') }}
                         </th>
                         <th>
                             &nbsp;
@@ -73,16 +70,16 @@
                                 {{ $officeTime->id ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->time_group->groupname ?? '' }}
+                                {{ $officeTime->groupname ?? '' }}
                             </td>
                             <td>
                                 {{ $officeTime->description ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->full_from ?? '' }}
+                                {{ $officeTime->day_from ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->full_to ?? '' }}
+                                {{ $officeTime->day_to ?? '' }}
                             </td>
                             <td>
                                 {{ $officeTime->office_hours ?? '' }}
@@ -100,10 +97,7 @@
                                 {{ $officeTime->an_to ?? '' }}
                             </td>
                             <td>
-                                {{ $officeTime->flexi_from ?? '' }}
-                            </td>
-                            <td>
-                                {{ $officeTime->flexi_to ?? '' }}
+                                {{ $officeTime->flexi_minutes ?? '' }}
                             </td>
                             <td>
                                 @can('office_time_show')

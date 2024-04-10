@@ -49,14 +49,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.pen') }}
-                        </th>
-                        <td>
-                            {{ $employee->pen }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.employee.fields.aadhaarid') }}
                         </th>
                         <td>
@@ -65,10 +57,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.employee_type') }}
+                            {{ trans('cruds.employee.fields.pen') }}
                         </th>
                         <td>
-                            {{ App\Models\Employee::EMPLOYEE_TYPE_SELECT[$employee->employee_type] ?? '' }}
+                            {{ $employee->pen }}
                         </td>
                     </tr>
                     <tr>
@@ -109,6 +101,22 @@
                         </th>
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $employee->is_shift ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.klaid') }}
+                        </th>
+                        <td>
+                            {{ $employee->klaid }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.electionid') }}
+                        </th>
+                        <td>
+                            {{ $employee->electionid }}
                         </td>
                     </tr>
                 </tbody>

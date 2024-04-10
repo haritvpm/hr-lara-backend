@@ -36,7 +36,10 @@
                             {{ trans('cruds.section.fields.short_code') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.seat_of_controling_officer') }}
+                            {{ trans('cruds.section.fields.seat_of_controlling_officer') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.office_location') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.seat_of_reporting_officer') }}
@@ -45,10 +48,10 @@
                             {{ trans('cruds.section.fields.js_as_ss_employee') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.type') }}
+                            {{ trans('cruds.employee.fields.aadhaarid') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.office_location') }}
+                            {{ trans('cruds.section.fields.type') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.works_nights_during_session') }}
@@ -74,7 +77,10 @@
                                 {{ $section->short_code ?? '' }}
                             </td>
                             <td>
-                                {{ $section->seat_of_controling_officer->title ?? '' }}
+                                {{ $section->seat_of_controlling_officer->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ $section->office_location->location ?? '' }}
                             </td>
                             <td>
                                 {{ $section->seat_of_reporting_officer->title ?? '' }}
@@ -83,10 +89,10 @@
                                 {{ $section->js_as_ss_employee->name ?? '' }}
                             </td>
                             <td>
-                                {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
+                                {{ $section->js_as_ss_employee->aadhaarid ?? '' }}
                             </td>
                             <td>
-                                {{ $section->office_location->location ?? '' }}
+                                {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
                             </td>
                             <td>
                                 <span style="display:none">{{ $section->works_nights_during_session ?? '' }}</span>

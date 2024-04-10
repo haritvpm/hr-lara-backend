@@ -27,6 +27,18 @@
                 <span class="help-block">{{ trans('cruds.designation.fields.designation_mal_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="default_time_group_id">{{ trans('cruds.designation.fields.default_time_group') }}</label>
+                <select class="form-control select2 {{ $errors->has('default_time_group') ? 'is-invalid' : '' }}" name="default_time_group_id" id="default_time_group_id">
+                    @foreach($default_time_groups as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('default_time_group_id') ? old('default_time_group_id') : $designation->default_time_group->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('default_time_group'))
+                    <span class="text-danger">{{ $errors->first('default_time_group') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.designation.fields.default_time_group_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="sort_index">{{ trans('cruds.designation.fields.sort_index') }}</label>
                 <input class="form-control {{ $errors->has('sort_index') ? 'is-invalid' : '' }}" type="number" name="sort_index" id="sort_index" value="{{ old('sort_index', $designation->sort_index) }}" step="1">
                 @if($errors->has('sort_index'))
@@ -43,40 +55,20 @@
                 <span class="help-block">{{ trans('cruds.designation.fields.has_punching_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="desig_line_id">{{ trans('cruds.designation.fields.desig_line') }}</label>
-                <select class="form-control select2 {{ $errors->has('desig_line') ? 'is-invalid' : '' }}" name="desig_line_id" id="desig_line_id">
-                    @foreach($desig_lines as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('desig_line_id') ? old('desig_line_id') : $designation->desig_line->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('desig_line'))
-                    <span class="text-danger">{{ $errors->first('desig_line') }}</span>
+                <label for="designation_without_grade">{{ trans('cruds.designation.fields.designation_without_grade') }}</label>
+                <input class="form-control {{ $errors->has('designation_without_grade') ? 'is-invalid' : '' }}" type="text" name="designation_without_grade" id="designation_without_grade" value="{{ old('designation_without_grade', $designation->designation_without_grade) }}">
+                @if($errors->has('designation_without_grade'))
+                    <span class="text-danger">{{ $errors->first('designation_without_grade') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.designation.fields.desig_line_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.designation.fields.designation_without_grade_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="designation_wo_grade_id">{{ trans('cruds.designation.fields.designation_wo_grade') }}</label>
-                <select class="form-control select2 {{ $errors->has('designation_wo_grade') ? 'is-invalid' : '' }}" name="designation_wo_grade_id" id="designation_wo_grade_id">
-                    @foreach($designation_wo_grades as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('designation_wo_grade_id') ? old('designation_wo_grade_id') : $designation->designation_wo_grade->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('designation_wo_grade'))
-                    <span class="text-danger">{{ $errors->first('designation_wo_grade') }}</span>
+                <label for="designation_without_grade_mal">{{ trans('cruds.designation.fields.designation_without_grade_mal') }}</label>
+                <input class="form-control {{ $errors->has('designation_without_grade_mal') ? 'is-invalid' : '' }}" type="text" name="designation_without_grade_mal" id="designation_without_grade_mal" value="{{ old('designation_without_grade_mal', $designation->designation_without_grade_mal) }}">
+                @if($errors->has('designation_without_grade_mal'))
+                    <span class="text-danger">{{ $errors->first('designation_without_grade_mal') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.designation.fields.designation_wo_grade_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="time_group_id">{{ trans('cruds.designation.fields.time_group') }}</label>
-                <select class="form-control select2 {{ $errors->has('time_group') ? 'is-invalid' : '' }}" name="time_group_id" id="time_group_id">
-                    @foreach($time_groups as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('time_group_id') ? old('time_group_id') : $designation->time_group->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('time_group'))
-                    <span class="text-danger">{{ $errors->first('time_group') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.designation.fields.time_group_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.designation.fields.designation_without_grade_mal_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

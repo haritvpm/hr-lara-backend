@@ -101,11 +101,6 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#seats_attendance_routings" role="tab" data-toggle="tab">
-                {{ trans('cruds.attendanceRouting.title') }}
-            </a>
-        </li>
-        <li class="nav-item">
             <a class="nav-link" href="#to_seats_ot_routings" role="tab" data-toggle="tab">
                 {{ trans('cruds.otRouting.title') }}
             </a>
@@ -114,9 +109,6 @@
     <div class="tab-content">
         <div class="tab-pane" role="tabpanel" id="created_by_tax_entries">
             @includeIf('admin.seats.relationships.createdByTaxEntries', ['taxEntries' => $seat->createdByTaxEntries])
-        </div>
-        <div class="tab-pane" role="tabpanel" id="seats_attendance_routings">
-            @includeIf('admin.seats.relationships.seatsAttendanceRoutings', ['attendanceRoutings' => $seat->seatsAttendanceRoutings])
         </div>
         <div class="tab-pane" role="tabpanel" id="to_seats_ot_routings">
             @includeIf('admin.seats.relationships.toSeatsOtRoutings', ['otRoutings' => $seat->toSeatsOtRoutings])

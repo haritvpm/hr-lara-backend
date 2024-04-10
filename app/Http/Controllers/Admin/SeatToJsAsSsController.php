@@ -31,10 +31,9 @@ class SeatToJsAsSsController extends Controller
     {
         abort_if(Gate::denies('seat_to_js_as_ss_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::where('is_js_as_ss',1)->pluck('title', 'id')
-      
-        ->prepend(trans('global.pleaseSelect'), '');
-        $employees = Employee::getEmployeeWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
+        $seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.seatToJsAsSses.create', compact('employees', 'seats'));
     }

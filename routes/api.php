@@ -27,9 +27,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Users
     Route::apiResource('users', 'UsersApiController');
 
-    // Designation Line
-    Route::apiResource('designation-lines', 'DesignationLineApiController');
-
     // Designation
     Route::apiResource('designations', 'DesignationApiController');
 
@@ -91,7 +88,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('overtime-others', 'OvertimeOtherApiController');
 
     // Overtime Sitting
-    Route::apiResource('overtime-sittings', 'OvertimeSittingApiController');
+    Route::apiResource('overtime-sittings', 'OvertimeSittingApiController', ['except' => ['store', 'show', 'update', 'destroy']]);
 
     // Ot Routing
     Route::apiResource('ot-routings', 'OtRoutingApiController');
@@ -102,25 +99,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Office Location
     Route::apiResource('office-locations', 'OfficeLocationApiController', ['except' => ['destroy']]);
 
-    // Employee Seat History
-    Route::apiResource('employee-seat-histories', 'EmployeeSeatHistoryApiController');
-
-    // Employee Section History
-    Route::apiResource('employee-section-histories', 'EmployeeSectionHistoryApiController');
-
     // Employee To Seat
     Route::apiResource('employee-to-seats', 'EmployeeToSeatApiController');
 
     // Employee To Section
     Route::apiResource('employee-to-sections', 'EmployeeToSectionApiController');
-
-    // Employee Details
-    Route::apiResource('employee-details', 'EmployeeDetailsApiController');
-
-
-
-    // Employee Designation History
-    Route::apiResource('employee-designation-histories', 'EmployeeDesignationHistoryApiController');
 
     // Employee To Designation
     Route::apiResource('employee-to-designations', 'EmployeeToDesignationApiController');
@@ -159,9 +142,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Office Times
     Route::apiResource('office-times', 'OfficeTimesApiController');
 
-    // Designation Without Grade
-    Route::apiResource('designation-without-grades', 'DesignationWithoutGradeApiController');
-
     // Seat To Js As Ss
     Route::apiResource('seat-to-js-as-sses', 'SeatToJsAsSsApiController');
 
@@ -170,7 +150,4 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Monthly Attendance
     Route::apiResource('monthly-attendances', 'MonthlyAttendanceApiController');
-
-    // Office Time Group
-    Route::apiResource('office-time-groups', 'OfficeTimeGroupApiController');
 });

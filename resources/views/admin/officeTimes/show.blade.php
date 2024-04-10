@@ -25,10 +25,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.time_group') }}
+                            {{ trans('cruds.officeTime.fields.groupname') }}
                         </th>
                         <td>
-                            {{ $officeTime->time_group->groupname ?? '' }}
+                            {{ $officeTime->groupname }}
                         </td>
                     </tr>
                     <tr>
@@ -41,18 +41,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.full_from') }}
+                            {{ trans('cruds.officeTime.fields.day_from') }}
                         </th>
                         <td>
-                            {{ $officeTime->full_from }}
+                            {{ $officeTime->day_from }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.full_to') }}
+                            {{ trans('cruds.officeTime.fields.day_to') }}
                         </th>
                         <td>
-                            {{ $officeTime->full_to }}
+                            {{ $officeTime->day_to }}
                         </td>
                     </tr>
                     <tr>
@@ -97,18 +97,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.officeTime.fields.flexi_from') }}
+                            {{ trans('cruds.officeTime.fields.flexi_minutes') }}
                         </th>
                         <td>
-                            {{ $officeTime->flexi_from }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.officeTime.fields.flexi_to') }}
-                        </th>
-                        <td>
-                            {{ $officeTime->flexi_to }}
+                            {{ $officeTime->flexi_minutes }}
                         </td>
                     </tr>
                 </tbody>

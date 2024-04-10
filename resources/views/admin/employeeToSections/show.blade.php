@@ -47,6 +47,22 @@
                             {{ $employeeToSection->attendance_book->title ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToSection.fields.start_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToSection->start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToSection.fields.end_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToSection->end_date }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

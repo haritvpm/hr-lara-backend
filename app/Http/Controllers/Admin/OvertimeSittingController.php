@@ -3,10 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyOvertimeSittingRequest;
-use App\Http\Requests\StoreOvertimeSittingRequest;
-use App\Http\Requests\UpdateOvertimeSittingRequest;
-use App\Models\Overtime;
 use App\Models\OvertimeSitting;
 use Gate;
 use Illuminate\Http\Request;
@@ -58,68 +54,5 @@ class OvertimeSittingController extends Controller
         }
 
         return view('admin.overtimeSittings.index');
-    }
-
-    public function create()
-    {
-        abort_if(Gate::denies('overtime_sitting_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $overtimes = Overtime::pluck('slots', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.overtimeSittings.create', compact('overtimes'));
-    }
-
-    public function store(StoreOvertimeSittingRequest $request)
-    {
-        $overtimeSitting = OvertimeSitting::create($request->all());
-
-        return redirect()->route('admin.overtime-sittings.index');
-    }
-
-    public function edit(OvertimeSitting $overtimeSitting)
-    {
-        abort_if(Gate::denies('overtime_sitting_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $overtimes = Overtime::pluck('slots', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $overtimeSitting->load('overtime');
-
-        return view('admin.overtimeSittings.edit', compact('overtimeSitting', 'overtimes'));
-    }
-
-    public function update(UpdateOvertimeSittingRequest $request, OvertimeSitting $overtimeSitting)
-    {
-        $overtimeSitting->update($request->all());
-
-        return redirect()->route('admin.overtime-sittings.index');
-    }
-
-    public function show(OvertimeSitting $overtimeSitting)
-    {
-        abort_if(Gate::denies('overtime_sitting_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $overtimeSitting->load('overtime');
-
-        return view('admin.overtimeSittings.show', compact('overtimeSitting'));
-    }
-
-    public function destroy(OvertimeSitting $overtimeSitting)
-    {
-        abort_if(Gate::denies('overtime_sitting_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $overtimeSitting->delete();
-
-        return back();
-    }
-
-    public function massDestroy(MassDestroyOvertimeSittingRequest $request)
-    {
-        $overtimeSittings = OvertimeSitting::find(request('ids'));
-
-        foreach ($overtimeSittings as $overtimeSitting) {
-            $overtimeSitting->delete();
-        }
-
-        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

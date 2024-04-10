@@ -17,13 +17,21 @@ class UpdateEmployeeToSeatRequest extends FormRequest
     public function rules()
     {
         return [
+            'employee_id' => [
+                'required',
+                'integer',
+            ],
             'seat_id' => [
                 'required',
                 'integer',
             ],
-            'employee_id' => [
-                'required',
-                'integer',
+            'start_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
+            'end_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
             ],
         ];
     }

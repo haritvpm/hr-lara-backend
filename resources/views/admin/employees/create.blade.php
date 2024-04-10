@@ -39,14 +39,6 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.name_mal_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="pen">{{ trans('cruds.employee.fields.pen') }}</label>
-                <input class="form-control {{ $errors->has('pen') ? 'is-invalid' : '' }}" type="text" name="pen" id="pen" value="{{ old('pen', '') }}">
-                @if($errors->has('pen'))
-                    <span class="text-danger">{{ $errors->first('pen') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.employee.fields.pen_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label class="required" for="aadhaarid">{{ trans('cruds.employee.fields.aadhaarid') }}</label>
                 <input class="form-control {{ $errors->has('aadhaarid') ? 'is-invalid' : '' }}" type="text" name="aadhaarid" id="aadhaarid" value="{{ old('aadhaarid', '') }}" required>
                 @if($errors->has('aadhaarid'))
@@ -55,17 +47,12 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.aadhaarid_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required">{{ trans('cruds.employee.fields.employee_type') }}</label>
-                <select class="form-control {{ $errors->has('employee_type') ? 'is-invalid' : '' }}" name="employee_type" id="employee_type" required>
-                    <option value disabled {{ old('employee_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Employee::EMPLOYEE_TYPE_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('employee_type', 'permanent') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('employee_type'))
-                    <span class="text-danger">{{ $errors->first('employee_type') }}</span>
+                <label for="pen">{{ trans('cruds.employee.fields.pen') }}</label>
+                <input class="form-control {{ $errors->has('pen') ? 'is-invalid' : '' }}" type="text" name="pen" id="pen" value="{{ old('pen', '') }}">
+                @if($errors->has('pen'))
+                    <span class="text-danger">{{ $errors->first('pen') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.employee.fields.employee_type_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.employee.fields.pen_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="desig_display">{{ trans('cruds.employee.fields.desig_display') }}</label>
@@ -92,11 +79,11 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.has_punching_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required">{{ trans('cruds.employee.fields.status') }}</label>
-                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                <label>{{ trans('cruds.employee.fields.status') }}</label>
+                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status">
                     <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Employee::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}" {{ old('status', 'active') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('status'))
@@ -114,6 +101,22 @@
                     <span class="text-danger">{{ $errors->first('is_shift') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employee.fields.is_shift_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="klaid">{{ trans('cruds.employee.fields.klaid') }}</label>
+                <input class="form-control {{ $errors->has('klaid') ? 'is-invalid' : '' }}" type="text" name="klaid" id="klaid" value="{{ old('klaid', '') }}">
+                @if($errors->has('klaid'))
+                    <span class="text-danger">{{ $errors->first('klaid') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employee.fields.klaid_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="electionid">{{ trans('cruds.employee.fields.electionid') }}</label>
+                <input class="form-control {{ $errors->has('electionid') ? 'is-invalid' : '' }}" type="text" name="electionid" id="electionid" value="{{ old('electionid', '') }}">
+                @if($errors->has('electionid'))
+                    <span class="text-danger">{{ $errors->first('electionid') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employee.fields.electionid_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

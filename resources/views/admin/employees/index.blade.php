@@ -49,13 +49,10 @@
                         {{ trans('cruds.employee.fields.name_mal') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employee.fields.pen') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employee.fields.employee_type') }}
+                        {{ trans('cruds.employee.fields.pen') }}
                     </th>
                     <th>
                         {{ trans('cruds.employee.fields.desig_display') }}
@@ -71,6 +68,12 @@
                     </th>
                     <th>
                         {{ trans('cruds.employee.fields.is_shift') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employee.fields.klaid') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employee.fields.electionid') }}
                     </th>
                     <th>
                         &nbsp;
@@ -132,14 +135,15 @@
 { data: 'srismt', name: 'srismt' },
 { data: 'name', name: 'name' },
 { data: 'name_mal', name: 'name_mal' },
-{ data: 'pen', name: 'pen' },
 { data: 'aadhaarid', name: 'aadhaarid' },
-{ data: 'employee_type', name: 'employee_type' },
+{ data: 'pen', name: 'pen' },
 { data: 'desig_display', name: 'desig_display' },
 { data: 'pan', name: 'pan' },
 { data: 'has_punching', name: 'has_punching' },
 { data: 'status', name: 'status' },
 { data: 'is_shift', name: 'is_shift' },
+{ data: 'klaid', name: 'klaid' },
+{ data: 'electionid', name: 'electionid' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

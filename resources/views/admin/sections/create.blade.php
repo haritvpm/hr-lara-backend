@@ -18,24 +18,36 @@
                 <span class="help-block">{{ trans('cruds.section.fields.name_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="short_code">{{ trans('cruds.section.fields.short_code') }}</label>
-                <input class="form-control {{ $errors->has('short_code') ? 'is-invalid' : '' }}" type="text" name="short_code" id="short_code" value="{{ old('short_code', '') }}" required>
+                <label for="short_code">{{ trans('cruds.section.fields.short_code') }}</label>
+                <input class="form-control {{ $errors->has('short_code') ? 'is-invalid' : '' }}" type="text" name="short_code" id="short_code" value="{{ old('short_code', '') }}">
                 @if($errors->has('short_code'))
                     <span class="text-danger">{{ $errors->first('short_code') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.section.fields.short_code_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="seat_of_controling_officer_id">{{ trans('cruds.section.fields.seat_of_controling_officer') }}</label>
-                <select class="form-control select2 {{ $errors->has('seat_of_controling_officer') ? 'is-invalid' : '' }}" name="seat_of_controling_officer_id" id="seat_of_controling_officer_id" required>
-                    @foreach($seat_of_controling_officers as $id => $entry)
-                        <option value="{{ $id }}" {{ old('seat_of_controling_officer_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <label class="required" for="seat_of_controlling_officer_id">{{ trans('cruds.section.fields.seat_of_controlling_officer') }}</label>
+                <select class="form-control select2 {{ $errors->has('seat_of_controlling_officer') ? 'is-invalid' : '' }}" name="seat_of_controlling_officer_id" id="seat_of_controlling_officer_id" required>
+                    @foreach($seat_of_controlling_officers as $id => $entry)
+                        <option value="{{ $id }}" {{ old('seat_of_controlling_officer_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('seat_of_controling_officer'))
-                    <span class="text-danger">{{ $errors->first('seat_of_controling_officer') }}</span>
+                @if($errors->has('seat_of_controlling_officer'))
+                    <span class="text-danger">{{ $errors->first('seat_of_controlling_officer') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.section.fields.seat_of_controling_officer_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.section.fields.seat_of_controlling_officer_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="office_location_id">{{ trans('cruds.section.fields.office_location') }}</label>
+                <select class="form-control select2 {{ $errors->has('office_location') ? 'is-invalid' : '' }}" name="office_location_id" id="office_location_id" required>
+                    @foreach($office_locations as $id => $entry)
+                        <option value="{{ $id }}" {{ old('office_location_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('office_location'))
+                    <span class="text-danger">{{ $errors->first('office_location') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.section.fields.office_location_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="seat_of_reporting_officer_id">{{ trans('cruds.section.fields.seat_of_reporting_officer') }}</label>
@@ -66,25 +78,13 @@
                 <select class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" name="type" id="type">
                     <option value disabled {{ old('type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Section::TYPE_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('type', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                        <option value="{{ $key }}" {{ old('type', 'NORMAL') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('type'))
                     <span class="text-danger">{{ $errors->first('type') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.section.fields.type_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="office_location_id">{{ trans('cruds.section.fields.office_location') }}</label>
-                <select class="form-control select2 {{ $errors->has('office_location') ? 'is-invalid' : '' }}" name="office_location_id" id="office_location_id" required>
-                    @foreach($office_locations as $id => $entry)
-                        <option value="{{ $id }}" {{ old('office_location_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('office_location'))
-                    <span class="text-danger">{{ $errors->first('office_location') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.section.fields.office_location_helper') }}</span>
             </div>
             <div class="form-group">
                 <div class="form-check {{ $errors->has('works_nights_during_session') ? 'is-invalid' : '' }}">

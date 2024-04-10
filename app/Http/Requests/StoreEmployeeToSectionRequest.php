@@ -29,6 +29,14 @@ class StoreEmployeeToSectionRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'start_date' => [
+                'required',
+                'date_format:' . config('panel.date_format'),
+            ],
+            'end_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
         ];
     }
 }

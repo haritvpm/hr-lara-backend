@@ -17,13 +17,14 @@ class AttendanceRoutingApiController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AttendanceRoutingResource(AttendanceRouting::with(['seats', 'js', 'as', 'ss'])->get());
+        return new AttendanceRoutingResource(AttendanceRouting::with(['viewer_js_as_ss_employee', 'viewer_seat', 'viewable_seats', 'viewable_js_as_ss_employees'])->get());
     }
 
     public function store(StoreAttendanceRoutingRequest $request)
     {
         $attendanceRouting = AttendanceRouting::create($request->all());
-        $attendanceRouting->seats()->sync($request->input('seats', []));
+        $attendanceRouting->viewable_seats()->sync($request->input('viewable_seats', []));
+        $attendanceRouting->viewable_js_as_ss_employees()->sync($request->input('viewable_js_as_ss_employees', []));
 
         return (new AttendanceRoutingResource($attendanceRouting))
             ->response()
@@ -34,13 +35,14 @@ class AttendanceRoutingApiController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AttendanceRoutingResource($attendanceRouting->load(['seats', 'js', 'as', 'ss']));
+        return new AttendanceRoutingResource($attendanceRouting->load(['viewer_js_as_ss_employee', 'viewer_seat', 'viewable_seats', 'viewable_js_as_ss_employees']));
     }
 
     public function update(UpdateAttendanceRoutingRequest $request, AttendanceRouting $attendanceRouting)
     {
         $attendanceRouting->update($request->all());
-        $attendanceRouting->seats()->sync($request->input('seats', []));
+        $attendanceRouting->viewable_seats()->sync($request->input('viewable_seats', []));
+        $attendanceRouting->viewable_js_as_ss_employees()->sync($request->input('viewable_js_as_ss_employees', []));
 
         return (new AttendanceRoutingResource($attendanceRouting))
             ->response()

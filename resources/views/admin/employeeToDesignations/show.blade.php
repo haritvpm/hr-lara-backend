@@ -39,6 +39,22 @@
                             {{ $employeeToDesignation->designation->designation ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToDesignation.fields.start_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToDesignation->start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToDesignation.fields.end_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToDesignation->end_date }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

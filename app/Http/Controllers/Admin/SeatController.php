@@ -54,7 +54,7 @@ class SeatController extends Controller
     {
         abort_if(Gate::denies('seat_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seat->load('createdByTaxEntries', 'seatsAttendanceRoutings', 'toSeatsOtRoutings');
+        $seat->load('createdByTaxEntries', 'toSeatsOtRoutings');
 
         return view('admin.seats.show', compact('seat'));
     }

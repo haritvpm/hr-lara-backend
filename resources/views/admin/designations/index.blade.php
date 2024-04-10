@@ -36,19 +36,19 @@
                             {{ trans('cruds.designation.fields.designation_mal') }}
                         </th>
                         <th>
+                            {{ trans('cruds.designation.fields.default_time_group') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.designation.fields.sort_index') }}
                         </th>
                         <th>
                             {{ trans('cruds.designation.fields.has_punching') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.desig_line') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.designation.fields.time_group') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade_mal') }}
                         </th>
                         <th>
                             &nbsp;
@@ -71,19 +71,19 @@
                                 {{ $designation->designation_mal ?? '' }}
                             </td>
                             <td>
+                                {{ $designation->default_time_group->groupname ?? '' }}
+                            </td>
+                            <td>
                                 {{ $designation->sort_index ?? '' }}
                             </td>
                             <td>
                                 {{ $designation->has_punching ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->desig_line->title ?? '' }}
+                                {{ $designation->designation_without_grade ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->designation_wo_grade->title ?? '' }}
-                            </td>
-                            <td>
-                                {{ $designation->time_group->groupname ?? '' }}
+                                {{ $designation->designation_without_grade_mal ?? '' }}
                             </td>
                             <td>
                                 @can('designation_show')

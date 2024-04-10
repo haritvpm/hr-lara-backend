@@ -17,7 +17,7 @@ class SectionApiController extends Controller
     {
         abort_if(Gate::denies('section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SectionResource(Section::with(['seat_of_controling_officer', 'seat_of_reporting_officer', 'js_as_ss_employee', 'office_location'])->get());
+        return new SectionResource(Section::with(['seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee'])->get());
     }
 
     public function store(StoreSectionRequest $request)
@@ -33,7 +33,7 @@ class SectionApiController extends Controller
     {
         abort_if(Gate::denies('section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SectionResource($section->load(['seat_of_controling_officer', 'seat_of_reporting_officer', 'js_as_ss_employee', 'office_location']));
+        return new SectionResource($section->load(['seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee']));
     }
 
     public function update(UpdateSectionRequest $request, Section $section)

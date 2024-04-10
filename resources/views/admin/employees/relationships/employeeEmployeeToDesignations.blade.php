@@ -34,6 +34,12 @@
                                 {{ trans('cruds.employeeToDesignation.fields.designation') }}
                             </th>
                             <th>
+                                {{ trans('cruds.employeeToDesignation.fields.start_date') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.end_date') }}
+                            </th>
+                            <th>
                                 &nbsp;
                             </th>
                         </tr>
@@ -55,6 +61,12 @@
                                 </td>
                                 <td>
                                     {{ $employeeToDesignation->designation->designation ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->start_date ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->end_date ?? '' }}
                                 </td>
                                 <td>
                                     @can('employee_to_designation_show')

@@ -25,6 +25,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.employeeToSeat.fields.employee') }}
+                        </th>
+                        <td>
+                            {{ $employeeToSeat->employee->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.employeeToSeat.fields.seat') }}
                         </th>
                         <td>
@@ -33,10 +41,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employeeToSeat.fields.employee') }}
+                            {{ trans('cruds.employeeToSeat.fields.start_date') }}
                         </th>
                         <td>
-                            {{ $employeeToSeat->employee->name ?? '' }}
+                            {{ $employeeToSeat->start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToSeat.fields.end_date') }}
+                        </th>
+                        <td>
+                            {{ $employeeToSeat->end_date }}
                         </td>
                     </tr>
                 </tbody>

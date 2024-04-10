@@ -7,8 +7,8 @@ use App\Http\Requests\MassDestroyAttendanceRoutingRequest;
 use App\Http\Requests\StoreAttendanceRoutingRequest;
 use App\Http\Requests\UpdateAttendanceRoutingRequest;
 use App\Models\AttendanceRouting;
+use App\Models\Employee;
 use App\Models\Seat;
-use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $attendanceRoutings = AttendanceRouting::with(['seats', 'js', 'as', 'ss'])->get();
+        $attendanceRoutings = AttendanceRouting::with(['viewer_js_as_ss_employee', 'viewer_seat', 'viewable_seats', 'viewable_js_as_ss_employees'])->get();
 
         return view('admin.attendanceRoutings.index', compact('attendanceRoutings'));
     }
@@ -28,21 +28,22 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('title', 'id');
+        $viewer_js_as_ss_employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $js = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewer_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $as = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewable_seats = Seat::pluck('title', 'id');
 
-        $sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewable_js_as_ss_employees = Employee::pluck('name', 'id');
 
-        return view('admin.attendanceRoutings.create', compact('as', 'js', 'seats', 'sses'));
+        return view('admin.attendanceRoutings.create', compact('viewable_js_as_ss_employees', 'viewable_seats', 'viewer_js_as_ss_employees', 'viewer_seats'));
     }
 
     public function store(StoreAttendanceRoutingRequest $request)
     {
         $attendanceRouting = AttendanceRouting::create($request->all());
-        $attendanceRouting->seats()->sync($request->input('seats', []));
+        $attendanceRouting->viewable_seats()->sync($request->input('viewable_seats', []));
+        $attendanceRouting->viewable_js_as_ss_employees()->sync($request->input('viewable_js_as_ss_employees', []));
 
         return redirect()->route('admin.attendance-routings.index');
     }
@@ -51,23 +52,24 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seats = Seat::pluck('title', 'id');
+        $viewer_js_as_ss_employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $js = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewer_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $as = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewable_seats = Seat::pluck('title', 'id');
 
-        $sses = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $viewable_js_as_ss_employees = Employee::pluck('name', 'id');
 
-        $attendanceRouting->load('seats', 'js', 'as', 'ss');
+        $attendanceRouting->load('viewer_js_as_ss_employee', 'viewer_seat', 'viewable_seats', 'viewable_js_as_ss_employees');
 
-        return view('admin.attendanceRoutings.edit', compact('as', 'attendanceRouting', 'js', 'seats', 'sses'));
+        return view('admin.attendanceRoutings.edit', compact('attendanceRouting', 'viewable_js_as_ss_employees', 'viewable_seats', 'viewer_js_as_ss_employees', 'viewer_seats'));
     }
 
     public function update(UpdateAttendanceRoutingRequest $request, AttendanceRouting $attendanceRouting)
     {
         $attendanceRouting->update($request->all());
-        $attendanceRouting->seats()->sync($request->input('seats', []));
+        $attendanceRouting->viewable_seats()->sync($request->input('viewable_seats', []));
+        $attendanceRouting->viewable_js_as_ss_employees()->sync($request->input('viewable_js_as_ss_employees', []));
 
         return redirect()->route('admin.attendance-routings.index');
     }
@@ -76,7 +78,7 @@ class AttendanceRoutingController extends Controller
     {
         abort_if(Gate::denies('attendance_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $attendanceRouting->load('seats', 'js', 'as', 'ss');
+        $attendanceRouting->load('viewer_js_as_ss_employee', 'viewer_seat', 'viewable_seats', 'viewable_js_as_ss_employees');
 
         return view('admin.attendanceRoutings.show', compact('attendanceRouting'));
     }

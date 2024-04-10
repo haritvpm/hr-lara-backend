@@ -21,7 +21,7 @@ class Section extends Model
     protected $fillable = [
         'name',
         'short_code',
-        'seat_of_controling_officer_id',
+        'seat_of_controlling_officer_id',
         'seat_of_reporting_officer_id',
         'js_as_ss_employee_id',
         'type',
@@ -33,14 +33,14 @@ class Section extends Model
     ];
 
     public const TYPE_SELECT = [
-        'NORMAL'                  => 'NORMAL',
-        'FAIRCOPY'                => 'FAIRCOPY',
-        'OFFICE_SECTION_INWARD'   => 'OFFICE_SECTION_INWARD',
-        'OFFICE_SECTION_DESPATCH' => 'OFFICE_SECTION_DESPATCH',
-        'OFFICE_OF_DS'            => 'OFFICE_OF_DS',
-        'OFFICE_OF_JS_AS_SS'      => 'OFFICE_OF_JS_AS_SS',
-        'OFFICE_OF_SECRETARY'     => 'OFFICE_OF_SECRETARY',
-        'OFFICE_OF_SPEAKER'       => 'OFFICE_OF_SPEAKER',
+        'NORMAL'              => 'NORMAL',
+        'FAIRCOPY'            => 'FAIRCOPY',
+        'OFFICE_SECTION'      => 'OFFICE_SECTION',
+        'OFFICE_OF_DS'        => 'OFFICE_OF_DS',
+        'OFFICE_OF_JS_AS_SS'  => 'OFFICE_OF_JS_AS_SS',
+        'OFFICE_OF_SECRETARY' => 'OFFICE_OF_SECRETARY',
+        'OFFICE_OF_SPEAKER'   => 'OFFICE_OF_SPEAKER',
+        'OTHER'               => 'OTHER',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -53,9 +53,9 @@ class Section extends Model
         return $this->hasMany(AttendanceBook::class, 'section_id', 'id');
     }
 
-    public function seat_of_controling_officer()
+    public function seat_of_controlling_officer()
     {
-        return $this->belongsTo(Seat::class, 'seat_of_controling_officer_id');
+        return $this->belongsTo(Seat::class, 'seat_of_controlling_officer_id');
     }
 
     public function seat_of_reporting_officer()
@@ -65,7 +65,7 @@ class Section extends Model
 
     public function js_as_ss_employee()
     {
-        return $this->belongsTo(User::class, 'js_as_ss_employee_id');
+        return $this->belongsTo(Employee::class, 'js_as_ss_employee_id');
     }
 
     public function office_location()

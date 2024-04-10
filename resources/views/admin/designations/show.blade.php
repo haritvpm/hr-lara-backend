@@ -41,6 +41,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.designation.fields.default_time_group') }}
+                        </th>
+                        <td>
+                            {{ $designation->default_time_group->groupname ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.designation.fields.sort_index') }}
                         </th>
                         <td>
@@ -57,26 +65,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.desig_line') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade') }}
                         </th>
                         <td>
-                            {{ $designation->desig_line->title ?? '' }}
+                            {{ $designation->designation_without_grade }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.designation_wo_grade') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade_mal') }}
                         </th>
                         <td>
-                            {{ $designation->designation_wo_grade->title ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.designation.fields.time_group') }}
-                        </th>
-                        <td>
-                            {{ $designation->time_group->groupname ?? '' }}
+                            {{ $designation->designation_without_grade_mal }}
                         </td>
                     </tr>
                 </tbody>

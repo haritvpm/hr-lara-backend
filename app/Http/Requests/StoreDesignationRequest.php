@@ -38,6 +38,14 @@ class StoreDesignationRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
+            'designation_without_grade' => [
+                'string',
+                'nullable',
+            ],
+            'designation_without_grade_mal' => [
+                'string',
+                'nullable',
+            ],
         ];
     }
 }

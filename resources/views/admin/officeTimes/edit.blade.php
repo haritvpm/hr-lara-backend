@@ -11,16 +11,12 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="time_group_id">{{ trans('cruds.officeTime.fields.time_group') }}</label>
-                <select class="form-control select2 {{ $errors->has('time_group') ? 'is-invalid' : '' }}" name="time_group_id" id="time_group_id" required>
-                    @foreach($time_groups as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('time_group_id') ? old('time_group_id') : $officeTime->time_group->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('time_group'))
-                    <span class="text-danger">{{ $errors->first('time_group') }}</span>
+                <label class="required" for="groupname">{{ trans('cruds.officeTime.fields.groupname') }}</label>
+                <input class="form-control {{ $errors->has('groupname') ? 'is-invalid' : '' }}" type="text" name="groupname" id="groupname" value="{{ old('groupname', $officeTime->groupname) }}" required>
+                @if($errors->has('groupname'))
+                    <span class="text-danger">{{ $errors->first('groupname') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.time_group_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.officeTime.fields.groupname_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="description">{{ trans('cruds.officeTime.fields.description') }}</label>
@@ -31,20 +27,20 @@
                 <span class="help-block">{{ trans('cruds.officeTime.fields.description_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="full_from">{{ trans('cruds.officeTime.fields.full_from') }}</label>
-                <input class="form-control timepicker {{ $errors->has('full_from') ? 'is-invalid' : '' }}" type="text" name="full_from" id="full_from" value="{{ old('full_from', $officeTime->full_from) }}" required>
-                @if($errors->has('full_from'))
-                    <span class="text-danger">{{ $errors->first('full_from') }}</span>
+                <label class="required" for="day_from">{{ trans('cruds.officeTime.fields.day_from') }}</label>
+                <input class="form-control timepicker {{ $errors->has('day_from') ? 'is-invalid' : '' }}" type="text" name="day_from" id="day_from" value="{{ old('day_from', $officeTime->day_from) }}" required>
+                @if($errors->has('day_from'))
+                    <span class="text-danger">{{ $errors->first('day_from') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.full_from_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.officeTime.fields.day_from_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="full_to">{{ trans('cruds.officeTime.fields.full_to') }}</label>
-                <input class="form-control timepicker {{ $errors->has('full_to') ? 'is-invalid' : '' }}" type="text" name="full_to" id="full_to" value="{{ old('full_to', $officeTime->full_to) }}" required>
-                @if($errors->has('full_to'))
-                    <span class="text-danger">{{ $errors->first('full_to') }}</span>
+                <label class="required" for="day_to">{{ trans('cruds.officeTime.fields.day_to') }}</label>
+                <input class="form-control timepicker {{ $errors->has('day_to') ? 'is-invalid' : '' }}" type="text" name="day_to" id="day_to" value="{{ old('day_to', $officeTime->day_to) }}" required>
+                @if($errors->has('day_to'))
+                    <span class="text-danger">{{ $errors->first('day_to') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.full_to_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.officeTime.fields.day_to_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="office_hours">{{ trans('cruds.officeTime.fields.office_hours') }}</label>
@@ -87,20 +83,12 @@
                 <span class="help-block">{{ trans('cruds.officeTime.fields.an_to_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="flexi_from">{{ trans('cruds.officeTime.fields.flexi_from') }}</label>
-                <input class="form-control timepicker {{ $errors->has('flexi_from') ? 'is-invalid' : '' }}" type="text" name="flexi_from" id="flexi_from" value="{{ old('flexi_from', $officeTime->flexi_from) }}">
-                @if($errors->has('flexi_from'))
-                    <span class="text-danger">{{ $errors->first('flexi_from') }}</span>
+                <label for="flexi_minutes">{{ trans('cruds.officeTime.fields.flexi_minutes') }}</label>
+                <input class="form-control {{ $errors->has('flexi_minutes') ? 'is-invalid' : '' }}" type="number" name="flexi_minutes" id="flexi_minutes" value="{{ old('flexi_minutes', $officeTime->flexi_minutes) }}" step="1">
+                @if($errors->has('flexi_minutes'))
+                    <span class="text-danger">{{ $errors->first('flexi_minutes') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.flexi_from_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="flexi_to">{{ trans('cruds.officeTime.fields.flexi_to') }}</label>
-                <input class="form-control timepicker {{ $errors->has('flexi_to') ? 'is-invalid' : '' }}" type="text" name="flexi_to" id="flexi_to" value="{{ old('flexi_to', $officeTime->flexi_to) }}">
-                @if($errors->has('flexi_to'))
-                    <span class="text-danger">{{ $errors->first('flexi_to') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.flexi_to_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.officeTime.fields.flexi_minutes_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

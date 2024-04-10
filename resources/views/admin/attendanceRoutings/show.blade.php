@@ -25,36 +25,38 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.attendanceRouting.fields.seats') }}
+                            {{ trans('cruds.attendanceRouting.fields.viewer_js_as_ss_employee') }}
                         </th>
                         <td>
-                            @foreach($attendanceRouting->seats as $key => $seats)
-                                <span class="label label-info">{{ $seats->title }}</span>
+                            {{ $attendanceRouting->viewer_js_as_ss_employee->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.viewer_seat') }}
+                        </th>
+                        <td>
+                            {{ $attendanceRouting->viewer_seat->title ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.viewable_seats') }}
+                        </th>
+                        <td>
+                            @foreach($attendanceRouting->viewable_seats as $key => $viewable_seats)
+                                <span class="label label-info">{{ $viewable_seats->title }}</span>
                             @endforeach
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.attendanceRouting.fields.js') }}
+                            {{ trans('cruds.attendanceRouting.fields.viewable_js_as_ss_employees') }}
                         </th>
                         <td>
-                            {{ $attendanceRouting->js->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.attendanceRouting.fields.as') }}
-                        </th>
-                        <td>
-                            {{ $attendanceRouting->as->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.attendanceRouting.fields.ss') }}
-                        </th>
-                        <td>
-                            {{ $attendanceRouting->ss->name ?? '' }}
+                            @foreach($attendanceRouting->viewable_js_as_ss_employees as $key => $viewable_js_as_ss_employees)
+                                <span class="label label-info">{{ $viewable_js_as_ss_employees->name }}</span>
+                            @endforeach
                         </td>
                     </tr>
                 </tbody>

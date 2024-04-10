@@ -7,7 +7,6 @@ use App\Http\Requests\MassDestroyOfficeTimeRequest;
 use App\Http\Requests\StoreOfficeTimeRequest;
 use App\Http\Requests\UpdateOfficeTimeRequest;
 use App\Models\OfficeTime;
-use App\Models\OfficeTimeGroup;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +17,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $officeTimes = OfficeTime::with(['time_group'])->get();
+        $officeTimes = OfficeTime::all();
 
         return view('admin.officeTimes.index', compact('officeTimes'));
     }
@@ -27,9 +26,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $time_groups = OfficeTimeGroup::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.officeTimes.create', compact('time_groups'));
+        return view('admin.officeTimes.create');
     }
 
     public function store(StoreOfficeTimeRequest $request)
@@ -43,11 +40,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $time_groups = OfficeTimeGroup::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $officeTime->load('time_group');
-
-        return view('admin.officeTimes.edit', compact('officeTime', 'time_groups'));
+        return view('admin.officeTimes.edit', compact('officeTime'));
     }
 
     public function update(UpdateOfficeTimeRequest $request, OfficeTime $officeTime)
@@ -60,8 +53,6 @@ class OfficeTimesController extends Controller
     public function show(OfficeTime $officeTime)
     {
         abort_if(Gate::denies('office_time_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $officeTime->load('time_group');
 
         return view('admin.officeTimes.show', compact('officeTime'));
     }

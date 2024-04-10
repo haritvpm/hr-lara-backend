@@ -17,7 +17,7 @@ class OfficeTimesApiController extends Controller
     {
         abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OfficeTimeResource(OfficeTime::with(['time_group'])->get());
+        return new OfficeTimeResource(OfficeTime::all());
     }
 
     public function store(StoreOfficeTimeRequest $request)
@@ -33,7 +33,7 @@ class OfficeTimesApiController extends Controller
     {
         abort_if(Gate::denies('office_time_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OfficeTimeResource($officeTime->load(['time_group']));
+        return new OfficeTimeResource($officeTime);
     }
 
     public function update(UpdateOfficeTimeRequest $request, OfficeTime $officeTime)

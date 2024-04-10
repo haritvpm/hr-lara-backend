@@ -41,10 +41,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.section.fields.seat_of_controling_officer') }}
+                            {{ trans('cruds.section.fields.seat_of_controlling_officer') }}
                         </th>
                         <td>
-                            {{ $section->seat_of_controling_officer->title ?? '' }}
+                            {{ $section->seat_of_controlling_officer->title ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.office_location') }}
+                        </th>
+                        <td>
+                            {{ $section->office_location->location ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -69,14 +77,6 @@
                         </th>
                         <td>
                             {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.section.fields.office_location') }}
-                        </th>
-                        <td>
-                            {{ $section->office_location->location ?? '' }}
                         </td>
                     </tr>
                     <tr>

@@ -38,6 +38,12 @@
                         {{ trans('cruds.employeeToDesignation.fields.designation') }}
                     </th>
                     <th>
+                        {{ trans('cruds.employeeToDesignation.fields.start_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employeeToDesignation.fields.end_date') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -97,6 +103,8 @@
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.pen', name: 'employee.pen' },
 { data: 'designation_designation', name: 'designation.designation' },
+{ data: 'start_date', name: 'start_date' },
+{ data: 'end_date', name: 'end_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

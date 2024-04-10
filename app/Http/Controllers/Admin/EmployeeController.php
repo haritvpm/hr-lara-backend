@@ -56,14 +56,11 @@ class EmployeeController extends Controller
             $table->editColumn('name_mal', function ($row) {
                 return $row->name_mal ? $row->name_mal : '';
             });
-            $table->editColumn('pen', function ($row) {
-                return $row->pen ? $row->pen : '';
-            });
             $table->editColumn('aadhaarid', function ($row) {
                 return $row->aadhaarid ? $row->aadhaarid : '';
             });
-            $table->editColumn('employee_type', function ($row) {
-                return $row->employee_type ? Employee::EMPLOYEE_TYPE_SELECT[$row->employee_type] : '';
+            $table->editColumn('pen', function ($row) {
+                return $row->pen ? $row->pen : '';
             });
             $table->editColumn('desig_display', function ($row) {
                 return $row->desig_display ? $row->desig_display : '';
@@ -79,6 +76,12 @@ class EmployeeController extends Controller
             });
             $table->editColumn('is_shift', function ($row) {
                 return '<input type="checkbox" disabled ' . ($row->is_shift ? 'checked' : null) . '>';
+            });
+            $table->editColumn('klaid', function ($row) {
+                return $row->klaid ? $row->klaid : '';
+            });
+            $table->editColumn('electionid', function ($row) {
+                return $row->electionid ? $row->electionid : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'is_shift']);

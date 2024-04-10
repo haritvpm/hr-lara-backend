@@ -41,11 +41,6 @@ class Seat extends Model
         return $this->hasMany(TaxEntry::class, 'created_by_id', 'id');
     }
 
-    public function seatsAttendanceRoutings()
-    {
-        return $this->belongsToMany(AttendanceRouting::class);
-    }
-
     public function toSeatsOtRoutings()
     {
         return $this->belongsToMany(OtRouting::class);

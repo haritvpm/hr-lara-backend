@@ -17,7 +17,7 @@ class EmployeeToSeatApiController extends Controller
     {
         abort_if(Gate::denies('employee_to_seat_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new EmployeeToSeatResource(EmployeeToSeat::with(['seat', 'employee'])->get());
+        return new EmployeeToSeatResource(EmployeeToSeat::with(['employee', 'seat'])->get());
     }
 
     public function store(StoreEmployeeToSeatRequest $request)
@@ -33,7 +33,7 @@ class EmployeeToSeatApiController extends Controller
     {
         abort_if(Gate::denies('employee_to_seat_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new EmployeeToSeatResource($employeeToSeat->load(['seat', 'employee']));
+        return new EmployeeToSeatResource($employeeToSeat->load(['employee', 'seat']));
     }
 
     public function update(UpdateEmployeeToSeatRequest $request, EmployeeToSeat $employeeToSeat)
