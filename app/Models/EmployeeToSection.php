@@ -71,4 +71,14 @@ class EmployeeToSection extends Model
     {
         $this->attributes['end_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
+    public function scopeDuring($query, $date)
+    {
+        return $query->where(function ($query) use ($date) {
+            $query->where('start_date', '<=', $date)
+                ->where(function ($query) use ($date) {
+                    $query->where('end_date', '>=', $date)
+                        ->orwherenull('end_date');
+                });
+        });
+    }
 }

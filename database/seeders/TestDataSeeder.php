@@ -210,6 +210,24 @@ class TestDataSeeder extends Seeder
                 'status' => 'active',
                 'is_shift' => 0,
             ],
+            [
+                'id'     => 10,
+                'srismt'  => 'Sri',
+                'name' => 'Shyarath',
+                'aadhaarid' => '157423',
+
+                'status' => 'active',
+                'is_shift' => 0,
+            ],
+            [
+                'id'     => 11,
+                'srismt'  => 'Smt',
+                'name' => 'Sayin',
+                'aadhaarid' => '757423',
+
+                'status' => 'active',
+                'is_shift' => 0,
+            ],
 
 
         ];

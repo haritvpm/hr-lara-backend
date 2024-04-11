@@ -68,4 +68,9 @@ class Employee extends Model
 
          return $employees;
     }
+
+    // public function seats()
+    // {
+    //     return $this->hasMany(EmployeeToSeat::class, 'employee_id');
+    // }
 }
