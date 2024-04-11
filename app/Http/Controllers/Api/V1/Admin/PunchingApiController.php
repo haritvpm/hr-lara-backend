@@ -58,6 +58,7 @@ class PunchingApiController extends Controller
     */
     public function getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids)
     {
+        \Log::info('getEmployeeSectionMappingForEmployees seat_ids '. $seat_ids);
 
         $sections_under_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
@@ -66,6 +67,7 @@ class PunchingApiController extends Controller
         if ($sections_under_charge == null) {
             return null;
         }
+        \Log::info(' sections_under_charge '. $sections_under_charge);
 
         $employee_section_maps = EmployeeToSection::during($date)
             ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
@@ -94,15 +96,15 @@ class PunchingApiController extends Controller
         if ($me->employee_id == null) {
             return response()->json(['status' => 'No linked employee'], 400);
         }
-        $seat_ids_already_fetched = collect();
-        $seat_ids_of_loggedinuser = EmployeeToSeat::with('seat')->where('employee_id', $me->employee_id)->get()->pluck('seat.id');
+        $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
 
-        if ($seat_ids_of_loggedinuser == null) {
+        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser)==0) {
             return response()->json(['status' => 'No seats in charge'], 400);
         }
+       // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
 
         $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date, $seat_ids_of_loggedinuser);
-        $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids_of_loggedinuser);
+        $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
         if (!$employee_section_maps) {
             return response()->json(['status' => 'No employee found'], 200);
@@ -110,24 +112,24 @@ class PunchingApiController extends Controller
 
         $data = collect($employee_section_maps);
 
-        $emp_ids = $employee_section_maps->pluck('employee.id');
+        while (count($emp_ids = $employee_section_maps->pluck('employee.id'))) {
+          //  \Log::info('emp_ids --' . $emp_ids );
 
-        while (count($emp_ids)) {
-            $seat_ids = EmployeeToSeat::with(['seat'])->wherein('employee_id', $emp_ids)
-                ->whereNotIn('seat_id', $seat_ids_already_fetched)
-                ->get()->pluck('seat.id');
+            $seat_ids = EmployeeToSeat::wherein('employee_id', $emp_ids)
+                ->wherenotin('seat_id', $seat_ids_already_fetched)
+                ->get()->pluck('seat_id');
+
+          //  \Log::info('emp_ids 1' . $seat_ids );
 
 
-            if (!$seat_ids) break;
+            if (!$seat_ids || count($seat_ids)==0) break;
 
             $employee_section_maps = $this->getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids);
 
             if (!$employee_section_maps) break;
 
             $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids);
-
-            $emp_ids = $employee_section_maps->pluck('employee.id');
-            $data = $data->merge($employee_section_maps);
+            $data = $data->concat($employee_section_maps);
         }
 
         $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
