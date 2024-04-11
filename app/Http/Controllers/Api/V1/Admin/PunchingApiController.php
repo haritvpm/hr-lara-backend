@@ -56,24 +56,29 @@ class PunchingApiController extends Controller
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingForEmployees( $emp_ids, $date, $seat_ids )
+    public function getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids)
     {
-        
+
         $sections_under_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
-            ->orwherein('js_as_ss_employee_id',$emp_ids)->get();
+            ->orwherein('js_as_ss_employee_id', $emp_ids)->get();
 
-        if ($sections_under_charge == null) { return null;  }
-        
+        if ($sections_under_charge == null) {
+            return null;
+        }
+
         $employee_section_maps = EmployeeToSection::during($date)
-            ->with(['employee', 'attendance_book', 'section'])
+            ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
+            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date) {
+
+                $q->DesignationDuring($date)->with(['designation']);;
+            }])
             ->wherein('section_id', $sections_under_charge->pluck('id'))
             ->get();
 
-      //  \Log::info('in getEmployeeSectionMappingForEmployees 3');
+        //  \Log::info('in getEmployeeSectionMappingForEmployees 3');
 
-        return $employee_section_maps->count() ? $employee_section_maps : null ;
-
+        return $employee_section_maps->count() ? $employee_section_maps : null;
     }
 
     public function getpunchings(Request $request)
@@ -99,39 +104,38 @@ class PunchingApiController extends Controller
         $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date, $seat_ids_of_loggedinuser);
         $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids_of_loggedinuser);
 
-        if(!$employee_section_maps){
+        if (!$employee_section_maps) {
             return response()->json(['status' => 'No employee found'], 200);
         }
 
-        $data = collect();
-        $data = $data->concat($employee_section_maps);
+        $data = collect($employee_section_maps);
 
-        $emp_ids= $employee_section_maps->pluck('employee.id') ;
+        $emp_ids = $employee_section_maps->pluck('employee.id');
 
-        while(count($emp_ids))
-         {           
+        while (count($emp_ids)) {
             $seat_ids = EmployeeToSeat::with(['seat'])->wherein('employee_id', $emp_ids)
-                            ->whereNotIn('seat_id', $seat_ids_already_fetched)
-                            ->get()->pluck('seat.id');
-                        
-        
-            if(!$seat_ids) break;
+                ->whereNotIn('seat_id', $seat_ids_already_fetched)
+                ->get()->pluck('seat.id');
 
-            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees( $emp_ids, $date, $seat_ids );
-   
-            if(!$employee_section_maps) break;
-            
+
+            if (!$seat_ids) break;
+
+            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids);
+
+            if (!$employee_section_maps) break;
+
             $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids);
 
-            $emp_ids= $employee_section_maps->pluck('employee.id') ;
-            $data = $data->concat($employee_section_maps);
-            
+            $emp_ids = $employee_section_maps->pluck('employee.id');
+            $data = $data->merge($employee_section_maps);
         }
-     
 
-        //map EmployeeToSection to a format like DTO
-        $data->transform(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
-                   
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+            // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
+            $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
+            $employee_to_designation =  count($results->employee->employee_employee_to_designations)
+                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
+            //\Log::info($employee_to_designation);
             return [
                 'employee_id' => $employeeToSection->employee_id,
                 'name' => $employeeToSection->employee->name,
@@ -142,20 +146,21 @@ class PunchingApiController extends Controller
                 'section_name' => $employeeToSection->section->name,
                 'works_nights_during_session'  => $employeeToSection->section->works_nights_during_session,
                 'seat_of_controlling_officer_id'  => $employeeToSection->section->seat_of_controlling_officer_id,
-                'logged_in_user_is_controller' => 
-                $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
-                
-                
+                'logged_in_user_is_controller' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
+                'designation' =>   $employee_to_designation?->designation->designation,
+                'designation_sortindex' =>  $employee_to_designation?->designation?->sort_index,
+                'default_time_group_id' =>  $employee_to_designation?->designation?->default_time_group_id,
+                'seniority' =>  $employeeToSection->employee?->seniority?->sortindex,
             ];
-        
         });
+
 
         //   $data = (new PunchingService())->calculate($date);
         return response()->json([
-            'status' => 'success',
-        //    'seats' => $seat_ids,
-        //    'sections_under_charge' => $sections_under_charge,
-            'employee_section_maps' => $data->unique('employee_id'),
+            //    'seats' => $seat_ids,
+            //    'sections_under_charge' => $sections_under_charge,
+            'employee_section_maps' => $data,
+            //'employee_section_maps' => $data->flatten()->unique('employee_id'),
             //  'punchings' => $data
         ], 200);
 

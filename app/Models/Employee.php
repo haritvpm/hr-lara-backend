@@ -68,10 +68,10 @@ class Employee extends Model
 
          return $employees;
     }
-    public function employeeEmployeeToDesignations()
+    public function seniority()
     {
-        return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
+        return $this->hasOne(Seniority::class, 'employee_id');
     }
-    
-      
+
+
 }
