@@ -34,8 +34,8 @@
                 <span class="help-block">{{ trans('cruds.employeeToSection.fields.section_seat_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="attendance_book_id">{{ trans('cruds.employeeToSection.fields.attendance_book') }}</label>
-                <select class="form-control select2 {{ $errors->has('attendance_book') ? 'is-invalid' : '' }}" name="attendance_book_id" id="attendance_book_id" required>
+                <label for="attendance_book_id">{{ trans('cruds.employeeToSection.fields.attendance_book') }}</label>
+                <select class="form-control select2 {{ $errors->has('attendance_book') ? 'is-invalid' : '' }}" name="attendance_book_id" id="attendance_book_id">
                     @foreach($attendance_books as $id => $entry)
                         <option value="{{ $id }}" {{ old('attendance_book_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach

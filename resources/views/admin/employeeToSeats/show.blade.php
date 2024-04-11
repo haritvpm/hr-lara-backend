@@ -25,18 +25,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employeeToSeat.fields.employee') }}
-                        </th>
-                        <td>
-                            {{ $employeeToSeat->employee->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.employeeToSeat.fields.seat') }}
                         </th>
                         <td>
                             {{ $employeeToSeat->seat->title ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employeeToSeat.fields.employee') }}
+                        </th>
+                        <td>
+                            {{ $employeeToSeat->employee->name ?? '' }}
                         </td>
                     </tr>
                     <tr>

@@ -10,7 +10,7 @@ use App\Http\Requests\UpdateEmployeeToSectionRequest;
 use App\Models\AttendanceBook;
 use App\Models\Employee;
 use App\Models\EmployeeToSection;
-use App\Models\Seat;
+use App\Models\Section;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,8 +56,8 @@ class EmployeeToSectionController extends Controller
             $table->editColumn('employee.aadhaarid', function ($row) {
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
-            $table->addColumn('section_seat_title', function ($row) {
-                return $row->section_seat ? $row->section_seat->title : '';
+            $table->addColumn('section_seat_name', function ($row) {
+                return $row->section_seat ? $row->section_seat->name : '';
             });
 
             $table->addColumn('attendance_book_title', function ($row) {
@@ -78,7 +78,7 @@ class EmployeeToSectionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $section_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $section_seats = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $attendance_books = AttendanceBook::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -98,7 +98,7 @@ class EmployeeToSectionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $section_seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $section_seats = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $attendance_books = AttendanceBook::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 

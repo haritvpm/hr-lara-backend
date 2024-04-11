@@ -25,10 +25,6 @@ class StoreEmployeeToSectionRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'attendance_book_id' => [
-                'required',
-                'integer',
-            ],
             'start_date' => [
                 'required',
                 'date_format:' . config('panel.date_format'),

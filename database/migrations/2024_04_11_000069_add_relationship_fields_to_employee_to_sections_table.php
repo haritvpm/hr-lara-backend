@@ -12,7 +12,7 @@ class AddRelationshipFieldsToEmployeeToSectionsTable extends Migration
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->foreign('employee_id', 'employee_fk_9653609')->references('id')->on('employees');
             $table->unsignedBigInteger('section_seat_id')->nullable();
-            $table->foreign('section_seat_id', 'section_seat_fk_9653611')->references('id')->on('seats');
+            $table->foreign('section_seat_id', 'section_seat_fk_9653611')->references('id')->on('sections');
             $table->unsignedBigInteger('attendance_book_id')->nullable();
             $table->foreign('attendance_book_id', 'attendance_book_fk_9653610')->references('id')->on('attendance_books');
         });

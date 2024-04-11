@@ -36,7 +36,7 @@
                             {{ trans('cruds.employeeToSection.fields.section_seat') }}
                         </th>
                         <td>
-                            {{ $employeeToSection->section_seat->title ?? '' }}
+                            {{ $employeeToSection->section_seat->name ?? '' }}
                         </td>
                     </tr>
                     <tr>

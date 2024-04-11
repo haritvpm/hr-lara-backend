@@ -23,7 +23,7 @@ class SectionController extends Controller
     {
         abort_if(Gate::denies('section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sections = Section::with(['seat_of_controlling_officer', 'seat_of_reporting_officer', 'js_as_ss_employee', 'office_location'])->get();
+        $sections = Section::with(['seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee'])->get();
 
         return view('admin.sections.index', compact('sections'));
     }
@@ -34,11 +34,11 @@ class SectionController extends Controller
 
         $seat_of_controlling_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
+
         $seat_of_reporting_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $js_as_ss_employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.sections.create', compact('js_as_ss_employees', 'office_locations', 'seat_of_controlling_officers', 'seat_of_reporting_officers'));
     }
@@ -56,13 +56,13 @@ class SectionController extends Controller
 
         $seat_of_controlling_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
+        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
+
         $seat_of_reporting_officers = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $js_as_ss_employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $office_locations = OfficeLocation::pluck('location', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $section->load('seat_of_controlling_officer', 'seat_of_reporting_officer', 'js_as_ss_employee', 'office_location');
+        $section->load('seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee');
 
         return view('admin.sections.edit', compact('js_as_ss_employees', 'office_locations', 'seat_of_controlling_officers', 'seat_of_reporting_officers', 'section'));
     }
@@ -78,7 +78,7 @@ class SectionController extends Controller
     {
         abort_if(Gate::denies('section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $section->load('seat_of_controlling_officer', 'seat_of_reporting_officer', 'js_as_ss_employee', 'office_location', 'sectionAttendanceBooks');
+        $section->load('seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee', 'sectionAttendanceBooks');
 
         return view('admin.sections.show', compact('section'));
     }

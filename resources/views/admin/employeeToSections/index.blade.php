@@ -105,7 +105,7 @@
 { data: 'id', name: 'id' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
-{ data: 'section_seat_title', name: 'section_seat.title' },
+{ data: 'section_seat_name', name: 'section_seat.name' },
 { data: 'attendance_book_title', name: 'attendance_book.title' },
 { data: 'start_date', name: 'start_date' },
 { data: 'end_date', name: 'end_date' },

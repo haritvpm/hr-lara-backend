@@ -29,10 +29,10 @@
                         {{ trans('cruds.employeeToSeat.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employeeToSeat.fields.employee') }}
+                        {{ trans('cruds.employeeToSeat.fields.seat') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employeeToSeat.fields.seat') }}
+                        {{ trans('cruds.employeeToSeat.fields.employee') }}
                     </th>
                     <th>
                         {{ trans('cruds.employeeToSeat.fields.start_date') }}
@@ -97,8 +97,8 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
-{ data: 'employee_name', name: 'employee.name' },
 { data: 'seat_title', name: 'seat.title' },
+{ data: 'employee_name', name: 'employee.name' },
 { data: 'start_date', name: 'start_date' },
 { data: 'end_date', name: 'end_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }

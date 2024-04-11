@@ -44,7 +44,7 @@ class EmployeeToSection extends Model
 
     public function section_seat()
     {
-        return $this->belongsTo(Seat::class, 'section_seat_id');
+        return $this->belongsTo(Section::class, 'section_seat_id');
     }
 
     public function attendance_book()

@@ -84,8 +84,8 @@
                     </li>
                 @endcan
                 @can('punching_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/govt-calendars*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-address-card">
 
                             </i>
@@ -151,6 +151,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.govtCalendar.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('attendance_routing_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.attendance-routings.index") }}" class="nav-link {{ request()->is("admin/attendance-routings") || request()->is("admin/attendance-routings/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-hand-point-right">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.attendanceRouting.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -336,8 +348,8 @@
                     </li>
                 @endcan
                 @can('office_related_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/sections*") ? "menu-open" : "" }} {{ request()->is("admin/administrative-offices*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }} {{ request()->is("admin/office-locations*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/sections*") ? "active" : "" }} {{ request()->is("admin/administrative-offices*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }} {{ request()->is("admin/office-locations*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/sections*") ? "menu-open" : "" }} {{ request()->is("admin/administrative-offices*") ? "menu-open" : "" }} {{ request()->is("admin/office-locations*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/sections*") ? "active" : "" }} {{ request()->is("admin/administrative-offices*") ? "active" : "" }} {{ request()->is("admin/office-locations*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon far fa-building">
 
                             </i>
@@ -367,18 +379,6 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.administrativeOffice.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('attendance_routing_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.attendance-routings.index") }}" class="nav-link {{ request()->is("admin/attendance-routings") || request()->is("admin/attendance-routings/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-hand-point-right">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.attendanceRouting.title') }}
                                         </p>
                                     </a>
                                 </li>
