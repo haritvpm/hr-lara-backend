@@ -58,22 +58,16 @@ class PunchingApiController extends Controller
     */
     public function getEmployeeSectionMappingForEmployees( $emp_ids, $date, $seat_ids )
     {
-
-        $sections_with_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
+        
+        $sections_under_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
             ->orwherein('js_as_ss_employee_id',$emp_ids)->get();
 
-        if ($sections_with_charge == null) {
-          //  \Log::info('in getEmployeeSectionMappingForEmployees 2');
-
-            return null;
-        }
-
-        //this has to be rewritten. we need to give emp data from Punchings which has to calculated after
-        //we call our api refresh.
+        if ($sections_under_charge == null) { return null;  }
+        
         $employee_section_maps = EmployeeToSection::during($date)
             ->with(['employee', 'attendance_book', 'section'])
-            ->wherein('section_id', $sections_with_charge->pluck('id'))
+            ->wherein('section_id', $sections_under_charge->pluck('id'))
             ->get();
 
       //  \Log::info('in getEmployeeSectionMappingForEmployees 3');
@@ -160,7 +154,7 @@ class PunchingApiController extends Controller
         return response()->json([
             'status' => 'success',
         //    'seats' => $seat_ids,
-        //    'sections_with_charge' => $sections_with_charge,
+        //    'sections_under_charge' => $sections_under_charge,
             'employee_section_maps' => $data->unique('employee_id'),
             //  'punchings' => $data
         ], 200);
