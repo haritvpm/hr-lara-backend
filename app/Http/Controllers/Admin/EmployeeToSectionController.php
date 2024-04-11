@@ -25,7 +25,7 @@ class EmployeeToSectionController extends Controller
         abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = EmployeeToSection::with(['employee', 'section_seat', 'attendance_book'])->select(sprintf('%s.*', (new EmployeeToSection)->table));
+            $query = EmployeeToSection::with(['employee', 'section', 'attendance_book'])->select(sprintf('%s.*', (new EmployeeToSection)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -56,15 +56,15 @@ class EmployeeToSectionController extends Controller
             $table->editColumn('employee.aadhaarid', function ($row) {
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
-            $table->addColumn('section_seat_name', function ($row) {
-                return $row->section_seat ? $row->section_seat->name : '';
+            $table->addColumn('section_name', function ($row) {
+                return $row->section ? $row->section->name : '';
             });
 
             $table->addColumn('attendance_book_title', function ($row) {
                 return $row->attendance_book ? $row->attendance_book->title : '';
             });
 
-            $table->rawColumns(['actions', 'placeholder', 'employee', 'section_seat', 'attendance_book']);
+            $table->rawColumns(['actions', 'placeholder', 'employee', 'section', 'attendance_book']);
 
             return $table->make(true);
         }
@@ -78,11 +78,11 @@ class EmployeeToSectionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $section_seats = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $attendance_books = AttendanceBook::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.employeeToSections.create', compact('attendance_books', 'employees', 'section_seats'));
+        return view('admin.employeeToSections.create', compact('attendance_books', 'employees', 'sections'));
     }
 
     public function store(StoreEmployeeToSectionRequest $request)
@@ -98,13 +98,13 @@ class EmployeeToSectionController extends Controller
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $section_seats = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $attendance_books = AttendanceBook::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $employeeToSection->load('employee', 'section_seat', 'attendance_book');
+        $employeeToSection->load('employee', 'section', 'attendance_book');
 
-        return view('admin.employeeToSections.edit', compact('attendance_books', 'employeeToSection', 'employees', 'section_seats'));
+        return view('admin.employeeToSections.edit', compact('attendance_books', 'employeeToSection', 'employees', 'sections'));
     }
 
     public function update(UpdateEmployeeToSectionRequest $request, EmployeeToSection $employeeToSection)
@@ -118,7 +118,7 @@ class EmployeeToSectionController extends Controller
     {
         abort_if(Gate::denies('employee_to_section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employeeToSection->load('employee', 'section_seat', 'attendance_book');
+        $employeeToSection->load('employee', 'section', 'attendance_book');
 
         return view('admin.employeeToSections.show', compact('employeeToSection'));
     }

@@ -53,6 +53,11 @@ class Section extends Model
         return $this->hasMany(AttendanceBook::class, 'section_id', 'id');
     }
 
+    public function sectionEmployeeToSections()
+    {
+        return $this->hasMany(EmployeeToSection::class, 'section_id', 'id');
+    }
+
     public function seat_of_controlling_officer()
     {
         return $this->belongsTo(Seat::class, 'seat_of_controlling_officer_id');

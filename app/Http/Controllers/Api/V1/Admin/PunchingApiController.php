@@ -56,31 +56,29 @@ class PunchingApiController extends Controller
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingForEmployees( $emp_ids, $date )
+    public function getEmployeeSectionMappingForEmployees( $emp_ids, $date, $seat_ids )
     {
-
-        $seat_ids = EmployeeToSeat::with('seat')->wherein('employee_id', $emp_ids)->get()->pluck('seat.id');
-
-        if ($seat_ids == null) {
-            return null;
-        }
 
         $sections_with_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
             ->orwherein('js_as_ss_employee_id',$emp_ids)->get();
 
         if ($sections_with_charge == null) {
+          //  \Log::info('in getEmployeeSectionMappingForEmployees 2');
+
             return null;
         }
 
         //this has to be rewritten. we need to give emp data from Punchings which has to calculated after
         //we call our api refresh.
-        $employee_section_maps = EmployeeToSection::during($date)->with(['employee', 'attendance_book'])
-            ->wherein('section_seat_id', $sections_with_charge->pluck('id'))
-             ->get();
+        $employee_section_maps = EmployeeToSection::during($date)
+            ->with(['employee', 'attendance_book', 'section'])
+            ->wherein('section_id', $sections_with_charge->pluck('id'))
+            ->get();
 
+      //  \Log::info('in getEmployeeSectionMappingForEmployees 3');
 
-        return $employee_section_maps;
+        return $employee_section_maps->count() ? $employee_section_maps : null ;
 
     }
 
@@ -97,47 +95,73 @@ class PunchingApiController extends Controller
         if ($me->employee_id == null) {
             return response()->json(['status' => 'No linked employee'], 400);
         }
+        $seat_ids_already_fetched = collect();
+        $seat_ids_of_loggedinuser = EmployeeToSeat::with('seat')->where('employee_id', $me->employee_id)->get()->pluck('seat.id');
 
-        $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date);
-
-        $data = [];
-        $empids= $employee_section_maps->pluck('employee.id') ;
-        if(count($empids))
-         {
-            $data[] =  $employee_section_maps;
-            $data[] =  $empids;
-
-            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees( $empids, $date );
-            $empids= $employee_section_maps->pluck('employee.id') ;
-
-            $data[] =  $empids;
+        if ($seat_ids_of_loggedinuser == null) {
+            return response()->json(['status' => 'No seats in charge'], 400);
         }
 
-        /*
-        //find my seat if I am JS
-        $seat_ids = EmployeeToSeat::with('seat')->where('employee_id', $me->employee_id)->get()->pluck('seat.id');
+        $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date, $seat_ids_of_loggedinuser);
+        $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids_of_loggedinuser);
 
-        $sections_with_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
-            ->orwherein('seat_of_reporting_officer_id', $seat_ids)
-            ->orwhere('js_as_ss_employee_id', $me->employee_id)->get();
-
-        if ($sections_with_charge == null) {
-            return response()->json(['status' => 'No sections in charge'], 400);
+        if(!$employee_section_maps){
+            return response()->json(['status' => 'No employee found'], 200);
         }
-        //this has to be rewritten. we need to give emp data from Punchings which has to calculated after
-        //we call our api refresh.
-        $employee_section_maps = EmployeeToSection::during($date)->with(['employee', 'attendance_book'])
-            ->wherein('section_seat_id', $sections_with_charge->pluck('id'))
-             ->get();
 
-        */
+        $data = collect();
+        $data = $data->concat($employee_section_maps);
+
+        $emp_ids= $employee_section_maps->pluck('employee.id') ;
+
+        while(count($emp_ids))
+         {           
+            $seat_ids = EmployeeToSeat::with(['seat'])->wherein('employee_id', $emp_ids)
+                            ->whereNotIn('seat_id', $seat_ids_already_fetched)
+                            ->get()->pluck('seat.id');
+                        
+        
+            if(!$seat_ids) break;
+
+            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees( $emp_ids, $date, $seat_ids );
+   
+            if(!$employee_section_maps) break;
+            
+            $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids);
+
+            $emp_ids= $employee_section_maps->pluck('employee.id') ;
+            $data = $data->concat($employee_section_maps);
+            
+        }
+     
+
+        //map EmployeeToSection to a format like DTO
+        $data->transform(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+                   
+            return [
+                'employee_id' => $employeeToSection->employee_id,
+                'name' => $employeeToSection->employee->name,
+                'aadhaarid' => $employeeToSection->employee->aadhaarid,
+                'attendance_book_id' => $employeeToSection->attendance_book_id,
+                'attendance_book' => $employeeToSection->attendance_book,
+                'section_id' => $employeeToSection->section_id,
+                'section_name' => $employeeToSection->section->name,
+                'works_nights_during_session'  => $employeeToSection->section->works_nights_during_session,
+                'seat_of_controlling_officer_id'  => $employeeToSection->section->seat_of_controlling_officer_id,
+                'logged_in_user_is_controller' => 
+                $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
+                
+                
+            ];
+        
+        });
 
         //   $data = (new PunchingService())->calculate($date);
         return response()->json([
             'status' => 'success',
         //    'seats' => $seat_ids,
         //    'sections_with_charge' => $sections_with_charge,
-            'employee_section_maps' => $data,
+            'employee_section_maps' => $data->unique('employee_id'),
             //  'punchings' => $data
         ], 200);
 

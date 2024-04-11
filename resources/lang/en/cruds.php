@@ -734,8 +734,8 @@ return [
         ],
     ],
     'employeeToSection' => [
-        'title'          => 'Employee to Section',
-        'title_singular' => 'Employee to Section',
+        'title'          => 'Employee -> Section',
+        'title_singular' => 'Employee -> Section',
         'fields'         => [
             'id'                     => 'ID',
             'id_helper'              => ' ',
@@ -743,8 +743,6 @@ return [
             'employee_helper'        => ' ',
             'attendance_book'        => 'Attendance Book',
             'attendance_book_helper' => ' ',
-            'section_seat'           => 'SectionSeat',
-            'section_seat_helper'    => ' ',
             'created_at'             => 'Created at',
             'created_at_helper'      => ' ',
             'updated_at'             => 'Updated at',
@@ -755,6 +753,8 @@ return [
             'start_date_helper'      => ' ',
             'end_date'               => 'End Date',
             'end_date_helper'        => ' ',
+            'section'                => 'Section',
+            'section_helper'         => ' ',
         ],
     ],
     'employeeToDesignation' => [

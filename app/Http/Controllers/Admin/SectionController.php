@@ -78,7 +78,7 @@ class SectionController extends Controller
     {
         abort_if(Gate::denies('section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $section->load('seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee', 'sectionAttendanceBooks');
+        $section->load('seat_of_controlling_officer', 'office_location', 'seat_of_reporting_officer', 'js_as_ss_employee', 'sectionAttendanceBooks', 'sectionEmployeeToSections');
 
         return view('admin.sections.show', compact('section'));
     }

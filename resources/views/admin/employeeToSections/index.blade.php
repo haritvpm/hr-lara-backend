@@ -35,7 +35,7 @@
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.employeeToSection.fields.section_seat') }}
+                        {{ trans('cruds.employeeToSection.fields.section') }}
                     </th>
                     <th>
                         {{ trans('cruds.employeeToSection.fields.attendance_book') }}
@@ -105,7 +105,7 @@
 { data: 'id', name: 'id' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
-{ data: 'section_seat_name', name: 'section_seat.name' },
+{ data: 'section_name', name: 'section.name' },
 { data: 'attendance_book_title', name: 'attendance_book.title' },
 { data: 'start_date', name: 'start_date' },
 { data: 'end_date', name: 'end_date' },

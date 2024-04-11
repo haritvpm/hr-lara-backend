@@ -15,9 +15,9 @@ class EmployeeToSectionApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       // abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new EmployeeToSectionResource(EmployeeToSection::with(['employee', 'section_seat', 'attendance_book'])->get());
+        return new EmployeeToSectionResource(EmployeeToSection::with(['employee', 'section', 'attendance_book'])->get());
     }
 
     public function store(StoreEmployeeToSectionRequest $request)
@@ -31,9 +31,9 @@ class EmployeeToSectionApiController extends Controller
 
     public function show(EmployeeToSection $employeeToSection)
     {
-        abort_if(Gate::denies('employee_to_section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       // abort_if(Gate::denies('employee_to_section_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new EmployeeToSectionResource($employeeToSection->load(['employee', 'section_seat', 'attendance_book']));
+        return new EmployeeToSectionResource($employeeToSection->load(['employee', 'section', 'attendance_book']));
     }
 
     public function update(UpdateEmployeeToSectionRequest $request, EmployeeToSection $employeeToSection)
@@ -47,7 +47,7 @@ class EmployeeToSectionApiController extends Controller
 
     public function destroy(EmployeeToSection $employeeToSection)
     {
-        abort_if(Gate::denies('employee_to_section_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+      //  abort_if(Gate::denies('employee_to_section_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeToSection->delete();
 

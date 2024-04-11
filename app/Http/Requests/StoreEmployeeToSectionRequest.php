@@ -21,7 +21,7 @@ class StoreEmployeeToSectionRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'section_seat_id' => [
+            'section_id' => [
                 'required',
                 'integer',
             ],

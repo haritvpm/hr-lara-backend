@@ -23,7 +23,7 @@ class EmployeeToSection extends Model
 
     protected $fillable = [
         'employee_id',
-        'section_seat_id',
+        'section_id',
         'attendance_book_id',
         'start_date',
         'end_date',
@@ -42,9 +42,9 @@ class EmployeeToSection extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function section_seat()
+    public function section()
     {
-        return $this->belongsTo(Section::class, 'section_seat_id');
+        return $this->belongsTo(Section::class, 'section_id');
     }
 
     public function attendance_book()

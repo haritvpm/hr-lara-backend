@@ -33,10 +33,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employeeToSection.fields.section_seat') }}
+                            {{ trans('cruds.employeeToSection.fields.section') }}
                         </th>
                         <td>
-                            {{ $employeeToSection->section_seat->name ?? '' }}
+                            {{ $employeeToSection->section->name ?? '' }}
                         </td>
                     </tr>
                     <tr>

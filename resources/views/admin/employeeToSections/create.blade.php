@@ -22,16 +22,16 @@
                 <span class="help-block">{{ trans('cruds.employeeToSection.fields.employee_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="section_seat_id">{{ trans('cruds.employeeToSection.fields.section_seat') }}</label>
-                <select class="form-control select2 {{ $errors->has('section_seat') ? 'is-invalid' : '' }}" name="section_seat_id" id="section_seat_id" required>
-                    @foreach($section_seats as $id => $entry)
-                        <option value="{{ $id }}" {{ old('section_seat_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <label class="required" for="section_id">{{ trans('cruds.employeeToSection.fields.section') }}</label>
+                <select class="form-control select2 {{ $errors->has('section') ? 'is-invalid' : '' }}" name="section_id" id="section_id" required>
+                    @foreach($sections as $id => $entry)
+                        <option value="{{ $id }}" {{ old('section_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('section_seat'))
-                    <span class="text-danger">{{ $errors->first('section_seat') }}</span>
+                @if($errors->has('section'))
+                    <span class="text-danger">{{ $errors->first('section') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.employeeToSection.fields.section_seat_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.employeeToSection.fields.section_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="attendance_book_id">{{ trans('cruds.employeeToSection.fields.attendance_book') }}</label>

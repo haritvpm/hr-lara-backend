@@ -229,6 +229,16 @@ class TestDataSeeder extends Seeder
                 'is_shift' => 0,
             ],
 
+            [
+                'id'     => 12,
+                'srismt'  => 'sri',
+                'name' => 'Vinod',
+                'aadhaarid' => '757423',
+
+                'status' => 'active',
+                'is_shift' => 0,
+            ],
+
 
         ];
         foreach ($items as $item) {
@@ -292,6 +302,55 @@ class TestDataSeeder extends Seeder
         }
     }
     /////////////////////////
+
+        /////////////////////////
+
+        $users = [
+            [
+                'id'             => 3,
+                'username'       => 'us.it',
+                'email'          => 'usit@admin.com',
+                'password'       => bcrypt('password'),
+                'employee_id'   => 6,
+                'remember_token' => null,
+            ],
+            [
+                'id'             => 4,
+                'username'       => 'so.eniyamasabha',
+                'email'          => 'nas@admin.com',
+                'password'       => bcrypt('password'),
+                'remember_token' => null,
+            ],
+            [
+                'id'             => 5,
+                'username'       => 'ds.eniyamasabha',
+                'email'          => 'dsit@admin.com',
+                'employee_id'   =>  7,
+                'password'       => bcrypt('password'),
+                'remember_token' => null,
+            ],
+            [
+                'id'             => 6,
+                'username'       => 'harip',
+                'email'          => 'harip@kla.com',
+                'password'       => bcrypt('password'),
+                'remember_token' => null,
+                'employee_id'   => 8,
+            ],
+            [
+                'id'             => 7,
+                'username'       => 'shajic',
+                'email'          => 'shaji@kla.com',
+                'password'       => bcrypt('password'),
+                'remember_token' => null,
+            ],
+        ];
+    
+        foreach ($users as $item) {
+            if (!User::find($item['id'])) {
+                User::insert($item);
+            }
+        }
 
     }
 }
