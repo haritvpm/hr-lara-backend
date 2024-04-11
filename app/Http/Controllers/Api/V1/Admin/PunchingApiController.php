@@ -52,6 +52,38 @@ class PunchingApiController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
+
+    /*
+    For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
+    */
+    public function getEmployeeSectionMappingForEmployees( $emp_ids, $date )
+    {
+
+        $seat_ids = EmployeeToSeat::with('seat')->wherein('employee_id', $emp_ids)->get()->pluck('seat.id');
+
+        if ($seat_ids == null) {
+            return null;
+        }
+
+        $sections_with_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
+            ->orwherein('seat_of_reporting_officer_id', $seat_ids)
+            ->orwherein('js_as_ss_employee_id',$emp_ids)->get();
+
+        if ($sections_with_charge == null) {
+            return null;
+        }
+
+        //this has to be rewritten. we need to give emp data from Punchings which has to calculated after
+        //we call our api refresh.
+        $employee_section_maps = EmployeeToSection::during($date)->with(['employee', 'attendance_book'])
+            ->wherein('section_seat_id', $sections_with_charge->pluck('id'))
+             ->get();
+
+
+        return $employee_section_maps;
+
+    }
+
     public function getpunchings(Request $request)
     {
 
@@ -66,6 +98,22 @@ class PunchingApiController extends Controller
             return response()->json(['status' => 'No linked employee'], 400);
         }
 
+        $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date);
+
+        $data = [];
+        $empids= $employee_section_maps->pluck('employee.id') ;
+        if(count($empids))
+         {
+            $data[] =  $employee_section_maps;
+            $data[] =  $empids;
+
+            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees( $empids, $date );
+            $empids= $employee_section_maps->pluck('employee.id') ;
+
+            $data[] =  $empids;
+        }
+
+        /*
         //find my seat if I am JS
         $seat_ids = EmployeeToSeat::with('seat')->where('employee_id', $me->employee_id)->get()->pluck('seat.id');
 
@@ -82,12 +130,14 @@ class PunchingApiController extends Controller
             ->wherein('section_seat_id', $sections_with_charge->pluck('id'))
              ->get();
 
+        */
+
         //   $data = (new PunchingService())->calculate($date);
         return response()->json([
             'status' => 'success',
-            'seats' => $seat_ids,
-            'sections_with_charge' => $sections_with_charge,
-            'employee_section_maps' => $employee_section_maps,
+        //    'seats' => $seat_ids,
+        //    'sections_with_charge' => $sections_with_charge,
+            'employee_section_maps' => $data,
             //  'punchings' => $data
         ], 200);
 
