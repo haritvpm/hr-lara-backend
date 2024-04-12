@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="row">
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
         <div class="card_">
             <div class="card-header_">
                 {{ trans('global.my_profile') }}
@@ -37,7 +37,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="col-md-6">
         <div class="card_">
             <div class="card-header_">
@@ -67,7 +67,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<!-- <div class="row">
     <div class="col-md-6">
         <div class="card_">
             <div class="card-header_">
@@ -87,5 +87,5 @@
         </div>
     </div>
 
-</div>
+</div> -->
 @endsection
