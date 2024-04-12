@@ -34,7 +34,7 @@ class EmployeeService {
     public  function syncEmployeeDataFromAebas() 
     {
         $aebas_employees = (new AebasFetchService())->fetchApi(1,0);
-        \Log::info('got emp' . count($aebas_employees));
-
+        //\Log::info('got emp' . count($aebas_employees));
+        return $aebas_employees;
     }
 }

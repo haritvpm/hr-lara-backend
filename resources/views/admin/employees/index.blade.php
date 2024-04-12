@@ -2,21 +2,16 @@
 @section('content')
 @can('employee_create')
     <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-6">
-            <a class="btn btn-success" href="{{ route('admin.employees.create') }}">
+            <a class="ml-2 btn btn-success" href="{{ route('admin.employees.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.employee.title_singular') }}
             </a>
-            <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+            <button class="ml-2 btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
                 {{ trans('global.app_csvImport') }}
             </button>
             @include('csvImport.modal', ['model' => 'Employee', 'route' => 'admin.employees.parseCsvImport'])
-
-
-
-        </div>
-        <div class="col-lg-6">
-
-            <div class="dropdown">
+           
+        
+            <div class="ml-2 dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Actions
                 </button>
@@ -24,9 +19,8 @@
                 <a class="dropdown-item"  href="{{ route('admin.employees.aebasfetch') }}">Sync From AEBAS</a>
                 <!-- <a class="dropdown-item" href="#">Another action</a> -->
             </div>
-            </div>
 
-        </div>
+            </div>
     </div>
 @endcan
 

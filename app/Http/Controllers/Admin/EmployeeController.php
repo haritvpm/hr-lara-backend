@@ -148,9 +148,26 @@ class EmployeeController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-    public function aebasfetch($request)
+    public function aebasfetch()
     {
-        (new EmployeeService())->syncEmployeeDataFromAebas();
+       $list =  (new EmployeeService())->syncEmployeeDataFromAebas();
+
+       $callback = function() use ($list) 
+        {
+            $FH = fopen('php://output', 'w');
+            foreach ($list as $row) { 
+                fputcsv($FH, $row);
+            }
+            fclose($FH);
+        };
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+        ,   'Content-type'        => 'text/csv'
+        ,   'Content-Disposition' => 'attachment; filename=employees_in_aebas.csv'
+        ,   'Expires'             => '0'
+        ,   'Pragma'              => 'public'
+        ];
+        return response()->stream($callback, 200, $headers);
 
     }
     

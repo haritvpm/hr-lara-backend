@@ -227,15 +227,7 @@ class PunchingService
         $success_punchs = Punching::where('date', $reportdate)->get();
 
         foreach ($success_punchs as $dataItem) {
-            /*
-        'date',
-        'employee_id',
-        'punchin_id',
-        'duration',
-        'flexi',
-        'grace_min',
-        'extra_min',
-    */
+         
             //find employee
             $emp = Employee::where('aadhaarid',  $dataItem->emp_id)->first();
             if (!$emp) continue;
@@ -256,12 +248,12 @@ class PunchingService
         if ($calender) {
             //if( $calender->attendance_today_trace_fetched)
             {
-                \Log::info('calendear date exists-' . $reportdate);
+              //  \Log::info('calendear date exists-' . $reportdate);
 
                 // $offset = $calender->attendance_today_trace_rows_fetched;
             }
         } else {
-            \Log::info('calendear date not exists-' . $reportdate);
+           // \Log::info('calendear date not exists-' . $reportdate);
 
             $calender = new GovtCalendar();
             //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
@@ -434,6 +426,7 @@ class PunchingService
         $trace['err_code'] = $traceItem['err_code'];
         $trace['att_date'] = $traceItem['att_date'];
         $trace['att_time'] = $traceItem['att_time'];
+        $trace['created_at'] = $traceItem['creation_date'];
         $trace['day_offset'] = $day_offset;
 
         return $trace;
@@ -449,7 +442,7 @@ class PunchingService
             return $q->wherein('aadhaarid', $emp_ids);
         });
 
-        $punchingtraces_ungrouped = $query->orderBy('created_at', 'asc')->get();
+        $punchingtraces_ungrouped = $query->orderBy('id', 'asc')->get();
         $punchingtraces = $punchingtraces_ungrouped->groupBy('aadhaarid');
         $aadhaar_to_empIds = [];
         if($emp_ids == null) {
@@ -461,17 +454,6 @@ class PunchingService
             $aadhaar_to_empIds = $emps->pluck('id','aadhaarid');
         }
 
-//       dd($aadhaar_to_empIds);
-
-        $data = [];
-/*
-
-        'employee_id',
-        'designation',
-        'section',
-        
-        
-*/
         $date_str = $date;//->format('Y-m-d');
 
         $employee_section_maps = EmployeeToSection::during($date_str)
@@ -487,13 +469,16 @@ class PunchingService
 
             $x = json_decode(json_encode($item));
            
-            $desig = count($x->employee->employee_employee_to_designations ) ?                         $x->employee->employee_employee_to_designations[0]->designation->designation : '';
+            $desig = count($x->employee?->employee_employee_to_designations ) ? $x->employee->employee_employee_to_designations[0]->designation->designation : '';
             $section = $x->section->name;
+            $time_group_id = count($x->employee?->employee_employee_to_designations ) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
 
             return [ $item['employee']['aadhaarid'] => [
                             
                 'designation' => $desig,
                 'section' => $section,
+                'shift' => $x->employee?->is_shift,
+
             ]
            ];
         });
@@ -501,21 +486,28 @@ class PunchingService
         
       //  \Log::info('EmployeeToSection ' . $employee_section_maps);
      //   dd( $employee_section_maps);
-/*
+        $data = [];
      
         foreach ($punchingtraces as $key => $punching) {
 
             $item = [];
 
-            $empid = $key;
+            $aadhaarid = $key;
             $punch_count =  count($punching);
 
-            $item['date'] = $date->format('Y-m-d');
-            $item['aadhaarid'] = $empid;
+            $item['date'] = $date_str;
+           
+            $item['aadhaarid'] = $aadhaarid;
+            $item['employee_id'] = $aadhaar_to_empIds->get($aadhaarid);
+            $item['designation'] = $employee_section_maps->has($aadhaarid) ? $employee_section_maps[$aadhaarid]['designation'] : null;
+            $item['section'] = $employee_section_maps->has($aadhaarid) ? $employee_section_maps[$aadhaarid]['section'] : null;
+
             
             $c_punch_in = null; $c_punch_out = null;
             if( $punch_count ){
                 $punch = $punching[0];
+               // $item['punchin_created'] =$punch['created_at']->format('Y-m-d H:i:s');
+                $item['punchin_offset'] =$punch['day_offset'];
                 $item['punchin_trace_id'] = $punch['id'];
                 $c_punch_in = Carbon::createFromFormat('Y-m-d H:i:s',$punch['att_date'] . ' ' . $punch['att_time']);
                 $item['in_datetime'] =  $c_punch_in->toDateTimeString();
@@ -523,6 +515,8 @@ class PunchingService
             if( $punch_count >= 2){
                 $punch = $punching[$punch_count - 1];
                 $item['punchout_trace_id'] = $punch['id'];
+               // $item['punchout_created'] =$punch['created_at']->format('Y-m-d H:i:s');;
+                $item['punchout_offset'] =$punch['day_offset'];
                 $c_punch_out =  Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' .$punch['att_time']);
                 $item['out_datetime'] =  $c_punch_out->toDateTimeString();
             }
@@ -530,33 +524,47 @@ class PunchingService
             $item['punching_count'] = $punch_count;
 
             if( $c_punch_in && $c_punch_out ){
-                $item['duration_sec'] = $c_punch_out->diffInSeconds($c_punch_in);
-                $c_flexi_start = Carbon::createFromFormat('Y-m-d H:i:s', $date->format('Y-m-d') . ' ' . '10:00:00' );
-                $c_flexi_end = Carbon::createFromFormat('Y-m-d H:i:s', $date->format('Y-m-d') . ' ' . '17:30:00' );
-
-                $c_start = $c_punch_in->lessThan($c_flexi_start) ? $c_flexi_start : $c_punch_in;
-                $c_end = $c_punch_out->greaterThan($c_flexi_end) ? $c_flexi_end : $c_end;
-
-                //calculate grace
+                //get employee time group. now assume normal
+                //use today's date. imagine legislation punching out next day. our flexiend is based on today
                 
-                $worked_minutes_flexi = $c_end->diffInMinutes($c_start);
-                if( $worked_minutes_flexi < (7 * 60) ){
-                    $item['grace_sec'] = (7 * 60) - $worked_minutes_flexi ;
-                } else if ( $worked_minutes_flexi > (7 * 60) ) {
-                    $item['extra_sec'] = $worked_minutes_flexi - (7 * 60) ;
+                $item['duration_sec'] = $c_punch_out->diffInSeconds($c_punch_in);
+                $c_flexi_start = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '10:00:00' );
+                $c_flexi_end = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '17:30:00' );
+
+                //check if this is half day leave by 
+
+                $c_start = $c_punch_in->lessThan($c_flexi_start)  ? $c_flexi_start : $c_punch_in;
+                $c_end = $c_punch_out->greaterThan($c_flexi_end)  ? $c_flexi_end : $c_punch_out;
+
+                //todo also check if office time ends early. 
+
+                //probably shift. like from 6 to 9 am
+                if( $c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in) ){
+
+                        //if( isCL_FN ) //todo
+
+                        //calculate grace
+                    
+                        $worked_minutes_flexi = $c_end->diffInMinutes($c_start);
+                        if( $worked_minutes_flexi < (7 * 60) ){
+                            $item['grace_sec'] = ((7 * 60) - $worked_minutes_flexi)*60 ;
+                        } else if ( $worked_minutes_flexi > (7 * 60) ) {
+                            $item['extra_sec'] = ($worked_minutes_flexi - (7 * 60))*60 ;
+                        }
                 }
 
                 //extra time 
                 
             }
 
-            //get employee time group. now assume normal
+            //todo: also save each punching trace to punching in a one to many relationship.
+            //do we need the above, we probably need next day's traces too. for which we hve to write another ui
 
 
             $data[] = $item;
         }
-*/
 
+        dd( $data);
 
         return $data;
     }
