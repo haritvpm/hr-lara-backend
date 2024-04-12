@@ -253,7 +253,7 @@ class PunchingService
 
     }
 
-   
+
     public function getGovtCalender($reportdate)
     {
         $calender = GovtCalendar::where('date',$reportdate)->first();
@@ -319,7 +319,7 @@ class PunchingService
             return 0;
         }
 
-       
+
         //check calender for this date's count.
 
         $govtcalender = $this->getGovtCalender($reportdate);
@@ -334,9 +334,9 @@ class PunchingService
             if($diff < 5){
                 \Log::info('fetchTrace - last fetched in less than five minutes- ignoring');
                 return 0;
-            } 
+            }
         }
-        
+
         $insertedcount = 0;
 
         for (; ; $offset += $count) {
@@ -349,7 +349,7 @@ class PunchingService
                 $returnkey = "attendancetrace";
             }
 
-            
+
 
             // $url = 'http://localhost:3000/data';
             \Log::info($url);
@@ -423,7 +423,7 @@ class PunchingService
 
             ]);
 
-          //  $this->calculate($reportdate);
+            $this->calculate($reportdate);
         }
 
         return $insertedcount;
@@ -442,7 +442,7 @@ class PunchingService
         $trace['att_date']= $traceItem['att_date'];
         $trace['att_time']= $traceItem['att_time'];
         $trace['day_offset']= $day_offset;
-        
+
         return $trace;
        // $trace->save();
     }
@@ -453,24 +453,25 @@ class PunchingService
        $punchingtraces = PunchingTrace::where('att_date', $date->format('Y-m-d'))
                 ->where('auth_status', 'Y')
                 ->orderBy('created_at', 'asc')
-                
+
                 ->get()->groupBy('aadhaarid');
 
-  
-    
+
        $data = [];
-         
+
        foreach ($punchingtraces as $key => $punching) {
-        
+
         $item = [];
-       
+
         $empid = $key;
         $punch_count =  count($punching);
 
-        $item['aadhaarid'] = $key;
+        $item['aadhaarid'] = $empid;
         $item['in'] = $punch_count ? $punching[0]['att_time'] : '';
         $item['out'] = $punch_count >= 2 ? $punching[ $punch_count-1 ]['att_time']  : '';
-           
+        $item['punching_count'] = $punch_count;
+
+
         $data[] = $item ;
 
        }
