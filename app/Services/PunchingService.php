@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Auth;
@@ -12,6 +13,7 @@ use App\Models\Employee;
 use App\Models\User;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\DB;
+
 class PunchingService
 {
     private EmployeeService $employeeService;
@@ -45,9 +47,8 @@ class PunchingService
         $pen_to_aadhaarid = [];
 
         $govtcalender = $this->getGovtCalender($reportdate);
-        if( $govtcalender->success_attendance_fetched){
+        if ($govtcalender->success_attendance_fetched) {
             $offset = $govtcalender->success_attendance_rows_fetched;
-
         }
 
         for (;; $offset += $count) {
@@ -64,9 +65,9 @@ class PunchingService
             ])->get($url);
 
             if ($response->status() !== 200) {
-               // \Session::flash('message-danger',  $response->status());
-               Log::error('Response for fetchSuccessAttendance:' . $response->status());
-               break;
+                // \Session::flash('message-danger',  $response->status());
+                Log::error('Response for fetchSuccessAttendance:' . $response->status());
+                break;
             }
             $jsonData = $response->json();
             $jsonData = $jsonData['successattendance'];
@@ -138,7 +139,6 @@ class PunchingService
                 if ($org_emp_code != '' && $org_emp_code != null) {
                     $pen_to_aadhaarid[$org_emp_code] = $attendanceId;
                 }
-
             }
             //if reached end of data, break
             if (count($jsonData) <  $count) {
@@ -152,17 +152,17 @@ class PunchingService
             $calenderdate->update(['punching' => 'AEBAS']);
         }
 
-        $totalrowsindb  = PunchingTrace::where('date',$reportdate)->count();
+        $totalrowsindb  = PunchingTrace::where('date', $reportdate)->count();
 
         $govtcalender->update([
 
-            'success_attendance_fetched' =>  $calender->success_attendance_fetched+1,
+            'success_attendance_fetched' =>  $calender->success_attendance_fetched + 1,
             'success_attendance_rows_fetched' => $totalrowsindb,
             'success_attendance_lastfetchtime' => Carbon::now(),
 
         ]);
 
-        if($insertedcount){
+        if ($insertedcount) {
             $this->makePunchingRegister($reportdate);
         }
 
@@ -225,12 +225,12 @@ class PunchingService
         }
     }
 
-    private function makePunchingRegister($reportdate )
+    private function makePunchingRegister($reportdate)
     {
-        $success_punchs = Punching::where('date',$reportdate )->get();
+        $success_punchs = Punching::where('date', $reportdate)->get();
 
         foreach ($success_punchs as $dataItem) {
-        /*
+            /*
         'date',
         'employee_id',
         'punchin_id',
@@ -241,34 +241,33 @@ class PunchingService
     */
             //find employee
             $emp = Employee::where('aadhaarid',  $dataItem->emp_id)->first();
-            if(!$emp) continue;
+            if (!$emp) continue;
             $duration = "0";
 
-            if($dataItem['at_type'] == 'C'){
+            if ($dataItem['at_type'] == 'C') {
                 $datein = Carbon::parse($dataItem->in_time);
                 $dateout = Carbon::parse($dataItem->out_time);
                 $duration = $dateout->diff($datein)->format('%H:%i:%s');
             }
         }
-
     }
 
 
     public function getGovtCalender($reportdate)
     {
-        $calender = GovtCalendar::where('date',$reportdate)->first();
-        if($calender){
+        $calender = GovtCalendar::where('date', $reportdate)->first();
+        if ($calender) {
             //if( $calender->attendance_today_trace_fetched)
             {
-            \Log::info('calendear date exists-' . $reportdate);
+                \Log::info('calendear date exists-' . $reportdate);
 
-               // $offset = $calender->attendance_today_trace_rows_fetched;
+                // $offset = $calender->attendance_today_trace_rows_fetched;
             }
         } else {
             \Log::info('calendear date not exists-' . $reportdate);
 
             $calender = new GovtCalendar();
-          //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
+            //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
             \Log::info('calendear date ncreated -' . $reportdate);
 
             $calender->date = $reportdate;
@@ -288,19 +287,19 @@ class PunchingService
 
     public function fetchTrace($fetchdate = null)
     {
-       $apikey =  env('AEBAS_KEY');
-     // \Log::info($apikey );
+        $apikey =  env('AEBAS_KEY');
+        // \Log::info($apikey );
 
 
-       $offset = 0;
-       $count = 500; //make it to 500 in prod
+        $offset = 0;
+        $count = 500; //make it to 500 in prod
 
 
         // should be in format 2024-02-11
         $date = Carbon::now()->endOfDay();
         $reportdate = Carbon::now()->format('Y-m-d'); //today
-        if($fetchdate){
-        // should be in format 2024-02-11
+        if ($fetchdate) {
+            // should be in format 2024-02-11
             if (!$this->validateDate($fetchdate)) {
                 //date is in dd-mm-yy
                 $date =  Carbon::createFromFormat(config('app.date_format'), $fetchdate);
@@ -313,8 +312,7 @@ class PunchingService
 
         //do not call trace if this is a future date
 
-        if( $date > Carbon::now()->endOfDay() )
-        {
+        if ($date > Carbon::now()->endOfDay()) {
             \Log::info('fetchTrace - future date ignoring');
             return 0;
         }
@@ -327,11 +325,11 @@ class PunchingService
 
         //check last fetch time. if it less than 5 minutes, dont fetch
 
-        if( $govtcalender->attendancetodaytrace_lastfetchtime ){
+        if ($govtcalender->attendancetodaytrace_lastfetchtime) {
             $lastfetch =  Carbon::parse($govtcalender->attendancetodaytrace_lastfetchtime);
             $diff = Carbon::now()->diffInMinutes($lastfetch);
-            \Log::info('diff='.$diff);
-            if($diff < 5){
+            \Log::info('diff=' . $diff);
+            if ($diff < 5) {
                 \Log::info('fetchTrace - last fetched in less than five minutes- ignoring');
                 return 0;
             }
@@ -339,12 +337,12 @@ class PunchingService
 
         $insertedcount = 0;
 
-        for (; ; $offset += $count) {
+        for (;; $offset += $count) {
 
             $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/attendancetodaytrace/offset/{$offset}/count/{$count}/apikey/{$apikey}";
             $returnkey = "attendancetodaytrace";
 
-            if($fetchdate && !$date->isToday()){
+            if ($fetchdate && !$date->isToday()) {
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/trace/offset/{$offset}/count/{$count}/reportdate/{$reportdate}/apikey/{$apikey}";
                 $returnkey = "attendancetrace";
             }
@@ -362,9 +360,9 @@ class PunchingService
 
 
             if ($response->status() !== 200) {
-              //  \Session::flash('message-danger',  $response->status());
+                //  \Session::flash('message-danger',  $response->status());
                 \Log::error('Response for fetchAPI:' . $response->status());
-                return ;
+                return;
                 //break;
             }
             $jsonData = $response->json();
@@ -380,8 +378,8 @@ class PunchingService
 
                 //if(  $jsonData['attendance_type'] != 'E' && $jsonData['auth_status'] == 'Y'  )
                 {
-                // assert($reportdate === $jsonData[$i]['att_date']);
-                 $datatoinsert[] = $this->mapTraceToDBFields($offset + $i ,$jsonData[$i]);
+                    // assert($reportdate === $jsonData[$i]['att_date']);
+                    $datatoinsert[] = $this->mapTraceToDBFields($offset + $i, $jsonData[$i]);
                 }
             }
 
@@ -390,36 +388,35 @@ class PunchingService
             $error = 0;
             try {
                 //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
-                  //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
+                //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
                 //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
                 PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);
                 $insertedcount += count($jsonData);
-              //  });
+                //  });
 
             } catch (Exception $e) {
-              //  $error = 1;
+                //  $error = 1;
                 throw new Exception($e->getMessage());
             }
 
 
 
             //if reached end of data, break
-            if ( $error ||  (count($jsonData) < $count)) {
+            if ($error ||  (count($jsonData) < $count)) {
 
                 break;
             }
-
         }
 
         \Log::info('Newly fetched rows:' . $insertedcount);
 
         //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
 
-        if($insertedcount){
+        if ($insertedcount) {
             $govtcalender->update([
-    //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
-                'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched+$insertedcount,
-                'attendancetodaytrace_lastfetchtime' => Carbon::now()//today
+                //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
+                'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched + $insertedcount,
+                'attendancetodaytrace_lastfetchtime' => Carbon::now() //today
 
             ]);
 
@@ -427,56 +424,53 @@ class PunchingService
         }
 
         return $insertedcount;
-
     }
 
-    private function mapTraceToDBFields($day_offset,$traceItem)
+    private function mapTraceToDBFields($day_offset, $traceItem)
     {
 
         $trace = [];
-        $trace['aadhaarid']= $traceItem['emp_id'];
-        $trace['device']= $traceItem['device_id'];
-        $trace['attendance_type']= $traceItem['attendance_type'];
-        $trace['auth_status']= $traceItem['auth_status'];
-        $trace['err_code']= $traceItem['err_code'];
-        $trace['att_date']= $traceItem['att_date'];
-        $trace['att_time']= $traceItem['att_time'];
-        $trace['day_offset']= $day_offset;
+        $trace['aadhaarid'] = $traceItem['emp_id'];
+        $trace['device'] = $traceItem['device_id'];
+        $trace['attendance_type'] = $traceItem['attendance_type'];
+        $trace['auth_status'] = $traceItem['auth_status'];
+        $trace['err_code'] = $traceItem['err_code'];
+        $trace['att_date'] = $traceItem['att_date'];
+        $trace['att_time'] = $traceItem['att_time'];
+        $trace['day_offset'] = $day_offset;
 
         return $trace;
-       // $trace->save();
+        // $trace->save();
     }
 
-    public function calculate($date)
+    public function calculate($date, $emp_ids = null)
     {
+        $query = PunchingTrace::where('att_date', $date->format('Y-m-d'))
+            ->where('auth_status', 'Y');
 
-       $punchingtraces = PunchingTrace::where('att_date', $date->format('Y-m-d'))
-                ->where('auth_status', 'Y')
-                ->orderBy('created_at', 'asc')
+        $query->when($emp_ids, function ($q) use ($emp_ids) {
+            return $q->wherein('aadhaarid', $emp_ids);
+        });
+        $punchingtraces = $query->orderBy('created_at', 'asc')->get()->groupBy('aadhaarid');
 
-                ->get()->groupBy('aadhaarid');
+        $data = [];
 
+        foreach ($punchingtraces as $key => $punching) {
 
-       $data = [];
+            $item = [];
 
-       foreach ($punchingtraces as $key => $punching) {
+            $empid = $key;
+            $punch_count =  count($punching);
 
-        $item = [];
-
-        $empid = $key;
-        $punch_count =  count($punching);
-
-        $item['aadhaarid'] = $empid;
-        $item['in'] = $punch_count ? $punching[0]['att_time'] : '';
-        $item['out'] = $punch_count >= 2 ? $punching[ $punch_count-1 ]['att_time']  : '';
-        $item['punching_count'] = $punch_count;
+            $item['aadhaarid'] = $empid;
+            $item['in'] = $punch_count ? $punching[0]['att_time'] : '';
+            $item['out'] = $punch_count >= 2 ? $punching[$punch_count - 1]['att_time']  : '';
+            $item['punching_count'] = $punch_count;
 
 
-        $data[] = $item ;
+            $data[] = $item;
+        }
 
-       }
-
-       return $data ;
-
+        return $data;
     }
 }
