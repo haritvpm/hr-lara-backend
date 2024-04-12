@@ -13,14 +13,11 @@ use App\Models\Employee;
 use App\Models\User;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Section;
+use App\Models\EmployeeToSection;
 class PunchingService
 {
-    private EmployeeService $employeeService;
-    public function __construct(EmployeeService $employeeService)
-    {
-        $this->employeeService = $employeeService;
-    }
+
 
     function validateDate($date, $format = 'Y-m-d')
     {
@@ -445,16 +442,67 @@ class PunchingService
 
     public function calculate($date, $emp_ids = null)
     {
-        $query = PunchingTrace::where('att_date', $date->format('Y-m-d'))
+        $query = PunchingTrace::where('att_date', $date)
             ->where('auth_status', 'Y');
 
         $query->when($emp_ids, function ($q) use ($emp_ids) {
             return $q->wherein('aadhaarid', $emp_ids);
         });
-        $punchingtraces = $query->orderBy('created_at', 'asc')->get()->groupBy('aadhaarid');
+
+        $punchingtraces_ungrouped = $query->orderBy('created_at', 'asc')->get();
+        $punchingtraces = $punchingtraces_ungrouped->groupBy('aadhaarid');
+        $aadhaar_to_empIds = [];
+        if($emp_ids == null) {
+            $emps = Employee::wherein('aadhaarid', $punchingtraces_ungrouped->pluck('aadhaarid'))->get();
+            $aadhaar_to_empIds = $emps->pluck('id','aadhaarid');
+            $emp_ids = $emps->pluck('id');
+        } else {
+            $emps = Employee::wherein('id', $emp_ids)->get();
+            $aadhaar_to_empIds = $emps->pluck('id','aadhaarid');
+        }
+
+//       dd($aadhaar_to_empIds);
 
         $data = [];
+/*
 
+        'employee_id',
+        'designation',
+        'section',
+        
+        
+*/
+        $date_str = $date;//->format('Y-m-d');
+
+        $employee_section_maps = EmployeeToSection::during($date_str)
+        ->with(['employee', 'attendance_book', 'section',])
+        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
+
+            $q->DesignationDuring($date_str)->with(['designation']);;
+        }])
+        ->wherein('employee_id', $emp_ids)
+        ->get();
+        
+        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
+
+            $x = json_decode(json_encode($item));
+           
+            $desig = count($x->employee->employee_employee_to_designations ) ?                         $x->employee->employee_employee_to_designations[0]->designation->designation : '';
+            $section = $x->section->name;
+
+            return [ $item['employee']['aadhaarid'] => [
+                            
+                'designation' => $desig,
+                'section' => $section,
+            ]
+           ];
+        });
+
+        
+      //  \Log::info('EmployeeToSection ' . $employee_section_maps);
+     //   dd( $employee_section_maps);
+/*
+     
         foreach ($punchingtraces as $key => $punching) {
 
             $item = [];
@@ -462,14 +510,53 @@ class PunchingService
             $empid = $key;
             $punch_count =  count($punching);
 
+            $item['date'] = $date->format('Y-m-d');
             $item['aadhaarid'] = $empid;
-            $item['in'] = $punch_count ? $punching[0]['att_time'] : '';
-            $item['out'] = $punch_count >= 2 ? $punching[$punch_count - 1]['att_time']  : '';
+            
+            $c_punch_in = null; $c_punch_out = null;
+            if( $punch_count ){
+                $punch = $punching[0];
+                $item['punchin_trace_id'] = $punch['id'];
+                $c_punch_in = Carbon::createFromFormat('Y-m-d H:i:s',$punch['att_date'] . ' ' . $punch['att_time']);
+                $item['in_datetime'] =  $c_punch_in->toDateTimeString();
+            }
+            if( $punch_count >= 2){
+                $punch = $punching[$punch_count - 1];
+                $item['punchout_trace_id'] = $punch['id'];
+                $c_punch_out =  Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' .$punch['att_time']);
+                $item['out_datetime'] =  $c_punch_out->toDateTimeString();
+            }
+           
             $item['punching_count'] = $punch_count;
+
+            if( $c_punch_in && $c_punch_out ){
+                $item['duration_sec'] = $c_punch_out->diffInSeconds($c_punch_in);
+                $c_flexi_start = Carbon::createFromFormat('Y-m-d H:i:s', $date->format('Y-m-d') . ' ' . '10:00:00' );
+                $c_flexi_end = Carbon::createFromFormat('Y-m-d H:i:s', $date->format('Y-m-d') . ' ' . '17:30:00' );
+
+                $c_start = $c_punch_in->lessThan($c_flexi_start) ? $c_flexi_start : $c_punch_in;
+                $c_end = $c_punch_out->greaterThan($c_flexi_end) ? $c_flexi_end : $c_end;
+
+                //calculate grace
+                
+                $worked_minutes_flexi = $c_end->diffInMinutes($c_start);
+                if( $worked_minutes_flexi < (7 * 60) ){
+                    $item['grace_sec'] = (7 * 60) - $worked_minutes_flexi ;
+                } else if ( $worked_minutes_flexi > (7 * 60) ) {
+                    $item['extra_sec'] = $worked_minutes_flexi - (7 * 60) ;
+                }
+
+                //extra time 
+                
+            }
+
+            //get employee time group. now assume normal
 
 
             $data[] = $item;
         }
+*/
+
 
         return $data;
     }

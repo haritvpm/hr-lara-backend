@@ -106,6 +106,7 @@
                                 @endcan
 
                                 <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
+                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">calculate</a>
 
                                 @can('govt_calendar_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">

@@ -47,15 +47,15 @@ class EmployeeController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
-            $table->editColumn('srismt', function ($row) {
-                return $row->srismt ? Employee::SRISMT_SELECT[$row->srismt] : '';
-            });
+            // $table->editColumn('srismt', function ($row) {
+            //     return $row->srismt ? Employee::SRISMT_SELECT[$row->srismt] : '';
+            // });
             $table->editColumn('name', function ($row) {
                 return $row->name ? $row->name : '';
             });
-            $table->editColumn('name_mal', function ($row) {
-                return $row->name_mal ? $row->name_mal : '';
-            });
+            // $table->editColumn('name_mal', function ($row) {
+            //     return $row->name_mal ? $row->name_mal : '';
+            // });
             $table->editColumn('aadhaarid', function ($row) {
                 return $row->aadhaarid ? $row->aadhaarid : '';
             });
@@ -65,9 +65,9 @@ class EmployeeController extends Controller
             $table->editColumn('desig_display', function ($row) {
                 return $row->desig_display ? $row->desig_display : '';
             });
-            $table->editColumn('pan', function ($row) {
-                return $row->pan ? $row->pan : '';
-            });
+            // $table->editColumn('pan', function ($row) {
+            //     return $row->pan ? $row->pan : '';
+            // });
             $table->editColumn('has_punching', function ($row) {
                 return $row->has_punching ? $row->has_punching : '';
             });
@@ -77,12 +77,12 @@ class EmployeeController extends Controller
             $table->editColumn('is_shift', function ($row) {
                 return '<input type="checkbox" disabled ' . ($row->is_shift ? 'checked' : null) . '>';
             });
-            $table->editColumn('klaid', function ($row) {
-                return $row->klaid ? $row->klaid : '';
-            });
-            $table->editColumn('electionid', function ($row) {
-                return $row->electionid ? $row->electionid : '';
-            });
+            // $table->editColumn('klaid', function ($row) {
+            //     return $row->klaid ? $row->klaid : '';
+            // });
+            // $table->editColumn('electionid', function ($row) {
+            //     return $row->electionid ? $row->electionid : '';
+            // });
 
             $table->rawColumns(['actions', 'placeholder', 'is_shift']);
 

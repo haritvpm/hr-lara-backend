@@ -69,6 +69,19 @@ class GovtCalendarController extends Controller
 
         return redirect()->back();
     }
+    public function calculate(Request $request)
+    {
+        $date = $request->date;
+        \Log::info("calculate attendance tr !. " .  $date);
+     
+        if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
+
+        \Log::info("calculate attendance !. " .  $date);
+        (new PunchingService())->calculate($date);
+     
+        return redirect()->back();
+    }
+    
 
     public function fetchmonth(Request $request)
     {
