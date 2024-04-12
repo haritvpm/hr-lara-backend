@@ -21,11 +21,12 @@ class MonthlyAttendance extends Model
     ];
 
     protected $fillable = [
+        'aadhaarid',
         'employee_id',
         'month',
-        'total_cl',
-        'total_compen',
-        'total_compen_off_granted',
+        'cl_taken',
+        'compen_taken',
+        'compoff_granted',
         'created_at',
         'updated_at',
         'deleted_at',

@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
-use App\Models\Designation;
 use App\Models\Employee;
 use App\Models\Leaf;
 use App\Models\Punching;
 use App\Models\PunchingTrace;
-use App\Models\Section;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +21,7 @@ class PunchingController extends Controller
         abort_if(Gate::denies('punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section'])->select(sprintf('%s.*', (new Punching)->table));
+            $query = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])->select(sprintf('%s.*', (new Punching)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -44,6 +42,9 @@ class PunchingController extends Controller
                 ));
             });
 
+            $table->editColumn('aadhaarid', function ($row) {
+                return $row->aadhaarid ? $row->aadhaarid : '';
+            });
             $table->addColumn('employee_name', function ($row) {
                 return $row->employee ? $row->employee->name : '';
             });
@@ -54,23 +55,11 @@ class PunchingController extends Controller
             $table->editColumn('employee.aadhaarid', function ($row) {
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
-            $table->editColumn('duration', function ($row) {
-                return $row->duration ? $row->duration : '';
+            $table->editColumn('designation', function ($row) {
+                return $row->designation ? $row->designation : '';
             });
-            $table->editColumn('flexi', function ($row) {
-                return $row->flexi ? Punching::FLEXI_SELECT[$row->flexi] : '';
-            });
-            $table->editColumn('grace', function ($row) {
-                return $row->grace ? $row->grace : '';
-            });
-            $table->editColumn('extra', function ($row) {
-                return $row->extra ? $row->extra : '';
-            });
-            $table->editColumn('remarks', function ($row) {
-                return $row->remarks ? $row->remarks : '';
-            });
-            $table->editColumn('calc_complete', function ($row) {
-                return $row->calc_complete ? $row->calc_complete : '';
+            $table->editColumn('section', function ($row) {
+                return $row->section ? $row->section : '';
             });
             $table->addColumn('punchin_trace_att_time', function ($row) {
                 return $row->punchin_trace ? $row->punchin_trace->att_time : '';
@@ -86,14 +75,24 @@ class PunchingController extends Controller
             $table->editColumn('punchout_trace.att_date', function ($row) {
                 return $row->punchout_trace ? (is_string($row->punchout_trace) ? $row->punchout_trace : $row->punchout_trace->att_date) : '';
             });
-            $table->editColumn('ot_claimed_mins', function ($row) {
-                return $row->ot_claimed_mins ? $row->ot_claimed_mins : '';
+
+            $table->editColumn('duration_sec', function ($row) {
+                return $row->duration_sec ? $row->duration_sec : '';
             });
-            $table->editColumn('ot_extra_mins', function ($row) {
-                return $row->ot_extra_mins ? $row->ot_extra_mins : '';
+            $table->editColumn('grace_sec', function ($row) {
+                return $row->grace_sec ? $row->grace_sec : '';
             });
-            $table->editColumn('punching_status', function ($row) {
-                return $row->punching_status ? $row->punching_status : '';
+            $table->editColumn('extra_sec', function ($row) {
+                return $row->extra_sec ? $row->extra_sec : '';
+            });
+            $table->editColumn('punching_count', function ($row) {
+                return $row->punching_count ? $row->punching_count : '';
+            });
+            $table->editColumn('ot_sitting_mins', function ($row) {
+                return $row->ot_sitting_mins ? $row->ot_sitting_mins : '';
+            });
+            $table->editColumn('ot_nonsitting_mins', function ($row) {
+                return $row->ot_nonsitting_mins ? $row->ot_nonsitting_mins : '';
             });
             $table->addColumn('leave_reason', function ($row) {
                 return $row->leave ? $row->leave->reason : '';
@@ -105,15 +104,14 @@ class PunchingController extends Controller
             $table->editColumn('leave.end_date', function ($row) {
                 return $row->leave ? (is_string($row->leave) ? $row->leave : $row->leave->end_date) : '';
             });
-            $table->addColumn('designation_designation', function ($row) {
-                return $row->designation ? $row->designation->designation : '';
+            $table->editColumn('remarks', function ($row) {
+                return $row->remarks ? $row->remarks : '';
+            });
+            $table->editColumn('finalized_by_controller', function ($row) {
+                return $row->finalized_by_controller ? $row->finalized_by_controller : '';
             });
 
-            $table->addColumn('section_name', function ($row) {
-                return $row->section ? $row->section->name : '';
-            });
-
-            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section']);
+            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave']);
 
             return $table->make(true);
         }
@@ -133,11 +131,7 @@ class PunchingController extends Controller
 
         $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.punchings.create', compact('designations', 'employees', 'leaves', 'punchin_traces', 'punchout_traces', 'sections'));
+        return view('admin.punchings.create', compact('employees', 'leaves', 'punchin_traces', 'punchout_traces'));
     }
 
     public function store(StorePunchingRequest $request)
@@ -159,13 +153,9 @@ class PunchingController extends Controller
 
         $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave');
 
-        $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section');
-
-        return view('admin.punchings.edit', compact('designations', 'employees', 'leaves', 'punchin_traces', 'punching', 'punchout_traces', 'sections'));
+        return view('admin.punchings.edit', compact('employees', 'leaves', 'punchin_traces', 'punching', 'punchout_traces'));
     }
 
     public function update(UpdatePunchingRequest $request, Punching $punching)
@@ -179,7 +169,7 @@ class PunchingController extends Controller
     {
         abort_if(Gate::denies('punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section');
+        $punching->load('employee', 'punchin_trace', 'punchout_trace', 'leave');
 
         return view('admin.punchings.show', compact('punching'));
     }

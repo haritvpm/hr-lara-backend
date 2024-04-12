@@ -9,13 +9,13 @@
         </div>
     </div>
 @endcan
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('cruds.punching.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body_">
-        <table class=" table   table-hover ajaxTable datatable datatable-Punching">
+    <div class="card-body">
+        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Punching">
             <thead>
                 <tr>
                     <th width="10">
@@ -23,6 +23,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.aadhaarid') }}
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.employee') }}
@@ -34,22 +37,10 @@
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.duration') }}
+                        {{ trans('cruds.punching.fields.designation') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.flexi') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.grace') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.extra') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.remarks') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.calc_complete') }}
+                        {{ trans('cruds.punching.fields.section') }}
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.punchin_trace') }}
@@ -64,13 +55,28 @@
                         {{ trans('cruds.punchingTrace.fields.att_date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.ot_claimed_mins') }}
+                        {{ trans('cruds.punching.fields.in_datetime') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.ot_extra_mins') }}
+                        {{ trans('cruds.punching.fields.out_datetime') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.punching_status') }}
+                        {{ trans('cruds.punching.fields.duration_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.extra_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.punching_count') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_sitting_mins') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_nonsitting_mins') }}
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.leave') }}
@@ -82,10 +88,10 @@
                         {{ trans('cruds.leaf.fields.end_date') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.designation') }}
+                        {{ trans('cruds.punching.fields.remarks') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.section') }}
+                        {{ trans('cruds.punching.fields.finalized_by_controller') }}
                     </th>
                     <th>
                         &nbsp;
@@ -104,7 +110,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-
+  
   let dtOverrideGlobals = {
     buttons: dtButtons,
     processing: true,
@@ -115,31 +121,33 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'date', name: 'date' },
+{ data: 'aadhaarid', name: 'aadhaarid' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.pen', name: 'employee.pen' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
-{ data: 'duration', name: 'duration' },
-{ data: 'flexi', name: 'flexi' },
-{ data: 'grace', name: 'grace' },
-{ data: 'extra', name: 'extra' },
-{ data: 'remarks', name: 'remarks' },
-{ data: 'calc_complete', name: 'calc_complete' },
+{ data: 'designation', name: 'designation' },
+{ data: 'section', name: 'section' },
 { data: 'punchin_trace_att_time', name: 'punchin_trace.att_time' },
 { data: 'punchin_trace.att_date', name: 'punchin_trace.att_date' },
 { data: 'punchout_trace_att_time', name: 'punchout_trace.att_time' },
 { data: 'punchout_trace.att_date', name: 'punchout_trace.att_date' },
-{ data: 'ot_claimed_mins', name: 'ot_claimed_mins' },
-{ data: 'ot_extra_mins', name: 'ot_extra_mins' },
-{ data: 'punching_status', name: 'punching_status' },
+{ data: 'in_datetime', name: 'in_datetime' },
+{ data: 'out_datetime', name: 'out_datetime' },
+{ data: 'duration_sec', name: 'duration_sec' },
+{ data: 'grace_sec', name: 'grace_sec' },
+{ data: 'extra_sec', name: 'extra_sec' },
+{ data: 'punching_count', name: 'punching_count' },
+{ data: 'ot_sitting_mins', name: 'ot_sitting_mins' },
+{ data: 'ot_nonsitting_mins', name: 'ot_nonsitting_mins' },
 { data: 'leave_reason', name: 'leave.reason' },
 { data: 'leave.start_date', name: 'leave.start_date' },
 { data: 'leave.end_date', name: 'leave.end_date' },
-{ data: 'designation_designation', name: 'designation.designation' },
-{ data: 'section_name', name: 'section.name' },
+{ data: 'remarks', name: 'remarks' },
+{ data: 'finalized_by_controller', name: 'finalized_by_controller' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
-    order: [[ 2, 'desc' ]],
+    order: [[ 3, 'desc' ]],
     pageLength: 100,
   };
   let table = $('.datatable-Punching').DataTable(dtOverrideGlobals);
@@ -147,7 +155,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-
+  
 });
 
 </script>

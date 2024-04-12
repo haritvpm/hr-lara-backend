@@ -35,9 +35,8 @@
             </ul>
 
             <!-- Right navbar links -->
-            @if(count(config('panel.available_languages', [])) > 1)
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item dropdown">
+                    <!-- <li class="nav-item dropdown">
                         <a class="nav-link" data-toggle="dropdown" href="#">
                             {{ strtoupper(app()->getLocale()) }}
                         </a>
@@ -46,9 +45,9 @@
                                 <a class="dropdown-item" href="{{ url()->current() }}?change_language={{ $langLocale }}">{{ strtoupper($langLocale) }} ({{ $langName }})</a>
                             @endforeach
                         </div>
-                    </li>
+                    </li> -->
+                    <li>{{strtoupper(auth()->user()->username)}}</li>
                 </ul>
-            @endif
 
         </nav>
 

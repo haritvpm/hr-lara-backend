@@ -17,10 +17,6 @@ class AddRelationshipFieldsToPunchingsTable extends Migration
             $table->foreign('punchout_trace_id', 'punchout_trace_fk_9658820')->references('id')->on('punching_traces');
             $table->unsignedBigInteger('leave_id')->nullable();
             $table->foreign('leave_id', 'leave_fk_9666917')->references('id')->on('leaves');
-            $table->unsignedBigInteger('designation_id')->nullable();
-            $table->foreign('designation_id', 'designation_fk_9667030')->references('id')->on('designations');
-            $table->unsignedBigInteger('section_id')->nullable();
-            $table->foreign('section_id', 'section_fk_9667031')->references('id')->on('sections');
         });
     }
 }

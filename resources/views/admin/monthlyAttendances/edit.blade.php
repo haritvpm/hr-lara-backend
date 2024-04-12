@@ -1,58 +1,46 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.edit') }} {{ trans('cruds.monthlyAttendance.title_singular') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <form method="POST" action="{{ route("admin.monthly-attendances.update", [$monthlyAttendance->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required" for="employee_id">{{ trans('cruds.monthlyAttendance.fields.employee') }}</label>
-                <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id" required>
-                    @foreach($employees as $id => $entry)
-                        <option value="{{ $id }}" {{ (old('employee_id') ? old('employee_id') : $monthlyAttendance->employee->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('employee'))
-                    <span class="text-danger">{{ $errors->first('employee') }}</span>
+                <label class="required" for="aadhaarid">{{ trans('cruds.monthlyAttendance.fields.aadhaarid') }}</label>
+                <input class="form-control {{ $errors->has('aadhaarid') ? 'is-invalid' : '' }}" type="text" name="aadhaarid" id="aadhaarid" value="{{ old('aadhaarid', $monthlyAttendance->aadhaarid) }}" required>
+                @if($errors->has('aadhaarid'))
+                    <span class="text-danger">{{ $errors->first('aadhaarid') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.employee_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.aadhaarid_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="month">{{ trans('cruds.monthlyAttendance.fields.month') }}</label>
-                <input class="form-control date {{ $errors->has('month') ? 'is-invalid' : '' }}" type="text" name="month" id="month" value="{{ old('month', $monthlyAttendance->month) }}" required>
-                @if($errors->has('month'))
-                    <span class="text-danger">{{ $errors->first('month') }}</span>
+                <label for="cl_taken">{{ trans('cruds.monthlyAttendance.fields.cl_taken') }}</label>
+                <input class="form-control {{ $errors->has('cl_taken') ? 'is-invalid' : '' }}" type="number" name="cl_taken" id="cl_taken" value="{{ old('cl_taken', $monthlyAttendance->cl_taken) }}" step="0.1">
+                @if($errors->has('cl_taken'))
+                    <span class="text-danger">{{ $errors->first('cl_taken') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.month_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.cl_taken_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="total_cl">{{ trans('cruds.monthlyAttendance.fields.total_cl') }}</label>
-                <input class="form-control {{ $errors->has('total_cl') ? 'is-invalid' : '' }}" type="number" name="total_cl" id="total_cl" value="{{ old('total_cl', $monthlyAttendance->total_cl) }}" step="0.1" max="20">
-                @if($errors->has('total_cl'))
-                    <span class="text-danger">{{ $errors->first('total_cl') }}</span>
+                <label for="compen_taken">{{ trans('cruds.monthlyAttendance.fields.compen_taken') }}</label>
+                <input class="form-control {{ $errors->has('compen_taken') ? 'is-invalid' : '' }}" type="number" name="compen_taken" id="compen_taken" value="{{ old('compen_taken', $monthlyAttendance->compen_taken) }}" step="1">
+                @if($errors->has('compen_taken'))
+                    <span class="text-danger">{{ $errors->first('compen_taken') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_cl_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.compen_taken_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="total_compen">{{ trans('cruds.monthlyAttendance.fields.total_compen') }}</label>
-                <input class="form-control {{ $errors->has('total_compen') ? 'is-invalid' : '' }}" type="number" name="total_compen" id="total_compen" value="{{ old('total_compen', $monthlyAttendance->total_compen) }}" step="1">
-                @if($errors->has('total_compen'))
-                    <span class="text-danger">{{ $errors->first('total_compen') }}</span>
+                <label for="compoff_granted">{{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}</label>
+                <input class="form-control {{ $errors->has('compoff_granted') ? 'is-invalid' : '' }}" type="number" name="compoff_granted" id="compoff_granted" value="{{ old('compoff_granted', $monthlyAttendance->compoff_granted) }}" step="1">
+                @if($errors->has('compoff_granted'))
+                    <span class="text-danger">{{ $errors->first('compoff_granted') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_compen_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="total_compen_off_granted">{{ trans('cruds.monthlyAttendance.fields.total_compen_off_granted') }}</label>
-                <input class="form-control {{ $errors->has('total_compen_off_granted') ? 'is-invalid' : '' }}" type="number" name="total_compen_off_granted" id="total_compen_off_granted" value="{{ old('total_compen_off_granted', $monthlyAttendance->total_compen_off_granted) }}" step="1">
-                @if($errors->has('total_compen_off_granted'))
-                    <span class="text-danger">{{ $errors->first('total_compen_off_granted') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_compen_off_granted_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.compoff_granted_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

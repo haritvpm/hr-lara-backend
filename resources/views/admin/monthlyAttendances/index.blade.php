@@ -9,13 +9,13 @@
         </div>
     </div>
 @endcan
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('cruds.monthlyAttendance.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body_">
-        <table class=" table   table-hover ajaxTable datatable datatable-MonthlyAttendance">
+    <div class="card-body">
+        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-MonthlyAttendance">
             <thead>
                 <tr>
                     <th width="10">
@@ -23,6 +23,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.id') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.aadhaarid') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.employee') }}
@@ -34,13 +37,13 @@
                         {{ trans('cruds.monthlyAttendance.fields.month') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_cl') }}
+                        {{ trans('cruds.monthlyAttendance.fields.cl_taken') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_compen') }}
+                        {{ trans('cruds.monthlyAttendance.fields.compen_taken') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_compen_off_granted') }}
+                        {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
                     </th>
                     <th>
                         &nbsp;
@@ -99,12 +102,13 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
+{ data: 'aadhaarid', name: 'aadhaarid' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'month', name: 'month' },
-{ data: 'total_cl', name: 'total_cl' },
-{ data: 'total_compen', name: 'total_compen' },
-{ data: 'total_compen_off_granted', name: 'total_compen_off_granted' },
+{ data: 'cl_taken', name: 'cl_taken' },
+{ data: 'compen_taken', name: 'compen_taken' },
+{ data: 'compoff_granted', name: 'compoff_granted' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
@@ -116,7 +120,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-
+  
 });
 
 </script>

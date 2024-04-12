@@ -17,26 +17,20 @@ class StoreMonthlyAttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => [
+            'aadhaarid' => [
+                'string',
                 'required',
-                'integer',
             ],
-            'month' => [
-                'required',
-                'date_format:' . config('panel.date_format'),
-            ],
-            'total_cl' => [
+            'cl_taken' => [
                 'numeric',
-                'min:0',
-                'max:20',
             ],
-            'total_compen' => [
+            'compen_taken' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'total_compen_off_granted' => [
+            'compoff_granted' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',

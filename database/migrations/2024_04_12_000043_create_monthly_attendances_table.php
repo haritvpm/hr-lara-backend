@@ -10,10 +10,11 @@ class CreateMonthlyAttendancesTable extends Migration
     {
         Schema::create('monthly_attendances', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->date('month');
-            $table->float('total_cl', 3, 1)->nullable();
-            $table->integer('total_compen')->nullable();
-            $table->integer('total_compen_off_granted')->nullable();
+            $table->string('aadhaarid');
+            $table->date('month')->nullable();
+            $table->float('cl_taken', 3, 1)->nullable();
+            $table->integer('compen_taken')->nullable();
+            $table->integer('compoff_granted')->nullable();
             $table->timestamps();
         });
     }

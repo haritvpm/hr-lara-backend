@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.monthlyAttendance.title') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.monthly-attendances.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table  ">
+            <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
@@ -21,6 +21,14 @@
                         </th>
                         <td>
                             {{ $monthlyAttendance->id }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.aadhaarid') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->aadhaarid }}
                         </td>
                     </tr>
                     <tr>
@@ -41,26 +49,26 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.total_cl') }}
+                            {{ trans('cruds.monthlyAttendance.fields.cl_taken') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->total_cl }}
+                            {{ $monthlyAttendance->cl_taken }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.total_compen') }}
+                            {{ trans('cruds.monthlyAttendance.fields.compen_taken') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->total_compen }}
+                            {{ $monthlyAttendance->compen_taken }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.total_compen_off_granted') }}
+                            {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->total_compen_off_granted }}
+                            {{ $monthlyAttendance->compoff_granted }}
                         </td>
                     </tr>
                 </tbody>

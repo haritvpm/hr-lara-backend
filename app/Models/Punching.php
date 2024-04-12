@@ -15,34 +15,32 @@ class Punching extends Model
 
     protected $dates = [
         'date',
+        'in_datetime',
+        'out_datetime',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    public const FLEXI_SELECT = [
-        'yes' => 'YES',
-        'no'  => 'NO',
-        'na'  => 'N/A',
-    ];
-
     protected $fillable = [
         'date',
+        'aadhaarid',
         'employee_id',
-        'duration',
-        'flexi',
-        'grace',
-        'extra',
-        'remarks',
-        'calc_complete',
+        'designation',
+        'section',
         'punchin_trace_id',
         'punchout_trace_id',
-        'ot_claimed_mins',
-        'ot_extra_mins',
-        'punching_status',
+        'in_datetime',
+        'out_datetime',
+        'duration_sec',
+        'grace_sec',
+        'extra_sec',
+        'punching_count',
+        'ot_sitting_mins',
+        'ot_nonsitting_mins',
         'leave_id',
-        'designation_id',
-        'section_id',
+        'remarks',
+        'finalized_by_controller',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -83,13 +81,5 @@ class Punching extends Model
         return $this->belongsTo(Leaf::class, 'leave_id');
     }
 
-    public function designation()
-    {
-        return $this->belongsTo(Designation::class, 'designation_id');
-    }
-
-    public function section()
-    {
-        return $this->belongsTo(Section::class, 'section_id');
-    }
+    
 }

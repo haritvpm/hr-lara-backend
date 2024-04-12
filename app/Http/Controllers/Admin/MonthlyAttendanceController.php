@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyMonthlyAttendanceRequest;
 use App\Http\Requests\StoreMonthlyAttendanceRequest;
 use App\Http\Requests\UpdateMonthlyAttendanceRequest;
-use App\Models\Employee;
 use App\Models\MonthlyAttendance;
 use Gate;
 use Illuminate\Http\Request;
@@ -44,6 +43,9 @@ class MonthlyAttendanceController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
+            $table->editColumn('aadhaarid', function ($row) {
+                return $row->aadhaarid ? $row->aadhaarid : '';
+            });
             $table->addColumn('employee_name', function ($row) {
                 return $row->employee ? $row->employee->name : '';
             });
@@ -52,14 +54,14 @@ class MonthlyAttendanceController extends Controller
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
 
-            $table->editColumn('total_cl', function ($row) {
-                return $row->total_cl ? $row->total_cl : '';
+            $table->editColumn('cl_taken', function ($row) {
+                return $row->cl_taken ? $row->cl_taken : '';
             });
-            $table->editColumn('total_compen', function ($row) {
-                return $row->total_compen ? $row->total_compen : '';
+            $table->editColumn('compen_taken', function ($row) {
+                return $row->compen_taken ? $row->compen_taken : '';
             });
-            $table->editColumn('total_compen_off_granted', function ($row) {
-                return $row->total_compen_off_granted ? $row->total_compen_off_granted : '';
+            $table->editColumn('compoff_granted', function ($row) {
+                return $row->compoff_granted ? $row->compoff_granted : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);
@@ -74,9 +76,7 @@ class MonthlyAttendanceController extends Controller
     {
         abort_if(Gate::denies('monthly_attendance_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.monthlyAttendances.create', compact('employees'));
+        return view('admin.monthlyAttendances.create');
     }
 
     public function store(StoreMonthlyAttendanceRequest $request)
@@ -90,11 +90,9 @@ class MonthlyAttendanceController extends Controller
     {
         abort_if(Gate::denies('monthly_attendance_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $monthlyAttendance->load('employee');
 
-        return view('admin.monthlyAttendances.edit', compact('employees', 'monthlyAttendance'));
+        return view('admin.monthlyAttendances.edit', compact('monthlyAttendance'));
     }
 
     public function update(UpdateMonthlyAttendanceRequest $request, MonthlyAttendance $monthlyAttendance)
