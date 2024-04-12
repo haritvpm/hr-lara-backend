@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.edit') }} {{ trans('cruds.otFormOther.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.ot-form-others.update", [$otFormOther->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf

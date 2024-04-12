@@ -3,12 +3,12 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
+        <div class="card_">
+            <div class="card-header_">
                 {{ trans('global.my_profile') }}
             </div>
 
-            <div class="card-body">
+            <div class="card-body_">
                 <form method="POST" action="{{ route("profile.password.updateProfile") }}">
                     @csrf
                     <div class="form-group">
@@ -39,11 +39,11 @@
         </div>
     </div>
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
+        <div class="card_">
+            <div class="card-header_">
                 {{ trans('global.change_password') }}
             </div>
-            <div class="card-body">
+            <div class="card-body_">
                 <form method="POST" action="{{ route("profile.password.update") }}">
                     @csrf
                     <div class="form-group">
@@ -69,12 +69,12 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
+        <div class="card_">
+            <div class="card-header_">
                 {{ trans('global.delete_account') }}
             </div>
 
-            <div class="card-body">
+            <div class="card-body_">
                 <form method="POST" action="{{ route("profile.password.destroyProfile") }}" onsubmit="return prompt('{{ __('global.delete_account_warning') }}') == '{{ auth()->user()->email }}'">
                     @csrf
                     <div class="form-group">

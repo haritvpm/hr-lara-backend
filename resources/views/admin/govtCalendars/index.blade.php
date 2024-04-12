@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.govtCalendar.title_singular') }} {{ trans('global.list') }}
     </div>
 
@@ -13,9 +13,9 @@
       </form>
 
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-GovtCalendar">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-GovtCalendar">
                 <thead>
                     <tr>
                         <th width="10">
@@ -68,7 +68,7 @@
                             <td>
                                 @if($govtCalendar->govtholidaystatus==1)
                                 <span class="badge badge-danger">{{ $govtCalendar->date ?? '' }}</span>
-                              
+
                                 @else
                                 {{ $govtCalendar->date ?? '' }}
                                 @endif
@@ -104,7 +104,7 @@
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
-                           
+
                                 <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
 
                                 @can('govt_calendar_edit')
@@ -132,7 +132,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-  
+
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
@@ -143,7 +143,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

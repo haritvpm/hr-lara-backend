@@ -13,13 +13,13 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.employeeToSection.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-EmployeeToSection">
+    <div class="card-body_">
+        <table class=" table   table-hover ajaxTable datatable datatable-EmployeeToSection">
             <thead>
                 <tr>
                     <th width="10">
@@ -120,7 +120,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 });
 
 </script>

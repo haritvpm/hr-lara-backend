@@ -103,7 +103,7 @@
     <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
     <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script>
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js"></script>
     <script src="{{ asset('js/main.js') }}"></script>
@@ -147,7 +147,7 @@
     buttons: [
       {
         extend: 'selectAll',
-        className: 'btn-primary',
+        className: 'btn-default',
         text: selectAllButtonTrans,
         exportOptions: {
           columns: ':visible'
@@ -160,20 +160,20 @@
       },
       {
         extend: 'selectNone',
-        className: 'btn-primary',
+        className: 'btn-default',
         text: selectNoneButtonTrans,
         exportOptions: {
           columns: ':visible'
         }
       },
-      {
-        extend: 'copy',
-        className: 'btn-default',
-        text: copyButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
+    //   {
+    //     extend: 'copy',
+    //     className: 'btn-default',
+    //     text: copyButtonTrans,
+    //     exportOptions: {
+    //       columns: ':visible'
+    //     }
+    //   },
       {
         extend: 'csv',
         className: 'btn-default',
@@ -182,38 +182,38 @@
           columns: ':visible'
         }
       },
-      {
-        extend: 'excel',
-        className: 'btn-default',
-        text: excelButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'pdf',
-        className: 'btn-default',
-        text: pdfButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'print',
-        className: 'btn-default',
-        text: printButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      },
-      {
-        extend: 'colvis',
-        className: 'btn-default',
-        text: colvisButtonTrans,
-        exportOptions: {
-          columns: ':visible'
-        }
-      }
+    //   {
+    //     extend: 'excel',
+    //     className: 'btn-default',
+    //     text: excelButtonTrans,
+    //     exportOptions: {
+    //       columns: ':visible'
+    //     }
+    //   },
+    //   {
+    //     extend: 'pdf',
+    //     className: 'btn-default',
+    //     text: pdfButtonTrans,
+    //     exportOptions: {
+    //       columns: ':visible'
+    //     }
+    //   },
+    //   {
+    //     extend: 'print',
+    //     className: 'btn-default',
+    //     text: printButtonTrans,
+    //     exportOptions: {
+    //       columns: ':visible'
+    //     }
+    //   },
+    //   {
+    //     extend: 'colvis',
+    //     className: 'btn-default',
+    //     text: colvisButtonTrans,
+    //     exportOptions: {
+    //       columns: ':visible'
+    //     }
+    //   }
     ]
   });
 
