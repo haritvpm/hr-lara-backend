@@ -19,6 +19,7 @@ class CreatePunchingTracesTable extends Migration
             $table->date('att_date');
             $table->time('att_time');
             $table->integer('day_offset')->nullable();
+            $table->datetime('created_date')->nullable();
             $table->timestamps();
         });
     }

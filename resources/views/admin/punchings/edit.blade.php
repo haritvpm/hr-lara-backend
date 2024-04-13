@@ -119,28 +119,36 @@
                 <span class="help-block">{{ trans('cruds.punching.fields.extra_sec_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="duration_str">{{ trans('cruds.punching.fields.duration_str') }}</label>
+                <input class="form-control {{ $errors->has('duration_str') ? 'is-invalid' : '' }}" type="text" name="duration_str" id="duration_str" value="{{ old('duration_str', $punching->duration_str) }}">
+                @if($errors->has('duration_str'))
+                    <span class="text-danger">{{ $errors->first('duration_str') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.duration_str_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="grace_str">{{ trans('cruds.punching.fields.grace_str') }}</label>
+                <input class="form-control {{ $errors->has('grace_str') ? 'is-invalid' : '' }}" type="text" name="grace_str" id="grace_str" value="{{ old('grace_str', $punching->grace_str) }}">
+                @if($errors->has('grace_str'))
+                    <span class="text-danger">{{ $errors->first('grace_str') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.grace_str_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="extra_str">{{ trans('cruds.punching.fields.extra_str') }}</label>
+                <input class="form-control {{ $errors->has('extra_str') ? 'is-invalid' : '' }}" type="text" name="extra_str" id="extra_str" value="{{ old('extra_str', $punching->extra_str) }}">
+                @if($errors->has('extra_str'))
+                    <span class="text-danger">{{ $errors->first('extra_str') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.extra_str_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="punching_count">{{ trans('cruds.punching.fields.punching_count') }}</label>
                 <input class="form-control {{ $errors->has('punching_count') ? 'is-invalid' : '' }}" type="number" name="punching_count" id="punching_count" value="{{ old('punching_count', $punching->punching_count) }}" step="1">
                 @if($errors->has('punching_count'))
                     <span class="text-danger">{{ $errors->first('punching_count') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punching.fields.punching_count_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="ot_sitting_mins">{{ trans('cruds.punching.fields.ot_sitting_mins') }}</label>
-                <input class="form-control {{ $errors->has('ot_sitting_mins') ? 'is-invalid' : '' }}" type="number" name="ot_sitting_mins" id="ot_sitting_mins" value="{{ old('ot_sitting_mins', $punching->ot_sitting_mins) }}" step="1">
-                @if($errors->has('ot_sitting_mins'))
-                    <span class="text-danger">{{ $errors->first('ot_sitting_mins') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.punching.fields.ot_sitting_mins_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="ot_nonsitting_mins">{{ trans('cruds.punching.fields.ot_nonsitting_mins') }}</label>
-                <input class="form-control {{ $errors->has('ot_nonsitting_mins') ? 'is-invalid' : '' }}" type="number" name="ot_nonsitting_mins" id="ot_nonsitting_mins" value="{{ old('ot_nonsitting_mins', $punching->ot_nonsitting_mins) }}" step="1">
-                @if($errors->has('ot_nonsitting_mins'))
-                    <span class="text-danger">{{ $errors->first('ot_nonsitting_mins') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.punching.fields.ot_nonsitting_mins_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="leave_id">{{ trans('cruds.punching.fields.leave') }}</label>
@@ -169,6 +177,35 @@
                     <span class="text-danger">{{ $errors->first('finalized_by_controller') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punching.fields.finalized_by_controller_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ot_sitting_sec">{{ trans('cruds.punching.fields.ot_sitting_sec') }}</label>
+                <input class="form-control {{ $errors->has('ot_sitting_sec') ? 'is-invalid' : '' }}" type="number" name="ot_sitting_sec" id="ot_sitting_sec" value="{{ old('ot_sitting_sec', $punching->ot_sitting_sec) }}" step="1">
+                @if($errors->has('ot_sitting_sec'))
+                    <span class="text-danger">{{ $errors->first('ot_sitting_sec') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.ot_sitting_sec_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ot_nonsitting_sec">{{ trans('cruds.punching.fields.ot_nonsitting_sec') }}</label>
+                <input class="form-control {{ $errors->has('ot_nonsitting_sec') ? 'is-invalid' : '' }}" type="number" name="ot_nonsitting_sec" id="ot_nonsitting_sec" value="{{ old('ot_nonsitting_sec', $punching->ot_nonsitting_sec) }}" step="1">
+                @if($errors->has('ot_nonsitting_sec'))
+                    <span class="text-danger">{{ $errors->first('ot_nonsitting_sec') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.ot_nonsitting_sec_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label>{{ trans('cruds.punching.fields.hint') }}</label>
+                <select class="form-control {{ $errors->has('hint') ? 'is-invalid' : '' }}" name="hint" id="hint">
+                    <option value disabled {{ old('hint', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\Punching::HINT_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('hint', $punching->hint) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('hint'))
+                    <span class="text-danger">{{ $errors->first('hint') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.hint_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

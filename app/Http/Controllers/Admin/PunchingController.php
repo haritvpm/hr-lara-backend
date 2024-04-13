@@ -85,14 +85,17 @@ class PunchingController extends Controller
             $table->editColumn('extra_sec', function ($row) {
                 return $row->extra_sec ? $row->extra_sec : '';
             });
+            $table->editColumn('duration_str', function ($row) {
+                return $row->duration_str ? $row->duration_str : '';
+            });
+            $table->editColumn('grace_str', function ($row) {
+                return $row->grace_str ? $row->grace_str : '';
+            });
+            $table->editColumn('extra_str', function ($row) {
+                return $row->extra_str ? $row->extra_str : '';
+            });
             $table->editColumn('punching_count', function ($row) {
                 return $row->punching_count ? $row->punching_count : '';
-            });
-            $table->editColumn('ot_sitting_mins', function ($row) {
-                return $row->ot_sitting_mins ? $row->ot_sitting_mins : '';
-            });
-            $table->editColumn('ot_nonsitting_mins', function ($row) {
-                return $row->ot_nonsitting_mins ? $row->ot_nonsitting_mins : '';
             });
             $table->addColumn('leave_reason', function ($row) {
                 return $row->leave ? $row->leave->reason : '';
@@ -109,6 +112,15 @@ class PunchingController extends Controller
             });
             $table->editColumn('finalized_by_controller', function ($row) {
                 return $row->finalized_by_controller ? $row->finalized_by_controller : '';
+            });
+            $table->editColumn('ot_sitting_sec', function ($row) {
+                return $row->ot_sitting_sec ? $row->ot_sitting_sec : '';
+            });
+            $table->editColumn('ot_nonsitting_sec', function ($row) {
+                return $row->ot_nonsitting_sec ? $row->ot_nonsitting_sec : '';
+            });
+            $table->editColumn('hint', function ($row) {
+                return $row->hint ? Punching::HINT_SELECT[$row->hint] : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave']);

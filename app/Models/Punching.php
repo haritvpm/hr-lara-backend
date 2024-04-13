@@ -22,6 +22,21 @@ class Punching extends Model
         'deleted_at',
     ];
 
+    public const HINT_SELECT = [
+        'casual_fn'      => 'CL FN',
+        'casual_an'      => 'CL AN',
+        'duty'           => 'Duty',
+        'earned'         => 'Earned',
+        'commuted'       => 'Commuted',
+        'casual'         => 'Casual',
+        'compensation'   => 'Compensation',
+        'comp_off'       => 'Comp off',
+        'tour'           => 'Tour',
+        'special_casual' => 'SPL CL',
+        'dies_non'       => 'Dies Non',
+        'RH'             => 'RH',
+    ];
+
     protected $fillable = [
         'date',
         'aadhaarid',
@@ -35,12 +50,16 @@ class Punching extends Model
         'duration_sec',
         'grace_sec',
         'extra_sec',
+        'duration_str',
+        'grace_str',
+        'extra_str',
         'punching_count',
-        'ot_sitting_mins',
-        'ot_nonsitting_mins',
         'leave_id',
         'remarks',
         'finalized_by_controller',
+        'ot_sitting_sec',
+        'ot_nonsitting_sec',
+        'hint',
         'created_at',
         'updated_at',
         'deleted_at',

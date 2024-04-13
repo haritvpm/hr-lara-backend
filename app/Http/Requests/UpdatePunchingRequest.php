@@ -60,19 +60,19 @@ class UpdatePunchingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
+            'duration_str' => [
+                'string',
+                'nullable',
+            ],
+            'grace_str' => [
+                'string',
+                'nullable',
+            ],
+            'extra_str' => [
+                'string',
+                'nullable',
+            ],
             'punching_count' => [
-                'nullable',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
-            'ot_sitting_mins' => [
-                'nullable',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
-            'ot_nonsitting_mins' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
@@ -83,6 +83,18 @@ class UpdatePunchingRequest extends FormRequest
                 'nullable',
             ],
             'finalized_by_controller' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'ot_sitting_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'ot_nonsitting_sec' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',

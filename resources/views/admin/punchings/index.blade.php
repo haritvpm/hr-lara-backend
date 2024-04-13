@@ -70,13 +70,16 @@
                         {{ trans('cruds.punching.fields.extra_sec') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punching.fields.duration_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.extra_str') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.punching.fields.punching_count') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.ot_sitting_mins') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.ot_nonsitting_mins') }}
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.leave') }}
@@ -92,6 +95,15 @@
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.finalized_by_controller') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_sitting_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_nonsitting_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.hint') }}
                     </th>
                     <th>
                         &nbsp;
@@ -136,14 +148,18 @@
 { data: 'duration_sec', name: 'duration_sec' },
 { data: 'grace_sec', name: 'grace_sec' },
 { data: 'extra_sec', name: 'extra_sec' },
+{ data: 'duration_str', name: 'duration_str' },
+{ data: 'grace_str', name: 'grace_str' },
+{ data: 'extra_str', name: 'extra_str' },
 { data: 'punching_count', name: 'punching_count' },
-{ data: 'ot_sitting_mins', name: 'ot_sitting_mins' },
-{ data: 'ot_nonsitting_mins', name: 'ot_nonsitting_mins' },
 { data: 'leave_reason', name: 'leave.reason' },
 { data: 'leave.start_date', name: 'leave.start_date' },
 { data: 'leave.end_date', name: 'leave.end_date' },
 { data: 'remarks', name: 'remarks' },
 { data: 'finalized_by_controller', name: 'finalized_by_controller' },
+{ data: 'ot_sitting_sec', name: 'ot_sitting_sec' },
+{ data: 'ot_nonsitting_sec', name: 'ot_nonsitting_sec' },
+{ data: 'hint', name: 'hint' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

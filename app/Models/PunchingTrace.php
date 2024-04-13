@@ -15,6 +15,7 @@ class PunchingTrace extends Model
 
     protected $dates = [
         'att_date',
+        'created_date',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -31,6 +32,7 @@ class PunchingTrace extends Model
         'att_time',
         'day_offset',
         'punching_id',
+        'created_date',
         'created_at',
         'updated_at',
         'deleted_at',

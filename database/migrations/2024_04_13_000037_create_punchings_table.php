@@ -19,11 +19,15 @@ class CreatePunchingsTable extends Migration
             $table->integer('duration_sec')->nullable();
             $table->integer('grace_sec')->nullable();
             $table->integer('extra_sec')->nullable();
+            $table->string('duration_str')->nullable();
+            $table->string('grace_str')->nullable();
+            $table->string('extra_str')->nullable();
             $table->integer('punching_count')->nullable();
-            $table->integer('ot_sitting_mins')->nullable();
-            $table->integer('ot_nonsitting_mins')->nullable();
             $table->string('remarks')->nullable();
             $table->integer('finalized_by_controller')->nullable();
+            $table->integer('ot_sitting_sec')->nullable();
+            $table->integer('ot_nonsitting_sec')->nullable();
+            $table->string('hint')->nullable();
             $table->timestamps();
         });
     }

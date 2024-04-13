@@ -121,26 +121,34 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.punching.fields.duration_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->duration_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.extra_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->extra_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.punching.fields.punching_count') }}
                         </th>
                         <td>
                             {{ $punching->punching_count }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.ot_sitting_mins') }}
-                        </th>
-                        <td>
-                            {{ $punching->ot_sitting_mins }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.ot_nonsitting_mins') }}
-                        </th>
-                        <td>
-                            {{ $punching->ot_nonsitting_mins }}
                         </td>
                     </tr>
                     <tr>
@@ -165,6 +173,30 @@
                         </th>
                         <td>
                             {{ $punching->finalized_by_controller }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_sitting_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_sitting_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_nonsitting_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_nonsitting_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.hint') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Punching::HINT_SELECT[$punching->hint] ?? '' }}
                         </td>
                     </tr>
                 </tbody>
