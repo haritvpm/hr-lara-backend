@@ -641,8 +641,6 @@ class PunchingService
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
-            //todo also check if office time ends early.
-
             //probably shift. like from 6 to 9 am
             if ($c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in)) {
                 //if( isCL_FN ) //todo
