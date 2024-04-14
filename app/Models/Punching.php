@@ -64,8 +64,8 @@ class Punching extends Model
         'hint',
         'controller_set_punch_in',
         'controller_set_punch_out',
-        'grace_lp_exceeded_one_hour',
-        'grace_ep_exceeded_one_hour',
+        'grace_lp_exceeded_one_hour', //?needed?
+        'grace_ep_exceeded_one_hour', //?needed?
         'grace_total_exceeded_one_hour',
         'created_at',
         'updated_at',
@@ -107,5 +107,5 @@ class Punching extends Model
         return $this->belongsTo(Leaf::class, 'leave_id');
     }
 
-    
+
 }
