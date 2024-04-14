@@ -199,6 +199,46 @@
                             {{ App\Models\Punching::HINT_SELECT[$punching->hint] ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.controller_set_punch_in') }}
+                        </th>
+                        <td>
+                            {{ $punching->controller_set_punch_in }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.controller_set_punch_out') }}
+                        </th>
+                        <td>
+                            {{ $punching->controller_set_punch_out }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_lp_exceeded_one_hour }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_ep_exceeded_one_hour }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_total_exceeded_one_hour }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

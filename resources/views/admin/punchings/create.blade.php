@@ -207,6 +207,46 @@
                 <span class="help-block">{{ trans('cruds.punching.fields.hint_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="controller_set_punch_in">{{ trans('cruds.punching.fields.controller_set_punch_in') }}</label>
+                <input class="form-control datetime {{ $errors->has('controller_set_punch_in') ? 'is-invalid' : '' }}" type="text" name="controller_set_punch_in" id="controller_set_punch_in" value="{{ old('controller_set_punch_in') }}">
+                @if($errors->has('controller_set_punch_in'))
+                    <span class="text-danger">{{ $errors->first('controller_set_punch_in') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.controller_set_punch_in_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="controller_set_punch_out">{{ trans('cruds.punching.fields.controller_set_punch_out') }}</label>
+                <input class="form-control datetime {{ $errors->has('controller_set_punch_out') ? 'is-invalid' : '' }}" type="text" name="controller_set_punch_out" id="controller_set_punch_out" value="{{ old('controller_set_punch_out') }}">
+                @if($errors->has('controller_set_punch_out'))
+                    <span class="text-danger">{{ $errors->first('controller_set_punch_out') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.controller_set_punch_out_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="grace_lp_exceeded_one_hour">{{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}</label>
+                <input class="form-control {{ $errors->has('grace_lp_exceeded_one_hour') ? 'is-invalid' : '' }}" type="number" name="grace_lp_exceeded_one_hour" id="grace_lp_exceeded_one_hour" value="{{ old('grace_lp_exceeded_one_hour', '') }}" step="1">
+                @if($errors->has('grace_lp_exceeded_one_hour'))
+                    <span class="text-danger">{{ $errors->first('grace_lp_exceeded_one_hour') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="grace_ep_exceeded_one_hour">{{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}</label>
+                <input class="form-control {{ $errors->has('grace_ep_exceeded_one_hour') ? 'is-invalid' : '' }}" type="number" name="grace_ep_exceeded_one_hour" id="grace_ep_exceeded_one_hour" value="{{ old('grace_ep_exceeded_one_hour', '') }}" step="1">
+                @if($errors->has('grace_ep_exceeded_one_hour'))
+                    <span class="text-danger">{{ $errors->first('grace_ep_exceeded_one_hour') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="grace_total_exceeded_one_hour">{{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}</label>
+                <input class="form-control {{ $errors->has('grace_total_exceeded_one_hour') ? 'is-invalid' : '' }}" type="number" name="grace_total_exceeded_one_hour" id="grace_total_exceeded_one_hour" value="{{ old('grace_total_exceeded_one_hour', '') }}" step="1">
+                @if($errors->has('grace_total_exceeded_one_hour'))
+                    <span class="text-danger">{{ $errors->first('grace_total_exceeded_one_hour') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.grace_total_exceeded_one_hour_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

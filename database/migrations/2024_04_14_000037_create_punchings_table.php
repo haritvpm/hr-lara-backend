@@ -28,6 +28,11 @@ class CreatePunchingsTable extends Migration
             $table->integer('ot_sitting_sec')->nullable();
             $table->integer('ot_nonsitting_sec')->nullable();
             $table->string('hint')->nullable();
+            $table->datetime('controller_set_punch_in')->nullable();
+            $table->datetime('controller_set_punch_out')->nullable();
+            $table->integer('grace_lp_exceeded_one_hour')->nullable();
+            $table->integer('grace_ep_exceeded_one_hour')->nullable();
+            $table->integer('grace_total_exceeded_one_hour')->nullable();
             $table->timestamps();
         });
     }

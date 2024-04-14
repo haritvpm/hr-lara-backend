@@ -106,6 +106,21 @@
                         {{ trans('cruds.punching.fields.hint') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punching.fields.controller_set_punch_in') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.controller_set_punch_out') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -160,6 +175,11 @@
 { data: 'ot_sitting_sec', name: 'ot_sitting_sec' },
 { data: 'ot_nonsitting_sec', name: 'ot_nonsitting_sec' },
 { data: 'hint', name: 'hint' },
+{ data: 'controller_set_punch_in', name: 'controller_set_punch_in' },
+{ data: 'controller_set_punch_out', name: 'controller_set_punch_out' },
+{ data: 'grace_lp_exceeded_one_hour', name: 'grace_lp_exceeded_one_hour' },
+{ data: 'grace_ep_exceeded_one_hour', name: 'grace_ep_exceeded_one_hour' },
+{ data: 'grace_total_exceeded_one_hour', name: 'grace_total_exceeded_one_hour' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
