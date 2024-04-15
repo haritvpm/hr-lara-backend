@@ -8,14 +8,14 @@
             </div>
         </div>
     @endcan
-    <div class="card">
-        <div class="card-header">
+    <div class="card_">
+        <div class="card-header_">
             {{ trans('cruds.employeeToDesignation.title_singular') }} {{ trans('global.list') }}
         </div>
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class=" table table-bordered table-striped table-hover datatable datatable-employeeEmployeeToDesignations">
+        <div class="card-body_">
+            <div class="table-responsive_">
+                <table class=" table   table-hover datatable datatable-employeeEmployeeToDesignations">
                     <thead>
                         <tr>
                             <th width="10">
@@ -32,6 +32,12 @@
                             </th>
                             <th>
                                 {{ trans('cruds.employeeToDesignation.fields.designation') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.start_date') }}
+                            </th>
+                            <th>
+                                {{ trans('cruds.employeeToDesignation.fields.end_date') }}
                             </th>
                             <th>
                                 &nbsp;
@@ -55,6 +61,12 @@
                                 </td>
                                 <td>
                                     {{ $employeeToDesignation->designation->designation ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->start_date ?? '' }}
+                                </td>
+                                <td>
+                                    {{ $employeeToDesignation->end_date ?? '' }}
                                 </td>
                                 <td>
                                     @can('employee_to_designation_show')
@@ -132,7 +144,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

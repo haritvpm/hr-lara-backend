@@ -9,14 +9,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.ddo.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Ddo">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-Ddo">
                 <thead>
                     <tr>
                         <th width="10">
@@ -29,7 +29,7 @@
                             {{ trans('cruds.ddo.fields.code') }}
                         </th>
                         <th>
-                            {{ trans('cruds.ddo.fields.acquittance') }}
+                            {{ trans('cruds.ddo.fields.office') }}
                         </th>
                         <th>
                             &nbsp;
@@ -49,7 +49,7 @@
                                 {{ $ddo->code ?? '' }}
                             </td>
                             <td>
-                                {{ $ddo->acquittance->title ?? '' }}
+                                {{ $ddo->office->office_name ?? '' }}
                             </td>
                             <td>
                                 @can('ddo_show')
@@ -130,7 +130,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

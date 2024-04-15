@@ -13,14 +13,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.designation.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Designation">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-Designation">
                 <thead>
                     <tr>
                         <th width="10">
@@ -36,16 +36,19 @@
                             {{ trans('cruds.designation.fields.designation_mal') }}
                         </th>
                         <th>
+                            {{ trans('cruds.designation.fields.default_time_group') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.designation.fields.sort_index') }}
                         </th>
                         <th>
                             {{ trans('cruds.designation.fields.has_punching') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.normal_office_hours') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade') }}
                         </th>
                         <th>
-                            {{ trans('cruds.designation.fields.desig_line') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade_mal') }}
                         </th>
                         <th>
                             &nbsp;
@@ -68,16 +71,19 @@
                                 {{ $designation->designation_mal ?? '' }}
                             </td>
                             <td>
+                                {{ $designation->default_time_group->groupname ?? '' }}
+                            </td>
+                            <td>
                                 {{ $designation->sort_index ?? '' }}
                             </td>
                             <td>
                                 {{ $designation->has_punching ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->normal_office_hours ?? '' }}
+                                {{ $designation->designation_without_grade ?? '' }}
                             </td>
                             <td>
-                                {{ $designation->desig_line->title ?? '' }}
+                                {{ $designation->designation_without_grade_mal ?? '' }}
                             </td>
                             <td>
                                 @can('designation_show')
@@ -158,7 +164,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

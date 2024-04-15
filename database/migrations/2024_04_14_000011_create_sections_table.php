@@ -1,0 +1,20 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateSectionsTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('sections', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name')->unique();
+            $table->string('short_code')->nullable();
+            $table->string('type')->nullable();
+            $table->boolean('works_nights_during_session')->default(0)->nullable();
+            $table->timestamps();
+        });
+    }
+}

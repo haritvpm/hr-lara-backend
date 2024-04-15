@@ -21,13 +21,17 @@ class StoreEmployeeToSectionRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'section_seat_id' => [
+            'section_id' => [
                 'required',
                 'integer',
             ],
-            'attendance_book_id' => [
+            'start_date' => [
                 'required',
-                'integer',
+                'date_format:' . config('panel.date_format'),
+            ],
+            'end_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
             ],
         ];
     }

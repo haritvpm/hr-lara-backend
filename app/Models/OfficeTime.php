@@ -20,17 +20,16 @@ class OfficeTime extends Model
     ];
 
     protected $fillable = [
+        'groupname',
         'description',
-        'office_id',
-        'full_from',
-        'full_to',
+        'day_from',
+        'day_to',
         'office_hours',
         'fn_from',
         'fn_to',
         'an_from',
         'an_to',
-        'flexi_from',
-        'flexi_to',
+        'flexi_minutes',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -39,10 +38,5 @@ class OfficeTime extends Model
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
-    }
-
-    public function office()
-    {
-        return $this->belongsTo(AdministrativeOffice::class, 'office_id');
     }
 }

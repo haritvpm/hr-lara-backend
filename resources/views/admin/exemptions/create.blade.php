@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.create') }} {{ trans('cruds.exemption.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.exemptions.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -38,18 +38,6 @@
                 <span class="help-block">{{ trans('cruds.exemption.fields.date_to_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="session_id">{{ trans('cruds.exemption.fields.session') }}</label>
-                <select class="form-control select2 {{ $errors->has('session') ? 'is-invalid' : '' }}" name="session_id" id="session_id">
-                    @foreach($sessions as $id => $entry)
-                        <option value="{{ $id }}" {{ old('session_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('session'))
-                    <span class="text-danger">{{ $errors->first('session') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.exemption.fields.session_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="forwarded_by">{{ trans('cruds.exemption.fields.forwarded_by') }}</label>
                 <input class="form-control {{ $errors->has('forwarded_by') ? 'is-invalid' : '' }}" type="text" name="forwarded_by" id="forwarded_by" value="{{ old('forwarded_by', '') }}">
                 @if($errors->has('forwarded_by'))
@@ -67,6 +55,38 @@
                     <span class="text-danger">{{ $errors->first('submitted_to_services') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.exemption.fields.submitted_to_services_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="session_id">{{ trans('cruds.exemption.fields.session') }}</label>
+                <select class="form-control select2 {{ $errors->has('session') ? 'is-invalid' : '' }}" name="session_id" id="session_id">
+                    @foreach($sessions as $id => $entry)
+                        <option value="{{ $id }}" {{ old('session_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('session'))
+                    <span class="text-danger">{{ $errors->first('session') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.exemption.fields.session_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="approval_status">{{ trans('cruds.exemption.fields.approval_status') }}</label>
+                <input class="form-control {{ $errors->has('approval_status') ? 'is-invalid' : '' }}" type="number" name="approval_status" id="approval_status" value="{{ old('approval_status', '') }}" step="1">
+                @if($errors->has('approval_status'))
+                    <span class="text-danger">{{ $errors->first('approval_status') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.exemption.fields.approval_status_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="owner_id">{{ trans('cruds.exemption.fields.owner') }}</label>
+                <select class="form-control select2 {{ $errors->has('owner') ? 'is-invalid' : '' }}" name="owner_id" id="owner_id">
+                    @foreach($owners as $id => $entry)
+                        <option value="{{ $id }}" {{ old('owner_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('owner'))
+                    <span class="text-danger">{{ $errors->first('owner') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.exemption.fields.owner_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

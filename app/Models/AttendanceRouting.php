@@ -19,6 +19,8 @@ class AttendanceRouting extends Model
     ];
 
     protected $fillable = [
+        'viewer_js_as_ss_employee_id',
+        'viewer_seat_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -29,8 +31,23 @@ class AttendanceRouting extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function seats()
+    public function viewer_js_as_ss_employee()
+    {
+        return $this->belongsTo(Employee::class, 'viewer_js_as_ss_employee_id');
+    }
+
+    public function viewer_seat()
+    {
+        return $this->belongsTo(Seat::class, 'viewer_seat_id');
+    }
+
+    public function viewable_seats()
     {
         return $this->belongsToMany(Seat::class);
+    }
+
+    public function viewable_js_as_ss_employees()
+    {
+        return $this->belongsToMany(Employee::class);
     }
 }

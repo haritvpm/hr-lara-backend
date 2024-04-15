@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
+use App\Models\User;
 use App\Models\PunchingTrace;
+use App\Models\EmployeeToSeat;
 use App\Models\Punching;
+use App\Models\Section;
+use App\Models\EmployeeToSection;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +25,7 @@ class PunchingApiController extends Controller
     {
         abort_if(Gate::denies('punching_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PunchingResource(Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])->get());
+        return new PunchingResource(Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section'])->get());
     }
 
     public function store(StorePunchingRequest $request)
@@ -37,7 +41,7 @@ class PunchingApiController extends Controller
     {
         abort_if(Gate::denies('punching_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new PunchingResource($punching->load(['employee', 'punchin_trace', 'punchout_trace', 'leave']));
+        return new PunchingResource($punching->load(['employee', 'punchin_trace', 'punchout_trace', 'leave', 'designation', 'section']));
     }
 
     public function update(UpdatePunchingRequest $request, Punching $punching)
@@ -48,24 +52,25 @@ class PunchingApiController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
+
+
     public function getpunchings(Request $request)
     {
-  
-  
-        //this has to be rewritten. we need to give emp data from Punchings which has to calculated after 
-        //we call our api refresh.
-        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date )
-            : Carbon::now(); //today
 
-        
-        $data = (new PunchingService())->calculate($date);
+        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
+
+        //need to move things to services later
+
+        //call employeeservice get loggedusersubordinate
+
         return response()->json([
-            'status' => 'success',
-            'punchings' => $data
-            ]);
+            //    'seats' => $seat_ids,
+            'sections_under_charge' => $data->pluck('section_name')->unique(),
+            'employee_section_maps' => $data,
+        ], 200);
 
-       //  \Log::info("got" . $request->date);
-  /*
+        //  \Log::info("got" . $request->date);
+        /*
       $punchingstest = Punching::where('date', $date->format('Y-m-d'))->get();
       return response()->json([
         'status' => 'success',
@@ -74,5 +79,4 @@ class PunchingApiController extends Controller
 
         */
     }
-    
 }

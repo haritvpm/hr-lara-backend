@@ -13,14 +13,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.employeeToAcquittance.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-EmployeeToAcquittance">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-EmployeeToAcquittance">
                 <thead>
                     <tr>
                         <th width="10">
@@ -37,6 +37,12 @@
                         </th>
                         <th>
                             {{ trans('cruds.employeeToAcquittance.fields.acquittance') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.start_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.employeeToAcquittance.fields.end_date') }}
                         </th>
                         <th>
                             &nbsp;
@@ -60,6 +66,12 @@
                             </td>
                             <td>
                                 {{ $employeeToAcquittance->acquittance->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToAcquittance->start_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToAcquittance->end_date ?? '' }}
                             </td>
                             <td>
                                 @can('employee_to_acquittance_show')
@@ -140,7 +152,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyDdoRequest;
 use App\Http\Requests\StoreDdoRequest;
 use App\Http\Requests\UpdateDdoRequest;
-use App\Models\Acquittance;
+use App\Models\AdministrativeOffice;
 use App\Models\Ddo;
 use Gate;
 use Illuminate\Http\Request;
@@ -18,7 +18,7 @@ class DdoController extends Controller
     {
         abort_if(Gate::denies('ddo_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $ddos = Ddo::with(['acquittance'])->get();
+        $ddos = Ddo::with(['office'])->get();
 
         return view('admin.ddos.index', compact('ddos'));
     }
@@ -27,9 +27,9 @@ class DdoController extends Controller
     {
         abort_if(Gate::denies('ddo_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $acquittances = Acquittance::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.ddos.create', compact('acquittances'));
+        return view('admin.ddos.create', compact('offices'));
     }
 
     public function store(StoreDdoRequest $request)
@@ -43,11 +43,11 @@ class DdoController extends Controller
     {
         abort_if(Gate::denies('ddo_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $acquittances = Acquittance::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $ddo->load('acquittance');
+        $ddo->load('office');
 
-        return view('admin.ddos.edit', compact('acquittances', 'ddo'));
+        return view('admin.ddos.edit', compact('ddo', 'offices'));
     }
 
     public function update(UpdateDdoRequest $request, Ddo $ddo)
@@ -61,7 +61,7 @@ class DdoController extends Controller
     {
         abort_if(Gate::denies('ddo_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $ddo->load('acquittance');
+        $ddo->load('office');
 
         return view('admin.ddos.show', compact('ddo'));
     }

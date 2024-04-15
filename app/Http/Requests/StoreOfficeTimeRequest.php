@@ -17,20 +17,20 @@ class StoreOfficeTimeRequest extends FormRequest
     public function rules()
     {
         return [
-            'description' => [
+            'groupname' => [
                 'string',
                 'required',
                 'unique:office_times',
             ],
-            'office_id' => [
-                'required',
-                'integer',
+            'description' => [
+                'string',
+                'nullable',
             ],
-            'full_from' => [
+            'day_from' => [
                 'required',
                 'date_format:' . config('panel.time_format'),
             ],
-            'full_to' => [
+            'day_to' => [
                 'required',
                 'date_format:' . config('panel.time_format'),
             ],
@@ -56,13 +56,11 @@ class StoreOfficeTimeRequest extends FormRequest
                 'date_format:' . config('panel.time_format'),
                 'nullable',
             ],
-            'flexi_from' => [
-                'date_format:' . config('panel.time_format'),
+            'flexi_minutes' => [
                 'nullable',
-            ],
-            'flexi_to' => [
-                'date_format:' . config('panel.time_format'),
-                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
             ],
         ];
     }

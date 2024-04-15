@@ -9,14 +9,11 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
-        {{ trans('cruds.seat.title_singular') }} {{ trans('global.list') }}
-    </div>
+<div class="">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Seat">
+    <div class="">
+        <div class="">
+            <table class=" table table-hover datatable datatable-Seat">
                 <thead>
                     <tr>
                         <th width="10">
@@ -26,7 +23,7 @@
                             {{ trans('cruds.seat.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.seat.fields.name') }}
+                            {{ trans('cruds.seat.fields.slug') }}
                         </th>
                         <th>
                             {{ trans('cruds.seat.fields.title') }}
@@ -38,13 +35,13 @@
                             {{ trans('cruds.seat.fields.has_office_with_employees') }}
                         </th>
                         <th>
-                            {{ trans('cruds.seat.fields.level') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.seat.fields.is_js_as_ss') }}
                         </th>
                         <th>
                             {{ trans('cruds.seat.fields.is_controlling_officer') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.seat.fields.level') }}
                         </th>
                         <th>
                             &nbsp;
@@ -61,7 +58,7 @@
                                 {{ $seat->id ?? '' }}
                             </td>
                             <td>
-                                {{ $seat->name ?? '' }}
+                                {{ $seat->slug ?? '' }}
                             </td>
                             <td>
                                 {{ $seat->title ?? '' }}
@@ -75,15 +72,15 @@
                                 <input type="checkbox" disabled="disabled" {{ $seat->has_office_with_employees ? 'checked' : '' }}>
                             </td>
                             <td>
-                                {{ $seat->level ?? '' }}
-                            </td>
-                            <td>
                                 <span style="display:none">{{ $seat->is_js_as_ss ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $seat->is_js_as_ss ? 'checked' : '' }}>
                             </td>
                             <td>
                                 <span style="display:none">{{ $seat->is_controlling_officer ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $seat->is_controlling_officer ? 'checked' : '' }}>
+                            </td>
+                            <td>
+                                {{ $seat->level ?? '' }}
                             </td>
                             <td>
                                 @can('seat_show')
@@ -164,7 +161,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

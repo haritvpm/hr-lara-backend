@@ -54,6 +54,8 @@ class AssemblySessionController extends Controller
     {
         abort_if(Gate::denies('assembly_session_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        $assemblySession->load('sessionGovtCalendars');
+
         return view('admin.assemblySessions.show', compact('assemblySession'));
     }
 

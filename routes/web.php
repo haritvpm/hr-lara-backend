@@ -1,6 +1,8 @@
 <?php
 
 Route::redirect('/', '/login');
+//Route::redirect('/', '/hr-lara-backend/login');
+
 Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
@@ -29,12 +31,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('users/process-csv-import', 'UsersController@processCsvImport')->name('users.processCsvImport');
     Route::resource('users', 'UsersController');
 
-    // Designation Line
-    Route::delete('designation-lines/destroy', 'DesignationLineController@massDestroy')->name('designation-lines.massDestroy');
-    Route::post('designation-lines/parse-csv-import', 'DesignationLineController@parseCsvImport')->name('designation-lines.parseCsvImport');
-    Route::post('designation-lines/process-csv-import', 'DesignationLineController@processCsvImport')->name('designation-lines.processCsvImport');
-    Route::resource('designation-lines', 'DesignationLineController');
-
     // Designation
     Route::delete('designations/destroy', 'DesignationController@massDestroy')->name('designations.massDestroy');
     Route::post('designations/parse-csv-import', 'DesignationController@parseCsvImport')->name('designations.parseCsvImport');
@@ -46,6 +42,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('ot-categories', 'OtCategoryController');
 
     // Employee
+    Route::get('employees/aebasfetch', 'EmployeeController@aebasfetch')->name('employees.aebasfetch');
     Route::delete('employees/destroy', 'EmployeeController@massDestroy')->name('employees.massDestroy');
     Route::post('employees/parse-csv-import', 'EmployeeController@parseCsvImport')->name('employees.parseCsvImport');
     Route::post('employees/process-csv-import', 'EmployeeController@processCsvImport')->name('employees.processCsvImport');
@@ -56,11 +53,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('punching-traces/process-csv-import', 'PunchingTraceController@processCsvImport')->name('punching-traces.processCsvImport');
     Route::resource('punching-traces', 'PunchingTraceController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
-    // Session
-    Route::delete('sessions/destroy', 'SessionController@massDestroy')->name('sessions.massDestroy');
-    Route::resource('sessions', 'SessionController');
+
 
     // Govt Calendar
+    Route::get('govt-calendars/calculate/{date}', 'GovtCalendarController@calculate')->name('govt-calendars.calculate');
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarController@fetch')->name('govt-calendars.fetch');
     Route::post('govt-calendars/fetchmonth', 'GovtCalendarController@fetchmonth')->name('govt-calendars.fetchmonth');
     Route::resource('govt-calendars', 'GovtCalendarController', ['except' => ['create', 'store', 'destroy']]);
@@ -130,8 +126,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('overtime-others', 'OvertimeOtherController');
 
     // Overtime Sitting
-    Route::delete('overtime-sittings/destroy', 'OvertimeSittingController@massDestroy')->name('overtime-sittings.massDestroy');
-    Route::resource('overtime-sittings', 'OvertimeSittingController');
+    Route::resource('overtime-sittings', 'OvertimeSittingController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
     // Ot Routing
     Route::delete('ot-routings/destroy', 'OtRoutingController@massDestroy')->name('ot-routings.massDestroy');
@@ -148,16 +143,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('office-locations/process-csv-import', 'OfficeLocationController@processCsvImport')->name('office-locations.processCsvImport');
     Route::resource('office-locations', 'OfficeLocationController', ['except' => ['destroy']]);
 
-    // Employee Seat History
-    Route::delete('employee-seat-histories/destroy', 'EmployeeSeatHistoryController@massDestroy')->name('employee-seat-histories.massDestroy');
-    Route::resource('employee-seat-histories', 'EmployeeSeatHistoryController');
-
-    // Employee Section History
-    Route::delete('employee-section-histories/destroy', 'EmployeeSectionHistoryController@massDestroy')->name('employee-section-histories.massDestroy');
-    Route::post('employee-section-histories/parse-csv-import', 'EmployeeSectionHistoryController@parseCsvImport')->name('employee-section-histories.parseCsvImport');
-    Route::post('employee-section-histories/process-csv-import', 'EmployeeSectionHistoryController@processCsvImport')->name('employee-section-histories.processCsvImport');
-    Route::resource('employee-section-histories', 'EmployeeSectionHistoryController');
-
     // Employee To Seat
     Route::delete('employee-to-seats/destroy', 'EmployeeToSeatController@massDestroy')->name('employee-to-seats.massDestroy');
     Route::post('employee-to-seats/parse-csv-import', 'EmployeeToSeatController@parseCsvImport')->name('employee-to-seats.parseCsvImport');
@@ -169,22 +154,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('employee-to-sections/parse-csv-import', 'EmployeeToSectionController@parseCsvImport')->name('employee-to-sections.parseCsvImport');
     Route::post('employee-to-sections/process-csv-import', 'EmployeeToSectionController@processCsvImport')->name('employee-to-sections.processCsvImport');
     Route::resource('employee-to-sections', 'EmployeeToSectionController');
-
-    // Employee Details
-    Route::delete('employee-details/destroy', 'EmployeeDetailsController@massDestroy')->name('employee-details.massDestroy');
-    Route::post('employee-details/parse-csv-import', 'EmployeeDetailsController@parseCsvImport')->name('employee-details.parseCsvImport');
-    Route::post('employee-details/process-csv-import', 'EmployeeDetailsController@processCsvImport')->name('employee-details.processCsvImport');
-    Route::resource('employee-details', 'EmployeeDetailsController');
-
-    // Employee Ot Data
-    Route::delete('employee-ot-datas/destroy', 'EmployeeOtDataController@massDestroy')->name('employee-ot-datas.massDestroy');
-    Route::post('employee-ot-datas/parse-csv-import', 'EmployeeOtDataController@parseCsvImport')->name('employee-ot-datas.parseCsvImport');
-    Route::post('employee-ot-datas/process-csv-import', 'EmployeeOtDataController@processCsvImport')->name('employee-ot-datas.processCsvImport');
-    Route::resource('employee-ot-datas', 'EmployeeOtDataController');
-
-    // Employee Designation History
-    Route::delete('employee-designation-histories/destroy', 'EmployeeDesignationHistoryController@massDestroy')->name('employee-designation-histories.massDestroy');
-    Route::resource('employee-designation-histories', 'EmployeeDesignationHistoryController');
 
     // Employee To Designation
     Route::delete('employee-to-designations/destroy', 'EmployeeToDesignationController@massDestroy')->name('employee-to-designations.massDestroy');
@@ -238,6 +207,22 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Office Times
     Route::delete('office-times/destroy', 'OfficeTimesController@massDestroy')->name('office-times.massDestroy');
     Route::resource('office-times', 'OfficeTimesController');
+
+    // Seat To Js As Ss
+    Route::delete('seat-to-js-as-sses/destroy', 'SeatToJsAsSsController@massDestroy')->name('seat-to-js-as-sses.massDestroy');
+    Route::post('seat-to-js-as-sses/parse-csv-import', 'SeatToJsAsSsController@parseCsvImport')->name('seat-to-js-as-sses.parseCsvImport');
+    Route::post('seat-to-js-as-sses/process-csv-import', 'SeatToJsAsSsController@processCsvImport')->name('seat-to-js-as-sses.processCsvImport');
+    Route::resource('seat-to-js-as-sses', 'SeatToJsAsSsController');
+
+    // Employee Ot Setting
+    Route::delete('employee-ot-settings/destroy', 'EmployeeOtSettingController@massDestroy')->name('employee-ot-settings.massDestroy');
+    Route::post('employee-ot-settings/parse-csv-import', 'EmployeeOtSettingController@parseCsvImport')->name('employee-ot-settings.parseCsvImport');
+    Route::post('employee-ot-settings/process-csv-import', 'EmployeeOtSettingController@processCsvImport')->name('employee-ot-settings.processCsvImport');
+    Route::resource('employee-ot-settings', 'EmployeeOtSettingController');
+
+    // Monthly Attendance
+    Route::delete('monthly-attendances/destroy', 'MonthlyAttendanceController@massDestroy')->name('monthly-attendances.massDestroy');
+    Route::resource('monthly-attendances', 'MonthlyAttendanceController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

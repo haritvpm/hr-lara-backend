@@ -21,7 +21,7 @@ class Ddo extends Model
 
     protected $fillable = [
         'code',
-        'acquittance_id',
+        'office_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -32,8 +32,8 @@ class Ddo extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function acquittance()
+    public function office()
     {
-        return $this->belongsTo(Acquittance::class, 'acquittance_id');
+        return $this->belongsTo(AdministrativeOffice::class, 'office_id');
     }
 }

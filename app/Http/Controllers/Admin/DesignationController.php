@@ -8,7 +8,6 @@ use App\Http\Requests\MassDestroyDesignationRequest;
 use App\Http\Requests\StoreDesignationRequest;
 use App\Http\Requests\UpdateDesignationRequest;
 use App\Models\Designation;
-use App\Models\DesignationLine;
 use App\Models\OfficeTime;
 use Gate;
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::with(['desig_line', 'office_times'])->get();
+        $designations = Designation::with(['default_time_group'])->get();
 
         return view('admin.designations.index', compact('designations'));
     }
@@ -31,11 +30,9 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $desig_lines = DesignationLine::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $default_time_groups = OfficeTime::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $office_times = OfficeTime::pluck('description', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.designations.create', compact('desig_lines', 'office_times'));
+        return view('admin.designations.create', compact('default_time_groups'));
     }
 
     public function store(StoreDesignationRequest $request)
@@ -49,13 +46,11 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $desig_lines = DesignationLine::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $default_time_groups = OfficeTime::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $office_times = OfficeTime::pluck('description', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $designation->load('default_time_group');
 
-        $designation->load('desig_line', 'office_times');
-
-        return view('admin.designations.edit', compact('desig_lines', 'designation', 'office_times'));
+        return view('admin.designations.edit', compact('default_time_groups', 'designation'));
     }
 
     public function update(UpdateDesignationRequest $request, Designation $designation)
@@ -69,7 +64,7 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designation->load('desig_line', 'office_times');
+        $designation->load('default_time_group');
 
         return view('admin.designations.show', compact('designation'));
     }

@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.create') }} {{ trans('cruds.govtCalendar.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.govt-calendars.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -82,17 +82,6 @@
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.attendance_today_trace_rows_fetched_helper') }}</span>
             </div>
             <div class="form-group">
-                <div class="form-check {{ $errors->has('is_in_session_period') ? 'is-invalid' : '' }}">
-                    <input type="hidden" name="is_in_session_period" value="0">
-                    <input class="form-check-input" type="checkbox" name="is_in_session_period" id="is_in_session_period" value="1" {{ old('is_in_session_period', 0) == 1 ? 'checked' : '' }}>
-                    <label class="form-check-label" for="is_in_session_period">{{ trans('cruds.govtCalendar.fields.is_in_session_period') }}</label>
-                </div>
-                @if($errors->has('is_in_session_period'))
-                    <span class="text-danger">{{ $errors->first('is_in_session_period') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.is_in_session_period_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <div class="form-check {{ $errors->has('is_sitting_day') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="is_sitting_day" value="0">
                     <input class="form-check-input" type="checkbox" name="is_sitting_day" id="is_sitting_day" value="1" {{ old('is_sitting_day', 0) == 1 ? 'checked' : '' }}>
@@ -112,14 +101,6 @@
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.punching_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="ends_at_time">{{ trans('cruds.govtCalendar.fields.ends_at_time') }}</label>
-                <input class="form-control timepicker {{ $errors->has('ends_at_time') ? 'is-invalid' : '' }}" type="text" name="ends_at_time" id="ends_at_time" value="{{ old('ends_at_time') }}">
-                @if($errors->has('ends_at_time'))
-                    <span class="text-danger">{{ $errors->first('ends_at_time') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.ends_at_time_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="session_id">{{ trans('cruds.govtCalendar.fields.session') }}</label>
                 <select class="form-control select2 {{ $errors->has('session') ? 'is-invalid' : '' }}" name="session_id" id="session_id">
                     @foreach($sessions as $id => $entry)
@@ -130,6 +111,14 @@
                     <span class="text-danger">{{ $errors->first('session') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.session_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="office_ends_at_time">{{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}</label>
+                <input class="form-control timepicker {{ $errors->has('office_ends_at_time') ? 'is-invalid' : '' }}" type="text" name="office_ends_at_time" id="office_ends_at_time" value="{{ old('office_ends_at_time') }}">
+                @if($errors->has('office_ends_at_time'))
+                    <span class="text-danger">{{ $errors->first('office_ends_at_time') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.govtCalendar.fields.office_ends_at_time_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

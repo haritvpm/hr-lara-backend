@@ -25,6 +25,14 @@ class StoreEmployeeToAcquittanceRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'start_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
+            'end_date' => [
+                'date_format:' . config('panel.date_format'),
+                'nullable',
+            ],
         ];
     }
 }

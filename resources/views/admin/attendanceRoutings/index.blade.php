@@ -9,14 +9,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.attendanceRouting.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-AttendanceRouting">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-AttendanceRouting">
                 <thead>
                     <tr>
                         <th width="10">
@@ -26,7 +26,19 @@
                             {{ trans('cruds.attendanceRouting.fields.id') }}
                         </th>
                         <th>
-                            {{ trans('cruds.attendanceRouting.fields.seats') }}
+                            {{ trans('cruds.attendanceRouting.fields.viewer_js_as_ss_employee') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.employee.fields.pen') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.viewer_seat') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.viewable_seats') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.attendanceRouting.fields.viewable_js_as_ss_employees') }}
                         </th>
                         <th>
                             &nbsp;
@@ -43,7 +55,21 @@
                                 {{ $attendanceRouting->id ?? '' }}
                             </td>
                             <td>
-                                @foreach($attendanceRouting->seats as $key => $item)
+                                {{ $attendanceRouting->viewer_js_as_ss_employee->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $attendanceRouting->viewer_js_as_ss_employee->pen ?? '' }}
+                            </td>
+                            <td>
+                                {{ $attendanceRouting->viewer_seat->title ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($attendanceRouting->viewable_seats as $key => $item)
+                                    <span class="badge badge-info">{{ $item->title }}</span>
+                                @endforeach
+                            </td>
+                            <td>
+                                @foreach($attendanceRouting->viewable_js_as_ss_employees as $key => $item)
                                     <span class="badge badge-info">{{ $item->name }}</span>
                                 @endforeach
                             </td>
@@ -126,7 +152,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

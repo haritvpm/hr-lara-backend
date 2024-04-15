@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.show') }} {{ trans('cruds.designation.title') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.designations.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table  ">
                 <tbody>
                     <tr>
                         <th>
@@ -41,6 +41,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.designation.fields.default_time_group') }}
+                        </th>
+                        <td>
+                            {{ $designation->default_time_group->groupname ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.designation.fields.sort_index') }}
                         </th>
                         <td>
@@ -57,18 +65,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.normal_office_hours') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade') }}
                         </th>
                         <td>
-                            {{ $designation->normal_office_hours }}
+                            {{ $designation->designation_without_grade }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.designation.fields.desig_line') }}
+                            {{ trans('cruds.designation.fields.designation_without_grade_mal') }}
                         </th>
                         <td>
-                            {{ $designation->desig_line->title ?? '' }}
+                            {{ $designation->designation_without_grade_mal }}
                         </td>
                     </tr>
                 </tbody>

@@ -17,7 +17,7 @@ class AcquittanceApiController extends Controller
     {
         abort_if(Gate::denies('acquittance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AcquittanceResource(Acquittance::with(['office'])->get());
+        return new AcquittanceResource(Acquittance::with(['office', 'ddo'])->get());
     }
 
     public function store(StoreAcquittanceRequest $request)
@@ -33,7 +33,7 @@ class AcquittanceApiController extends Controller
     {
         abort_if(Gate::denies('acquittance_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new AcquittanceResource($acquittance->load(['office']));
+        return new AcquittanceResource($acquittance->load(['office', 'ddo']));
     }
 
     public function update(UpdateAcquittanceRequest $request, Acquittance $acquittance)

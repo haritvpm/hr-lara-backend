@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.create') }} {{ trans('cruds.employeeToDesignation.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.employee-to-designations.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -32,6 +32,22 @@
                     <span class="text-danger">{{ $errors->first('designation') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeToDesignation.fields.designation_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label class="required" for="start_date">{{ trans('cruds.employeeToDesignation.fields.start_date') }}</label>
+                <input class="form-control date {{ $errors->has('start_date') ? 'is-invalid' : '' }}" type="text" name="start_date" id="start_date" value="{{ old('start_date') }}" required>
+                @if($errors->has('start_date'))
+                    <span class="text-danger">{{ $errors->first('start_date') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employeeToDesignation.fields.start_date_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="end_date">{{ trans('cruds.employeeToDesignation.fields.end_date') }}</label>
+                <input class="form-control date {{ $errors->has('end_date') ? 'is-invalid' : '' }}" type="text" name="end_date" id="end_date" value="{{ old('end_date') }}">
+                @if($errors->has('end_date'))
+                    <span class="text-danger">{{ $errors->first('end_date') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employeeToDesignation.fields.end_date_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyOtFormOtherRequest;
 use App\Http\Requests\StoreOtFormOtherRequest;
 use App\Http\Requests\UpdateOtFormOtherRequest;
+use App\Models\AssemblySession;
 use App\Models\OtFormOther;
-use App\Models\Session;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +27,7 @@ class OtFormOtherController extends Controller
     {
         abort_if(Gate::denies('ot_form_other_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sessions = Session::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.otFormOthers.create', compact('sessions'));
     }
@@ -43,7 +43,7 @@ class OtFormOtherController extends Controller
     {
         abort_if(Gate::denies('ot_form_other_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sessions = Session::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $otFormOther->load('session');
 

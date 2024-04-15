@@ -12,6 +12,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\EmployeeService;
 
 class EmployeeController extends Controller
 {
@@ -46,30 +47,27 @@ class EmployeeController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
-            $table->editColumn('srismt', function ($row) {
-                return $row->srismt ? Employee::SRISMT_SELECT[$row->srismt] : '';
-            });
+            // $table->editColumn('srismt', function ($row) {
+            //     return $row->srismt ? Employee::SRISMT_SELECT[$row->srismt] : '';
+            // });
             $table->editColumn('name', function ($row) {
                 return $row->name ? $row->name : '';
             });
-            $table->editColumn('name_mal', function ($row) {
-                return $row->name_mal ? $row->name_mal : '';
+            // $table->editColumn('name_mal', function ($row) {
+            //     return $row->name_mal ? $row->name_mal : '';
+            // });
+            $table->editColumn('aadhaarid', function ($row) {
+                return $row->aadhaarid ? $row->aadhaarid : '';
             });
             $table->editColumn('pen', function ($row) {
                 return $row->pen ? $row->pen : '';
             });
-            $table->editColumn('aadhaarid', function ($row) {
-                return $row->aadhaarid ? $row->aadhaarid : '';
-            });
-            $table->editColumn('employee_type', function ($row) {
-                return $row->employee_type ? Employee::EMPLOYEE_TYPE_SELECT[$row->employee_type] : '';
-            });
             $table->editColumn('desig_display', function ($row) {
                 return $row->desig_display ? $row->desig_display : '';
             });
-            $table->editColumn('pan', function ($row) {
-                return $row->pan ? $row->pan : '';
-            });
+            // $table->editColumn('pan', function ($row) {
+            //     return $row->pan ? $row->pan : '';
+            // });
             $table->editColumn('has_punching', function ($row) {
                 return $row->has_punching ? $row->has_punching : '';
             });
@@ -79,6 +77,12 @@ class EmployeeController extends Controller
             $table->editColumn('is_shift', function ($row) {
                 return '<input type="checkbox" disabled ' . ($row->is_shift ? 'checked' : null) . '>';
             });
+            // $table->editColumn('klaid', function ($row) {
+            //     return $row->klaid ? $row->klaid : '';
+            // });
+            // $table->editColumn('electionid', function ($row) {
+            //     return $row->electionid ? $row->electionid : '';
+            // });
 
             $table->rawColumns(['actions', 'placeholder', 'is_shift']);
 
@@ -144,4 +148,27 @@ class EmployeeController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+    public function aebasfetch()
+    {
+       $list =  (new EmployeeService())->syncEmployeeDataFromAebas();
+
+       $callback = function() use ($list) 
+        {
+            $FH = fopen('php://output', 'w');
+            foreach ($list as $row) { 
+                fputcsv($FH, $row);
+            }
+            fclose($FH);
+        };
+        $headers = [
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+        ,   'Content-type'        => 'text/csv'
+        ,   'Content-Disposition' => 'attachment; filename=employees_in_aebas.csv'
+        ,   'Expires'             => '0'
+        ,   'Pragma'              => 'public'
+        ];
+        return response()->stream($callback, 200, $headers);
+
+    }
+    
 }

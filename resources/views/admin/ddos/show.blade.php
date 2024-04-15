@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.show') }} {{ trans('cruds.ddo.title') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.ddos.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table  ">
                 <tbody>
                     <tr>
                         <th>
@@ -33,10 +33,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.ddo.fields.acquittance') }}
+                            {{ trans('cruds.ddo.fields.office') }}
                         </th>
                         <td>
-                            {{ $ddo->acquittance->title ?? '' }}
+                            {{ $ddo->office->office_name ?? '' }}
                         </td>
                     </tr>
                 </tbody>

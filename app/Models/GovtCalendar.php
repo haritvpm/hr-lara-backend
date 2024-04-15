@@ -32,7 +32,6 @@ class GovtCalendar extends Model
         'success_attendance_rows_fetched',
         'attendancetodaytrace_lastfetchtime',
         'attendance_today_trace_rows_fetched',
-        'is_in_session_period',
         'is_sitting_day',
         'punching',
         'session_id',

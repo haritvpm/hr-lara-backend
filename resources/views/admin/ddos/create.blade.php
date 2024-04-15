@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.create') }} {{ trans('cruds.ddo.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.ddos.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -18,16 +18,16 @@
                 <span class="help-block">{{ trans('cruds.ddo.fields.code_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="acquittance_id">{{ trans('cruds.ddo.fields.acquittance') }}</label>
-                <select class="form-control select2 {{ $errors->has('acquittance') ? 'is-invalid' : '' }}" name="acquittance_id" id="acquittance_id" required>
-                    @foreach($acquittances as $id => $entry)
-                        <option value="{{ $id }}" {{ old('acquittance_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                <label class="required" for="office_id">{{ trans('cruds.ddo.fields.office') }}</label>
+                <select class="form-control select2 {{ $errors->has('office') ? 'is-invalid' : '' }}" name="office_id" id="office_id" required>
+                    @foreach($offices as $id => $entry)
+                        <option value="{{ $id }}" {{ old('office_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach
                 </select>
-                @if($errors->has('acquittance'))
-                    <span class="text-danger">{{ $errors->first('acquittance') }}</span>
+                @if($errors->has('office'))
+                    <span class="text-danger">{{ $errors->first('office') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.ddo.fields.acquittance_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.ddo.fields.office_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

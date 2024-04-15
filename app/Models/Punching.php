@@ -15,32 +15,58 @@ class Punching extends Model
 
     protected $dates = [
         'date',
+        'in_datetime',
+        'out_datetime',
+        'controller_set_punch_in',
+        'controller_set_punch_out',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    public const FLEXI_SELECT = [
-        'yes' => 'YES',
-        'no'  => 'NO',
-        'na'  => 'N/A',
+    public const HINT_SELECT = [
+        'casual_fn'      => 'CL FN',
+        'casual_an'      => 'CL AN',
+        'duty'           => 'Duty',
+        'earned'         => 'Earned',
+        'commuted'       => 'Commuted',
+        'casual'         => 'Casual',
+        'compensation'   => 'Compensation',
+        'comp_off'       => 'Comp off',
+        'tour'           => 'Tour',
+        'special_casual' => 'SPL CL',
+        'dies_non'       => 'Dies Non',
+        'RH'             => 'RH',
     ];
 
     protected $fillable = [
         'date',
+        'aadhaarid',
         'employee_id',
-        'duration',
-        'flexi',
         'designation',
-        'grace',
-        'extra',
-        'remarks',
-        'calc_complete',
+        'section',
         'punchin_trace_id',
         'punchout_trace_id',
-        'ot_claimed_minutes',
-        'punching_status',
+        'in_datetime',
+        'out_datetime',
+        'duration_sec',
+        'grace_sec',
+        'extra_sec',
+        'duration_str',
+        'grace_str',
+        'extra_str',
+        'punching_count',
         'leave_id',
+        'remarks',
+        'finalized_by_controller',
+        'ot_sitting_sec',
+        'ot_nonsitting_sec',
+        'hint',
+        'controller_set_punch_in',
+        'controller_set_punch_out',
+        'grace_lp_exceeded_one_hour', //?needed?
+        'grace_ep_exceeded_one_hour', //?needed?
+        'grace_total_exceeded_one_hour',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -80,4 +106,6 @@ class Punching extends Model
     {
         return $this->belongsTo(Leaf::class, 'leave_id');
     }
+
+
 }

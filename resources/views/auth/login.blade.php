@@ -8,7 +8,7 @@
             </a>
         </div>
     </div>
-    <div class="card">
+    <div class="card_">
         <div class="card-body login-card-body">
             <p class="login-box-msg">
                 {{ trans('global.login') }}

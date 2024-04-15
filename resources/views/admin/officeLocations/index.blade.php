@@ -13,14 +13,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.officeLocation.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-OfficeLocation">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-OfficeLocation">
                 <thead>
                     <tr>
                         <th width="10">
@@ -31,6 +31,9 @@
                         </th>
                         <th>
                             {{ trans('cruds.officeLocation.fields.location') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.officeLocation.fields.administrative_office') }}
                         </th>
                         <th>
                             &nbsp;
@@ -48,6 +51,9 @@
                             </td>
                             <td>
                                 {{ $officeLocation->location ?? '' }}
+                            </td>
+                            <td>
+                                {{ $officeLocation->administrative_office->office_name ?? '' }}
                             </td>
                             <td>
                                 @can('office_location_show')
@@ -81,7 +87,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-  
+
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
@@ -92,7 +98,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

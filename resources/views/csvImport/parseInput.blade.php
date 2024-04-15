@@ -5,7 +5,7 @@
 <div class='row'>
     <div class='col-md-12'>
         <div class="card panel-default">
-            <div class="card-header">
+            <div class="card-header_">
                 @lang('global.app_csvImport')
             </div>
 

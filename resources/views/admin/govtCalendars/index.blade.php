@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.govtCalendar.title_singular') }} {{ trans('global.list') }}
     </div>
 
@@ -13,9 +13,9 @@
       </form>
 
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-GovtCalendar">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-GovtCalendar">
                 <thead>
                     <tr>
                         <th width="10">
@@ -27,18 +27,9 @@
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
-                        <!-- <th>
+                        <th>
                             {{ trans('cruds.govtCalendar.fields.govtholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.restrictedholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.bankholidaystatus') }}
-                        </th> -->
-                        <!-- <th>
-                            {{ trans('cruds.govtCalendar.fields.festivallist') }}
-                        </th> -->
+                        </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.success_attendance_lastfetchtime') }}
                         </th>
@@ -52,19 +43,13 @@
                             {{ trans('cruds.govtCalendar.fields.attendance_today_trace_rows_fetched') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.is_in_session_period') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.punching') }}
+                            {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
                             &nbsp;
@@ -83,23 +68,14 @@
                             <td>
                                 @if($govtCalendar->govtholidaystatus==1)
                                 <span class="badge badge-danger">{{ $govtCalendar->date ?? '' }}</span>
-                              
+
                                 @else
                                 {{ $govtCalendar->date ?? '' }}
                                 @endif
                             </td>
-                            <!-- <td>
+                            <td>
                                 {{ $govtCalendar->govtholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->restrictedholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->bankholidaystatus ?? '' }}
-                            </td> -->
-                            <!-- <td>
-                                {{ $govtCalendar->festivallist ?? '' }}
-                            </td> -->
+                            </td>
                             <td>
                                 {{ $govtCalendar->success_attendance_lastfetchtime ?? '' }}
                             </td>
@@ -113,21 +89,14 @@
                                 {{ $govtCalendar->attendance_today_trace_rows_fetched ?? '' }}
                             </td>
                             <td>
-                                <span style="display:none">{{ $govtCalendar->is_in_session_period ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_in_session_period ? 'checked' : '' }}>
-                            </td>
-                            <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}>
                             </td>
                             <td>
-                                {{ $govtCalendar->punching ?? '' }}
-                            </td>
-                            <td>
-                                {{ $govtCalendar->ends_at_time ?? '' }}
-                            </td>
-                            <td>
                                 {{ $govtCalendar->session->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $govtCalendar->office_ends_at_time ?? '' }}
                             </td>
                             <td>
                                 @can('govt_calendar_show')
@@ -135,8 +104,9 @@
                                         {{ trans('global.view') }}
                                     </a>
                                 @endcan
-                           
+
                                 <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
+                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">calculate</a>
 
                                 @can('govt_calendar_edit')
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
@@ -163,7 +133,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-  
+
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
@@ -174,7 +144,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

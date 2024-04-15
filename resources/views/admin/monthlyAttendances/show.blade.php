@@ -1,0 +1,87 @@
+@extends('layouts.admin')
+@section('content')
+
+<div class="card">
+    <div class="card-header">
+        {{ trans('global.show') }} {{ trans('cruds.monthlyAttendance.title') }}
+    </div>
+
+    <div class="card-body">
+        <div class="form-group">
+            <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.monthly-attendances.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div>
+            <table class="table table-bordered table-striped">
+                <tbody>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.id') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->id }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.aadhaarid') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->aadhaarid }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.employee') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->employee->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.month') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->month }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.cl_taken') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->cl_taken }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.compen_taken') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->compen_taken }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->compoff_granted }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-group">
+                <a class="btn btn-default" href="{{ route('admin.monthly-attendances.index') }}">
+                    {{ trans('global.back_to_list') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@endsection

@@ -21,10 +21,11 @@ class Designation extends Model
     protected $fillable = [
         'designation',
         'designation_mal',
+        'default_time_group_id',
         'sort_index',
         'has_punching',
-        'desig_line_id',
-        'office_times_id',
+        'designation_without_grade',
+        'designation_without_grade_mal',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -35,13 +36,8 @@ class Designation extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function desig_line()
+    public function default_time_group()
     {
-        return $this->belongsTo(DesignationLine::class, 'desig_line_id');
-    }
-
-    public function office_times()
-    {
-        return $this->belongsTo(OfficeTime::class, 'office_times_id');
+        return $this->belongsTo(OfficeTime::class, 'default_time_group_id');
     }
 }

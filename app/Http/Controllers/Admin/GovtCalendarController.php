@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateGovtCalendarRequest;
 use App\Models\AssemblySession;
 use App\Models\GovtCalendar;
-use App\Models\Session;
+
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +30,7 @@ class GovtCalendarController extends Controller
     {
         abort_if(Gate::denies('govt_calendar_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $sessions = Session::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $govtCalendar->load('session');
 
@@ -69,6 +69,19 @@ class GovtCalendarController extends Controller
 
         return redirect()->back();
     }
+    public function calculate(Request $request)
+    {
+        $date = $request->date;
+        \Log::info("calculate attendance tr !. " .  $date);
+     
+        if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
+
+        \Log::info("calculate attendance !. " .  $date);
+        (new PunchingService())->calculate($date);
+     
+        return redirect()->back();
+    }
+    
 
     public function fetchmonth(Request $request)
     {

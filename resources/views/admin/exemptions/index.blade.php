@@ -9,14 +9,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.exemption.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Exemption">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-Exemption">
                 <thead>
                     <tr>
                         <th width="10">
@@ -35,13 +35,19 @@
                             {{ trans('cruds.exemption.fields.date_to') }}
                         </th>
                         <th>
-                            {{ trans('cruds.exemption.fields.session') }}
-                        </th>
-                        <th>
                             {{ trans('cruds.exemption.fields.forwarded_by') }}
                         </th>
                         <th>
                             {{ trans('cruds.exemption.fields.submitted_to_services') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.exemption.fields.session') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.exemption.fields.approval_status') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.exemption.fields.owner') }}
                         </th>
                         <th>
                             &nbsp;
@@ -67,14 +73,20 @@
                                 {{ $exemption->date_to ?? '' }}
                             </td>
                             <td>
-                                {{ $exemption->session->name ?? '' }}
-                            </td>
-                            <td>
                                 {{ $exemption->forwarded_by ?? '' }}
                             </td>
                             <td>
                                 <span style="display:none">{{ $exemption->submitted_to_services ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $exemption->submitted_to_services ? 'checked' : '' }}>
+                            </td>
+                            <td>
+                                {{ $exemption->session->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $exemption->approval_status ?? '' }}
+                            </td>
+                            <td>
+                                {{ $exemption->owner->title ?? '' }}
                             </td>
                             <td>
                                 @can('exemption_show')
@@ -155,7 +167,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

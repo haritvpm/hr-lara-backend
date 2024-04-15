@@ -13,13 +13,13 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.employeeToDesignation.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-EmployeeToDesignation">
+    <div class="card-body_">
+        <table class=" table   table-hover ajaxTable datatable datatable-EmployeeToDesignation">
             <thead>
                 <tr>
                     <th width="10">
@@ -36,6 +36,12 @@
                     </th>
                     <th>
                         {{ trans('cruds.employeeToDesignation.fields.designation') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employeeToDesignation.fields.start_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.employeeToDesignation.fields.end_date') }}
                     </th>
                     <th>
                         &nbsp;
@@ -97,6 +103,8 @@
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.pen', name: 'employee.pen' },
 { data: 'designation_designation', name: 'designation.designation' },
+{ data: 'start_date', name: 'start_date' },
+{ data: 'end_date', name: 'end_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
@@ -108,7 +116,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 });
 
 </script>

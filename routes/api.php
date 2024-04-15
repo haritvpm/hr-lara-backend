@@ -27,9 +27,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Users
     Route::apiResource('users', 'UsersApiController');
 
-    // Designation Line
-    Route::apiResource('designation-lines', 'DesignationLineApiController');
-
     // Designation
     Route::apiResource('designations', 'DesignationApiController');
 
@@ -42,8 +39,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Punching Trace
     Route::apiResource('punching-traces', 'PunchingTraceApiController', ['except' => ['store', 'show', 'update', 'destroy']]);
 
-    // Session
-    Route::apiResource('sessions', 'SessionApiController');
 
     // Govt Calendar
     Route::apiResource('govt-calendars', 'GovtCalendarApiController', ['except' => ['store', 'destroy']]);
@@ -93,7 +88,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('overtime-others', 'OvertimeOtherApiController');
 
     // Overtime Sitting
-    Route::apiResource('overtime-sittings', 'OvertimeSittingApiController');
+    Route::apiResource('overtime-sittings', 'OvertimeSittingApiController', ['except' => ['store', 'show', 'update', 'destroy']]);
 
     // Ot Routing
     Route::apiResource('ot-routings', 'OtRoutingApiController');
@@ -104,26 +99,11 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Office Location
     Route::apiResource('office-locations', 'OfficeLocationApiController', ['except' => ['destroy']]);
 
-    // Employee Seat History
-    Route::apiResource('employee-seat-histories', 'EmployeeSeatHistoryApiController');
-
-    // Employee Section History
-    Route::apiResource('employee-section-histories', 'EmployeeSectionHistoryApiController');
-
     // Employee To Seat
     Route::apiResource('employee-to-seats', 'EmployeeToSeatApiController');
 
     // Employee To Section
     Route::apiResource('employee-to-sections', 'EmployeeToSectionApiController');
-
-    // Employee Details
-    Route::apiResource('employee-details', 'EmployeeDetailsApiController');
-
-    // Employee Ot Data
-    Route::apiResource('employee-ot-datas', 'EmployeeOtDataApiController');
-
-    // Employee Designation History
-    Route::apiResource('employee-designation-histories', 'EmployeeDesignationHistoryApiController');
 
     // Employee To Designation
     Route::apiResource('employee-to-designations', 'EmployeeToDesignationApiController');
@@ -155,4 +135,19 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Assembly Session
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
+
+    // Leave
+    Route::apiResource('leaves', 'LeaveApiController');
+
+    // Office Times
+    Route::apiResource('office-times', 'OfficeTimesApiController');
+
+    // Seat To Js As Ss
+    Route::apiResource('seat-to-js-as-sses', 'SeatToJsAsSsApiController');
+
+    // Employee Ot Setting
+    Route::apiResource('employee-ot-settings', 'EmployeeOtSettingApiController');
+
+    // Monthly Attendance
+    Route::apiResource('monthly-attendances', 'MonthlyAttendanceApiController');
 });

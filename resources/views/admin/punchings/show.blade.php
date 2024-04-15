@@ -33,26 +33,18 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.punching.fields.aadhaarid') }}
+                        </th>
+                        <td>
+                            {{ $punching->aadhaarid }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.punching.fields.employee') }}
                         </th>
                         <td>
                             {{ $punching->employee->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.duration') }}
-                        </th>
-                        <td>
-                            {{ $punching->duration }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.flexi') }}
-                        </th>
-                        <td>
-                            {{ App\Models\Punching::FLEXI_SELECT[$punching->flexi] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -65,34 +57,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punching.fields.grace') }}
+                            {{ trans('cruds.punching.fields.section') }}
                         </th>
                         <td>
-                            {{ $punching->grace }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.extra') }}
-                        </th>
-                        <td>
-                            {{ $punching->extra }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.remarks') }}
-                        </th>
-                        <td>
-                            {{ $punching->remarks }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.calc_complete') }}
-                        </th>
-                        <td>
-                            {{ $punching->calc_complete }}
+                            {{ $punching->section }}
                         </td>
                     </tr>
                     <tr>
@@ -109,6 +77,166 @@
                         </th>
                         <td>
                             {{ $punching->punchout_trace->att_time ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.in_datetime') }}
+                        </th>
+                        <td>
+                            {{ $punching->in_datetime }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.out_datetime') }}
+                        </th>
+                        <td>
+                            {{ $punching->out_datetime }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.duration_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->duration_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.extra_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->extra_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.duration_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->duration_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.extra_str') }}
+                        </th>
+                        <td>
+                            {{ $punching->extra_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.punching_count') }}
+                        </th>
+                        <td>
+                            {{ $punching->punching_count }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.leave') }}
+                        </th>
+                        <td>
+                            {{ $punching->leave->reason ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.remarks') }}
+                        </th>
+                        <td>
+                            {{ $punching->remarks }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.finalized_by_controller') }}
+                        </th>
+                        <td>
+                            {{ $punching->finalized_by_controller }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_sitting_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_sitting_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.ot_nonsitting_sec') }}
+                        </th>
+                        <td>
+                            {{ $punching->ot_nonsitting_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.hint') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Punching::HINT_SELECT[$punching->hint] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.controller_set_punch_in') }}
+                        </th>
+                        <td>
+                            {{ $punching->controller_set_punch_in }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.controller_set_punch_out') }}
+                        </th>
+                        <td>
+                            {{ $punching->controller_set_punch_out }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_lp_exceeded_one_hour }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_ep_exceeded_one_hour }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
+                        </th>
+                        <td>
+                            {{ $punching->grace_total_exceeded_one_hour }}
                         </td>
                     </tr>
                 </tbody>

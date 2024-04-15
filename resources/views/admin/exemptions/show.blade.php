@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.show') }} {{ trans('cruds.exemption.title') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.exemptions.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table  ">
                 <tbody>
                     <tr>
                         <th>
@@ -49,14 +49,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.exemption.fields.session') }}
-                        </th>
-                        <td>
-                            {{ $exemption->session->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.exemption.fields.forwarded_by') }}
                         </th>
                         <td>
@@ -69,6 +61,30 @@
                         </th>
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $exemption->submitted_to_services ? 'checked' : '' }}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.session') }}
+                        </th>
+                        <td>
+                            {{ $exemption->session->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.approval_status') }}
+                        </th>
+                        <td>
+                            {{ $exemption->approval_status }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.exemption.fields.owner') }}
+                        </th>
+                        <td>
+                            {{ $exemption->owner->title ?? '' }}
                         </td>
                     </tr>
                 </tbody>

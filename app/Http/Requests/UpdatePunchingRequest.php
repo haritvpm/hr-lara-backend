@@ -21,25 +21,58 @@ class UpdatePunchingRequest extends FormRequest
                 'required',
                 'date_format:' . config('panel.date_format'),
             ],
-            'employee_id' => [
-                'required',
-                'integer',
-            ],
-            'duration' => [
+            'aadhaarid' => [
                 'string',
-                'nullable',
+                'min:8',
+                'required',
             ],
             'designation' => [
                 'string',
-                'required',
+                'nullable',
             ],
-            'grace' => [
+            'section' => [
+                'string',
+                'nullable',
+            ],
+            'in_datetime' => [
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
+            ],
+            'out_datetime' => [
+                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
+            ],
+            'duration_sec' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'extra' => [
+            'grace_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'extra_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'duration_str' => [
+                'string',
+                'nullable',
+            ],
+            'grace_str' => [
+                'string',
+                'nullable',
+            ],
+            'extra_str' => [
+                'string',
+                'nullable',
+            ],
+            'punching_count' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
@@ -49,19 +82,19 @@ class UpdatePunchingRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'calc_complete' => [
+            'finalized_by_controller' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'ot_claimed_minutes' => [
+            'ot_sitting_sec' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'punching_status' => [
+            'ot_nonsitting_sec' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',

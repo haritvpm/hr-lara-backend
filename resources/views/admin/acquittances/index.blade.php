@@ -13,14 +13,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.acquittance.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Acquittance">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-Acquittance">
                 <thead>
                     <tr>
                         <th width="10">
@@ -34,6 +34,9 @@
                         </th>
                         <th>
                             {{ trans('cruds.acquittance.fields.office') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.acquittance.fields.ddo') }}
                         </th>
                         <th>
                             &nbsp;
@@ -54,6 +57,9 @@
                             </td>
                             <td>
                                 {{ $acquittance->office->office_name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $acquittance->ddo->code ?? '' }}
                             </td>
                             <td>
                                 @can('acquittance_show')
@@ -134,7 +140,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

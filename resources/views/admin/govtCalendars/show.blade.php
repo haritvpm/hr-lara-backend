@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.show') }} {{ trans('cruds.govtCalendar.title') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.govt-calendars.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table  ">
                 <tbody>
                     <tr>
                         <th>
@@ -97,14 +97,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.is_in_session_period') }}
-                        </th>
-                        <td>
-                            <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_in_session_period ? 'checked' : '' }}>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <td>
@@ -121,18 +113,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.ends_at_time') }}
-                        </th>
-                        <td>
-                            {{ $govtCalendar->ends_at_time }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <td>
                             {{ $govtCalendar->session->name ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
+                        </th>
+                        <td>
+                            {{ $govtCalendar->office_ends_at_time }}
                         </td>
                     </tr>
                 </tbody>

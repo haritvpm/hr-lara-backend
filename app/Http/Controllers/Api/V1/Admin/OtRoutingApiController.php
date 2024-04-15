@@ -17,7 +17,7 @@ class OtRoutingApiController extends Controller
     {
         abort_if(Gate::denies('ot_routing_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OtRoutingResource(OtRouting::with(['from_seat', 'to_seats'])->get());
+        return new OtRoutingResource(OtRouting::with(['from_seat', 'to_seats', 'js_as_ss'])->get());
     }
 
     public function store(StoreOtRoutingRequest $request)
@@ -34,7 +34,7 @@ class OtRoutingApiController extends Controller
     {
         abort_if(Gate::denies('ot_routing_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new OtRoutingResource($otRouting->load(['from_seat', 'to_seats']));
+        return new OtRoutingResource($otRouting->load(['from_seat', 'to_seats', 'js_as_ss']));
     }
 
     public function update(UpdateOtRoutingRequest $request, OtRouting $otRouting)

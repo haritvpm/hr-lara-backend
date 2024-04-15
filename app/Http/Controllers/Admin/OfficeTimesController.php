@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyOfficeTimeRequest;
 use App\Http\Requests\StoreOfficeTimeRequest;
 use App\Http\Requests\UpdateOfficeTimeRequest;
-use App\Models\AdministrativeOffice;
 use App\Models\OfficeTime;
 use Gate;
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $officeTimes = OfficeTime::with(['office'])->get();
+        $officeTimes = OfficeTime::all();
 
         return view('admin.officeTimes.index', compact('officeTimes'));
     }
@@ -27,9 +26,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.officeTimes.create', compact('offices'));
+        return view('admin.officeTimes.create');
     }
 
     public function store(StoreOfficeTimeRequest $request)
@@ -43,11 +40,7 @@ class OfficeTimesController extends Controller
     {
         abort_if(Gate::denies('office_time_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $offices = AdministrativeOffice::pluck('office_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $officeTime->load('office');
-
-        return view('admin.officeTimes.edit', compact('officeTime', 'offices'));
+        return view('admin.officeTimes.edit', compact('officeTime'));
     }
 
     public function update(UpdateOfficeTimeRequest $request, OfficeTime $officeTime)
@@ -60,8 +53,6 @@ class OfficeTimesController extends Controller
     public function show(OfficeTime $officeTime)
     {
         abort_if(Gate::denies('office_time_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $officeTime->load('office');
 
         return view('admin.officeTimes.show', compact('officeTime'));
     }

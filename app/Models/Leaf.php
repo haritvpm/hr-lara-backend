@@ -27,6 +27,7 @@ class Leaf extends Model
     protected $dates = [
         'start_date',
         'end_date',
+        'in_lieu_of',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -42,6 +43,7 @@ class Leaf extends Model
         'leave_cat',
         'time_period',
         'created_by_id',
+        'in_lieu_of',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -96,5 +98,15 @@ class Leaf extends Model
     public function created_by()
     {
         return $this->belongsTo(Employee::class, 'created_by_id');
+    }
+
+    public function getInLieuOfAttribute($value)
+    {
+        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setInLieuOfAttribute($value)
+    {
+        $this->attributes['in_lieu_of'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 }

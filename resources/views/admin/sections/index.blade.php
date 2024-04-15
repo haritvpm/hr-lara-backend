@@ -13,14 +13,14 @@
         </div>
     </div>
 @endcan
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('cruds.section.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class=" table table-bordered table-striped table-hover datatable datatable-Section">
+    <div class="card-body_">
+        <div class="table-responsive_">
+            <table class=" table   table-hover datatable datatable-Section">
                 <thead>
                     <tr>
                         <th width="10">
@@ -33,19 +33,25 @@
                             {{ trans('cruds.section.fields.name') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.administrative_office') }}
+                            {{ trans('cruds.section.fields.short_code') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.seat_of_controling_officer') }}
+                            {{ trans('cruds.section.fields.seat_of_controlling_officer') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.office_location') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.seat_of_reporting_officer') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.type') }}
+                            {{ trans('cruds.section.fields.js_as_ss_employee') }}
                         </th>
                         <th>
-                            {{ trans('cruds.section.fields.office_location') }}
+                            {{ trans('cruds.employee.fields.aadhaarid') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.type') }}
                         </th>
                         <th>
                             {{ trans('cruds.section.fields.works_nights_during_session') }}
@@ -68,19 +74,25 @@
                                 {{ $section->name ?? '' }}
                             </td>
                             <td>
-                                {{ $section->administrative_office->office_name ?? '' }}
+                                {{ $section->short_code ?? '' }}
                             </td>
                             <td>
-                                {{ $section->seat_of_controling_officer->title ?? '' }}
+                                {{ $section->seat_of_controlling_officer->title ?? '' }}
+                            </td>
+                            <td>
+                                {{ $section->office_location->location ?? '' }}
                             </td>
                             <td>
                                 {{ $section->seat_of_reporting_officer->title ?? '' }}
                             </td>
                             <td>
-                                {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
+                                {{ $section->js_as_ss_employee->name ?? '' }}
                             </td>
                             <td>
-                                {{ $section->office_location->location ?? '' }}
+                                {{ $section->js_as_ss_employee->aadhaarid ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
                             </td>
                             <td>
                                 <span style="display:none">{{ $section->works_nights_during_session ?? '' }}</span>
@@ -165,7 +177,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>

@@ -25,6 +25,9 @@
                         {{ trans('cruds.punching.fields.date') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punching.fields.aadhaarid') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.punching.fields.employee') }}
                     </th>
                     <th>
@@ -34,25 +37,10 @@
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.duration') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.flexi') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.punching.fields.designation') }}
                     </th>
                     <th>
-                        {{ trans('cruds.punching.fields.grace') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.extra') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.remarks') }}
-                    </th>
-                    <th>
-                        {{ trans('cruds.punching.fields.calc_complete') }}
+                        {{ trans('cruds.punching.fields.section') }}
                     </th>
                     <th>
                         {{ trans('cruds.punching.fields.punchin_trace') }}
@@ -65,6 +53,72 @@
                     </th>
                     <th>
                         {{ trans('cruds.punchingTrace.fields.att_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.in_datetime') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.out_datetime') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.duration_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.extra_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.duration_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.extra_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.punching_count') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.leave') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.start_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.end_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.remarks') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.finalized_by_controller') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_sitting_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.ot_nonsitting_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.hint') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.controller_set_punch_in') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.controller_set_punch_out') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
                     </th>
                     <th>
                         &nbsp;
@@ -94,24 +148,42 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'date', name: 'date' },
+{ data: 'aadhaarid', name: 'aadhaarid' },
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.pen', name: 'employee.pen' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
-{ data: 'duration', name: 'duration' },
-{ data: 'flexi', name: 'flexi' },
 { data: 'designation', name: 'designation' },
-{ data: 'grace', name: 'grace' },
-{ data: 'extra', name: 'extra' },
-{ data: 'remarks', name: 'remarks' },
-{ data: 'calc_complete', name: 'calc_complete' },
+{ data: 'section', name: 'section' },
 { data: 'punchin_trace_att_time', name: 'punchin_trace.att_time' },
 { data: 'punchin_trace.att_date', name: 'punchin_trace.att_date' },
 { data: 'punchout_trace_att_time', name: 'punchout_trace.att_time' },
 { data: 'punchout_trace.att_date', name: 'punchout_trace.att_date' },
+{ data: 'in_datetime', name: 'in_datetime' },
+{ data: 'out_datetime', name: 'out_datetime' },
+{ data: 'duration_sec', name: 'duration_sec' },
+{ data: 'grace_sec', name: 'grace_sec' },
+{ data: 'extra_sec', name: 'extra_sec' },
+{ data: 'duration_str', name: 'duration_str' },
+{ data: 'grace_str', name: 'grace_str' },
+{ data: 'extra_str', name: 'extra_str' },
+{ data: 'punching_count', name: 'punching_count' },
+{ data: 'leave_reason', name: 'leave.reason' },
+{ data: 'leave.start_date', name: 'leave.start_date' },
+{ data: 'leave.end_date', name: 'leave.end_date' },
+{ data: 'remarks', name: 'remarks' },
+{ data: 'finalized_by_controller', name: 'finalized_by_controller' },
+{ data: 'ot_sitting_sec', name: 'ot_sitting_sec' },
+{ data: 'ot_nonsitting_sec', name: 'ot_nonsitting_sec' },
+{ data: 'hint', name: 'hint' },
+{ data: 'controller_set_punch_in', name: 'controller_set_punch_in' },
+{ data: 'controller_set_punch_out', name: 'controller_set_punch_out' },
+{ data: 'grace_lp_exceeded_one_hour', name: 'grace_lp_exceeded_one_hour' },
+{ data: 'grace_ep_exceeded_one_hour', name: 'grace_ep_exceeded_one_hour' },
+{ data: 'grace_total_exceeded_one_hour', name: 'grace_total_exceeded_one_hour' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
-    order: [[ 2, 'desc' ]],
+    order: [[ 3, 'desc' ]],
     pageLength: 100,
   };
   let table = $('.datatable-Punching').DataTable(dtOverrideGlobals);

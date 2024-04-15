@@ -17,10 +17,10 @@ class UpdateSeatRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => [
+            'slug' => [
                 'string',
                 'required',
-                'unique:seats,name,' . request()->route('seat')->id,
+                'unique:seats,slug,' . request()->route('seat')->id,
             ],
             'title' => [
                 'string',
@@ -28,7 +28,7 @@ class UpdateSeatRequest extends FormRequest
                 'unique:seats,title,' . request()->route('seat')->id,
             ],
             'level' => [
-                'nullable',
+                'required',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',

@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.show') }} {{ trans('cruds.seat.title') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.seats.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table table-bordered table-striped">
+            <table class="table  ">
                 <tbody>
                     <tr>
                         <th>
@@ -25,10 +25,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.seat.fields.name') }}
+                            {{ trans('cruds.seat.fields.slug') }}
                         </th>
                         <td>
-                            {{ $seat->name }}
+                            {{ $seat->slug }}
                         </td>
                     </tr>
                     <tr>
@@ -57,14 +57,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.seat.fields.level') }}
-                        </th>
-                        <td>
-                            {{ $seat->level }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.seat.fields.is_js_as_ss') }}
                         </th>
                         <td>
@@ -79,6 +71,14 @@
                             <input type="checkbox" disabled="disabled" {{ $seat->is_controlling_officer ? 'checked' : '' }}>
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.level') }}
+                        </th>
+                        <td>
+                            {{ $seat->level }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">
@@ -90,8 +90,8 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.relatedData') }}
     </div>
     <ul class="nav nav-tabs" role="tablist" id="relationship-tabs">
@@ -101,8 +101,8 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#seats_attendance_routings" role="tab" data-toggle="tab">
-                {{ trans('cruds.attendanceRouting.title') }}
+            <a class="nav-link" href="#to_seats_ot_routings" role="tab" data-toggle="tab">
+                {{ trans('cruds.otRouting.title') }}
             </a>
         </li>
     </ul>
@@ -110,8 +110,8 @@
         <div class="tab-pane" role="tabpanel" id="created_by_tax_entries">
             @includeIf('admin.seats.relationships.createdByTaxEntries', ['taxEntries' => $seat->createdByTaxEntries])
         </div>
-        <div class="tab-pane" role="tabpanel" id="seats_attendance_routings">
-            @includeIf('admin.seats.relationships.seatsAttendanceRoutings', ['attendanceRoutings' => $seat->seatsAttendanceRoutings])
+        <div class="tab-pane" role="tabpanel" id="to_seats_ot_routings">
+            @includeIf('admin.seats.relationships.toSeatsOtRoutings', ['otRoutings' => $seat->toSeatsOtRoutings])
         </div>
     </div>
 </div>

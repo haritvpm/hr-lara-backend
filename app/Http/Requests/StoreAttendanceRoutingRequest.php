@@ -17,11 +17,16 @@ class StoreAttendanceRoutingRequest extends FormRequest
     public function rules()
     {
         return [
-            'seats.*' => [
+            'viewable_seats.*' => [
                 'integer',
             ],
-            'seats' => [
-                'required',
+            'viewable_seats' => [
+                'array',
+            ],
+            'viewable_js_as_ss_employees.*' => [
+                'integer',
+            ],
+            'viewable_js_as_ss_employees' => [
                 'array',
             ],
         ];

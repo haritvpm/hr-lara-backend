@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="card_">
+    <div class="card-header_">
         {{ trans('global.edit') }} {{ trans('cruds.acquittance.title_singular') }}
     </div>
 
-    <div class="card-body">
+    <div class="card-body_">
         <form method="POST" action="{{ route("admin.acquittances.update", [$acquittance->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
@@ -29,6 +29,18 @@
                     <span class="text-danger">{{ $errors->first('office') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.acquittance.fields.office_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="ddo_id">{{ trans('cruds.acquittance.fields.ddo') }}</label>
+                <select class="form-control select2 {{ $errors->has('ddo') ? 'is-invalid' : '' }}" name="ddo_id" id="ddo_id">
+                    @foreach($ddos as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('ddo_id') ? old('ddo_id') : $acquittance->ddo->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('ddo'))
+                    <span class="text-danger">{{ $errors->first('ddo') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.acquittance.fields.ddo_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

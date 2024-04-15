@@ -20,10 +20,12 @@ class Section extends Model
 
     protected $fillable = [
         'name',
-        'seat_of_controling_officer_id',
-        'seat_of_reporting_officer_id',
-        'type',
+        'short_code',
+        'seat_of_controlling_officer_id',
         'office_location_id',
+        'seat_of_reporting_officer_id',
+        'js_as_ss_employee_id',
+        'type',
         'works_nights_during_session',
         'created_at',
         'updated_at',
@@ -31,14 +33,14 @@ class Section extends Model
     ];
 
     public const TYPE_SELECT = [
-        'NORMAL'                  => 'NORMAL',
-        'FAIRCOPY'                => 'FAIRCOPY',
-        'OFFICE_SECTION_INWARD'   => 'OFFICE_SECTION_INWARD',
-        'OFFICE_SECTION_DESPATCH' => 'OFFICE_SECTION_DESPATCH',
-        'OFFICE_OF_DS'            => 'OFFICE_OF_DS',
-        'OFFICE_OF_JS_AS_SS'      => 'OFFICE_OF_JS_AS_SS',
-        'OFFICE_OF_SECRETARY'     => 'OFFICE_OF_SECRETARY',
-        'OFFICE_OF_SPEAKER'       => 'OFFICE_OF_SPEAKER',
+        'NORMAL'              => 'NORMAL',
+        'FAIRCOPY'            => 'FAIRCOPY',
+        'OFFICE_SECTION'      => 'OFFICE_SECTION',
+        'OFFICE_OF_DS'        => 'OFFICE_OF_DS',
+        'OFFICE_OF_JS_AS_SS'  => 'OFFICE_OF_JS_AS_SS',
+        'OFFICE_OF_SECRETARY' => 'OFFICE_OF_SECRETARY',
+        'OFFICE_OF_SPEAKER'   => 'OFFICE_OF_SPEAKER',
+        'OTHER'               => 'OTHER',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -51,9 +53,19 @@ class Section extends Model
         return $this->hasMany(AttendanceBook::class, 'section_id', 'id');
     }
 
-    public function seat_of_controling_officer()
+    public function sectionEmployeeToSections()
     {
-        return $this->belongsTo(Seat::class, 'seat_of_controling_officer_id');
+        return $this->hasMany(EmployeeToSection::class, 'section_id', 'id');
+    }
+
+    public function seat_of_controlling_officer()
+    {
+        return $this->belongsTo(Seat::class, 'seat_of_controlling_officer_id');
+    }
+
+    public function office_location()
+    {
+        return $this->belongsTo(OfficeLocation::class, 'office_location_id');
     }
 
     public function seat_of_reporting_officer()
@@ -61,8 +73,8 @@ class Section extends Model
         return $this->belongsTo(Seat::class, 'seat_of_reporting_officer_id');
     }
 
-    public function office_location()
+    public function js_as_ss_employee()
     {
-        return $this->belongsTo(OfficeLocation::class, 'office_location_id');
+        return $this->belongsTo(Employee::class, 'js_as_ss_employee_id');
     }
 }

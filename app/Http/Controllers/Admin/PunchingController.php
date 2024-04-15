@@ -42,6 +42,9 @@ class PunchingController extends Controller
                 ));
             });
 
+            $table->editColumn('aadhaarid', function ($row) {
+                return $row->aadhaarid ? $row->aadhaarid : '';
+            });
             $table->addColumn('employee_name', function ($row) {
                 return $row->employee ? $row->employee->name : '';
             });
@@ -52,26 +55,11 @@ class PunchingController extends Controller
             $table->editColumn('employee.aadhaarid', function ($row) {
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
-            $table->editColumn('duration', function ($row) {
-                return $row->duration ? $row->duration : '';
-            });
-            $table->editColumn('flexi', function ($row) {
-                return $row->flexi ? Punching::FLEXI_SELECT[$row->flexi] : '';
-            });
             $table->editColumn('designation', function ($row) {
                 return $row->designation ? $row->designation : '';
             });
-            $table->editColumn('grace', function ($row) {
-                return $row->grace ? $row->grace : '';
-            });
-            $table->editColumn('extra', function ($row) {
-                return $row->extra ? $row->extra : '';
-            });
-            $table->editColumn('remarks', function ($row) {
-                return $row->remarks ? $row->remarks : '';
-            });
-            $table->editColumn('calc_complete', function ($row) {
-                return $row->calc_complete ? $row->calc_complete : '';
+            $table->editColumn('section', function ($row) {
+                return $row->section ? $row->section : '';
             });
             $table->addColumn('punchin_trace_att_time', function ($row) {
                 return $row->punchin_trace ? $row->punchin_trace->att_time : '';
@@ -87,11 +75,27 @@ class PunchingController extends Controller
             $table->editColumn('punchout_trace.att_date', function ($row) {
                 return $row->punchout_trace ? (is_string($row->punchout_trace) ? $row->punchout_trace : $row->punchout_trace->att_date) : '';
             });
-            $table->editColumn('ot_claimed_minutes', function ($row) {
-                return $row->ot_claimed_minutes ? $row->ot_claimed_minutes : '';
+
+            $table->editColumn('duration_sec', function ($row) {
+                return $row->duration_sec ? $row->duration_sec : '';
             });
-            $table->editColumn('punching_status', function ($row) {
-                return $row->punching_status ? $row->punching_status : '';
+            $table->editColumn('grace_sec', function ($row) {
+                return $row->grace_sec ? $row->grace_sec : '';
+            });
+            $table->editColumn('extra_sec', function ($row) {
+                return $row->extra_sec ? $row->extra_sec : '';
+            });
+            $table->editColumn('duration_str', function ($row) {
+                return $row->duration_str ? $row->duration_str : '';
+            });
+            $table->editColumn('grace_str', function ($row) {
+                return $row->grace_str ? $row->grace_str : '';
+            });
+            $table->editColumn('extra_str', function ($row) {
+                return $row->extra_str ? $row->extra_str : '';
+            });
+            $table->editColumn('punching_count', function ($row) {
+                return $row->punching_count ? $row->punching_count : '';
             });
             $table->addColumn('leave_reason', function ($row) {
                 return $row->leave ? $row->leave->reason : '';
@@ -102,6 +106,31 @@ class PunchingController extends Controller
             });
             $table->editColumn('leave.end_date', function ($row) {
                 return $row->leave ? (is_string($row->leave) ? $row->leave : $row->leave->end_date) : '';
+            });
+            $table->editColumn('remarks', function ($row) {
+                return $row->remarks ? $row->remarks : '';
+            });
+            $table->editColumn('finalized_by_controller', function ($row) {
+                return $row->finalized_by_controller ? $row->finalized_by_controller : '';
+            });
+            $table->editColumn('ot_sitting_sec', function ($row) {
+                return $row->ot_sitting_sec ? $row->ot_sitting_sec : '';
+            });
+            $table->editColumn('ot_nonsitting_sec', function ($row) {
+                return $row->ot_nonsitting_sec ? $row->ot_nonsitting_sec : '';
+            });
+            $table->editColumn('hint', function ($row) {
+                return $row->hint ? Punching::HINT_SELECT[$row->hint] : '';
+            });
+
+            $table->editColumn('grace_lp_exceeded_one_hour', function ($row) {
+                return $row->grace_lp_exceeded_one_hour ? $row->grace_lp_exceeded_one_hour : '';
+            });
+            $table->editColumn('grace_ep_exceeded_one_hour', function ($row) {
+                return $row->grace_ep_exceeded_one_hour ? $row->grace_ep_exceeded_one_hour : '';
+            });
+            $table->editColumn('grace_total_exceeded_one_hour', function ($row) {
+                return $row->grace_total_exceeded_one_hour ? $row->grace_total_exceeded_one_hour : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave']);

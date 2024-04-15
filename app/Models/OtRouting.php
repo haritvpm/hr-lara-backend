@@ -21,6 +21,7 @@ class OtRouting extends Model
     protected $fillable = [
         'from_seat_id',
         'last_forwarded_to',
+        'js_as_ss_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -39,5 +40,10 @@ class OtRouting extends Model
     public function to_seats()
     {
         return $this->belongsToMany(Seat::class);
+    }
+
+    public function js_as_ss()
+    {
+        return $this->belongsTo(User::class, 'js_as_ss_id');
     }
 }
