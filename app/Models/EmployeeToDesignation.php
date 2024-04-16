@@ -77,4 +77,15 @@ class EmployeeToDesignation extends Model
                 });
         });
     }
+    public function scopeDesignationNow($query)
+    {
+        $date = Carbon::now()->toDateString();
+        return $query->where(function ($query) use ($date) {
+            $query->where('start_date', '<=', $date)
+                ->where(function ($query) use ($date) {
+                    $query->where('end_date', '>=', $date)
+                        ->orwherenull('end_date');
+                });
+        });
+    }
 }

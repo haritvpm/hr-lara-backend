@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.govtCalendar.title_singular') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <form method="POST" action="{{ route("admin.govt-calendars.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -32,14 +32,6 @@
                     <span class="text-danger">{{ $errors->first('restrictedholidaystatus') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.restrictedholidaystatus_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="bankholidaystatus">{{ trans('cruds.govtCalendar.fields.bankholidaystatus') }}</label>
-                <input class="form-control {{ $errors->has('bankholidaystatus') ? 'is-invalid' : '' }}" type="number" name="bankholidaystatus" id="bankholidaystatus" value="{{ old('bankholidaystatus', '') }}" step="1">
-                @if($errors->has('bankholidaystatus'))
-                    <span class="text-danger">{{ $errors->first('bankholidaystatus') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.bankholidaystatus_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="festivallist">{{ trans('cruds.govtCalendar.fields.festivallist') }}</label>
@@ -113,12 +105,17 @@
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.session_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="office_ends_at_time">{{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}</label>
-                <input class="form-control timepicker {{ $errors->has('office_ends_at_time') ? 'is-invalid' : '' }}" type="text" name="office_ends_at_time" id="office_ends_at_time" value="{{ old('office_ends_at_time') }}">
-                @if($errors->has('office_ends_at_time'))
-                    <span class="text-danger">{{ $errors->first('office_ends_at_time') }}</span>
+                <label>{{ trans('cruds.govtCalendar.fields.office_ends_at') }}</label>
+                <select class="form-control {{ $errors->has('office_ends_at') ? 'is-invalid' : '' }}" name="office_ends_at" id="office_ends_at">
+                    <option value disabled {{ old('office_ends_at', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\GovtCalendar::OFFICE_ENDS_AT_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('office_ends_at', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('office_ends_at'))
+                    <span class="text-danger">{{ $errors->first('office_ends_at') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.office_ends_at_time_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.govtCalendar.fields.office_ends_at_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

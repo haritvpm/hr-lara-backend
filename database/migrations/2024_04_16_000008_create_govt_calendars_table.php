@@ -13,7 +13,6 @@ class CreateGovtCalendarsTable extends Migration
             $table->date('date')->nullable();
             $table->integer('govtholidaystatus')->nullable();
             $table->integer('restrictedholidaystatus')->nullable();
-            $table->integer('bankholidaystatus')->nullable();
             $table->longText('festivallist')->nullable();
             $table->datetime('success_attendance_lastfetchtime')->nullable();
             $table->integer('success_attendance_rows_fetched')->nullable();
@@ -21,7 +20,7 @@ class CreateGovtCalendarsTable extends Migration
             $table->integer('attendance_today_trace_rows_fetched')->nullable();
             $table->boolean('is_sitting_day')->default(0)->nullable();
             $table->integer('punching')->nullable();
-            $table->time('office_ends_at_time')->nullable();
+            $table->string('office_ends_at')->nullable();
             $table->timestamps();
         });
     }

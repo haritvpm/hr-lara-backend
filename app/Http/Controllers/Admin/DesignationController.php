@@ -21,7 +21,7 @@ class DesignationController extends Controller
     {
         abort_if(Gate::denies('designation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $designations = Designation::with(['default_time_group'])->get();
+        $designations = Designation::with(['default_time_group'])->orderBy('sort_index', 'asc')->get();
 
         return view('admin.designations.index', compact('designations'));
     }
@@ -55,6 +55,21 @@ class DesignationController extends Controller
 
     public function update(UpdateDesignationRequest $request, Designation $designation)
     {
+
+        $sort_index = $request->sort_index;
+
+        //now see if the sort index is changed
+        if($sort_index != $designation->sort_index){
+            //if changed, then we need to update all the other designations sort index
+            $designations = Designation::where('sort_index', '>=', $sort_index)
+         //   ->orWhereNull('sort_index')
+            ->get();
+            foreach($designations as $d){
+                $d->sort_index = $d->sort_index + 1 ;
+                $d->save();
+            }
+        }
+
         $designation->update($request->all());
 
         return redirect()->route('admin.designations.index');

@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use App\Services\PunchingService;
+use App\Services\EmployeeService;
 
 
 class PunchingApiController extends Controller
@@ -58,15 +59,31 @@ class PunchingApiController extends Controller
     {
 
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
+        $date =  $date->format('Y-m-d');
+        //get current logged in user's charges
+        $me = User::with('employee')->find(auth()->id());
 
-        //need to move things to services later
+        if ($me->employee_id == null) {
+            return response()->json(['status' => 'No linked employee'], 400);
+        }
+        $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
+
+        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser)==0) {
+            return response()->json(['status' => 'No seats in charge'], 400);
+        }
 
         //call employeeservice get loggedusersubordinate
+        $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees($date, $seat_ids_of_loggedinuser, $me);
+        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
+
+        $data = (new PunchingService())->calculate($date, $aadhaarids );
+
+        //for each employee get 
 
         return response()->json([
             //    'seats' => $seat_ids,
-            'sections_under_charge' => $data->pluck('section_name')->unique(),
-            'employee_section_maps' => $data,
+          //  'sections_under_charge' => $data->pluck('section_name')->unique(),
+            'punchings' => $data,
         ], 200);
 
         //  \Log::info("got" . $request->date);

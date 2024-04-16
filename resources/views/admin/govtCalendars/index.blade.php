@@ -49,7 +49,7 @@
                             {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
+                            {{ trans('cruds.govtCalendar.fields.office_ends_at') }}
                         </th>
                         <th>
                             &nbsp;
@@ -96,7 +96,7 @@
                                 {{ $govtCalendar->session->name ?? '' }}
                             </td>
                             <td>
-                                {{ $govtCalendar->office_ends_at_time ?? '' }}
+                                {{ App\Models\GovtCalendar::OFFICE_ENDS_AT_SELECT[$govtCalendar->office_ends_at] ?? '' }}
                             </td>
                             <td>
                                 @can('govt_calendar_show')

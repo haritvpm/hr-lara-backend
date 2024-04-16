@@ -11,6 +11,7 @@ use App\Models\Punching;
 use App\Models\Section;
 use App\Models\EmployeeToSection;
 use App\Models\EmployeeToDesignation;
+use App\Models\Designation;
 
 class EmployeeService {
 
@@ -86,7 +87,7 @@ class EmployeeService {
             "Computer Programmer ( Hardware)" => 40,
             "Computer Programmer ( Software)" => 41,
             "Confidential Assistant  (Grade I)" => 42,
-            "Confidential Assistant  (Grade II)" => 43,
+            "Confidential Assistant  (Grade II)`" => 43,
             "Confidential Assistant (Office of the Deputy Speaker)" => 44,
             "Confidential Assistant (Selection Grade )" => 45,
             "Confidential Assistant (Sen Grade)" => 46,
@@ -157,17 +158,25 @@ class EmployeeService {
 
         foreach ($aebas_employees as $key => $emp) {
 
-
-            if(!Employee::where('aadhaarid',$emp[0])->first()){
+            if(!Employee::where('aadhaarid',$emp['emp_id'])->first()){
                $id = Employee::create([
-                    'aadhaarid' => $emp[0],
-                    'name' => $emp[12],
+                    'aadhaarid' => $emp['emp_id'],
+                    'name' => $emp['emp_name'],
                 ])->id;
+
+                //designation does not exist. create it
+                $designation_id = null;
+                if( !array_key_exists($emp['designation'],  $aebas_desig_to_ourId ) ){
+                    $designation_id = Designation::updateOrCreate([ 'designation' => $emp['designation']])->id;
+                } else {
+                    $designation_id = $aebas_desig_to_ourId[  $emp['designation'] ];
+                }
+
 
                 EmployeeToDesignation::create([
 
                     'employee_id' =>  $id,
-                    'designation_id' => $aebas_desig_to_ourId[  $emp[11] ],
+                    'designation_id' => $designation_id,
                     'start_date' =>  '2024-01-01',
 
                 ]
@@ -211,25 +220,16 @@ class EmployeeService {
         return $employee_section_maps->count() ? $employee_section_maps : null;
     }
 
-    public function getLoggedUserSubordinateEmployees($date)
+    public function getLoggedUserSubordinateEmployees($date, $seat_ids_of_loggedinuser, $me)
     {
-          //get current logged in user's charges
-          $me = User::with('employee')->find(auth()->id());
-
-          if ($me->employee_id == null) {
-              return response()->json(['status' => 'No linked employee'], 400);
-          }
-          $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
-
-          if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser)==0) {
-              return response()->json(['status' => 'No seats in charge'], 400);
-          }
+          
          // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
 
           $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date, $seat_ids_of_loggedinuser);
           $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
           if (!$employee_section_maps) {
+             \Log::info('No employee found');
               return response()->json(['status' => 'No employee found'], 200);
           }
 
@@ -255,13 +255,14 @@ class EmployeeService {
               $data = $data->concat($employee_section_maps);
           }
 
-          $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+          $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser,$date ) {
               // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
               $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
               $employee_to_designation =  count($results->employee->employee_employee_to_designations)
                    ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
-              //\Log::info($employee_to_designation);
+              \Log::info($employeeToSection);
               return [
+               // 'date' => $date,
                   'employee_id' => $employeeToSection->employee_id,
                   'name' => $employeeToSection->employee->name,
                   'aadhaarid' => $employeeToSection->employee->aadhaarid,
@@ -279,6 +280,7 @@ class EmployeeService {
               ];
           });
 
+          return $data;
     }
 
 }

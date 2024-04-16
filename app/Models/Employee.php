@@ -11,7 +11,7 @@ class Employee extends Model
     use HasFactory;
 
     public $table = 'employees';
-
+    protected $appends = ['name-aadhaar'];
     protected $dates = [
         'created_at',
         'updated_at',
@@ -58,8 +58,18 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
     }
+    public function designation()
+    {
+        return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id')->designationNow();
+    }
 
-    public static function getEmployeeWithAadhaar()
+    
+    public function getNameAadhaarAttribute()
+    {
+        return $this->name . ' - ' . $this->aadharid;
+    }
+
+    public static function getEmployeesWithAadhaar()
     {
         $employees = Employee::all()
             ->mapWithKeys(function ($employee) {

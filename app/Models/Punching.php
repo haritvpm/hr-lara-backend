@@ -64,8 +64,7 @@ class Punching extends Model
         'hint',
         'controller_set_punch_in',
         'controller_set_punch_out',
-        'grace_lp_exceeded_one_hour', //?needed?
-        'grace_ep_exceeded_one_hour', //?needed?
+       
         'grace_total_exceeded_one_hour',
         'created_at',
         'updated_at',
@@ -77,15 +76,15 @@ class Punching extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function getDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getDateAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
     public function employee()
     {

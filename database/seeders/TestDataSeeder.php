@@ -238,14 +238,12 @@ class TestDataSeeder extends Seeder
                 'status' => 'active',
                 'is_shift' => 0,
             ],
-
-
         ];
         foreach ($items as $item) {
             $emp = Employee::where('aadhaarid',$item['aadhaarid'])->first();
-            if($emp) $emp->delete();
+           // if($emp) $emp->delete();
 
-                Employee::insert($item);
+              //  Employee::insert($item);
 
         }
       ///////////////////////////////////////

@@ -47,6 +47,9 @@
                         {{ trans('cruds.punchingTrace.fields.punching') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punchingTrace.fields.created_date') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -84,6 +87,7 @@
 { data: 'att_time', name: 'att_time' },
 { data: 'day_offset', name: 'day_offset' },
 { data: 'punching_date', name: 'punching.date' },
+{ data: 'created_date', name: 'created_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

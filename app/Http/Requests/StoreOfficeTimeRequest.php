@@ -26,20 +26,6 @@ class StoreOfficeTimeRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'day_from' => [
-                'required',
-                'date_format:' . config('panel.time_format'),
-            ],
-            'day_to' => [
-                'required',
-                'date_format:' . config('panel.time_format'),
-            ],
-            'office_hours' => [
-                'required',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
             'fn_from' => [
                 'date_format:' . config('panel.time_format'),
                 'nullable',

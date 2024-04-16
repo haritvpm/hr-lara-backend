@@ -100,6 +100,12 @@ class UpdatePunchingRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
+            'grace_total_exceeded_one_hour' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
         ];
     }
 }
