@@ -18,7 +18,7 @@ class SeniorityController extends Controller
     {
         abort_if(Gate::denies('seniority_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $seniorities = Seniority::with(['employee'])->get();
+        $seniorities = Seniority::with(['employee', 'employee.designation()'])->get();
 
         return view('admin.seniorities.index', compact('seniorities'));
     }

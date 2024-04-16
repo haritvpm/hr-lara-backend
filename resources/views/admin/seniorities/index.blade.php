@@ -29,6 +29,9 @@
                             {{ trans('cruds.seniority.fields.employee') }}
                         </th>
                         <th>
+                            {{ trans('cruds.seniority.fields.designation') }}
+                        </th>
+                        <th>
                             {{ trans('cruds.employee.fields.pen') }}
                         </th>
                         <th>
@@ -50,6 +53,9 @@
                             </td>
                             <td>
                                 {{ $seniority->employee->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $seniority->employee->designation->designation ?? '' }}
                             </td>
                             <td>
                                 {{ $seniority->employee->pen ?? '' }}

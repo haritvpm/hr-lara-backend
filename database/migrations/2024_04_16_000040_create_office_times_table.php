@@ -12,9 +12,6 @@ class CreateOfficeTimesTable extends Migration
             $table->bigIncrements('id');
             $table->string('groupname')->unique();
             $table->string('description')->nullable();
-            $table->time('day_from');
-            $table->time('day_to');
-            $table->integer('office_hours');
             $table->time('fn_from')->nullable();
             $table->time('fn_to')->nullable();
             $table->time('an_from')->nullable();

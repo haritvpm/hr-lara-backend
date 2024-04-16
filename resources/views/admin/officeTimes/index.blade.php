@@ -9,14 +9,14 @@
         </div>
     </div>
 @endcan
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('cruds.officeTime.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body_">
-        <div class="table-responsive_">
-            <table class=" table   table-hover datatable datatable-OfficeTime">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class=" table table-bordered table-striped table-hover datatable datatable-OfficeTime">
                 <thead>
                     <tr>
                         <th width="10">
@@ -30,15 +30,6 @@
                         </th>
                         <th>
                             {{ trans('cruds.officeTime.fields.description') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.officeTime.fields.day_from') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.officeTime.fields.day_to') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.officeTime.fields.office_hours') }}
                         </th>
                         <th>
                             {{ trans('cruds.officeTime.fields.fn_from') }}
@@ -74,15 +65,6 @@
                             </td>
                             <td>
                                 {{ $officeTime->description ?? '' }}
-                            </td>
-                            <td>
-                                {{ $officeTime->day_from ?? '' }}
-                            </td>
-                            <td>
-                                {{ $officeTime->day_to ?? '' }}
-                            </td>
-                            <td>
-                                {{ $officeTime->office_hours ?? '' }}
                             </td>
                             <td>
                                 {{ $officeTime->fn_from ?? '' }}
@@ -178,7 +160,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-
+  
 })
 
 </script>

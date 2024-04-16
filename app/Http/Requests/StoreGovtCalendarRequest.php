@@ -33,12 +33,6 @@ class StoreGovtCalendarRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
-            'bankholidaystatus' => [
-                'nullable',
-                'integer',
-                'min:-2147483648',
-                'max:2147483647',
-            ],
             'success_attendance_lastfetchtime' => [
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
                 'nullable',
@@ -64,10 +58,6 @@ class StoreGovtCalendarRequest extends FormRequest
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
-            ],
-            'office_ends_at_time' => [
-                'date_format:' . config('panel.time_format'),
-                'nullable',
             ],
         ];
     }

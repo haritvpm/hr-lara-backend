@@ -13,6 +13,11 @@ class GovtCalendar extends Model
 
     public $table = 'govt_calendars';
 
+    public const OFFICE_ENDS_AT_SELECT = [
+        'noon' => 'noon',
+        '3pm'  => '3 p.m.',
+    ];
+
     protected $dates = [
         'date',
         'success_attendance_lastfetchtime',
@@ -26,7 +31,6 @@ class GovtCalendar extends Model
         'date',
         'govtholidaystatus',
         'restrictedholidaystatus',
-        'bankholidaystatus',
         'festivallist',
         'success_attendance_lastfetchtime',
         'success_attendance_rows_fetched',
@@ -35,7 +39,7 @@ class GovtCalendar extends Model
         'is_sitting_day',
         'punching',
         'session_id',
-        'office_ends_at_time',
+        'office_ends_at',
         'created_at',
         'updated_at',
         'deleted_at',

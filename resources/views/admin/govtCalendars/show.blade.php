@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.govtCalendar.title') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.govt-calendars.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table  ">
+            <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
@@ -45,14 +45,6 @@
                         </th>
                         <td>
                             {{ $govtCalendar->restrictedholidaystatus }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.govtCalendar.fields.bankholidaystatus') }}
-                        </th>
-                        <td>
-                            {{ $govtCalendar->bankholidaystatus }}
                         </td>
                     </tr>
                     <tr>
@@ -121,10 +113,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.govtCalendar.fields.office_ends_at_time') }}
+                            {{ trans('cruds.govtCalendar.fields.office_ends_at') }}
                         </th>
                         <td>
-                            {{ $govtCalendar->office_ends_at_time }}
+                            {{ App\Models\GovtCalendar::OFFICE_ENDS_AT_SELECT[$govtCalendar->office_ends_at] ?? '' }}
                         </td>
                     </tr>
                 </tbody>

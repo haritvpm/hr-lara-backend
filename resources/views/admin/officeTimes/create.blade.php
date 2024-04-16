@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.officeTime.title_singular') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <form method="POST" action="{{ route("admin.office-times.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
@@ -24,30 +24,6 @@
                     <span class="text-danger">{{ $errors->first('description') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.officeTime.fields.description_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="day_from">{{ trans('cruds.officeTime.fields.day_from') }}</label>
-                <input class="form-control timepicker {{ $errors->has('day_from') ? 'is-invalid' : '' }}" type="text" name="day_from" id="day_from" value="{{ old('day_from') }}" required>
-                @if($errors->has('day_from'))
-                    <span class="text-danger">{{ $errors->first('day_from') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.day_from_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="day_to">{{ trans('cruds.officeTime.fields.day_to') }}</label>
-                <input class="form-control timepicker {{ $errors->has('day_to') ? 'is-invalid' : '' }}" type="text" name="day_to" id="day_to" value="{{ old('day_to') }}" required>
-                @if($errors->has('day_to'))
-                    <span class="text-danger">{{ $errors->first('day_to') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.day_to_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required" for="office_hours">{{ trans('cruds.officeTime.fields.office_hours') }}</label>
-                <input class="form-control {{ $errors->has('office_hours') ? 'is-invalid' : '' }}" type="number" name="office_hours" id="office_hours" value="{{ old('office_hours', '7') }}" step="1" required>
-                @if($errors->has('office_hours'))
-                    <span class="text-danger">{{ $errors->first('office_hours') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.officeTime.fields.office_hours_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="fn_from">{{ trans('cruds.officeTime.fields.fn_from') }}</label>

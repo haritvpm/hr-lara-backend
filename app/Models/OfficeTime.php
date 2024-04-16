@@ -22,9 +22,6 @@ class OfficeTime extends Model
     protected $fillable = [
         'groupname',
         'description',
-        'day_from',
-        'day_to',
-        'office_hours',
         'fn_from',
         'fn_to',
         'an_from',

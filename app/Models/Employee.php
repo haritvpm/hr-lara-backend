@@ -58,6 +58,10 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id');
     }
+    public function designation()
+    {
+        return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id')->designationNow();
+    }
 
     public static function getEmployeeWithAadhaar()
     {
