@@ -528,8 +528,9 @@ class PunchingService
                 $emp_new_punching_data['shift'] = $employee_section_maps[$aadhaarid]['shift'];
                 $emp_new_punching_data['time_group_id'] = $employee_section_maps[$aadhaarid]['time_group_id'];
                 //only call this if we have an employee section map
-          
-               $data[]=  $this->calculateForEmployee(
+                //use upsert insetad of updateorcreate inside calculateforemployee
+
+               $data[]= $this->calculateForEmployee(
                     $date,
                     $aadhaarid,
                     $employee_id,
@@ -540,6 +541,16 @@ class PunchingService
                 );
             }
         }
+
+
+     
+
+
+        Punching::upsert( $data, uniqueBy: ['aadhaarid', 'date'], update: ['employee_id',    'employee_id', 'designation',  'section',
+        'punching_count',  'punchin_trace_id',
+        'in_datetime',   'punchout_trace_id',
+        'out_datetime',   'duration_sec',
+        'grace_sec',   'extra_sec'] );
 
         return $data;
     }
@@ -693,25 +704,24 @@ class PunchingService
         }
         \Log::info($emp_new_punching_data);
 
-        return Punching::updateOrCreate(
-            [ 'aadhaarid' =>  $emp_new_punching_data['aadhaarid'],'date' => $emp_new_punching_data['date']],
-            [
+        return 
+            [   'aadhaarid' =>  $emp_new_punching_data['aadhaarid'],
+                'date' => $emp_new_punching_data['date'],
                 'employee_id' => $emp_new_punching_data['employee_id'],
                 'designation' => $emp_new_punching_data['designation'],
                 'section' => $emp_new_punching_data['section'],
                 'punching_count' => $emp_new_punching_data['punching_count'],
-            
                 'punchin_trace_id' => $emp_new_punching_data['punchin_trace_id'],
                 'in_datetime' => $emp_new_punching_data['in_datetime'],
                 'punchout_trace_id' => $emp_new_punching_data['punchout_trace_id'],
                 'out_datetime' => $emp_new_punching_data['out_datetime'],
-              
-                'duration_min' => $emp_new_punching_data['duration_sec'] / 60,
-                'grace_min' => $emp_new_punching_data['grace_sec'] /60,
-                'extra_min' => $emp_new_punching_data['extra_sec'] /60,
+            
+                'duration_sec' => $emp_new_punching_data['duration_sec'],
+                'grace_sec' => $emp_new_punching_data['grace_sec'],
+                'extra_sec' => $emp_new_punching_data['extra_sec'],
 
-            ]
-        );
+    ];
+        
 
         //extra time
     }
