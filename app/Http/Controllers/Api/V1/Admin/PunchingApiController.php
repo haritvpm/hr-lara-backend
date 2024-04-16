@@ -83,7 +83,7 @@ class PunchingApiController extends Controller
         return response()->json([
             //    'seats' => $seat_ids,
           //  'sections_under_charge' => $data->pluck('section_name')->unique(),
-            'employee_section_maps' => $data,
+            'punchings' => $data,
         ], 200);
 
         //  \Log::info("got" . $request->date);
