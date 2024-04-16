@@ -68,7 +68,7 @@ class EmployeeToSeatController extends Controller
     {
         abort_if(Gate::denies('employee_to_seat_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
 
         $seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -86,7 +86,7 @@ class EmployeeToSeatController extends Controller
     {
         abort_if(Gate::denies('employee_to_seat_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
 
         $seats = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 

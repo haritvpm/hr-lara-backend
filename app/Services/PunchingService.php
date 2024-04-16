@@ -429,7 +429,7 @@ class PunchingService
         $trace['err_code'] = $traceItem['err_code'];
         $trace['att_date'] = $traceItem['att_date'];
         $trace['att_time'] = $traceItem['att_time'];
-        $trace['creation_date'] = $traceItem['creation_date'];
+        $trace['created_date'] = $traceItem['creation_date'];
         $trace['day_offset'] = $day_offset;
 
         return $trace;
@@ -446,7 +446,7 @@ class PunchingService
             }])
             ->wherein('employee_id', $emp_ids)
             ->get();
-
+           // dd($employee_section_maps);
         $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
 
             $x = json_decode(json_encode($item));
@@ -474,11 +474,11 @@ class PunchingService
         $query->when($aadhaar_ids, function ($q) use ($aadhaar_ids) {
             return $q->wherein('aadhaarid', $aadhaar_ids);
         });
-        return $query->orderBy('creation_date', 'asc')->get();
+        return $query->orderBy('created_date', 'asc')->get();
     }
     public function getPunchingsForDay($date,  $aadhaar_ids)
     {
-        return Punching::where('att_date', $date)
+        return Punching::where('date', $date)
             ->wherein('aadhaarid', $aadhaar_ids)->get();
     }
 
@@ -491,7 +491,6 @@ class PunchingService
 
         $aadhaar_to_empIds = [];
         $emp_ids = [];
-
 
 
         if ($aadhaar_ids == null) {
@@ -513,32 +512,36 @@ class PunchingService
 
         $employee_section_maps =  $this->getEmployeeSectionMappingsAndDesignations($date,  $emp_ids);
         //for each empl, calculate
+      
+        $data = [];
 
         foreach ($aadhaar_to_empIds as $aadhaarid => $employee_id) {
             $emp_new_punching_data = [];
-            $emp_new_punching_data['date'] = $date;
+            $emp_new_punching_data['date'] = $date;//->format('Y-m-d');
             $emp_new_punching_data['aadhaarid'] = $aadhaarid;
             $emp_new_punching_data['employee_id'] = $employee_id;
+            
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
                 $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
                 $emp_new_punching_data['shift'] = $employee_section_maps[$aadhaarid]['shift'];
-                $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
-                $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
                 $emp_new_punching_data['time_group_id'] = $employee_section_maps[$aadhaarid]['time_group_id'];
+                //only call this if we have an employee section map
+          
+               $data[]=  $this->calculateForEmployee(
+                    $date,
+                    $aadhaarid,
+                    $employee_id,
+                    $allemp_punchingtraces_grouped,
+                    $emp_new_punching_data,
+                    $allemp_punchings_existing,
+                    $time_groups
+                );
             }
-
-            $this->calculateForEmployee(
-                $date,
-                $aadhaarid,
-                $employee_id,
-                $allemp_punchingtraces_grouped,
-                $emp_new_punching_data,
-                $allemp_punchings_existing,
-                $time_groups
-            );
         }
+
+        return $data;
     }
 
     public function calculateForEmployee(
@@ -561,13 +564,31 @@ class PunchingService
         $punchings_existing = $allemp_punchings_existing->has($aadhaarid) ?
             $allemp_punchings_existing->get($aadhaarid) : null;
 
+        
+
         $c_punch_in = null;
         $c_punch_out = null;
+        $emp_new_punching_data['punchin_trace_id'] = null;
+        $emp_new_punching_data['in_datetime'] = null;
+        $emp_new_punching_data['punchout_trace_id'] = null;
+        $emp_new_punching_data['out_datetime'] = null;
+        $emp_new_punching_data['duration_sec'] = 0;
+        $emp_new_punching_data['grace_sec'] = 0;
+        $emp_new_punching_data['extra_sec'] = 0;
+  
         if ($punch_count) {
         }
         if ($punch_count  == 1) {
             //sync
             //TODO is it punch in or out ? has to be set by under
+            //todo, check hint to set this as punchin or out. now set as in
+            $punch = $punchingtraces[0];
+            // $emp_new_punching_data['punchin_created'] =$punch['created_at']->format('Y-m-d H:i:s');
+            $emp_new_punching_data['punchin_offset'] = $punch['day_offset'];
+            $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
+            $c_punch_in = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
+            $emp_new_punching_data['in_datetime'] =  $c_punch_in->toDateTimeString();
+
         }
         if ($punch_count >= 2) {
 
@@ -589,7 +610,15 @@ class PunchingService
 
         if ($c_punch_in && $c_punch_out) {
             //get employee time group. now assume normal
-            $time_group = $time_groups[$emp_new_punching_data['time_group_id']];
+            //$time_group = $time_groups[$emp_new_punching_data['time_group_id']];
+            $time_group = [
+                'fn_from' => '10:15:00',
+                'fn_to' => '13:15:00',
+                'an_from' => '14:00:00',
+                'an_to' => '17:15:00',
+
+            ];
+
             //use today's date. imagine legislation punching out next day. our flexiend is based on today
 
             $emp_new_punching_data['duration_sec'] = $c_punch_out->diffInSeconds($c_punch_in);
@@ -606,33 +635,33 @@ class PunchingService
             $c_flexi_530pm = $normal_an_out->addMinutes(15);
 
             $max_grace_seconds = 3600;
-
-            //office ends 3.00 or at noon.
+            //todo ooffice ends at noon or 3.00 pm
+            
             $office_ends_at_300pm=0;
             if($office_ends_at_300pm){
                 //todo no casual in the eve
                 $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '15:00:00');//
-                $max_grace_seconds = 1800; // ?
+              //  $max_grace_seconds = 1800; // ?
             }
 
             $duration_seconds_needed =  $normal_an_out->diffInSeconds($normal_fn_in);
 
             $isFullDay = true;
-            if ($punchings_existing && $punchings_existing['hint'] == 'casual_fn') {
+            if ($punchings_existing && $punchings_existing->has('hint') && $punchings_existing['hint'] == 'casual_fn') {
                 $c_flexi_10am = $normal_an_in->subMinutes(15); //2pm -15
             //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
                 $duration_seconds_needed =  $normal_an_out->diffInSeconds($normal_an_in); //3.15 hour
                 $isFullDay = false;
-                $max_grace_seconds = 1800;
+             //   $max_grace_seconds = 1800;
             }
             else
-            if ($punchings_existing && $punchings_existing['hint'] == 'casual_an') {
+            if ($punchings_existing && $punchings_existing->has('hint') && $punchings_existing['hint'] == 'casual_an') {
                 $c_flexi_530pm = $normal_fn_out->addMinutes(15); //1.15 +15
               //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
                 //$duration_seconds_needed = 3 * 3600;
                 $duration_seconds_needed =  $normal_fn_out->diffInSeconds($normal_fn_in); //3.00 hour
                 $isFullDay = false;
-                $max_grace_seconds = 1800;
+             //   $max_grace_seconds = 1800;
             }
 
 
@@ -642,7 +671,8 @@ class PunchingService
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
             //probably shift. like from 6 to 9 am
-            if ($c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in)) {
+            //if ($c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in)) 
+            {
                 //if( isCL_FN ) //todo
                 //calculate grace
                 $worked_seconds_flexi = $c_end->diffInSeconds($c_start);
@@ -660,25 +690,29 @@ class PunchingService
                 }
             }
 
-            Punching::updateOrCreate(
-                ['date' => $emp_new_punching_data['date'], 'aadhaarid' =>  $emp_new_punching_data['aadhaarid']],
-                [
-                    'employee_id' => $emp_new_punching_data['employee_id'],
-                    'designation' => $emp_new_punching_data['designation'],
-                    'section' => $emp_new_punching_data['section'],
-                    'punching_count' => $emp_new_punching_data['punching_count'],
-                    'punchin_trace_id' => $emp_new_punching_data['punchin_trace_id'],
-                    'punchout_trace_id' => $emp_new_punching_data['punchout_trace_id'],
-                    'in_datetime' => $emp_new_punching_data['in_datetime'],
-                    'out_datetime' => $emp_new_punching_data['out_datetime'],
-                    'duration_sec' => $emp_new_punching_data['duration_sec'],
-                    'grace_sec' => $emp_new_punching_data['grace_sec'] ?? null,
-                    'extra_sec' => $emp_new_punching_data['extra_sec'] ?? null,
-
-                ]
-            );
-            //extra time
-
         }
+        \Log::info($emp_new_punching_data);
+
+        return Punching::updateOrCreate(
+            [ 'aadhaarid' =>  $emp_new_punching_data['aadhaarid'],'date' => $emp_new_punching_data['date']],
+            [
+                'employee_id' => $emp_new_punching_data['employee_id'],
+                'designation' => $emp_new_punching_data['designation'],
+                'section' => $emp_new_punching_data['section'],
+                'punching_count' => $emp_new_punching_data['punching_count'],
+            
+                'punchin_trace_id' => $emp_new_punching_data['punchin_trace_id'],
+                'in_datetime' => $emp_new_punching_data['in_datetime'],
+                'punchout_trace_id' => $emp_new_punching_data['punchout_trace_id'],
+                'out_datetime' => $emp_new_punching_data['out_datetime'],
+              
+                'duration_min' => $emp_new_punching_data['duration_sec'] / 60,
+                'grace_min' => $emp_new_punching_data['grace_sec'] /60,
+                'extra_min' => $emp_new_punching_data['extra_sec'] /60,
+
+            ]
+        );
+
+        //extra time
     }
 }

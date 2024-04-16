@@ -76,6 +76,15 @@ class GovtCalendarController extends Controller
      
         if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
 
+        //dont do anything if $date is today
+        $c_today = Carbon::now()->format('Y-m-d');
+        if ($date == $c_today) {
+            Session::flash('message', 'Today attendance is not calculated' );
+
+            return redirect()->back();
+        }
+        
+
         \Log::info("calculate attendance !. " .  $date);
         (new PunchingService())->calculate($date);
      
