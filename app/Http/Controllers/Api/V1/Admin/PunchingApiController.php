@@ -77,13 +77,16 @@ class PunchingApiController extends Controller
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         $data = (new PunchingService())->calculate($date, $aadhaarids );
-
-        //for each employee get 
+        $data2 = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
+        ->wherein('aadhaarid', $aadhaarids)
+        ->where('date', $date)
+        ->get();
+        //for each employee get
 
         return response()->json([
             //    'seats' => $seat_ids,
           //  'sections_under_charge' => $data->pluck('section_name')->unique(),
-            'punchings' => $data,
+            'punchings' => $data2,
         ], 200);
 
         //  \Log::info("got" . $request->date);

@@ -64,7 +64,7 @@ class Punching extends Model
         'hint',
         'controller_set_punch_in',
         'controller_set_punch_out',
-       
+
         'grace_total_exceeded_one_hour',
         'created_at',
         'updated_at',
@@ -94,6 +94,10 @@ class Punching extends Model
     public function punchin_trace()
     {
         return $this->belongsTo(PunchingTrace::class, 'punchin_trace_id');
+    }
+    public function punchings()
+    {
+        return $this->hasMany(PunchingTrace::class, 'punching_id');
     }
 
     public function punchout_trace()

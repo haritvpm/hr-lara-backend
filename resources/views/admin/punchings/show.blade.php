@@ -217,22 +217,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.punching.fields.grace_lp_exceeded_one_hour') }}
-                        </th>
-                        <td>
-                            {{ $punching->grace_lp_exceeded_one_hour }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.punching.fields.grace_ep_exceeded_one_hour') }}
-                        </th>
-                        <td>
-                            {{ $punching->grace_ep_exceeded_one_hour }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
                         </th>
                         <td>

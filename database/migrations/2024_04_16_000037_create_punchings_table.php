@@ -30,8 +30,6 @@ class CreatePunchingsTable extends Migration
             $table->string('hint')->nullable();
             $table->datetime('controller_set_punch_in')->nullable();
             $table->datetime('controller_set_punch_out')->nullable();
-            $table->integer('grace_lp_exceeded_one_hour')->nullable();
-            $table->integer('grace_ep_exceeded_one_hour')->nullable();
             $table->integer('grace_total_exceeded_one_hour')->nullable();
             $table->timestamps();
         });
