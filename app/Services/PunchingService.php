@@ -438,7 +438,7 @@ class PunchingService
 
     public function getEmployeeSectionMappingsAndDesignations($date_str,  $emp_ids)
     {
-        $employee_section_maps = EmployeeToSection::during($date_str)
+        $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
             ->with(['employee', 'section'])
             ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
 
@@ -471,6 +471,15 @@ class PunchingService
     public function getPunchingTracesForDay($date,  $aadhaar_ids)
     {
         $query = PunchingTrace::where('att_date', $date)
+            ->where('auth_status', 'Y');
+        $query->when($aadhaar_ids, function ($q) use ($aadhaar_ids) {
+            return $q->wherein('aadhaarid', $aadhaar_ids);
+        });
+        return $query->orderBy('created_date', 'asc')->get();
+    }
+    public function getPunchingTracesForPeriod($start_date,  $end_date, $aadhaar_ids)
+    {
+        $query = PunchingTrace::whereBetween('att_date', [$start_date, $end_date])
             ->where('auth_status', 'Y');
         $query->when($aadhaar_ids, function ($q) use ($aadhaar_ids) {
             return $q->wherein('aadhaarid', $aadhaar_ids);
@@ -742,17 +751,30 @@ class PunchingService
         //extra time
     }
 
-    public function calculateMonthlyAttendance( $date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds)
+    public function calculateMonthlyAttendance( $date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
+    
     {
         $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfMonth();
         $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfMonth();
+      
+        if( $aadhaar_ids == null ){
+            $all_punchingtraces =  $this->getPunchingTracesForPeriod($start_date, $end_date, $aadhaar_ids);
+            $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
+        }
+
+        // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
+        //if( $aadhaar_to_empIds == null)
+        {
+            $emps = Employee::wherein('aadhaarid', $aadhaar_ids)->get();
+            $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
+        }
 
         $punchings = Punching::whereBetween('date', [$start_date, $end_date])
             ->wherein('aadhaarid', $aadhaar_ids)
             ->get();
 
         $punchings_grouped = $punchings->groupBy('aadhaarid');
-
+        \Log::info('aadhaar_to_empIds count:' . $aadhaar_to_empIds);
 
         $data = collect([]);
 

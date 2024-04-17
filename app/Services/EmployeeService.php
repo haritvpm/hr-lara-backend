@@ -195,7 +195,7 @@ class EmployeeService
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids)
+    public function getEmployeeSectionMappingInPeriod($emp_ids, $date_from, $date_to,  $seat_ids)
     {
         \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
@@ -208,11 +208,11 @@ class EmployeeService
         }
         \Log::info(' sections_under_charge ' . $sections_under_charge);
 
-        $employee_section_maps = EmployeeToSection::during($date)
+        $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to )
             ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
-            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date) {
+            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
-                $q->DesignationDuring($date)->with(['designation']);;
+                $q->DesignationDuring($date_to)->with(['designation']);;
             }])
             ->wherein('section_id', $sections_under_charge->pluck('id'))
             ->get();
@@ -222,12 +222,14 @@ class EmployeeService
         return $employee_section_maps->count() ? $employee_section_maps : null;
     }
 
-    public function getLoggedUserSubordinateEmployees($date, $seat_ids_of_loggedinuser, $me)
+    public function getLoggedUserSubordinateEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me)
     {
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
 
-        $employee_section_maps = $this->getEmployeeSectionMappingForEmployees([$me->employee_id], $date, $seat_ids_of_loggedinuser);
+        $employee_section_maps = $this->getEmployeeSectionMappingInPeriod(
+                [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser);
+
         $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
         if (!$employee_section_maps) {
@@ -249,7 +251,8 @@ class EmployeeService
 
             if (!$seat_ids || count($seat_ids) == 0) break;
 
-            $employee_section_maps = $this->getEmployeeSectionMappingForEmployees($emp_ids, $date, $seat_ids);
+            $employee_section_maps = $this->getEmployeeSectionMappingInPeriod(
+                $emp_ids, $date_from, $date_to, $seat_ids);
 
             if (!$employee_section_maps) break;
 
@@ -257,14 +260,13 @@ class EmployeeService
             $data = $data->concat($employee_section_maps);
         }
 
-        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser, $date) {
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
             $employee_to_designation =  count($results->employee->employee_employee_to_designations)
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
-            \Log::info($employeeToSection);
+           // \Log::info($employeeToSection);
             return [
-                // 'date' => $date,
                 'employee_id' => $employeeToSection->employee_id,
                 'name' => $employeeToSection->employee->name,
                 'aadhaarid' => $employeeToSection->employee->aadhaarid,
