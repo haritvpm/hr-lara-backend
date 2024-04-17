@@ -638,15 +638,16 @@ class PunchingService
             $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
         }
 
-
+        $duration_sec = 0;
+        $duration_str = '';
         if ($c_punch_in && $c_punch_out) {
             //get employee time group. now assume normal
             //
 
             //use today's date. imagine legislation punching out next day. our flexiend is based on today
-
-            $emp_new_punching_data['duration_sec'] = $diff = $c_punch_in->diffInSeconds($c_punch_out);
-            $emp_new_punching_data['duration_str'] = floor($diff / 3600) . gmdate(":i:s", $diff % 3600);
+            $duration_sec = $c_punch_in->diffInSeconds($c_punch_out);
+            $emp_new_punching_data['duration_sec'] = $duration_sec ;
+            $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
             //  $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '10:30:00');
             //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '17:00:00');
@@ -678,7 +679,7 @@ class PunchingService
                 $can_take_casual_fn = $can_take_casual_an = false;
             }
 
-            // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
+             \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
             $isFullDay = true;
             $hint = $punching_existing && $punching_existing->has('hint') &&
@@ -706,6 +707,7 @@ class PunchingService
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
+
             //probably shift. like from 6 to 9 am
             //if ($c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in))
             {
@@ -721,8 +723,12 @@ class PunchingService
                     if ($grace_sec > $max_grace_seconds) {
                         $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_sec - $max_grace_seconds;
                     }
-                } else if ($worked_seconds_flexi > $duration_seconds_needed) {
-                    $extra_sec = $worked_seconds_flexi - $duration_seconds_needed;
+                } 
+                
+                if ($duration_sec > $duration_seconds_needed) {
+                    
+                    $extra_sec = $duration_sec - $duration_seconds_needed;
+            
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec/60);
                 }
