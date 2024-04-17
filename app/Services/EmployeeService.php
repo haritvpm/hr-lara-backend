@@ -275,6 +275,8 @@ class EmployeeService
                 'works_nights_during_session'  => $employeeToSection->section->works_nights_during_session,
                 'seat_of_controlling_officer_id'  => $employeeToSection->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
+                'logged_in_user_is_section_officer' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
+                
                 'designation' =>   $employee_to_designation?->designation->designation,
                 'designation_sortindex' =>  $employee_to_designation?->designation?->sort_index,
                 'default_time_group_id' =>  $employee_to_designation?->designation?->default_time_group_id,

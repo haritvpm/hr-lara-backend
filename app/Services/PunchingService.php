@@ -715,7 +715,7 @@ class PunchingService
                 if ($worked_seconds_flexi < $duration_seconds_needed) { //worked less
                     $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
                     $emp_new_punching_data['grace_sec'] =  $grace_sec;
-                    $emp_new_punching_data['grace_str'] =  $grace_sec/60;
+                    $emp_new_punching_data['grace_str'] =  (int)($grace_sec/60);
 
                     //one hour max grace check.
                     if ($grace_sec > $max_grace_seconds) {
@@ -724,7 +724,7 @@ class PunchingService
                 } else if ($worked_seconds_flexi > $duration_seconds_needed) {
                     $extra_sec = $worked_seconds_flexi - $duration_seconds_needed;
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
-                    $emp_new_punching_data['extra_str'] = $extra_sec/60;
+                    $emp_new_punching_data['extra_str'] = (int)($extra_sec/60);
                 }
             }
         }
@@ -758,13 +758,20 @@ class PunchingService
             $emp_new_monthly_attendance_data['aadhaarid'] = $aadhaarid;
             $emp_new_monthly_attendance_data['employee_id'] = $employee_id;
             $emp_new_monthly_attendance_data['month'] = $start_date->format('Y-m-d');
-            $emp_new_monthly_attendance_data['total_grace_sec'] = $emp_punchings->sum('grace_sec');
-            $emp_new_monthly_attendance_data['total_extra_sec'] = $emp_punchings->sum('extra_sec');
-            $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
-            $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
-            $total_full_day =  $emp_punchings->where('hint', 'casual')->count();
-            $total_cl =   ($total_half_day_fn +  $total_half_day_an)/(float)2 + $total_full_day;
-            $emp_new_monthly_attendance_data['cl_taken'] = $total_cl ;
+            $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
+            $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
+            $emp_new_monthly_attendance_data['cl_taken'] = 0 ;
+
+            if( $emp_punchings){
+                $emp_new_monthly_attendance_data['total_grace_sec'] = $emp_punchings->sum('grace_sec');
+                $emp_new_monthly_attendance_data['total_extra_sec'] = $emp_punchings->sum('extra_sec');
+                $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
+                $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
+                $total_full_day =  $emp_punchings->where('hint', 'casual')->count();
+
+                $total_cl =   ($total_half_day_fn +  $total_half_day_an)/(float)2 + $total_full_day;
+                $emp_new_monthly_attendance_data['cl_taken'] = $total_cl ;
+            }
           //  $emp_new_monthly_attendance_data['total_absent'] = 0;
 
             $data[] = $emp_new_monthly_attendance_data;
@@ -774,8 +781,8 @@ class PunchingService
             $data->all(),
             uniqueBy: ['month', 'aadhaarid'],
             update: [
-                //'total_grace_sec',  'total_extra_sec', 'cl_taken',
-                'cl_taken', 'employee_id'
+                'total_grace_sec',  'total_extra_sec', 'cl_taken','employee_id'
+                
             ]
         );
 

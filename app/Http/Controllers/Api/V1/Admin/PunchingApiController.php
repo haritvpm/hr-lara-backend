@@ -84,9 +84,10 @@ class PunchingApiController extends Controller
         //for each employee get
 
         return response()->json([
-            'monthly' => $data_monthly,
+            'monthly' => $data_monthly->groupBy('aadhaarid'),
           //  'sections_under_charge' => $data->pluck('section_name')->unique(),
             'punchings' => $data2,
+            'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
 
         //  \Log::info("got" . $request->date);
