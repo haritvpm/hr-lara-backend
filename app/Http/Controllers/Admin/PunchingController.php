@@ -123,12 +123,6 @@ class PunchingController extends Controller
                 return $row->hint ? Punching::HINT_SELECT[$row->hint] : '';
             });
 
-            $table->editColumn('grace_lp_exceeded_one_hour', function ($row) {
-                return $row->grace_lp_exceeded_one_hour ? $row->grace_lp_exceeded_one_hour : '';
-            });
-            $table->editColumn('grace_ep_exceeded_one_hour', function ($row) {
-                return $row->grace_ep_exceeded_one_hour ? $row->grace_ep_exceeded_one_hour : '';
-            });
             $table->editColumn('grace_total_exceeded_one_hour', function ($row) {
                 return $row->grace_total_exceeded_one_hour ? $row->grace_total_exceeded_one_hour : '';
             });

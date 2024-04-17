@@ -63,10 +63,10 @@ class Employee extends Model
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id')->designationNow();
     }
 
-    
+
     public function getNameAadhaarAttribute()
     {
-        return $this->name . ' - ' . $this->aadharid;
+        return $this->name . ' - ' . $this->aadhaarid;
     }
 
     public static function getEmployeesWithAadhaar()

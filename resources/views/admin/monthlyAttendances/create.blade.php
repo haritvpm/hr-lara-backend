@@ -42,6 +42,46 @@
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.compoff_granted_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="total_grace_sec">{{ trans('cruds.monthlyAttendance.fields.total_grace_sec') }}</label>
+                <input class="form-control {{ $errors->has('total_grace_sec') ? 'is-invalid' : '' }}" type="number" name="total_grace_sec" id="total_grace_sec" value="{{ old('total_grace_sec', '') }}" step="1">
+                @if($errors->has('total_grace_sec'))
+                    <span class="text-danger">{{ $errors->first('total_grace_sec') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_grace_sec_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="total_extra_sec">{{ trans('cruds.monthlyAttendance.fields.total_extra_sec') }}</label>
+                <input class="form-control {{ $errors->has('total_extra_sec') ? 'is-invalid' : '' }}" type="number" name="total_extra_sec" id="total_extra_sec" value="{{ old('total_extra_sec', '') }}" step="1">
+                @if($errors->has('total_extra_sec'))
+                    <span class="text-danger">{{ $errors->first('total_extra_sec') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_extra_sec_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="total_grace_str">{{ trans('cruds.monthlyAttendance.fields.total_grace_str') }}</label>
+                <input class="form-control {{ $errors->has('total_grace_str') ? 'is-invalid' : '' }}" type="text" name="total_grace_str" id="total_grace_str" value="{{ old('total_grace_str', '') }}">
+                @if($errors->has('total_grace_str'))
+                    <span class="text-danger">{{ $errors->first('total_grace_str') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_grace_str_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="total_extra_str">{{ trans('cruds.monthlyAttendance.fields.total_extra_str') }}</label>
+                <input class="form-control {{ $errors->has('total_extra_str') ? 'is-invalid' : '' }}" type="text" name="total_extra_str" id="total_extra_str" value="{{ old('total_extra_str', '') }}">
+                @if($errors->has('total_extra_str'))
+                    <span class="text-danger">{{ $errors->first('total_extra_str') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_extra_str_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="grace_exceeded_sec">{{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}</label>
+                <input class="form-control {{ $errors->has('grace_exceeded_sec') ? 'is-invalid' : '' }}" type="number" name="grace_exceeded_sec" id="grace_exceeded_sec" value="{{ old('grace_exceeded_sec', '') }}" step="1">
+                @if($errors->has('grace_exceeded_sec'))
+                    <span class="text-danger">{{ $errors->first('grace_exceeded_sec') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
