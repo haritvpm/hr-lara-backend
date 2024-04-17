@@ -12,6 +12,7 @@ class CreatePunchingsTable extends Migration
             $table->bigIncrements('id');
             $table->date('date');
             $table->string('aadhaarid');
+            $table->string('name')->nullable();
             $table->string('designation')->nullable();
             $table->string('section')->nullable();
             $table->datetime('in_datetime')->nullable();

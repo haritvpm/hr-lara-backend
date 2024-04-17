@@ -15,6 +15,11 @@ class CreateMonthlyAttendancesTable extends Migration
             $table->float('cl_taken', 3, 1)->nullable();
             $table->integer('compen_taken')->nullable();
             $table->integer('compoff_granted')->nullable();
+            $table->integer('total_grace_sec')->nullable();
+            $table->integer('total_extra_sec')->nullable();
+            $table->string('total_grace_str')->nullable();
+            $table->string('total_extra_str')->nullable();
+            $table->integer('grace_exceeded_sec')->nullable();
             $table->timestamps();
         });
     }

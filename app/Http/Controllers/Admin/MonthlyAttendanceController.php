@@ -63,6 +63,21 @@ class MonthlyAttendanceController extends Controller
             $table->editColumn('compoff_granted', function ($row) {
                 return $row->compoff_granted ? $row->compoff_granted : '';
             });
+            $table->editColumn('total_grace_sec', function ($row) {
+                return $row->total_grace_sec ? $row->total_grace_sec : '';
+            });
+            $table->editColumn('total_extra_sec', function ($row) {
+                return $row->total_extra_sec ? $row->total_extra_sec : '';
+            });
+            $table->editColumn('total_grace_str', function ($row) {
+                return $row->total_grace_str ? $row->total_grace_str : '';
+            });
+            $table->editColumn('total_extra_str', function ($row) {
+                return $row->total_extra_str ? $row->total_extra_str : '';
+            });
+            $table->editColumn('grace_exceeded_sec', function ($row) {
+                return $row->grace_exceeded_sec ? $row->grace_exceeded_sec : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);
 

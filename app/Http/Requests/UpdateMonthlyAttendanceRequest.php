@@ -36,6 +36,32 @@ class UpdateMonthlyAttendanceRequest extends FormRequest
                 'min:-2147483648',
                 'max:2147483647',
             ],
+            'total_grace_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'total_extra_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
+            'total_grace_str' => [
+                'string',
+                'nullable',
+            ],
+            'total_extra_str' => [
+                'string',
+                'nullable',
+            ],
+            'grace_exceeded_sec' => [
+                'nullable',
+                'integer',
+                'min:-2147483648',
+                'max:2147483647',
+            ],
         ];
     }
 }

@@ -71,6 +71,46 @@
                             {{ $monthlyAttendance->compoff_granted }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.total_grace_sec') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->total_grace_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.total_extra_sec') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->total_extra_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->total_grace_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.total_extra_str') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->total_extra_str }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->grace_exceeded_sec }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

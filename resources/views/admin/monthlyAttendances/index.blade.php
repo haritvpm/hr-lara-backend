@@ -46,6 +46,21 @@
                         {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
                     </th>
                     <th>
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.total_extra_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.total_extra_str') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -109,6 +124,11 @@
 { data: 'cl_taken', name: 'cl_taken' },
 { data: 'compen_taken', name: 'compen_taken' },
 { data: 'compoff_granted', name: 'compoff_granted' },
+{ data: 'total_grace_sec', name: 'total_grace_sec' },
+{ data: 'total_extra_sec', name: 'total_extra_sec' },
+{ data: 'total_grace_str', name: 'total_grace_str' },
+{ data: 'total_extra_str', name: 'total_extra_str' },
+{ data: 'grace_exceeded_sec', name: 'grace_exceeded_sec' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

@@ -37,6 +37,9 @@
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
                     <th>
+                        {{ trans('cruds.punching.fields.name') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.punching.fields.designation') }}
                     </th>
                     <th>
@@ -146,6 +149,7 @@
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.pen', name: 'employee.pen' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
+{ data: 'name', name: 'name' },
 { data: 'designation', name: 'designation' },
 { data: 'section', name: 'section' },
 { data: 'punchin_trace_att_time', name: 'punchin_trace.att_time' },

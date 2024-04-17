@@ -771,15 +771,15 @@ class PunchingService
         }
 
         MonthlyAttendance::upsert(
-            $data->only(['month', 'employee_id', 'cl_taken' ])->all(),
-            uniqueBy: ['month', 'employee_id'],
+            $data->all(),
+            uniqueBy: ['month', 'aadhaarid'],
             update: [
                 //'total_grace_sec',  'total_extra_sec', 'cl_taken',
-                'cl_taken',
+                'cl_taken', 'employee_id'
             ]
         );
 
-        return  $data;
+        return   $data;
 
     }
 
