@@ -43,6 +43,7 @@ class Punching extends Model
         'date',
         'aadhaarid',
         'employee_id',
+        'name',
         'designation',
         'section',
         'punchin_trace_id',
