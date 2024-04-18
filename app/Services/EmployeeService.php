@@ -192,10 +192,107 @@ class EmployeeService
         return $aebas_employees;
     }
 
+   
+    public static function getDesignationOfEmployeesOnDate($date_str,  $emp_ids)
+    {
+        $employee_section_maps = Employee::with(['employeeEmployeeToDesignations' => function ($q) use ($date_str) {
+                $q->DesignationDuring($date_str)->with(['designation']);;
+            }])
+            ->wherein('id', $emp_ids)
+            ->get();
+        // dd($employee_section_maps);
+        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
+
+            $employee = json_decode(json_encode($item));
+
+            $desig = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->designation : '';
+            
+            $time_group_id = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
+
+            return [
+                $item['aadhaarid'] => [
+                    'name' =>  $employee?->name,
+                    'designation' => $desig,
+                    'shift' => $employee?->is_shift,
+                    'time_group_id' => $time_group_id,
+                ]
+            ];
+        });
+
+        return $employee_section_maps;
+    }
+   
+    public function getEmployeeSectionMappingsAndDesignationsOnDate($date_str,  $emp_ids)
+    {
+        $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
+            ->with(['employee', 'section'])
+            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
+
+                $q->DesignationDuring($date_str)->with(['designation']);;
+            }])
+            ->wherein('employee_id', $emp_ids)
+            ->get();
+        // dd($employee_section_maps);
+        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
+
+            $x = json_decode(json_encode($item));
+
+            $desig = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->designation : '';
+       
+            $time_group_id = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
+
+            return [
+                $item['employee']['aadhaarid'] => [
+                    'name' =>  $x->employee?->name,
+                    'designation' => $desig,
+                    'section' => $x->section->name,
+                    'section_id' => $x->section->id,
+                    'shift' => $x->employee?->is_shift,
+                    'time_group_id' => $time_group_id,
+                ]
+            ];
+        });
+
+        return $employee_section_maps;
+    }
+
+    public function getEmployeeSectionMappingInPeriod($emp_id, $date_from, $date_to)
+    {
+        $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
+            ->with(['employee', 'section'])
+            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
+
+                $q->DesignationDuring($date_to)->with(['designation']);;
+            }])
+            ->where('employee_id', $emp_id)
+            ->get();
+
+        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
+
+            $x = json_decode(json_encode($item));
+
+            $desig = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->designation : '';
+            $time_group_id = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
+
+            return [
+                $item['employee']['aadhaarid'] => [
+                    'name' =>  $x->employee?->name,
+                    'designation' => $desig,
+                    'section' => $x->section->name,
+                    'section_id' => $x->section->id,
+                    'shift' => $x->employee?->is_shift,
+                    'time_group_id' => $time_group_id,
+                ]
+            ];
+        });
+
+        return $employee_section_maps;
+    }
+   
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingInPeriod($emp_ids, $date_from, $date_to,  $seat_ids)
+    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to,  $seat_ids)
     {
         \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
@@ -227,7 +324,7 @@ class EmployeeService
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
 
-        $employee_section_maps = $this->getEmployeeSectionMappingInPeriod(
+        $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
                 [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser);
 
         $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
@@ -251,7 +348,7 @@ class EmployeeService
 
             if (!$seat_ids || count($seat_ids) == 0) break;
 
-            $employee_section_maps = $this->getEmployeeSectionMappingInPeriod(
+            $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
                 $emp_ids, $date_from, $date_to, $seat_ids);
 
             if (!$employee_section_maps) break;

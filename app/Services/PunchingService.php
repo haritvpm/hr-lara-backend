@@ -436,38 +436,6 @@ class PunchingService
         // $trace->save();
     }
 
-    public function getEmployeeSectionMappingsAndDesignations($date_str,  $emp_ids)
-    {
-        $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
-            ->with(['employee', 'section'])
-            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
-
-                $q->DesignationDuring($date_str)->with(['designation']);;
-            }])
-            ->wherein('employee_id', $emp_ids)
-            ->get();
-        // dd($employee_section_maps);
-        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
-
-            $x = json_decode(json_encode($item));
-
-            $desig = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->designation : '';
-            $section = $x->section->name;
-            $time_group_id = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
-
-            return [
-                $item['employee']['aadhaarid'] => [
-                    'name' =>  $x->employee?->name,
-                    'designation' => $desig,
-                    'section' => $section,
-                    'shift' => $x->employee?->is_shift,
-                    'time_group_id' => $time_group_id,
-                ]
-            ];
-        });
-
-        return $employee_section_maps;
-    }
     public function getPunchingTracesForDay($date,  $aadhaar_ids)
     {
         $query = PunchingTrace::where('att_date', $date)
@@ -506,7 +474,6 @@ class PunchingService
         if ($aadhaar_ids == null) {
             $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
         }
-
         // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
 
         $emps = Employee::wherein('aadhaarid', $aadhaar_ids)->get();
@@ -520,9 +487,10 @@ class PunchingService
             return [$item['id'] => $item];
         });
 
-        $employee_section_maps =  $this->getEmployeeSectionMappingsAndDesignations($date,  $emp_ids);
+        $employee_section_maps =  EmployeeService::getDesignationOfEmployeesOnDate($date,  $emp_ids);
         //for each empl, calculate
 
+       // dd($employee_section_maps);
         $data = collect([]);
 
         foreach ($aadhaar_to_empIds as $aadhaarid => $employee_id) {
@@ -534,7 +502,7 @@ class PunchingService
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
-                $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
+               // $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
                 $emp_new_punching_data['name'] = $employee_section_maps[$aadhaarid]['name'];
                 $time_group_id = $employee_section_maps[$aadhaarid]['time_group_id'];
                 //only call this if we have an employee section map
