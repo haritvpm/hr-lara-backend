@@ -79,7 +79,7 @@ class GovtCalendarController extends Controller
         //dont do anything if $date is today
         $c_today = Carbon::now()->format('Y-m-d');
         if ($date == $c_today) {
-            Session::flash('message', 'Today attendance is not calculated' );
+            \Session::flash('message', 'Today attendance is not calculated' );
 
             return redirect()->back();
         }

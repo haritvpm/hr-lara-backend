@@ -84,8 +84,10 @@ class PunchingApiController extends Controller
 
 
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
-
-      
+        
+        $employees_in_view_mapped = $employees_in_view->mapwithKeys(function ($item) {
+                 return [$item['aadhaarid'] => $item];
+        });
 
         $data_monthly = MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
                         ->wherein('aadhaarid', $aadhaarids)
@@ -104,11 +106,17 @@ class PunchingApiController extends Controller
             ->where('date', $date_str)
             ->get();
         //for each employee get
-        $data2->transform(function ($item, $key) use ($data_monthly) {
+        $data2->transform(function ($item, $key) use ($data_monthly, $employees_in_view_mapped) {
             $aadharid = $item['aadhaarid'];
             $item['total_grace_sec'] = $data_monthly[$aadharid]['total_grace_sec'];
             $item['total_extra_sec'] = $data_monthly[$aadharid]['total_extra_sec'];
             $item['cl_taken'] = $data_monthly[$aadharid]['cl_taken'];
+
+            $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadharid]['logged_in_user_is_controller'];
+            $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadharid]['logged_in_user_is_section_officer'];
+            
+            $item['attendance_book_id'] = $employees_in_view_mapped[$aadharid]['attendance_book_id'];
+            $item['attendance_book'] = $employees_in_view_mapped[$aadharid]['attendance_book'];
 
             return $item;
         });
@@ -116,7 +124,7 @@ class PunchingApiController extends Controller
         return response()->json([
             //            'data_monthly' => $data_monthly,
             'punchings' => $data2,
-           // 'employees_in_view' =>  $employees_in_view,
+            'employees_in_view' =>  $employees_in_view,
           // '$aadhaarids' => $aadhaarids,
         ], 200);
     }
@@ -220,4 +228,14 @@ class PunchingApiController extends Controller
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
     }
+
+    public function getemployeeMonthlyPunchings(Request $request)
+    {
+        $aadhaarid = $request->aadhaarid;
+        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
+        $start_date = $date->startOfMonth()->format('Y-m-d');
+        $end_date = $date->endOfMonth()->format('Y-m-d');
+        //$date_str = $date->format('Y-m-d');
+    }
+    
 }
