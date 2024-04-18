@@ -12,6 +12,7 @@ use App\Models\EmployeeToSeat;
 use App\Models\Punching;
 use App\Models\Section;
 use App\Models\EmployeeToSection;
+use App\Models\GovtCalendar;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,40 +69,43 @@ class PunchingApiController extends Controller
         }
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
 
-        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser)==0) {
+        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
             return response()->json(['status' => 'No seats in charge'], 400);
         }
 
         //call employeeservice get loggedusersubordinate
         $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $date, $date, $seat_ids_of_loggedinuser, $me);
+            $date,
+            $date,
+            $seat_ids_of_loggedinuser,
+            $me
+        );
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
-        $data_monthly = (new PunchingService())->calculate($date, $aadhaarids )->mapwithKeys(function ($item) {
+        //this should be done when we finish aebas fetch
+        $data_monthly = (new PunchingService())->calculate($date, $aadhaarids)->mapwithKeys(function ($item) {
             return [$item['aadhaarid'] => $item];
         });
 
         $data2 = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
-        ->wherein('aadhaarid', $aadhaarids)
-        ->where('date', $date)
-        ->get();
+            ->wherein('aadhaarid', $aadhaarids)
+            ->where('date', $date)
+            ->get();
         //for each employee get
-        $data2->transform(function($item, $key) use ($data_monthly){
+        $data2->transform(function ($item, $key) use ($data_monthly) {
             $aadharid = $item['aadhaarid'];
-            $item['total_grace_sec'] = $data_monthly[ $aadharid ][ 'total_grace_sec' ];
-            $item['total_extra_sec'] = $data_monthly[ $aadharid ][ 'total_extra_sec' ];
-            $item['cl_taken'] = $data_monthly[ $aadharid ][ 'cl_taken' ];
-         
+            $item['total_grace_sec'] = $data_monthly[$aadharid]['total_grace_sec'];
+            $item['total_extra_sec'] = $data_monthly[$aadharid]['total_extra_sec'];
+            $item['cl_taken'] = $data_monthly[$aadharid]['cl_taken'];
+
             return $item;
         });
 
         return response()->json([
-//            'data_monthly' => $data_monthly,
+            //            'data_monthly' => $data_monthly,
             'punchings' => $data2,
-         //   'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+            //   'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
-
-   
     }
     public function getmonthlypunchings(Request $request)
     {
@@ -119,41 +123,76 @@ class PunchingApiController extends Controller
         }
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
 
-        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser)==0) {
+        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
             return response()->json(['status' => 'No seats in charge'], 400);
         }
 
         //todo. make this a period
         $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $start_date, $end_date, $seat_ids_of_loggedinuser, $me);
+            $start_date,
+            $end_date,
+            $seat_ids_of_loggedinuser,
+            $me
+        );
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
-      //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
+        //get all govtcalender between start data and enddate
+        $calender = GovtCalendar::whereBetween('date', [$start_date, $end_date])->get()->mapwithKeys(function ($item) {
+            return [$item['date'] => $item];
+        });
 
-        $data2 = Punching::with(['employee'])
-        ->wherein('aadhaarid', $aadhaarids)
-        ->whereBetween('date', [$start_date, $end_date])
-        ->get();
-
-        //for each employee in punching as a row, show columns for each day of month
-        //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+        //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
         $data3 = [];
-        foreach( $data2 as $punching){
-            $item = [];
-            $punching->date = Carbon::parse($punching->date)->format('d');
+        foreach ($employees_in_view as $key => $employee) {
+
+            $item =  $employee;
+            $aadhaarid = $employee['aadhaarid'];
+            //for each employee in punching as a row, show columns for each day of month
+            //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+            for ($i = 1; $i <= $date->daysInMonth; $i++) {
+
+                $d = $date->day($i);
+                $d_str = $d->format('Y-m-d');
+                $emp_start_date = Carbon::parse($employee['start_date']);
+                $emp_end_date = Carbon::parse($employee['end_date']);
+
+                $dayinfo = [];
+                $dayinfo['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
+                $dayinfo['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
+                $dayinfo['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
+                $dayinfo['future_date'] = $d->gt(Carbon::now());
+                $dayinfo['is_today'] = $d->isToday();
+                //for each date, get employee's punching data
+                //is this holiday ?
+//                \Log::info( $d);
+
+                if ($emp_start_date <= $d && $emp_end_date >= $d) {
+
+                    $dayinfo['in_section'] = true;
+                    $dayinfo['punching_count'] = 0; //this will be overwritten when punching is got below
+                    $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+                    if ($punching) {
+                       //copy all properties of $punching to $dayinfo
+                        $dayinfo = [...$dayinfo, ...$punching->toArray()];
+                    } else {
+                        //no punching found
+                    }
+
+                } else {
+                    $dayinfo = [...$dayinfo, ...['in_section' => false ]];
+                }
+
+                $item['day' . $i] = [...$dayinfo];
+            }
 
             $data3[] = $item;
         }
-    
 
-
-        return response()->json([
-         //   'monthly' => $data_monthly->groupBy('aadhaarid'),
-        //  'sections_under_charge' => $data->pluck('section_name')->unique(),
+         return response()->json([
+            //   'monthly' => $data_monthly->groupBy('aadhaarid'),
+            //  'sections_under_charge' => $data->pluck('section_name')->unique(),
             'monthlypunchings' => $data3,
-           // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+            // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
-
     }
-    
 }

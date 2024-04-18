@@ -269,6 +269,8 @@ class EmployeeService
             return [
                 'employee_id' => $employeeToSection->employee_id,
                 'name' => $employeeToSection->employee->name,
+                'start_date' => $employeeToSection->start_date,
+                'end_date' => $employeeToSection->end_date,
                 'aadhaarid' => $employeeToSection->employee->aadhaarid,
                 'attendance_book_id' => $employeeToSection->attendance_book_id,
                 'attendance_book' => $employeeToSection->attendance_book,
@@ -278,7 +280,7 @@ class EmployeeService
                 'seat_of_controlling_officer_id'  => $employeeToSection->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
                 'logged_in_user_is_section_officer' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
-                
+
                 'designation' =>   $employee_to_designation?->designation->designation,
                 'designation_sortindex' =>  $employee_to_designation?->designation?->sort_index,
                 'default_time_group_id' =>  $employee_to_designation?->designation?->default_time_group_id,
