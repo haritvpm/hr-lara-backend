@@ -134,16 +134,27 @@ class PunchingApiController extends Controller
             $seat_ids_of_loggedinuser,
             $me
         );
-        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
+     //   $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         //get all govtcalender between start data and enddate
         $calender = GovtCalendar::whereBetween('date', [$start_date, $end_date])->get()->mapwithKeys(function ($item) {
             return [$item['date'] => $item];
         });
+        $calender_info = [];
+        for ($i = 1; $i <= $date->daysInMonth; $i++) {
+
+            $d = $date->day($i);
+            $d_str = $d->format('Y-m-d');
+            $calender_info['day' . $i]['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
+            $calender_info['day' . $i]['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
+            $calender_info['day' . $i]['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
+            $calender_info['day' . $i]['future_date'] = $d->gt(Carbon::now());
+            $calender_info['day' . $i]['is_today'] = $d->isToday();
+        }
 
         //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
         $data3 = [];
-        foreach ($employees_in_view as $key => $employee) {
+        foreach ($employees_in_view as $employee) {
 
             $item =  $employee;
             $aadhaarid = $employee['aadhaarid'];
@@ -157,11 +168,11 @@ class PunchingApiController extends Controller
                 $emp_end_date = Carbon::parse($employee['end_date']);
 
                 $dayinfo = [];
-                $dayinfo['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
-                $dayinfo['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
-                $dayinfo['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
-                $dayinfo['future_date'] = $d->gt(Carbon::now());
-                $dayinfo['is_today'] = $d->isToday();
+                // $dayinfo['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
+                // $dayinfo['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
+                // $dayinfo['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
+                // $dayinfo['future_date'] = $d->gt(Carbon::now());
+                // $dayinfo['is_today'] = $d->isToday();
                 //for each date, get employee's punching data
                 //is this holiday ?
 //                \Log::info( $d);
@@ -189,7 +200,7 @@ class PunchingApiController extends Controller
         }
 
          return response()->json([
-            //   'monthly' => $data_monthly->groupBy('aadhaarid'),
+            'calender_info' => $calender_info,
             //  'sections_under_charge' => $data->pluck('section_name')->unique(),
             'monthlypunchings' => $data3,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
