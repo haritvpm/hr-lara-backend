@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use App\Services\PunchingService;
 use App\Services\EmployeeService;
+use App\Models\MonthlyAttendance;
 
 
 class PunchingApiController extends Controller
@@ -60,7 +61,7 @@ class PunchingApiController extends Controller
     {
 
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
-        $date =  $date->format('Y-m-d');
+        $date_str =  $date->format('Y-m-d');
         //get current logged in user's charges
         $me = User::with('employee')->find(auth()->id());
 
@@ -75,21 +76,32 @@ class PunchingApiController extends Controller
 
         //call employeeservice get loggedusersubordinate
         $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $date,
-            $date,
+            $date_str,
+            $date_str,
             $seat_ids_of_loggedinuser,
             $me
         );
+
+
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
-        //this should be done when we finish aebas fetch
-        $data_monthly = (new PunchingService())->calculate($date, $aadhaarids)->mapwithKeys(function ($item) {
-            return [$item['aadhaarid'] => $item];
-        });
+      
 
+        $data_monthly = MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
+                        ->wherein('aadhaarid', $aadhaarids)
+                        ->get()->mapwithKeys(function ($item) {
+                            return [$item['aadhaarid'] => $item];
+                        });
+
+        //this should be done when we finish aebas fetch
+        // $data_monthly = (new PunchingService())->calculate($date_str, $aadhaarids)->mapwithKeys(function ($item) {
+        //     return [$item['aadhaarid'] => $item];
+        // });
+
+        
         $data2 = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
             ->wherein('aadhaarid', $aadhaarids)
-            ->where('date', $date)
+            ->where('date', $date_str)
             ->get();
         //for each employee get
         $data2->transform(function ($item, $key) use ($data_monthly) {
@@ -104,9 +116,11 @@ class PunchingApiController extends Controller
         return response()->json([
             //            'data_monthly' => $data_monthly,
             'punchings' => $data2,
-            //   'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+           // 'employees_in_view' =>  $employees_in_view,
+          // '$aadhaarids' => $aadhaarids,
         ], 200);
     }
+
     public function getmonthlypunchings(Request $request)
     {
 
