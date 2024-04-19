@@ -114,7 +114,7 @@ class PunchingApiController extends Controller
             $item['attendance_book_id'] = $employees_in_view_mapped[$aadharid]['attendance_book_id'];
             $item['attendance_book'] = $employees_in_view_mapped[$aadharid]['attendance_book'];
             $item['section'] = $employees_in_view_mapped[$aadharid]['section_name'];
-            
+
             return $item;
         });
 
@@ -136,13 +136,16 @@ class PunchingApiController extends Controller
         $end_date = $date->endOfMonth()->format('Y-m-d');
         $date_str = $date->format('Y-m-d');
 
+        $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
+
         //get current logged in user's charges
         $me = User::with('employee')->find(auth()->id());
 
         if ($me->employee_id == null) {
-            
+
             return response()->json([
                 'status' => 'No linked employee','month' => $date->format('F Y'),
+                'calender_info' => $calender_info,
                 'monthlypunchings' => [],], 200);
         }
 
@@ -151,6 +154,7 @@ class PunchingApiController extends Controller
         if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
             return response()->json([
                 'status' => 'No seats in charge','month' => $date->format('F Y'),
+                'calender_info' => $calender_info,
                 'monthlypunchings' => [],], 200);
         }
 
@@ -166,6 +170,7 @@ class PunchingApiController extends Controller
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
                 'status' => 'No employees in view','month' => $date->format('F Y'),
+                'calender_info' => $calender_info,
                 'monthlypunchings' => [],], 200);
         }
         //get all govtcalender between start data and enddate
@@ -210,7 +215,7 @@ class PunchingApiController extends Controller
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
-            'calender_info' => GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date),
+            'calender_info' => $calender_info,
             //  'sections_under_charge' => $data->pluck('section_name')->unique(),
             'monthlypunchings' => $data3,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
@@ -259,9 +264,9 @@ class PunchingApiController extends Controller
             $employeeToSection =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
-            
+
                 \Log::info('date: ' . $d_str);
-            
+
           //  \Log::info('employeeToSection: ' . $employeeToSection);
 
             $dayinfo['sl'] = $i;
@@ -282,7 +287,7 @@ class PunchingApiController extends Controller
 
             if( $punching){
                 $dayinfo = [...$dayinfo, ...$punching->toArray()];
-            } 
+            }
             //punching trace might have section null. so get it from employeeToSection
             if($employeeToSection){
                 $dayinfo = [...$dayinfo,  'section' => $employeeToSection->section->name ];
