@@ -228,6 +228,7 @@ class PunchingApiController extends Controller
         if ($me->employee_id == null) {
             return response()->json(['status' => 'No linked employee'], 400);
         }
+        $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)
             ->get()->pluck('seat_id');
@@ -244,10 +245,18 @@ class PunchingApiController extends Controller
             $employeeToSection =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
+            
+                \Log::info('date: ' . $d_str);
+            
+          //  \Log::info('employeeToSection: ' . $employeeToSection);
+
             $dayinfo['sl'] = $i;
             $dayinfo['day'] = 'day' . $i;
             $dayinfo['day_str'] = $d_str;
             $dayinfo['punching_count'] = 0;
+            $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
+            $dayinfo['is_future'] = $d->gt(Carbon::today());
+
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
@@ -257,6 +266,10 @@ class PunchingApiController extends Controller
 
             if( $punching){
                 $dayinfo = [...$dayinfo, ...$punching->toArray()];
+            } 
+            //punching trace might have section null. so get it from employeeToSection
+            if($employeeToSection){
+                $dayinfo = [...$dayinfo,  'section' => $employeeToSection->section->name ];
             }
 
 
@@ -270,7 +283,7 @@ class PunchingApiController extends Controller
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
-            'calender_info' => GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date),
+            'calender_info' => $calender_info ,
             'data_monthly' => $data_monthly,
             'employee_punching' => $empMonPunchings,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),

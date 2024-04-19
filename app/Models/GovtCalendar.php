@@ -43,6 +43,7 @@ class GovtCalendar extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'attendance_trace_fetch_complete',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -101,6 +102,7 @@ class GovtCalendar extends Model
             $calender_info['day' . $i]['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
             $calender_info['day' . $i]['future_date'] = $d->gt(Carbon::now());
             $calender_info['day' . $i]['is_today'] = $d->isToday();
+            $calender_info['day' . $i]['attendance_trace_fetch_complete'] = $calender[$d_str]->attendance_trace_fetch_complete ?? false;
         }
         return $calender_info;
     }
