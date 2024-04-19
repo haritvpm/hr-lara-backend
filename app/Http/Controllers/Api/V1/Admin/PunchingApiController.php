@@ -248,7 +248,7 @@ class PunchingApiController extends Controller
             $dayinfo['day'] = 'day' . $i;
             $dayinfo['day_str'] = $d_str;
             $dayinfo['punching_count'] = 0;
-            if ($seat_ids_of_loggedinuser) {
+            if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
