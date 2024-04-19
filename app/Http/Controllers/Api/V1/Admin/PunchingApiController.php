@@ -239,16 +239,29 @@ class PunchingApiController extends Controller
 
             $d = $date->day($i);
             $d_str = $d->format('Y-m-d');
+            $dayinfo = [];
 
             $employeeToSection =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
-
-            $empMonPunchings['day' . $i] = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();;
+            $dayinfo['sl'] = $i;
+            $dayinfo['day'] = 'day' . $i;
+            $dayinfo['day_str'] = $d_str;
+            $dayinfo['punching_count'] = 0;
             if ($seat_ids_of_loggedinuser) {
-                $empMonPunchings['day' . $i]['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
-                $empMonPunchings['day' . $i]['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
+                $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
+                $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
+
+            $punching = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+
+            if( $punching){
+                $dayinfo = [...$dayinfo, ...$punching->toArray()];
+            }
+
+
+
+            $empMonPunchings[] =  $dayinfo;
         }
 
 
