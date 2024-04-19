@@ -256,6 +256,7 @@ class PunchingApiController extends Controller
             $dayinfo['punching_count'] = 0;
             $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
             $dayinfo['is_future'] = $d->gt(Carbon::today());
+            $dayinfo['is_today'] = $d->isToday();
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
