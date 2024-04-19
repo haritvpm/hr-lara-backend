@@ -56,4 +56,24 @@ class MonthlyAttendance extends Model
     {
         $this->attributes['month'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
+
+    public static function forEmployeesInMonth($date, $aadhaarids)
+    {
+        return MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
+        ->wherein('aadhaarid', $aadhaarids)
+        ->get()->mapwithKeys(function ($item) {
+            return [$item['aadhaarid'] => $item];
+        });
+
+    }
+    public static function forEmployeeInMonth($date, $aadhaarid)
+    {
+        return MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
+        ->where('aadhaarid', $aadhaarid)
+        ->get()->mapwithKeys(function ($item) {
+            return [$item['aadhaarid'] => $item];
+        });
+
+    }
+
 }
