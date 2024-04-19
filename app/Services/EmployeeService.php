@@ -330,8 +330,7 @@ class EmployeeService
         $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
         if (!$employee_section_maps) {
-            \Log::info('No employee found');
-            return response()->json(['status' => 'No employee found'], 200);
+            return null;
         }
 
         $data = collect($employee_section_maps);

@@ -140,12 +140,18 @@ class PunchingApiController extends Controller
         $me = User::with('employee')->find(auth()->id());
 
         if ($me->employee_id == null) {
-            return response()->json(['status' => 'No linked employee'], 400);
+            
+            return response()->json([
+                'status' => 'No linked employee','month' => $date->format('F Y'),
+                'monthlypunchings' => [],], 200);
         }
+
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
 
         if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
-            return response()->json(['status' => 'No seats in charge'], 400);
+            return response()->json([
+                'status' => 'No seats in charge','month' => $date->format('F Y'),
+                'monthlypunchings' => [],], 200);
         }
 
         //todo. make this a period
@@ -155,8 +161,13 @@ class PunchingApiController extends Controller
             $seat_ids_of_loggedinuser,
             $me
         );
+        \Log::info('employees_in_view: ' . $employees_in_view);
         //   $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
-
+        if (!$employees_in_view || $employees_in_view->count() == 0) {
+            return response()->json([
+                'status' => 'No employees in view','month' => $date->format('F Y'),
+                'monthlypunchings' => [],], 200);
+        }
         //get all govtcalender between start data and enddate
 
        //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
