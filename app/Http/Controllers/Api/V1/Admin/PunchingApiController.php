@@ -119,6 +119,7 @@ class PunchingApiController extends Controller
         });
 
         return response()->json([
+            'date' => $date->format('Y-m-d'), // '2021-01-01'
             'is_today' => $date->isToday(),
             'is_future' => $date->gt(Carbon::today()),
             'punchings' => $data2,
