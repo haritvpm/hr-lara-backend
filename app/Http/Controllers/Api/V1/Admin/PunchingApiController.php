@@ -255,6 +255,7 @@ class PunchingApiController extends Controller
             $dayinfo['day_str'] = $d_str;
             $dayinfo['punching_count'] = 0;
             $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
+            $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::today());
             $dayinfo['is_today'] = $d->isToday();
 
