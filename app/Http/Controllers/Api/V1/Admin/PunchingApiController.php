@@ -113,12 +113,15 @@ class PunchingApiController extends Controller
 
             $item['attendance_book_id'] = $employees_in_view_mapped[$aadharid]['attendance_book_id'];
             $item['attendance_book'] = $employees_in_view_mapped[$aadharid]['attendance_book'];
-
+            $item['section'] = $employees_in_view_mapped[$aadharid]['section_name'];
+            
             return $item;
         });
 
         return response()->json([
-            //            'data_monthly' => $data_monthly,
+            'date_dmY' => $date->format('d-m-Y'), // '2021-01-01'
+            'is_today' => $date->isToday(),
+            'is_future' => $date->gt(Carbon::today()),
             'punchings' => $data2,
             'employees_in_view' =>  $employees_in_view,
             // '$aadhaarids' => $aadhaarids,
@@ -255,7 +258,9 @@ class PunchingApiController extends Controller
             $dayinfo['day_str'] = $d_str;
             $dayinfo['punching_count'] = 0;
             $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
+            $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::today());
+            $dayinfo['is_today'] = $d->isToday();
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
