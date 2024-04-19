@@ -328,7 +328,7 @@ class PunchingService
         }
 
         $insertedcount = 0;
-
+        $attendance_trace_fetch_complete = false;
         for (;; $offset += $count) {
 
             $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/attendancetodaytrace/offset/{$offset}/count/{$count}/apikey/{$apikey}";
@@ -337,6 +337,7 @@ class PunchingService
             if ($fetchdate && !$date->isToday()) {
                 $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/trace/offset/{$offset}/count/{$count}/reportdate/{$reportdate}/apikey/{$apikey}";
                 $returnkey = "attendancetrace";
+                $attendance_trace_fetch_complete = true;
             }
 
 
@@ -408,7 +409,8 @@ class PunchingService
             $govtcalender->update([
                 //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
                 'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched + $insertedcount,
-                'attendancetodaytrace_lastfetchtime' => Carbon::now() //today
+                'attendancetodaytrace_lastfetchtime' => Carbon::now(), //today
+                'attendance_trace_fetch_complete' => $attendance_trace_fetch_complete,
 
             ]);
 
