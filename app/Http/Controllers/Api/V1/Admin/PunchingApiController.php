@@ -89,11 +89,7 @@ class PunchingApiController extends Controller
             return [$item['aadhaarid'] => $item];
         });
 
-        $data_monthly = MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
-            ->wherein('aadhaarid', $aadhaarids)
-            ->get()->mapwithKeys(function ($item) {
-                return [$item['aadhaarid'] => $item];
-            });
+        $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
 
         //this should be done when we finish aebas fetch
         // $data_monthly = (new PunchingService())->calculate($date_str, $aadhaarids)->mapwithKeys(function ($item) {
@@ -160,10 +156,7 @@ class PunchingApiController extends Controller
 
         //get all govtcalender between start data and enddate
 
-        $calender_info = $this->getCalenderInfoForPeriod($start_date, $end_date);
-
-
-        //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
+       //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
         $data3 = [];
         foreach ($employees_in_view as $employee) {
 
@@ -203,7 +196,7 @@ class PunchingApiController extends Controller
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
-            'calender_info' => $calender_info,
+            'calender_info' => GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date),
             //  'sections_under_charge' => $data->pluck('section_name')->unique(),
             'monthlypunchings' => $data3,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
@@ -224,7 +217,6 @@ class PunchingApiController extends Controller
         }
 
 
-        $data3 = [];
         $punchings = Punching::with(['punchin_trace', 'punchout_trace', 'leave'])
             ->where('aadhaarid', $aadhaarid)
             ->whereBetween('date', [$start_date, $end_date])
@@ -239,65 +231,38 @@ class PunchingApiController extends Controller
 
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)
             ->get()->pluck('seat_id');
+
         //for each employee in punching as a row, show columns for each day of month
 
-
-
+        $empMonPunchings = [];
         for ($i = 1; $i <= $date->daysInMonth; $i++) {
 
             $d = $date->day($i);
             $d_str = $d->format('Y-m-d');
 
-            // $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
             $employeeToSection =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
 
-            $item['day' . $i] = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();;
+            $empMonPunchings['day' . $i] = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();;
             if ($seat_ids_of_loggedinuser) {
-                $item['day' . $i]['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
-                $item['day' . $i]['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
+                $empMonPunchings['day' . $i]['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
+                $empMonPunchings['day' . $i]['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
         }
 
-        $data3[] = $item;
 
-
-
-
-        $data_monthly = MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
-            ->where('aadhaarid', $aadhaarid)
-            ->get()->mapwithKeys(function ($item) {
-                return [$item['aadhaarid'] => $item];
-            });
+        $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
 
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
-            'calender_info' => $this->getCalenderInfoForPeriod($start_date, $end_date),
+            'calender_info' => GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date),
             'data_monthly' => $data_monthly,
-            'employee_punching' => $data3,
+            'employee_punching' => $empMonPunchings,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
     }
 
-    public function getCalenderInfoForPeriod($start_date, $end_date)
-    {
-        $date = Carbon::parse($start_date);
-        $calender = GovtCalendar::whereBetween('date', [$start_date, $end_date])->get()->mapwithKeys(function ($item) {
-            return [$item['date'] => $item];
-        });
-        $calender_info = [];
-        for ($i = 1; $i <= $date->daysInMonth; $i++) {
 
-            $d = $date->day($i);
-            $d_str = $d->format('Y-m-d');
-            $calender_info['day' . $i]['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
-            $calender_info['day' . $i]['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
-            $calender_info['day' . $i]['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
-            $calender_info['day' . $i]['future_date'] = $d->gt(Carbon::now());
-            $calender_info['day' . $i]['is_today'] = $d->isToday();
-        }
-        return $calender_info;
-    }
 }

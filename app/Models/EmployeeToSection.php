@@ -92,5 +92,30 @@ class EmployeeToSection extends Model
                 });
         });
     }
-    
+
+    // public static function getSectionsForEmployeeOnEachDayDuringPeriodMappedEachDayInPeriodToASection($employeeId, $from, $to)
+    // {
+    //     $dates = [];
+    //     $currentDate = Carbon::parse($from);
+    //     $endDate = Carbon::parse($to);
+
+    //     while ($currentDate->lte($endDate)) {
+    //         $dates[] = $currentDate->format('Y-m-d');
+    //         $currentDate->addDay();
+    //     }
+
+    //     $sections = [];
+
+    //     foreach ($dates as $date) {
+    //         $section = self::duringPeriod($date, $date)
+    //             ->where('employee_id', $employeeId)
+    //             ->first();
+
+    //         $sections[$date] = $section ? $section->section : null;
+    //     }
+
+    //     return $sections;
+    // }
+
+
 }
