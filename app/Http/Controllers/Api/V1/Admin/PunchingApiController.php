@@ -113,12 +113,14 @@ class PunchingApiController extends Controller
 
             $item['attendance_book_id'] = $employees_in_view_mapped[$aadharid]['attendance_book_id'];
             $item['attendance_book'] = $employees_in_view_mapped[$aadharid]['attendance_book'];
-
+            $item['section'] = $employees_in_view_mapped[$aadharid]['section_name'];
+            
             return $item;
         });
 
         return response()->json([
-            //            'data_monthly' => $data_monthly,
+            'is_today' => $date->isToday(),
+            'is_future' => $date->gt(Carbon::today()),
             'punchings' => $data2,
             'employees_in_view' =>  $employees_in_view,
             // '$aadhaarids' => $aadhaarids,
