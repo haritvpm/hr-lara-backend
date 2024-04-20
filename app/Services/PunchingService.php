@@ -543,7 +543,7 @@ class PunchingService
                 'duration_str',
                 'grace_sec',   'extra_sec',
                 'grace_str',   'extra_str',
-                'grace_total_exceeded_one_hour',
+                'grace_total_exceeded_one_hour', 'hint'
             ]
         );
 
@@ -584,6 +584,8 @@ class PunchingService
         $punching_existing = $allemp_punchings_existing->has($aadhaarid) ?
             $allemp_punchings_existing->get($aadhaarid) : null;
 
+        $hint = $punching_existing && $punching_existing->has('hint') &&
+            $punching_existing['hint'] ? $punching_existing['hint'] : null;
 
         $c_punch_in = null;
         $c_punch_out = null;
@@ -598,6 +600,7 @@ class PunchingService
         $emp_new_punching_data['extra_sec'] = 0;
         $emp_new_punching_data['extra_str'] = '';
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
+        $emp_new_punching_data['hint'] = $hint;
 
         if ($punch_count) {
         }
@@ -628,8 +631,7 @@ class PunchingService
             $emp_new_punching_data['duration_sec'] = $duration_sec ;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
-            //  $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '10:30:00');
-            //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '17:00:00');
+            
             $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
             $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
 
@@ -639,6 +641,8 @@ class PunchingService
 
             $c_flexi_10am = $normal_fn_in->clone()->subMinutes(15);
             $c_flexi_530pm = $normal_an_out->clone()->addMinutes(15);
+            $c_flexi_1030am = $normal_fn_in->clone()->addMinutes(15);
+            $c_flexi_5pm = $normal_an_out->clone()->subMinutes(15);
 
             $max_grace_seconds = 3600;
             //todo ooffice ends at noon or 3.00 pm
@@ -661,8 +665,18 @@ class PunchingService
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
             $isFullDay = true;
-            $hint = $punching_existing && $punching_existing->has('hint') &&
-                $punching_existing['hint'] ? $punching_existing['hint'] : null;
+           
+
+            //if($hint == null) when we recaclulate, hint is already set. so no autohint is generated
+            //TODO separate into two fields. one for manual_hint and one for autohint
+            {
+                $hint = $this->setHintIfPunchMoreThanOneHourLate(
+                    $c_punch_in, $c_punch_out, $duration_seconds_needed, $c_flexi_10am, $c_flexi_1030am, $c_flexi_530pm, $c_flexi_5pm, $can_take_casual_fn, $can_take_casual_an);
+               
+            } 
+            
+            $emp_new_punching_data['hint'] = $hint;
+            
 
             if ($can_take_casual_fn && $hint == 'casual_fn') {
                 $c_flexi_10am = $normal_an_in->clone()->subMinutes(15); //2pm -15
@@ -679,9 +693,6 @@ class PunchingService
                 $isFullDay = false;
                 //   $max_grace_seconds = 1800;
             }
-
-
-
             //if punches in before 10 am or punches out after 5.30, dont take that, use 10am and 5.30
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
@@ -693,6 +704,8 @@ class PunchingService
                 //if( isCL_FN ) //todo
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
+
+                
                 if ($worked_seconds_flexi < $duration_seconds_needed) { //worked less
                     $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
                     $emp_new_punching_data['grace_sec'] =  $grace_sec;
@@ -700,7 +713,11 @@ class PunchingService
 
                     //one hour max grace check.
                     if ($grace_sec > $max_grace_seconds) {
+
                         $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_sec - $max_grace_seconds;
+
+                        //if so, set hald day casual
+
                     }
                 }
 
@@ -720,6 +737,42 @@ class PunchingService
 
         //extra time
     }
+
+    public function setHintIfPunchMoreThanOneHourLate(
+        $c_punch_in, $c_punch_out, $duration_seconds_needed, $c_flexi_10am, 
+        $c_flexi_1030am, $c_flexi_530pm, $c_flexi_5pm, $can_take_casual_fn, $can_take_casual_an)
+    {
+
+        //this function assumes that the employee has punched in and out
+
+        $hint = null;
+        $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
+        $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
+
+        $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
+
+        if ($duration_seconds_needed > $worked_seconds_flexi && $worked_seconds_flexi > 0) { 
+            $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
+
+            //one hour max grace check.
+            if ($grace_sec > 3600) {
+
+                //see if this punch was after 11.30 am
+                if ($c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600))) {
+                    $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                } else if ($c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600))) {
+                    $hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+                } else {
+                    //10.08 to 4.05
+                    $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                }
+            }
+        }
+
+        return $hint;
+
+    }
+
 
     public function calculateMonthlyAttendance( $date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
 
