@@ -71,17 +71,17 @@ class PunchingApiSectionDailyController extends Controller
             ->get();
         //for each employee get
         $data2->transform(function ($item, $key) use ($data_monthly, $employees_in_view_mapped) {
-            $aadharid = $item['aadhaarid'];
-            $item['total_grace_sec'] = $data_monthly[$aadharid]['total_grace_sec'];
-            $item['total_extra_sec'] = $data_monthly[$aadharid]['total_extra_sec'];
-            $item['cl_taken'] = $data_monthly[$aadharid]['cl_taken'];
+            $aadhaarid = $item['aadhaarid'];
+            $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
+            $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
+            $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
 
-            $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadharid]['logged_in_user_is_controller'];
-            $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadharid]['logged_in_user_is_section_officer'];
+            $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];
+            $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_section_officer'];
 
-            $item['attendance_book_id'] = $employees_in_view_mapped[$aadharid]['attendance_book_id'];
-            $item['attendance_book'] = $employees_in_view_mapped[$aadharid]['attendance_book'];
-            $item['section'] = $employees_in_view_mapped[$aadharid]['section_name'];
+            $item['attendance_book_id'] = $employees_in_view_mapped[$aadhaarid]['attendance_book_id'];
+            $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];
+            $item['section'] = $employees_in_view_mapped[$aadhaarid]['section_name'];
 
             return $item;
         });

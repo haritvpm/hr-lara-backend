@@ -24,7 +24,7 @@
                 @csrf
 
                 <div class="form-group">
-                    <input id="username" type="username" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" required autocomplete="username" autofocus placeholder="{{ trans('global.login_username') }}" name="username" value="{{ old('username', null) }}">
+                    <input id="username" type="username" class="form-control{{ $errors->has('username') ? ' is-invalid' : '' }}" required autocomplete="username" autofocus placeholder="username" name="username" value="{{ old('username', null) }}">
 
                     @if($errors->has('username'))
                         <div class="invalid-feedback">
