@@ -47,28 +47,29 @@ class EmployeeToDesignation extends Model
         return $this->belongsTo(Designation::class, 'designation_id');
     }
 
-    public function getStartDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getStartDateAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setStartDateAttribute($value)
-    {
-        $this->attributes['start_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setStartDateAttribute($value)
+    // {
+    //     $this->attributes['start_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
-    public function getEndDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getEndDateAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setEndDateAttribute($value)
-    {
-        $this->attributes['end_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setEndDateAttribute($value)
+    // {
+    //     $this->attributes['end_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
     public function scopeDesignationDuring($query, $date)
     {
+        \Log::info('dateeeee'. $date);
         return $query->where(function ($query) use ($date) {
             $query->where('start_date', '<=', $date)
                 ->where(function ($query) use ($date) {

@@ -192,11 +192,11 @@ class EmployeeService
         return $aebas_employees;
     }
 
-   
+
     public static function getDesignationOfEmployeesOnDate($date_str,  $emp_ids)
     {
         $employee_section_maps = Employee::with(['employeeEmployeeToDesignations' => function ($q) use ($date_str) {
-                $q->DesignationDuring($date_str)->with(['designation']);;
+                $q->DesignationDuring($date_str)->with(['designation']);
             }])
             ->wherein('id', $emp_ids)
             ->get();
@@ -206,7 +206,7 @@ class EmployeeService
             $employee = json_decode(json_encode($item));
 
             $desig = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->designation : '';
-            
+
             $time_group_id = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
 
             return [
@@ -221,14 +221,14 @@ class EmployeeService
 
         return $employee_section_maps;
     }
-   
+
     public function getEmployeeSectionMappingsAndDesignationsOnDate($date_str,  $emp_ids)
     {
         $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
             ->with(['employee', 'section'])
             ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
 
-                $q->DesignationDuring($date_str)->with(['designation']);;
+                $q->DesignationDuring($date_str)->with(['designation']);
             }])
             ->wherein('employee_id', $emp_ids)
             ->get();
@@ -238,7 +238,7 @@ class EmployeeService
             $x = json_decode(json_encode($item));
 
             $desig = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->designation : '';
-       
+
             $time_group_id = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
 
             return [
@@ -262,7 +262,7 @@ class EmployeeService
             ->with(['employee', 'section'])
             ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
-                $q->DesignationDuring($date_to)->with(['designation']);;
+                $q->DesignationDuring($date_to)->with(['designation']);
             }])
             ->where('employee_id', $emp_id)
             ->get();
@@ -288,13 +288,13 @@ class EmployeeService
 
         return $employee_section_maps;
     }
-   
+
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
     public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to,  $seat_ids)
     {
-        \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
+        // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
         $sections_under_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
@@ -303,13 +303,13 @@ class EmployeeService
         if ($sections_under_charge == null) {
             return null;
         }
-        \Log::info(' sections_under_charge ' . $sections_under_charge);
+        // \Log::info(' sections_under_charge ' . $sections_under_charge);
 
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to )
             ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
             ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
-                $q->DesignationDuring($date_to)->with(['designation']);;
+                $q->DesignationDuring($date_to)->with(['designation']);
             }])
             ->wherein('section_id', $sections_under_charge->pluck('id'))
             ->get();
@@ -330,8 +330,7 @@ class EmployeeService
         $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
         if (!$employee_section_maps) {
-            \Log::info('No employee found');
-            return response()->json(['status' => 'No employee found'], 200);
+            return null;
         }
 
         $data = collect($employee_section_maps);

@@ -12,7 +12,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
-use App\Services\EmployeeService;
+
 
 class EmployeeController extends Controller
 {
@@ -152,10 +152,10 @@ class EmployeeController extends Controller
     {
        $list =  (new EmployeeService())->syncEmployeeDataFromAebas();
 
-       $callback = function() use ($list) 
+       $callback = function() use ($list)
         {
             $FH = fopen('php://output', 'w');
-            foreach ($list as $row) { 
+            foreach ($list as $row) {
                 fputcsv($FH, $row);
             }
             fclose($FH);
@@ -170,5 +170,5 @@ class EmployeeController extends Controller
         return response()->stream($callback, 200, $headers);
 
     }
-    
+
 }

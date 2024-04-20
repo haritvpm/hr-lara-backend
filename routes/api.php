@@ -17,7 +17,7 @@ Route::group([
 
 
 Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', 'middleware' => ['auth:api']], function () {
-    
+
         // Permissions
     Route::apiResource('permissions', 'PermissionsApiController');
 
@@ -130,9 +130,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
 
     // Punching
-    Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiController@getemployeeMonthlyPunchings');
-    Route::get('/punchings-monthly/{date?}', 'PunchingApiController@getmonthlypunchings');
-    Route::get('/punchings/{date?}', 'PunchingApiController@getpunchings');
+    Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeMonthlyPunchings');
+    Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');
+    Route::get('/punchings/{date?}', 'PunchingApiSectionDailyController@getpunchings');
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
 
     // Assembly Session
