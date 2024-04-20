@@ -73,7 +73,7 @@ class PunchingApiSectionMontlyController extends Controller
         //get all govtcalender between start data and enddate
 
        //  $data_monthly = (new PunchingService())->calculateMonthlyAttendance($date_str, $aadhaarids );
-        $data3 = [];
+        $data = [];
         foreach ($employees_in_view as $employee) {
 
             $item =  $employee;
@@ -110,15 +110,15 @@ class PunchingApiSectionMontlyController extends Controller
                 $item['day' . $i] = [...$dayinfo];
             }
 
-            $data3[] = $item;
+            $data[] = $item;
         }
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
             'calender_info' => $calender_info,
-            //  'sections_under_charge' => $data->pluck('section_name')->unique(),
-            'monthlypunchings' => $data3,
-            // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+            'sections' => collect($data)->pluck('section_name')->unique(),
+            'monthlypunchings' => $data,
+            'employees_in_view' =>  $employees_in_view,
         ], 200);
     }
 
