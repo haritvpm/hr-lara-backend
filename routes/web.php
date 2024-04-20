@@ -42,7 +42,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('ot-categories', 'OtCategoryController');
 
     // Employee
-    Route::get('employees/aebasfetch', 'EmployeeController@aebasfetch')->name('employees.aebasfetch');
+    Route::get('employees/aebasfetch', 'EmployeeCustomController@aebasfetch')->name('employees.aebasfetch');
     Route::delete('employees/destroy', 'EmployeeController@massDestroy')->name('employees.massDestroy');
     Route::post('employees/parse-csv-import', 'EmployeeController@parseCsvImport')->name('employees.parseCsvImport');
     Route::post('employees/process-csv-import', 'EmployeeController@processCsvImport')->name('employees.processCsvImport');
@@ -56,9 +56,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
 
     // Govt Calendar
-    Route::get('govt-calendars/calculate/{date}', 'GovtCalendarController@calculate')->name('govt-calendars.calculate');
-    Route::get('govt-calendars/fetch/{date}', 'GovtCalendarController@fetch')->name('govt-calendars.fetch');
-    Route::post('govt-calendars/fetchmonth', 'GovtCalendarController@fetchmonth')->name('govt-calendars.fetchmonth');
+    Route::get('govt-calendars/calculate/{date}', 'GovtCalendarCustomController@calculate')->name('govt-calendars.calculate');
+    Route::get('govt-calendars/fetch/{date}', 'GovtCalendarCustomController@fetch')->name('govt-calendars.fetch');
+    Route::post('govt-calendars/fetchmonth', 'GovtCalendarCustomController@fetchmonth')->name('govt-calendars.fetchmonth');
     Route::resource('govt-calendars', 'GovtCalendarController', ['except' => ['create', 'store', 'destroy']]);
 
     // Administrative Office

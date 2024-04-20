@@ -52,6 +52,22 @@ class SeniorityController extends Controller
 
     public function update(UpdateSeniorityRequest $request, Seniority $seniority)
     {
+        // //update the seniority of other employees
+        // $sortindex = $request->sortindex;
+        // $employee_seniority_now = Seniority::where('employee_id', $request->employee_id)->first();
+
+        // //now see if the sort index is changed
+        // if($employee_seniority_now && $sortindex != $employee_seniority_now->sortindex){
+        //     //if changed, then we need to update all the other sort index
+        //     $employee_seniorities = Seniority::where('sortindex', '>=', $sortindex)
+        //     ->get();
+        //     foreach($employee_seniorities as $d){
+        //         $d->sortindex = $d->sortindex + 1 ;
+        //         $d->save();
+        //     }
+        // }
+
+
         $seniority->update($request->all());
 
         return redirect()->route('admin.seniorities.index');

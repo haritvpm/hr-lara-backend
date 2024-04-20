@@ -658,7 +658,7 @@ class PunchingService
                 $can_take_casual_fn = $can_take_casual_an = false;
             }
 
-             \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
+            // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
             $isFullDay = true;
             $hint = $punching_existing && $punching_existing->has('hint') &&
@@ -702,12 +702,12 @@ class PunchingService
                     if ($grace_sec > $max_grace_seconds) {
                         $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_sec - $max_grace_seconds;
                     }
-                } 
-                
+                }
+
                 if ($duration_sec > $duration_seconds_needed) {
-                    
+
                     $extra_sec = $duration_sec - $duration_seconds_needed;
-            
+
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec/60);
                 }
@@ -722,11 +722,11 @@ class PunchingService
     }
 
     public function calculateMonthlyAttendance( $date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
-    
+
     {
         $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfMonth();
         $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfMonth();
-      
+
         if( $aadhaar_ids == null ){
             $all_punchingtraces =  $this->getPunchingTracesForPeriod($start_date, $end_date, $aadhaar_ids);
             $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
@@ -744,7 +744,7 @@ class PunchingService
             ->get();
 
         $punchings_grouped = $punchings->groupBy('aadhaarid');
-        \Log::info('aadhaar_to_empIds count:' . $aadhaar_to_empIds);
+        //\Log::info('aadhaar_to_empIds count:' . $aadhaar_to_empIds);
 
         $data = collect([]);
 
@@ -780,7 +780,7 @@ class PunchingService
             uniqueBy: ['month', 'aadhaarid'],
             update: [
                 'total_grace_sec',  'total_extra_sec', 'cl_taken','employee_id'
-                
+
             ]
         );
 

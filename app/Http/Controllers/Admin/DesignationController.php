@@ -59,7 +59,7 @@ class DesignationController extends Controller
         $sort_index = $request->sort_index;
 
         //now see if the sort index is changed
-        if($sort_index != $designation->sort_index){
+        if($sort_index != $designation->sort_index && $designation->sort_index != null){
             //if changed, then we need to update all the other designations sort index
             $designations = Designation::where('sort_index', '>=', $sort_index)
          //   ->orWhereNull('sort_index')
