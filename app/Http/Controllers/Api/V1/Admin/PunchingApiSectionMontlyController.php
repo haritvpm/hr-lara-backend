@@ -84,7 +84,7 @@ class PunchingApiSectionMontlyController extends Controller
             $aadhaarid = $employee['aadhaarid'];
             $sections[] = $employee['section_name'];
             //mapped after fetching. so no need to check if it exists
-                     
+            $item['start_date'] = $start_date;
             if( $data_monthly &&  $data_monthly->has($aadhaarid)){
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
@@ -99,15 +99,15 @@ class PunchingApiSectionMontlyController extends Controller
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
             for ($i = 1; $i <= $date->daysInMonth; $i++) {
-            
-               
+
+
                 $d = $date->day($i);
                 $d_str = $d->format('Y-m-d');
                 $emp_start_date = Carbon::parse($employee['start_date']);
                 $emp_end_date = Carbon::parse($employee['end_date']);
 
                 $dayinfo = [];
-       
+
 
 
                 $dayinfo['in_section'] = $emp_start_date <= $d && $emp_end_date >= $d;
@@ -117,12 +117,12 @@ class PunchingApiSectionMontlyController extends Controller
                 $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
                 $dayinfo['is_future'] = $d->gt(Carbon::today());
                 $dayinfo['is_today'] = $d->isToday();
-                
+
 
                 $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {
                     //copy all properties of $punching to $dayinfo
-                    $dayinfo = [...$dayinfo, ...$punching->toArray(),  
+                    $dayinfo = [...$dayinfo, ...$punching->toArray(),
                     'in_time' => substr($punching->in_datetime,10,-3),
                     'out_time' => substr($punching->out_datetime,10,-3),
                 ];
