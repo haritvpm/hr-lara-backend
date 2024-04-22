@@ -89,17 +89,20 @@ class PunchingApiSectionMontlyController extends Controller
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
                 $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
+                $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
             } else {
                 $item['total_grace_sec'] = 0;
                 $item['total_extra_sec'] = 0;
                 $item['cl_taken'] = 0;
+                $item['total_grace_exceeded300_date'] = null;
             }
 
+            $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
 
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+            
             for ($i = 1; $i <= $date->daysInMonth; $i++) {
-
 
                 $d = $date->day($i);
                 $d_str = $d->format('Y-m-d');
@@ -107,8 +110,6 @@ class PunchingApiSectionMontlyController extends Controller
                 $emp_end_date = Carbon::parse($employee['end_date']);
 
                 $dayinfo = [];
-
-
 
                 $dayinfo['in_section'] = $emp_start_date <= $d && $emp_end_date >= $d;
                 $dayinfo['punching_count'] = 0; //this will be overwritten when punching is got below
@@ -125,7 +126,14 @@ class PunchingApiSectionMontlyController extends Controller
                     $dayinfo = [...$dayinfo, ...$punching->toArray(),
                     'in_time' => substr($punching->in_datetime,10,-3),
                     'out_time' => substr($punching->out_datetime,10,-3),
-                ];
+                    ];
+                    
+                    if( $total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching->grace_sec > 60){
+                        $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
+                    } else {
+                        $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
+                    }
+                   
                 } else {
                     //no punching found
                     //set name, designation,

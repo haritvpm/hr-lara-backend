@@ -673,23 +673,27 @@ class PunchingService
             $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
 
             //if real hint set by so exists, use that instead of computer hint
-            if (($can_take_casual_fn && $computer_hint == 'casual_fn') || $hint == 'casual_fn') {
-                $c_flexi_10am = $normal_an_in->clone()->subMinutes(15); //2pm -15
-                //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
-                $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
-                $isFullDay = false;
-                //   $max_grace_seconds = 1800;
-            } else
-            if (($can_take_casual_an && $computer_hint == 'casual_an') || $hint == 'casual_an') {
-                $c_flexi_530pm = $normal_fn_out->clone()->addMinutes(15); //1.15 +15
-                //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
-                //$duration_seconds_needed = 3 * 3600;
-                $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
-                $isFullDay = false;
-                //   $max_grace_seconds = 1800;
-            } else if ($computer_hint == 'casual') {
-                //punched, but not enough time worked or office ends and 3 pm/12pm situations
+            if( $grace_total_exceeded_one_hour > 1800 ){
+                if (($can_take_casual_fn && $computer_hint == 'casual_fn') || $hint == 'casual_fn') {
+                    
+                    $c_flexi_10am = $normal_an_in->clone()->subMinutes(15); //2pm -15
+                    //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
+                    $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
 
+                    $isFullDay = false;
+                    //   $max_grace_seconds = 1800;
+                } else
+                if (($can_take_casual_an && $computer_hint == 'casual_an') || $hint == 'casual_an') {
+                    $c_flexi_530pm = $normal_fn_out->clone()->addMinutes(15); //1.15 +15
+                    //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
+                    //$duration_seconds_needed = 3 * 3600;
+                    $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
+                    $isFullDay = false;
+                    //   $max_grace_seconds = 1800;
+                } else if ($computer_hint == 'casual') {
+                    //punched, but not enough time worked or office ends and 3 pm/12pm situations
+
+                }
             }
 
             //if punches in before 10 am or punches out after 5.30, dont take that, use 10am and 5.30
@@ -738,7 +742,7 @@ class PunchingService
 
         //this function assumes that the employee has punched in and out
 
-        $hint = null;
+        $computer_hint = null;
         $grace_total_exceeded_one_hour = 0;
         $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
         $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
@@ -749,22 +753,22 @@ class PunchingService
             $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
 
             //one hour max grace check.
-            if ($grace_sec > 3600) {
+            if ($grace_sec > 3600) { //if exceeded by more than 30 minutes
 
                 //see if this punch was after 11.30 am
                 if ($c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600))) {
-                    $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                    $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
                 } else if ($c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600))) {
-                    $hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+                    $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
                 } else {
                     //10.08 to 4.05
                     //find which end has more has more time diff. morning or evening
                     $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
                     $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm);
                     if($morning_diff > $evening_diff)
-                        $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                        $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
                     else
-                        $hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+                        $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
 
                 }
 
@@ -772,14 +776,14 @@ class PunchingService
                 //computer decides hint. this can be wrong.
                 //this can also be used to show how many decisions pending for an employee in a month
                 //we only count cl set by so/us. not based on hint
-                $grace_total_exceeded_one_hour = $grace_sec - 3600;
 
+            } 
 
+            $grace_total_exceeded_one_hour = $grace_sec - 3600;
 
-            }
         }
 
-        return [$hint, $grace_total_exceeded_one_hour];
+        return [$computer_hint, $grace_total_exceeded_one_hour];
 
     }
 
@@ -822,16 +826,33 @@ class PunchingService
             $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
             $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
             $emp_new_monthly_attendance_data['cl_taken'] = 0 ;
+            $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
 
+            \Log::info('aadhaarid:' . $aadhaarid);
             if( $emp_punchings){
                 $emp_new_monthly_attendance_data['total_grace_sec'] = $emp_punchings->sum('grace_sec');
                 $emp_new_monthly_attendance_data['total_extra_sec'] = $emp_punchings->sum('extra_sec');
                 $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
                 $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
                 $total_full_day =  $emp_punchings->where('hint', 'casual')->count();
-
                 $total_cl =   ($total_half_day_fn +  $total_half_day_an)/(float)2 + $total_full_day;
                 $emp_new_monthly_attendance_data['cl_taken'] = $total_cl ;
+
+                //find the day on which total grace time exceeded 300 minutes
+                $total_grace = 0;
+                $date = $start_date->clone();
+                $total_grace_till_this_date = 0;
+                for ($i = 1; $i <= $start_date->daysInMonth; $i++) {
+                    $d = $date->day($i);
+                    $d_str = $d->format('Y-m-d');
+                    $total_grace_till_this_date += $emp_punchings->where('date', $d_str)->first()?->grace_sec ?? 0;
+                    \Log::info('total_grace_till_this_date:' . $total_grace_till_this_date);
+                    if ($total_grace_till_this_date > 300*60) {
+                        $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = $d_str;
+                        break;
+                    }
+                }
+
             }
           //  $emp_new_monthly_attendance_data['total_absent'] = 0;
 
@@ -842,8 +863,8 @@ class PunchingService
             $data->all(),
             uniqueBy: ['month', 'aadhaarid'],
             update: [
-                'total_grace_sec',  'total_extra_sec', 'cl_taken','employee_id'
-
+                'total_grace_sec',  'total_extra_sec', 'cl_taken','employee_id',
+                'total_grace_exceeded300_date'
             ]
         );
 
