@@ -60,6 +60,7 @@ class Employee extends Model
     }
     public function designation()
     {
+        //get the current designation of the employee
         return $this->hasMany(EmployeeToDesignation::class, 'employee_id', 'id')->designationNow();
     }
 
@@ -74,6 +75,17 @@ class Employee extends Model
         $employees = Employee::all()
             ->mapWithKeys(function ($employee) {
                 return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid];
+                });
+
+         return $employees;
+    }
+    public static function getEmployeesWithAadhaarDesig()
+    {
+        $employees = Employee::with('designation')->get()
+            ->mapWithKeys(function ($employee) {
+                $desig = $employee?->designation?->first()?->designation->designation;
+               // dd($employee->designation);
+                return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid . ($desig ? ' - ' . $desig : '')];
                 });
 
          return $employees;

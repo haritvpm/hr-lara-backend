@@ -75,7 +75,7 @@ class EmployeeToSectionController extends Controller
     public function create()
     {
         abort_if(Gate::denies('employee_to_section_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
 
         $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
