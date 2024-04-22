@@ -62,7 +62,7 @@ class PunchingApiSectionMontlyController extends Controller
             $seat_ids_of_loggedinuser,
             $me
         );
-        //\Log::info('employees_in_view: ' . $employees_in_view);
+        \Log::info('employees_in_view: ' . $employees_in_view);
 
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
@@ -128,6 +128,8 @@ class PunchingApiSectionMontlyController extends Controller
                 ];
                 } else {
                     //no punching found
+                    //set name, designation,
+                    $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid  ];
                 }
 
 

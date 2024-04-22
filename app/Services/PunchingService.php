@@ -543,7 +543,7 @@ class PunchingService
                 'duration_str',
                 'grace_sec',   'extra_sec',
                 'grace_str',   'extra_str',
-                'grace_total_exceeded_one_hour', 'hint'
+                'grace_total_exceeded_one_hour', 'computer_hint'
             ]
         );
 
@@ -600,7 +600,7 @@ class PunchingService
         $emp_new_punching_data['extra_sec'] = 0;
         $emp_new_punching_data['extra_str'] = '';
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
-        $emp_new_punching_data['hint'] = $hint;
+        $emp_new_punching_data['computer_hint'] = null;
 
         if ($punch_count) {
         }
@@ -631,7 +631,7 @@ class PunchingService
             $emp_new_punching_data['duration_sec'] = $duration_sec ;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
-            
+
             $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
             $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
 
@@ -665,60 +665,47 @@ class PunchingService
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
             $isFullDay = true;
-           
 
-            //if($hint == null) when we recaclulate, hint is already set. so no autohint is generated
-            //TODO separate into two fields. one for manual_hint and one for autohint
-            {
-                $hint = $this->setHintIfPunchMoreThanOneHourLate(
+            [$computer_hint, $grace_total_exceeded_one_hour]= $this->setHintIfPunchMoreThanOneHourLate(
                     $c_punch_in, $c_punch_out, $duration_seconds_needed, $c_flexi_10am, $c_flexi_1030am, $c_flexi_530pm, $c_flexi_5pm, $can_take_casual_fn, $can_take_casual_an);
-               
-            } 
-            
-            $emp_new_punching_data['hint'] = $hint;
-            
 
-            if ($can_take_casual_fn && $hint == 'casual_fn') {
+            $emp_new_punching_data['computer_hint'] = $computer_hint;
+            $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
+
+            //if real hint set by so exists, use that instead of computer hint
+            if (($can_take_casual_fn && $computer_hint == 'casual_fn') || $hint == 'casual_fn') {
                 $c_flexi_10am = $normal_an_in->clone()->subMinutes(15); //2pm -15
                 //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
                 $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
                 $isFullDay = false;
                 //   $max_grace_seconds = 1800;
             } else
-            if ($can_take_casual_an && $hint == 'casual_an') {
+            if (($can_take_casual_an && $computer_hint == 'casual_an') || $hint == 'casual_an') {
                 $c_flexi_530pm = $normal_fn_out->clone()->addMinutes(15); //1.15 +15
                 //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
                 //$duration_seconds_needed = 3 * 3600;
                 $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
                 $isFullDay = false;
                 //   $max_grace_seconds = 1800;
+            } else if ($computer_hint == 'casual') {
+                //punched, but not enough time worked or office ends and 3 pm/12pm situations
+
             }
+
             //if punches in before 10 am or punches out after 5.30, dont take that, use 10am and 5.30
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
-
             //probably shift. like from 6 to 9 am
-            //if ($c_start->lessThan($c_punch_out) && $c_end->greaterThan($c_punch_in))
+            if ($computer_hint !== 'casual' || $hint != null) //if hint exists, no need to use computer hint for else
             {
-                //if( isCL_FN ) //todo
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
 
-                
                 if ($worked_seconds_flexi < $duration_seconds_needed) { //worked less
                     $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
                     $emp_new_punching_data['grace_sec'] =  $grace_sec;
                     $emp_new_punching_data['grace_str'] =  (int)($grace_sec/60);
-
-                    //one hour max grace check.
-                    if ($grace_sec > $max_grace_seconds) {
-
-                        $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_sec - $max_grace_seconds;
-
-                        //if so, set hald day casual
-
-                    }
                 }
 
                 if ($duration_sec > $duration_seconds_needed) {
@@ -728,6 +715,12 @@ class PunchingService
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec/60);
                 }
+            } else {
+                //punched, but not enough time worked or office ends and 3 pm/12pm situations
+                //set grace as 0. but allow extra time as whole day's time
+                $extra_sec = $duration_sec;
+                $emp_new_punching_data['extra_sec'] = $extra_sec;
+                $emp_new_punching_data['extra_str'] = (int)($extra_sec/60);
             }
         }
         // \Log::info($emp_new_punching_data);
@@ -739,19 +732,20 @@ class PunchingService
     }
 
     public function setHintIfPunchMoreThanOneHourLate(
-        $c_punch_in, $c_punch_out, $duration_seconds_needed, $c_flexi_10am, 
+        $c_punch_in, $c_punch_out, $duration_seconds_needed, $c_flexi_10am,
         $c_flexi_1030am, $c_flexi_530pm, $c_flexi_5pm, $can_take_casual_fn, $can_take_casual_an)
     {
 
         //this function assumes that the employee has punched in and out
 
         $hint = null;
+        $grace_total_exceeded_one_hour = 0;
         $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
         $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
         $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
 
-        if ($duration_seconds_needed > $worked_seconds_flexi && $worked_seconds_flexi > 0) { 
+        if ($duration_seconds_needed > $worked_seconds_flexi && $worked_seconds_flexi > 0) {
             $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi)/60)*60; //ignore extra seconds
 
             //one hour max grace check.
@@ -764,12 +758,28 @@ class PunchingService
                     $hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
                 } else {
                     //10.08 to 4.05
-                    $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                    //find which end has more has more time diff. morning or evening
+                    $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
+                    $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm);
+                    if($morning_diff > $evening_diff)
+                        $hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                    else
+                        $hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+
                 }
+
+                //used when we show icons. if this is just two or three minutes late, dont show 1/2 cl icon
+                //computer decides hint. this can be wrong.
+                //this can also be used to show how many decisions pending for an employee in a month
+                //we only count cl set by so/us. not based on hint
+                $grace_total_exceeded_one_hour = $grace_sec - 3600;
+
+
+
             }
         }
 
-        return $hint;
+        return [$hint, $grace_total_exceeded_one_hour];
 
     }
 
