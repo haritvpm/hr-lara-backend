@@ -67,6 +67,7 @@ class Punching extends Model
         'controller_set_punch_out',
 
         'grace_total_exceeded_one_hour',
+        'computer_hint',
         'created_at',
         'updated_at',
         'deleted_at',
