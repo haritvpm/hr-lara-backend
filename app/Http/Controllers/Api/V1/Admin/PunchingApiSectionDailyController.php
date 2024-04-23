@@ -63,19 +63,30 @@ class PunchingApiSectionDailyController extends Controller
         // $data_monthly = (new PunchingService())->calculate($date_str, $aadhaarids)->mapwithKeys(function ($item) {
         //     return [$item['aadhaarid'] => $item];
         // });
+        $punchings = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
+        ->wherein('aadhaarid', $aadhaarids)
+        ->where('date', $date_str)
+        ->get()->groupBy('aadhaarid');
+        $data2 = [];
 
+        foreach ($employees_in_view as $employee) {
+            $aadhaarid = $employee['aadhaarid'];
+            
+            $item['name'] = $employee['name'];
+            $item['aadhaarid'] = $employee['aadhaarid'];
 
-        $data2 = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
-            ->wherein('aadhaarid', $aadhaarids)
-            ->where('date', $date_str)
-            ->get();
-        //for each employee get
-        $data2->transform(function ($item, $key) use ($data_monthly, $employees_in_view_mapped) {
-            $aadhaarid = $item['aadhaarid'];
-            $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
-            $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
-            $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
-
+            if( $data_monthly &&  $data_monthly->has($aadhaarid)){
+                $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
+                $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
+                $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
+                $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
+            } else {
+                $item['total_grace_sec'] = 0;
+                $item['total_extra_sec'] = 0;
+                $item['cl_taken'] = 0;
+                $item['total_grace_exceeded300_date'] = null;
+            }
+           
             $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];
             $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_section_officer'];
 
@@ -83,8 +94,24 @@ class PunchingApiSectionDailyController extends Controller
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];
             $item['section'] = $employees_in_view_mapped[$aadhaarid]['section_name'];
 
-            return $item;
-        });
+            $punching = $punchings[$aadhaarid] ?? null;
+
+            if ($punching) {
+                $item = [... $item, ...$punching];
+            } else {
+                $item['punching_count'] = 0;
+            }
+
+            $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
+            if( $total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60){
+                $item['grace_exceeded300_and_today_has_grace'] = true;
+            } else {
+                $item['grace_exceeded300_and_today_has_grace'] = false;
+            }
+            $data2[] = $item;
+        }
+
+              
 
         return response()->json([
             'date_dmY' => $date->format('d-m-Y'), // '2021-01-01'

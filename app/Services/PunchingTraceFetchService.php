@@ -21,7 +21,7 @@ class PunchingTraceFetchService
     public function fetchTrace($fetchdate = null)
     {
         $apikey =  env('AEBAS_KEY');
-        // \Log::info($apikey );
+        \Log::info('apike-' . $apikey );
 
 
         $offset = 0;
