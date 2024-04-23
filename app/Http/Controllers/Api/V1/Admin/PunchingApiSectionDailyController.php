@@ -73,7 +73,7 @@ class PunchingApiSectionDailyController extends Controller
 
         foreach ($employees_in_view as $employee) {
             $aadhaarid = $employee['aadhaarid'];
-            
+            $item = [];
             $item['name'] = $employee['name'];
             $item['aadhaarid'] = $employee['aadhaarid'];
 
@@ -96,7 +96,7 @@ class PunchingApiSectionDailyController extends Controller
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];
             $item['section'] = $employees_in_view_mapped[$aadhaarid]['section_name'];
 
-            //  $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+           // $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $date_str)->first();
 
             $punching = $punchings->where( 'aadhaarid',$aadhaarid)->first();
 
@@ -108,7 +108,8 @@ class PunchingApiSectionDailyController extends Controller
 
             //punching might have section empty. so overwrite with employee section
             $item['section'] = $employee['section_name'];
-
+            $item['designation'] = $employee['designation'];
+            
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
             if( $total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60){
                 $item['grace_exceeded300_and_today_has_grace'] = true;

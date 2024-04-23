@@ -63,7 +63,7 @@ class PunchingCalcService
         //we need Punching if it exists, to get hints like half day leave
         $allemp_punchings_existing  =  $this->getPunchingsForDay($date,  $aadhaar_ids)->groupBy('aadhaarid');
 
-        $time_groups  = OfficeTime::all()->mapWithKeys(function (array $item, int $key) {
+        $time_groups  = OfficeTime::get()->mapWithKeys(function ($item, int $key) {
             return [$item['id'] => $item];
         });
 
@@ -84,19 +84,19 @@ class PunchingCalcService
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
                // $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
                 $emp_new_punching_data['name'] = $employee_section_maps[$aadhaarid]['name'];
-                $time_group_id = $employee_section_maps[$aadhaarid]['time_group_id'];
+                $time_group_id = $employee_section_maps[$aadhaarid]['time_group_id'] ?? 1;
                 //only call this if we have an employee section map
                 //use upsert insetad of updateorcreate inside calculateforemployee
 
-             //   $time_group = $time_groups[$time_group_id];
-
+                $time_group = $time_groups[$time_group_id];
+/*
                 $time_group = [
                     'fn_from' => '10:15:00',
                     'fn_to' => '13:15:00',
                     'an_from' => '14:00:00',
                     'an_to' => '17:15:00',
 
-                ];
+                ];*/
 
                 $data[] = $this->calculateEmployeeDaily(
                     $date,
