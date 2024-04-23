@@ -2,12 +2,26 @@
 @section('content')
 @can('leaf_create')
     <div style="margin-bottom: 10px;" class="row">
-        <div class="col-lg-12">
-            <a class="btn btn-success" href="{{ route('admin.leaves.create') }}">
+            <a class="ml-2 btn btn-success" href="{{ route('admin.leaves.create') }}">
                 {{ trans('global.add') }} {{ trans('cruds.leaf.title_singular') }}
             </a>
-        </div>
+
+
+        <div class="ml-2 dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item"  href="{{ route('admin.leaves.aebasdownload') }}">Download All Leaves from AEBAS</a>
+                <!-- <a class="dropdown-item" href="#">Another action</a> -->
+            </div>
+
+            </div>
+
     </div>
+
+    
+
 @endcan
 <div class="card_">
     <div class="card-header_">

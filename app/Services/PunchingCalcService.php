@@ -213,8 +213,14 @@ class PunchingCalcService
             $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
             $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
 
-            $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
-            $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
+            $normal_an_in = $normal_an_out = null;
+            if( $time_group['groupname'] != 'parttime' ){
+                $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
+                $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
+            } else {
+                $normal_an_out = $normal_fn_out;
+            }
+
             $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
 
             $c_flexi_10am = $normal_fn_in->clone()->subMinutes(15);
@@ -238,6 +244,9 @@ class PunchingCalcService
                 $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:15:00'); //
                 //  $max_grace_seconds = 1800; // ?
                 $can_take_casual_fn = $can_take_casual_an = false;
+            }
+            if( $time_group['groupname'] == 'parttime' ){
+                $can_take_casual_an = false;
             }
 
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
