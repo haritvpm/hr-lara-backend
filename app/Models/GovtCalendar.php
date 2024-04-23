@@ -85,6 +85,32 @@ class GovtCalendar extends Model
     {
         return $this->belongsTo(AssemblySession::class, 'session_id');
     }
+    public static function getGovtCalender($reportdate)
+    {
+        $calender = GovtCalendar::where('date', $reportdate)->first();
+        if ($calender) {
+            //if( $calender->attendance_today_trace_fetched)
+            {
+                //  \Log::info('calendear date exists-' . $reportdate);
+
+                // $offset = $calender->attendance_today_trace_rows_fetched;
+            }
+        } else {
+            // \Log::info('calendear date not exists-' . $reportdate);
+
+            $calender = new GovtCalendar();
+            //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
+            \Log::info('calendear date ncreated -' . $reportdate);
+            $calender->date = $reportdate;
+            //$calender->attendance_today_trace_fetched = 0;
+            $calender->attendance_today_trace_rows_fetched = 0;
+            //$calender->success_attendance_fetched = 0;
+            $calender->success_attendance_rows_fetched = 0;
+            $calender->save();
+        }
+        return  $calender;
+    }
+
 
     public static function getCalenderInfoForPeriod($start_date, $end_date)
     {

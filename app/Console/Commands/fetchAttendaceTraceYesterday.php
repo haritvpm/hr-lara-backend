@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\PunchingService;
+use App\Services\PunchingTraceFetchService;
 use Carbon\Carbon;
 
 class fetchAttendaceTraceYesterday extends Command
@@ -28,6 +28,6 @@ class fetchAttendaceTraceYesterday extends Command
     {
         $reportdate = Carbon::yesterday()->format('Y-m-d'); //today
         \Log::info("fetch attendance trace yesterday execution!");
-        (new PunchingService())->fetchTrace($reportdate);
+        (new PunchingTraceFetchService())->fetchTrace($reportdate);
     }
 }

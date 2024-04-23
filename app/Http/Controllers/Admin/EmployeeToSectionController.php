@@ -75,7 +75,7 @@ class EmployeeToSectionController extends Controller
     public function create()
     {
         abort_if(Gate::denies('employee_to_section_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
 
         $sections = Section::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -86,6 +86,24 @@ class EmployeeToSectionController extends Controller
 
     public function store(StoreEmployeeToSectionRequest $request)
     {
+
+        //check if employee is already assigned to some other section, with start date and no end date, if yes then return back with error message
+       
+
+        $prevSectionNotEnded = EmployeeToSection::where('employee_id', $request->employee_id)
+            ->wherenull('end_date')->first();
+        if($prevSectionNotEnded){
+            //\Session::flash('message-danger', 'Employee is already assigned to some other section');
+            return back()->withErrors(['error'=> 'Employee is already assigned to some other section'])->withInput();
+        }
+        $employeeToSectionExisting = EmployeeToSection::where('employee_id', $request->employee_id)
+        ->duringPeriod($request->start_date, $request->start_date)
+        ->first();
+        if ($employeeToSectionExisting) {
+            //\Session::flash('message-danger', 'Employee period overlaps with another posting');
+            return back()->withErrors(['error'=> 'Employee period overlaps with another posting'])->withInput();
+        }
+        
         $employeeToSection = EmployeeToSection::create($request->all());
 
         return redirect()->route('admin.employee-to-sections.index');
@@ -108,6 +126,16 @@ class EmployeeToSectionController extends Controller
 
     public function update(UpdateEmployeeToSectionRequest $request, EmployeeToSection $employeeToSection)
     {
+
+        $employeeToSectionExisting = EmployeeToSection::where('employee_id', $request->employee_id)
+        ->duringPeriod($request->start_date, $request->start_date)
+        ->first();
+        if ($employeeToSectionExisting && $employeeToSectionExisting->id != $employeeToSection->id) {
+            //\Session::flash('message-danger', 'Employee period overlaps with another posting');
+            return back()->withErrors(['error'=> 'Employee period overlaps with another posting'])->withInput();
+        }
+
+
         $employeeToSection->update($request->all());
 
         return redirect()->route('admin.employee-to-sections.index');

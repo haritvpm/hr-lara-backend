@@ -11,9 +11,9 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Jobs\AebasFetchDay;
+use App\Services\PunchingCalcService;
 use Carbon\Carbon;
-use App\Services\PunchingService;
-
+use App\Services\PunchingTraceFetchService;
 
 class GovtCalendarCustomController extends Controller
 {
@@ -25,7 +25,7 @@ class GovtCalendarCustomController extends Controller
         if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
 
         \Log::info("fetch attendance trace !. " .  $date);
-        $insertedcount = (new PunchingService())->fetchTrace($date);
+        $insertedcount = (new PunchingTraceFetchService())->fetchTrace($date);
 
         \Session::flash('message', 'Updated ' . $insertedcount . ' rows for' . $date );
 
@@ -48,7 +48,7 @@ class GovtCalendarCustomController extends Controller
 
 
         \Log::info("calculate attendance !. " .  $date);
-        (new PunchingService())->calculate($date);
+        (new PunchingCalcService())->calculate($date);
 
         return redirect()->back();
     }
@@ -57,17 +57,17 @@ class GovtCalendarCustomController extends Controller
     public function fetchmonth(Request $request)
     {
        \Log::info("fetchmonth attendance trace !. " );
-       // (new PunchingService())->fetchTodayTrace($reportdate);
+       // (new PunchingTraceFetchService())->fetchTodayTrace($reportdate);
        $today = today();
        $dates = [];
-       $punchingservice = new PunchingService();
+      // $punchingservice = new PunchingTraceFetchService();
 
        for($i=1; $i <= $today->daysInMonth; ++$i)
        {
            $date = Carbon::createFromDate($today->year, $today->month, $i,0,0,0);
            $date_string = $date->format('Y-m-d');
 
-           $calender = $punchingservice->getGovtCalender($date_string);
+           $calender = GovtCalendar::getGovtCalender($date_string);
 
            \Log::info("fetchmonth --".  $date->toString());
 
@@ -83,7 +83,7 @@ class GovtCalendarCustomController extends Controller
           // $this->dispatch($job);
           //AebasFetchDay::dispatch($date)->delay(now()->addMinutes($i));
           //AebasFetchDay::dispatch($date_string);
-          //(new PunchingService())->fetchTrace( $date);
+          //(new PunchingTraceFetchService())->fetchTrace( $date);
 
        }
 

@@ -71,7 +71,8 @@ class EmployeeToDesignationController extends Controller
     {
         abort_if(Gate::denies('employee_to_designation_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
 
         $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -80,6 +81,24 @@ class EmployeeToDesignationController extends Controller
 
     public function store(StoreEmployeeToDesignationRequest $request)
     {
+
+
+        //check if employee is already assigned to some other designation, with start date and no end date, if yes then return back with error message
+
+
+        $prevDesigNotEnded = EmployeeToDesignation::where('employee_id', $request->employee_id)
+            ->wherenull('end_date')->first();
+        if ($prevDesigNotEnded) {
+            return back()->withErrors(['error' => 'Employee is already assigned to another desig'])->withInput();
+        }
+        $desigExisting = EmployeeToDesignation::where('employee_id', $request->employee_id)
+            ->duringPeriod($request->start_date, $request->start_date)
+            ->first();
+        if ($desigExisting) {
+            return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();
+        }
+
+
         $employeeToDesignation = EmployeeToDesignation::create($request->all());
 
         return redirect()->route('admin.employee-to-designations.index');
@@ -89,7 +108,7 @@ class EmployeeToDesignationController extends Controller
     {
         abort_if(Gate::denies('employee_to_designation_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaar()->prepend(trans('global.pleaseSelect'), '');
 
         $designations = Designation::pluck('designation', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -100,6 +119,14 @@ class EmployeeToDesignationController extends Controller
 
     public function update(UpdateEmployeeToDesignationRequest $request, EmployeeToDesignation $employeeToDesignation)
     {
+
+        $desigExisting = EmployeeToDesignation::where('employee_id', $request->employee_id)
+            ->duringPeriod($request->start_date, $request->start_date)
+            ->first();
+        if ($desigExisting && $desigExisting->id != $employeeToDesignation->id) {
+            return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();
+        }
+
         $employeeToDesignation->update($request->all());
 
         return redirect()->route('admin.employee-to-designations.index');
