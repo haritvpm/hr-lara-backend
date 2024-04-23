@@ -105,6 +105,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
+            'employee'  => $employee,
             'calender_info' => $calender_info ,
             'data_monthly' => $data_monthly,
             'employee_punching' => $empMonPunchings,
