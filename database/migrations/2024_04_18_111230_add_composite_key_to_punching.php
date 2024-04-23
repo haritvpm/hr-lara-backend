@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('punchings', function (Blueprint $table) {
-           $table->unique(['aadhaarid', 'date']); 
+           $table->unique(['date', 'aadhaarid']);
         });
     }
 

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('punching_traces', function (Blueprint $table) {
-            $table->unique(['aadhaarid', 'att_date', 'att_time']); 
+            $table->unique(['att_date', 'att_time', 'aadhaarid']);
 
         });
     }
