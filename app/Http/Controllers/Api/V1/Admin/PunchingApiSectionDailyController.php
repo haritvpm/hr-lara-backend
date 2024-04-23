@@ -63,12 +63,12 @@ class PunchingApiSectionDailyController extends Controller
         // $data_monthly = (new PunchingService())->calculate($date_str, $aadhaarids)->mapwithKeys(function ($item) {
         //     return [$item['aadhaarid'] => $item];
         // });
-        
+
         $punchings = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
         ->wherein('aadhaarid', $aadhaarids)
         ->where('date', $date_str)
         ->get();
-        
+
         $data2 = [];
 
         foreach ($employees_in_view as $employee) {
@@ -88,7 +88,7 @@ class PunchingApiSectionDailyController extends Controller
                 $item['cl_taken'] = 0;
                 $item['total_grace_exceeded300_date'] = null;
             }
-           
+
             $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];
             $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_section_officer'];
 
@@ -109,7 +109,7 @@ class PunchingApiSectionDailyController extends Controller
             //punching might have section empty. so overwrite with employee section
             $item['section'] = $employee['section_name'];
             $item['designation'] = $employee['designation'];
-            
+
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
             if( $total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60){
                 $item['grace_exceeded300_and_today_has_grace'] = true;
@@ -119,10 +119,10 @@ class PunchingApiSectionDailyController extends Controller
             $data2[] = $item;
         }
 
-              
+
 
         return response()->json([
-            'date_dmY' => $date->format('d-m-Y'), // '2021-01-01'
+            'date_dmY' => $date_str, // '2021-01-01'
             'is_today' => $date->isToday(),
             'is_future' => $date->gt(Carbon::today()),
             'punchings' => $data2,
