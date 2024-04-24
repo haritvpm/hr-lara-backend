@@ -305,7 +305,7 @@ class PunchingCalcService
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
-            //probably shift. like from 6 to 9 am
+            //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
             if ($computer_hint !== 'casual' || $hint != null) //if hint exists, no need to use computer hint for else
             {

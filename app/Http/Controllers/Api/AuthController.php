@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
 
-    
+
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register','logout']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'logout']]);
     }
 
     public function login(Request $request)
@@ -39,7 +39,7 @@ class AuthController extends Controller
             'status' => 'success',
             'user' => $user,
             'access_token' => $token,
-            'refresh_token' =>$token,
+            'refresh_token' => $token,
             'type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 600
 
@@ -61,13 +61,13 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-          //  'name' => 'required|string|max:255',
+            //  'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
         $user = User::create([
-           // 'name' => $request->name,
+            // 'name' => $request->name,
             'username' => $request->name,
             'password' => Hash::make($request->password),
         ]);
@@ -79,8 +79,8 @@ class AuthController extends Controller
             'user' => $user,
             'access_token' => $token,
             'refresh_token' => $token,
-             'type' => 'bearer',
-            
+            'type' => 'bearer',
+
         ]);
     }
 
@@ -96,28 +96,28 @@ class AuthController extends Controller
     public function refresh()
     {
         \Log::info('in refres');
-       if(! auth()->guard('api')->check()){
-        return response()->json([
-            'status' => 'failed',
-          
-            
-        ]);
-       }
+        if (!auth()->guard('api')->check()) {
+            return response()->json([
+                'status' => 'failed',
 
 
-       $token =  Auth::guard('api')->refresh();
+            ]);
+        }
+
+
+        $token =  Auth::guard('api')->refresh();
         return response()->json([
             'status' => 'success',
             //'user' => Auth::guard('api')->user(),
             'access_token' => $token,
             'refresh_token' => $token,
             'type' => 'bearer',
-            'expires_in' =>auth('api')->factory()->getTTL() * 600
+            'expires_in' => auth('api')->factory()->getTTL() * 600
 
-            
+
         ]);
     }
-    
+
 
     public function me(Request $request)
     {
@@ -136,7 +136,34 @@ class AuthController extends Controller
             'email' => $user->email,
             'avatar' => '',
             'roles' =>  $user->roles->pluck('title'),
-            'permissions' => $permList->unique()  ,
+            'permissions' => $permList->unique(),
+        ]);
+    }
+    public function resetpassword(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        // $request->validate([
+        //     'formdata.password' => 'required|string|min:6',
+        // ]);
+
+        $pass = $request['formdata']['password'];
+
+        if(!$pass || strlen($pass) < 6) {
+            return response()->json([
+                'message' => 'password length less than 6',
+
+            ], 400);
+        }
+        $user->update(
+            [
+                'password' => Hash::make($pass),
+            ]
+        );
+
+        return response()->json([
+            'id' =>  $user->id,
+            'username' => $user->username,
         ]);
     }
 }
