@@ -380,12 +380,18 @@ class PunchingCalcService
                 //see if this punch was after 11.30 am
 
                 //todo 12 to 3 pmghjghjhgjghjghjghj
+                $morning_late = $c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600));
+                $evening_late = $c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600));
 
-                if ($c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600))) {
+                if ($morning_late && !$evening_late) {
                     $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
-                } else if ($c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600))) {
+                } else if ($evening_late && !$morning_late) {
                     $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
-                } else {
+                }
+                else if ($morning_late && $evening_late ) {
+                    $computer_hint =  'casual';
+                }
+                else {
                     //10.08 to 4.05
                     //find which end has more has more time diff. morning or evening
                     $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
