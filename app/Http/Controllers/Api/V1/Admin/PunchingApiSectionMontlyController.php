@@ -3,21 +3,12 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePunchingRequest;
-use App\Http\Requests\UpdatePunchingRequest;
-use App\Http\Resources\Admin\PunchingResource;
 use App\Models\User;
-use App\Models\PunchingTrace;
-use App\Models\EmployeeToSeat;
 use App\Models\Punching;
-use App\Models\Section;
-use App\Models\EmployeeToSection;
 use App\Models\GovtCalendar;
 use Gate;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
-use App\Services\PunchingService;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
 
@@ -36,24 +27,17 @@ class PunchingApiSectionMontlyController extends Controller
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
         //get current logged in user's charges
-        $me = User::with('employee')->find(auth()->id());
-
-        if ($me->employee_id == null) {
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        if($status != 'success' || count($seat_ids_of_loggedinuser) == 0 ){
 
             return response()->json([
-                'status' => 'No linked employee','month' => $date->format('F Y'),
+                'status' => $status,
+                'month' => $date->format('F Y'),
                 'calender_info' => $calender_info,
-                'monthlypunchings' => [],], 200);
+                'monthlypunchings' => [],
+            ], 200);
         }
 
-        $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
-
-        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
-            return response()->json([
-                'status' => 'No seats in charge','month' => $date->format('F Y'),
-                'calender_info' => $calender_info,
-                'monthlypunchings' => [],], 200);
-        }
 
         //todo. make this a period
         $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
@@ -62,7 +46,7 @@ class PunchingApiSectionMontlyController extends Controller
             $seat_ids_of_loggedinuser,
             $me
         );
-        \Log::info('employees_in_view: ' . $employees_in_view);
+        // \Log::info('employees_in_view: ' . $employees_in_view);
 
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
@@ -101,7 +85,7 @@ class PunchingApiSectionMontlyController extends Controller
 
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-            
+
             for ($i = 1; $i <= $date->daysInMonth; $i++) {
 
                 $d = $date->day($i);
@@ -127,13 +111,13 @@ class PunchingApiSectionMontlyController extends Controller
                     'in_time' => substr($punching->in_datetime,10,-3),
                     'out_time' => substr($punching->out_datetime,10,-3),
                     ];
-                    
+
                     if( $total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching->grace_sec > 60){
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
                     } else {
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
                     }
-                   
+
                 } else {
                     //no punching found
                     //set name, designation,

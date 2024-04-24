@@ -3,24 +3,13 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePunchingRequest;
-use App\Http\Requests\UpdatePunchingRequest;
-use App\Http\Resources\Admin\PunchingResource;
 use App\Models\User;
-use App\Models\PunchingTrace;
-use App\Models\EmployeeToSeat;
 use App\Models\Punching;
-use App\Models\Section;
-use App\Models\EmployeeToSection;
-use App\Models\GovtCalendar;
 use Gate;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
-use App\Services\PunchingService;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
-use App\Models\Employee;
 
 class PunchingApiSectionDailyController extends Controller
 {
@@ -30,7 +19,9 @@ class PunchingApiSectionDailyController extends Controller
 
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
         $date_str =  $date->format('Y-m-d');
+
         //get current logged in user's charges
+        /*
         $me = User::with('employee')->find(auth()->id());
 
         if ($me->employee_id == null) {
@@ -41,6 +32,14 @@ class PunchingApiSectionDailyController extends Controller
         if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
             return response()->json(['status' => 'No seats in charge'], 400);
         }
+        */
+
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        if($status != 'success'){
+            return response()->json(['status' => $status], 400);
+        }
+
 
         //call employeeservice get loggedusersubordinate
         $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(

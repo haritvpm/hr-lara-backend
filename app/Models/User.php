@@ -100,4 +100,26 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    public static function getLoggedInUserSeats()
+    {
+         //get current logged in user's charges
+         $me = User::with('employee')->find(auth()->id());
+
+         if ($me->employee_id == null) {
+            $status = 'No linked employee';
+            return [  $me , null,  $status];
+
+         }
+
+        $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
+
+        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
+            $status = 'No seats in charge';
+            return [   $me , null,  $status];
+        }
+        $status = 'success';
+
+        return [  $me , $seat_ids_of_loggedinuser, $status];
+    }
 }
