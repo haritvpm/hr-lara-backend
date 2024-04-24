@@ -14,8 +14,9 @@ class AebasFetchService {
         
         $returnkey = "successattendance";
         // should be in format 2024-02-11
+        \Log::info('config' . config('app.date_format') );
         if($reportdate){
-            $reportdate = Carbon::createFromFormat(config('app.date_format'), $reportdate)->format('Y-m-d');
+           // $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format('Y-m-d');
         } else {
             $reportdate = Carbon::today()->format('Y-m-d');
         }

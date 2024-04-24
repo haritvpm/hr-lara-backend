@@ -201,6 +201,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('assembly-sessions', 'AssemblySessionController');
 
     // Leave
+    Route::get('leaves/aebasdownload', 'LeaveControllerCustom@aebasdownload')->name('leaves.aebasdownload');
     Route::delete('leaves/destroy', 'LeaveController@massDestroy')->name('leaves.massDestroy');
     Route::resource('leaves', 'LeaveController');
 
