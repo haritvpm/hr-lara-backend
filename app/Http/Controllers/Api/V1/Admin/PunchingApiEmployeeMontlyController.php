@@ -44,14 +44,14 @@ class PunchingApiEmployeeMontlyController extends Controller
                 return [$item['date'] => $item];
             });
 
-        $me = User::with('employee')->find(auth()->id());
-        if ($me->employee_id == null) {
-            return response()->json(['status' => 'No linked employee'], 400);
-        }
-        $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
-        $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)
-            ->get()->pluck('seat_id');
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        if($status != 'success'){
+            return response()->json(['status' => $status], 400);
+        }
+
+        $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
         //for each employee in punching as a row, show columns for each day of month
 

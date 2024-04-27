@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\ApiRequests\UpdatePasswordApiRequest;
+use Illuminate\Support\Facades\Validator;
 
 
 class AuthController extends Controller
@@ -143,21 +145,21 @@ class AuthController extends Controller
     {
         $user = User::find(Auth::id());
 
-        // $request->validate([
-        //     'formdata.password' => 'required|string|min:6',
-        // ]);
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:9',
+        ]);
 
-        $pass = $request['formdata']['password'];
-
-        if(!$pass || strlen($pass) < 6) {
+        if($validator->fails()){
+            $response['response'] = $validator->messages();
             return response()->json([
-                'message' => 'password length less than 6',
-
+                'message' => $validator->errors()->first(),
             ], 400);
+
         }
+
         $user->update(
             [
-                'password' => Hash::make($pass),
+                'password' => Hash::make($request->password),
             ]
         );
 

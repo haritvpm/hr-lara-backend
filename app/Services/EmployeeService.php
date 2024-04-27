@@ -292,13 +292,17 @@ class EmployeeService
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to,  $seat_ids)
+    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to,  $seat_ids, $all_subordinates = true)
     {
         // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
-        $sections_under_charge = Section::wherein('seat_of_controlling_officer_id', $seat_ids)
+        $sections_under_charge =  $all_subordinates ?
+
+            Section::wherein('seat_of_controlling_officer_id', $seat_ids)
             ->orwherein('seat_of_reporting_officer_id', $seat_ids)
-            ->orwherein('js_as_ss_employee_id', $emp_ids)->get();
+            ->orwherein('js_as_ss_employee_id', $emp_ids)->get() :
+
+            Section::wherein('seat_of_reporting_officer_id', $seat_ids)->get();
 
         if ($sections_under_charge == null) {
             return null;
@@ -377,6 +381,49 @@ class EmployeeService
                 'logged_in_user_is_controller' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
                 'logged_in_user_is_section_officer' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
 
+                'designation' =>   $employee_to_designation?->designation->designation,
+                'designation_sortindex' =>  $employee_to_designation?->designation?->sort_index,
+                'default_time_group_id' =>  $employee_to_designation?->designation?->default_time_group_id,
+                'seniority' =>  $employeeToSection->employee?->seniority?->sortindex,
+            ];
+        });
+
+        return $data;
+    }
+
+
+    public function getLoggedInUserSectionEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me)
+    {
+
+        //only get my sections' employees. not for which I am controller of
+        $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
+                [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, false);
+
+        if (!$employee_section_maps) {
+            return null;
+        }
+
+        $data = collect($employee_section_maps);
+
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+            // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
+            $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
+            $employee_to_designation =  count($results->employee->employee_employee_to_designations)
+                ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
+           // \Log::info($employeeToSection);
+            return [
+                'employee_id' => $employeeToSection->employee_id,
+                'name' => $employeeToSection->employee->name,
+                'start_date' => $employeeToSection->start_date,
+                'end_date' => $employeeToSection->end_date,
+                'aadhaarid' => $employeeToSection->employee->aadhaarid,
+                'attendance_book_id' => $employeeToSection->attendance_book_id,
+                'attendance_book' => $employeeToSection->attendance_book,
+                'section_id' => $employeeToSection->section_id,
+                'section_name' => $employeeToSection->section->name,
+                'seat_of_controlling_officer_id'  => $employeeToSection->section->seat_of_controlling_officer_id,
+                'logged_in_user_is_controller' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
+                'logged_in_user_is_section_officer' =>  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
                 'designation' =>   $employee_to_designation?->designation->designation,
                 'designation_sortindex' =>  $employee_to_designation?->designation?->sort_index,
                 'default_time_group_id' =>  $employee_to_designation?->designation?->default_time_group_id,

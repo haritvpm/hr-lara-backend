@@ -133,6 +133,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeMonthlyPunchings');
     Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');
     Route::get('/punchings/{date?}', 'PunchingApiSectionDailyController@getpunchings');
+
+    Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
+
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
 
     // Assembly Session
