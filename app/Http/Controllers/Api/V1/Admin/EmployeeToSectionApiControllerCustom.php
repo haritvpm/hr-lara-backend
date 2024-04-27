@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
 use App\Services\EmployeeService;
 use App\Models\Section;
+use App\Models\EmployeeToSection;
 use App\Models\AttendanceBook;
 use Carbon\Carbon;
 
@@ -40,6 +41,18 @@ class EmployeeToSectionApiControllerCustom extends Controller
         ], 200);
 
     }
+    public function endPosting(Request $request)
+    {
+        $employeetosection_id = $request->id;
+        
+        $employeetosection = EmployeeToSection::find($employeetosection_id);
 
+        $end_date = $request->end_date;
+        $date_str = Carbon::parse($end_date)->format('Y-m-d');
+        $status = $employeetosection->update(['end_date' => $date_str]);
+              
+        return response()->json(['status' => $status], 200);
+    }
+   
 
 }

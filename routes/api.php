@@ -103,6 +103,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('employee-to-seats', 'EmployeeToSeatApiController');
 
     // Employee To Section
+    //end posting
     Route::apiResource('employee-to-sections', 'EmployeeToSectionApiController');
 
     // Employee To Designation
@@ -130,11 +131,13 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
 
     // Punching
+    
     Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeMonthlyPunchings');
     Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');
     Route::get('/punchings/{date?}', 'PunchingApiSectionDailyController@getpunchings');
 
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
+    Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
 
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
 

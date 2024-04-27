@@ -412,6 +412,7 @@ class EmployeeService
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
            // \Log::info($employeeToSection);
             return [
+                'id' => $employeeToSection->id,
                 'employee_id' => $employeeToSection->employee_id,
                 'name' => $employeeToSection->employee->name,
                 'start_date' => $employeeToSection->start_date,
