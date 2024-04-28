@@ -137,6 +137,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/punchings/{date?}', 'PunchingApiSectionDailyController@getpunchings');
 
 
+    Route::post('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@saveUserSectionEmployee');
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
     Route::get('/my-sectionemployees/unposted-employees', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployees');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');

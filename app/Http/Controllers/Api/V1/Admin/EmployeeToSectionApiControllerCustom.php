@@ -59,7 +59,29 @@ class EmployeeToSectionApiControllerCustom extends Controller
     {
         $employees_already_posted = EmployeeToSection::where('end_date', null)->pluck('employee_id')->unique();
         $employees = Employee::getEmployeesWithAadhaarDesig(true, $employees_already_posted, false);
+        $employees_last_posting = EmployeeToSection::wherein('employee_id', $employees->pluck('id'))->orderby('end_date','desc')->get()->groupby('employee_id');
+        $employees->transform( function($employee) use ($employees_last_posting) {
+            $last_posting = $employees_last_posting->get($employee['id'])?->first() ?? null;
+            $employee['last_posting_end_date'] = $last_posting?->end_date ?? '';
+            return $employee;
+        });
 
         return response()->json($employees, 200);
+    }
+    public function saveUserSectionEmployee(Request $request)
+    {
+        $employee_id = $request->employee_id;
+        $section_id = $request->section_id;
+        $attendance_book_id = $request->attendance_book_id;
+        $start_date =  substr($request->start_date,0,10); //this is in UTC format. remove trailing part
+\Log::Info( $start_date);
+        $employeetosection = EmployeeToSection::create([
+            'employee_id' => $employee_id,
+            'section_id' => $section_id,
+            'attendance_book_id' => $attendance_book_id,
+            'start_date' => $start_date,
+        ]);
+
+        return response()->json(['status' => 'success'], 200);
     }
 }
