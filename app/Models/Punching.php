@@ -37,6 +37,10 @@ class Punching extends Model
         'special_casual' => 'SPL CL',
         'dies_non'       => 'Dies Non',
         'RH'             => 'RH',
+        'holiday'       =>  'Holiday',
+        'maternity'     =>  'Maternity',    
+        'paternity'     =>  'Paternity',
+        
     ];
 
     protected $fillable = [
@@ -100,6 +104,9 @@ class Punching extends Model
     public function punchings()
     {
         return $this->hasMany(PunchingTrace::class, 'punching_id');
+    }
+    public function isHolidayForEmployee() {
+        return $this->hint == 'RH' ;
     }
 
     public function punchout_trace()
