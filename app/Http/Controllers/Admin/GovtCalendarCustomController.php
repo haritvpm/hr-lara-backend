@@ -14,6 +14,8 @@ use App\Jobs\AebasFetchDay;
 use App\Services\PunchingCalcService;
 use Carbon\Carbon;
 use App\Services\PunchingTraceFetchService;
+use App\Services\LeaveFetchService;
+use App\Services\AebasFetchService;
 
 class GovtCalendarCustomController extends Controller
 {
@@ -88,5 +90,42 @@ class GovtCalendarCustomController extends Controller
        }
 
         return redirect()->back();
+    }
+    public function fetchleaves(Request $request)
+    {
+        $date = $request->date;
+        \Log::info("fetch leave tr !. " .  $date);
+
+        if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
+
+        \Log::info("fetch attendance trace !. " .  $date);
+        $insertedcount = (new LeaveFetchService())->fetchLeave($date);
+
+        \Session::flash('message', 'Fetched Leaves ' . $insertedcount . ' rows for' . $date );
+
+        return redirect()->back();
+    }
+    
+    public function downloadleaves(Request $request)
+    {
+        $date = $request->date;
+        $list =  (new AebasFetchService())->fetchApi(11, 0, $date );
+   
+           $callback = function() use ($list)
+            {
+                $FH = fopen('php://output', 'w');
+                foreach ($list as $row) {
+                    fputcsv($FH, $row);
+                }
+                fclose($FH);
+            };
+            $headers = [
+                'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0'
+            ,   'Content-type'        => 'text/csv'
+            ,   'Content-Disposition' => 'attachment; filename=leave_for' . $date . '.csv'
+            ,   'Expires'             => '0'
+            ,   'Pragma'              => 'public'
+            ];
+            return response()->stream($callback, 200, $headers);
     }
 }
