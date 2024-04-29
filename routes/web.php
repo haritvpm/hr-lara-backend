@@ -56,8 +56,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
 
     // Govt Calendar
+    
     Route::get('govt-calendars/calculate/{date}', 'GovtCalendarCustomController@calculate')->name('govt-calendars.calculate');
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarCustomController@fetch')->name('govt-calendars.fetch');
+    Route::get('govt-calendars/fetch-leaves/{date}', 'GovtCalendarCustomController@fetchleaves')->name('govt-calendars.fetch-leaves');
+    Route::get('govt-calendars/download-leaves/{date}', 'GovtCalendarCustomController@downloadleaves')->name('govt-calendars.download-leaves');
+        
     Route::post('govt-calendars/fetchmonth', 'GovtCalendarCustomController@fetchmonth')->name('govt-calendars.fetchmonth');
     Route::resource('govt-calendars', 'GovtCalendarController', ['except' => ['create', 'store', 'destroy']]);
 

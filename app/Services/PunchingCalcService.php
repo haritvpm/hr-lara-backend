@@ -70,7 +70,8 @@ class PunchingCalcService
         $employee_section_maps =  EmployeeService::getDesignationOfEmployeesOnDate($date,  $emp_ids);
         //for each empl, calculate
 
-        // dd($employee_section_maps);
+        $calender = GovtCalendar::where('date', $date)->first();
+
         $data = collect([]);
 
         foreach ($aadhaar_to_empIds as $aadhaarid => $employee_id) {
@@ -105,7 +106,8 @@ class PunchingCalcService
                     $allemp_punchingtraces_grouped,
                     $emp_new_punching_data,
                     $allemp_punchings_existing,
-                    $time_group
+                    $time_group, 
+                    $calender
                 );
             }
         }
@@ -147,7 +149,8 @@ class PunchingCalcService
         $allemp_punchingtraces_grouped,
         $emp_new_punching_data,
         $allemp_punchings_existing,
-        $time_group
+        $time_group,
+        $calender
     ) {
 
         $punchingtraces =  $allemp_punchingtraces_grouped->has($aadhaarid) ?
@@ -271,6 +274,14 @@ class PunchingCalcService
                 $can_take_casual_an
             );
 
+            $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
+
+            if( $isHoliday)
+            {
+                $computer_hint = '';
+                $grace_total_exceeded_one_hour = 0;
+            }
+
             //TODO check if casual 20 limit has reached. if so set leave
 
             $emp_new_punching_data['computer_hint'] = $computer_hint;
@@ -307,7 +318,7 @@ class PunchingCalcService
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
-            if ($computer_hint !== 'casual' || $hint != null) //if hint exists, no need to use computer hint for else
+            if ( !$isHoliday && ( $computer_hint !== 'casual' || $hint != null) ) //if hint exists, no need to use computer hint for else
             {
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);

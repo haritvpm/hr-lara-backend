@@ -54,7 +54,7 @@ class LeaveFetchService
         $offset = 0; 
         if($reportdate ){
             $govtcalender = GovtCalendar::getGovtCalender($reportdate);
-            $offset = $govtcalender->attendance_today_trace_rows_fetched;
+            $offset = $govtcalender->leave_rows_fetched;
         } else {
             //whole items in leave
             $offset = Leaf::count();
@@ -94,8 +94,6 @@ class LeaveFetchService
             for ($i = 0; $i < count($jsonData); $i++) {
                 //ignore errors
 
-
-
                 //if(  $jsonData['attendance_type'] != 'E' && $jsonData['auth_status'] == 'Y'  )
                 {
                     // assert($reportdate === $jsonData[$i]['att_date']);
@@ -103,14 +101,14 @@ class LeaveFetchService
                 }
             }
 
-
-
             $error = 0;
             try {
                 //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
                 //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
                 //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-               // PunchingTrace::upsert($datatoinsert, ['aadhaarid', 'att_date', 'att_time']);
+                
+                Leaf::insert($datatoinsert);
+
                 $insertedcount += count($jsonData);
                 //  });
 
@@ -139,6 +137,37 @@ class LeaveFetchService
 
         return $insertedcount;
     }
+    /*
+    
+     'employee_id',
+        'leave_type',
+        'start_date',
+        'end_date',
+        'reason',
+        'active_status',
+        'leave_cat',
+        'time_period',
+        'created_by_id',
 
+    */
+    private function mapTraceToDBFields($day_offset, $traceItem)
+    {
+
+        $trace = [];
+        $trace['aadhaarid'] = $traceItem['emp_id'];
+        $trace['leave_type'] = $traceItem['leave_type'];
+        $trace['start_date'] = $traceItem['start_date'];
+        $trace['end_date'] = $traceItem['end_date'];
+        $trace['reason'] = $traceItem['reason'];
+        $trace['active_status'] = $traceItem['active_status'];
+        $trace['leave_cat'] = $traceItem['leave_cat'];
+        $trace['time_period'] = $traceItem['time_period'];
+        $trace['created_by_id'] = $traceItem['created_by_id'];
+        $trace['creation_date'] = $traceItem['creation_date'];
+        $trace['last_updated'] = $traceItem['last_updated'];
+        
+        return $trace;
+        // $trace->save();
+    }
 
 }
