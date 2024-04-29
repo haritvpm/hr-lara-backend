@@ -12,6 +12,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\AebasFetchService;
+use App\Services\LeaveFetchService;
 
 class LeaveControllerCustom extends Controller
 {
@@ -37,5 +38,19 @@ class LeaveControllerCustom extends Controller
         ];
         return response()->stream($callback, 200, $headers);
     }
+
     
+    public function aebasfetch()
+    {
+    
+
+        \Log::info("fetch all leaving!. " );
+        $insertedcount = (new LeaveFetchService())->fetchLeave();
+
+        \Session::flash('message', 'Fetched Leaves ' . $insertedcount );
+
+        return redirect()->back();
+            
+    }
+
 }

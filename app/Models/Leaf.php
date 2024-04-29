@@ -35,6 +35,7 @@ class Leaf extends Model
 
     protected $fillable = [
         'employee_id',
+        'aadhaarid',
         'leave_type',
         'start_date',
         'end_date',
@@ -42,7 +43,9 @@ class Leaf extends Model
         'active_status',
         'leave_cat',
         'time_period',
-        'created_by_id',
+//        'created_by_id',
+        'creation_date',
+        'last_updated',
         'in_lieu_of',
         'created_at',
         'updated_at',

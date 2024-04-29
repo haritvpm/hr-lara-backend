@@ -44,6 +44,7 @@ class GovtCalendar extends Model
         'updated_at',
         'deleted_at',
         'attendance_trace_fetch_complete',
+        'leave_rows_fetched',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
