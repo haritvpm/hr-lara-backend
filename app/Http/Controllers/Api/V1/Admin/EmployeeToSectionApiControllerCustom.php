@@ -34,8 +34,9 @@ class EmployeeToSectionApiControllerCustom extends Controller
             $me
         );
 
-        $sections = Section::wherein('id', $employees_under_my_section->pluck('section_id')->unique())->get();
-        $attendancebooks = AttendanceBook::where('id', $employees_under_my_section->pluck('attendance_book_id')->unique())->get();
+        $sections = Section::with('sectionAttendanceBooks')->wherein('id', $employees_under_my_section->pluck('section_id')->unique())->get();
+        $attendancebooks = AttendanceBook::wherein('section_id',  $sections->pluck('id'))->get();
+
         return response()->json([
             'employees_under_my_section' => $employees_under_my_section,
             'sections' => $sections,

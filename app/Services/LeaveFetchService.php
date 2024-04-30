@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use App\Models\GovtCalendar;
+use App\Models\Leaf;
 use App\Models\PunchingTrace;
 use App\Services\PunchingCalcService;
 
@@ -57,7 +58,7 @@ class LeaveFetchService
             $offset = $govtcalender->leave_rows_fetched;
         } else {
             //whole items in leave
-            $offset = Leaf::count();
+            //$offset = Leaf::count();
         }
 
         //check last fetch time. if it less than 5 minutes, dont fetch
@@ -65,7 +66,7 @@ class LeaveFetchService
         $insertedcount = 0;
         for (;; $offset += $count) {
 
-            $url = "https://basreports.attendance.gov.in/api/unibasglobal/unibasglobal/api/orgleave/offset/{$offset}/count/{$count}/apikey/{$apikey}";
+            $url = "https://basreports.attendance.gov.in/api/unibasglobal/api/orgleave/offset/{$offset}/count/{$count}/apikey/{$apikey}";
             $returnkey = "leavedetails";
 
             if ($fetchdate && !$date->isToday()) {
@@ -106,8 +107,23 @@ class LeaveFetchService
                 //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
                 //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
                 //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-                
-                Leaf::insert($datatoinsert);
+                /*
+                 'employee_id',
+        'aadhaarid',
+        'leave_type',
+        'start_date',
+        'end_date',
+        'reason',
+        'active_status',
+        'leave_cat',
+        'time_period',
+        'created_by_id',
+        'creation_date',
+        'last_updated',
+                */
+                Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ], 
+                [ 'start_date','end_date',  'leave_type', 'reason', 'active_status',
+                 'leave_cat', 'time_period',  'last_updated']);
 
                 $insertedcount += count($jsonData);
                 //  });
@@ -137,19 +153,7 @@ class LeaveFetchService
 
         return $insertedcount;
     }
-    /*
-    
-     'employee_id',
-        'leave_type',
-        'start_date',
-        'end_date',
-        'reason',
-        'active_status',
-        'leave_cat',
-        'time_period',
-        'created_by_id',
-
-    */
+  
     private function mapTraceToDBFields($day_offset, $traceItem)
     {
 
@@ -162,9 +166,12 @@ class LeaveFetchService
         $trace['active_status'] = $traceItem['active_status'];
         $trace['leave_cat'] = $traceItem['leave_cat'];
         $trace['time_period'] = $traceItem['time_period'];
-        $trace['created_by_id'] = $traceItem['created_by_id'];
+      //  $trace['created_by_id'] = $traceItem['created_by_id'];
         $trace['creation_date'] = $traceItem['creation_date'];
         $trace['last_updated'] = $traceItem['last_updated'];
+        if( $trace['last_updated'] == '0000-00-00 00:00:00' ){
+            $trace['last_updated'] = null;
+        }
         
         return $trace;
         // $trace->save();

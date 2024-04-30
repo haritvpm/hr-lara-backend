@@ -61,7 +61,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarCustomController@fetch')->name('govt-calendars.fetch');
     Route::get('govt-calendars/fetch-leaves/{date}', 'GovtCalendarCustomController@fetchleaves')->name('govt-calendars.fetch-leaves');
     Route::get('govt-calendars/download-leaves/{date}', 'GovtCalendarCustomController@downloadleaves')->name('govt-calendars.download-leaves');
-        
     Route::post('govt-calendars/fetchmonth', 'GovtCalendarCustomController@fetchmonth')->name('govt-calendars.fetchmonth');
     Route::resource('govt-calendars', 'GovtCalendarController', ['except' => ['create', 'store', 'destroy']]);
 
@@ -206,6 +205,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Leave
     Route::get('leaves/aebasdownload', 'LeaveControllerCustom@aebasdownload')->name('leaves.aebasdownload');
+    Route::get('leaves/aebasfetch', 'LeaveControllerCustom@aebasfetch')->name('leaves.aebasfetch');
+           
     Route::delete('leaves/destroy', 'LeaveController@massDestroy')->name('leaves.massDestroy');
     Route::resource('leaves', 'LeaveController');
 

@@ -136,6 +136,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');
     Route::get('/punchings/{date?}', 'PunchingApiSectionDailyController@getpunchings');
 
+    Route::post('/emp-punchings/{aadhaarid}/{date}', 'PunchingApiEmployeeMontlyController@saveEmployeeHint');
 
     Route::post('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@saveUserSectionEmployee');
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
