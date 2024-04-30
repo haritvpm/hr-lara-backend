@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Punching;
 use App\Models\GovtCalendar;
+use App\Models\AttendanceBook;
 use Gate;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -27,8 +28,8 @@ class PunchingApiSectionMontlyController extends Controller
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
         //get current logged in user's charges
-        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-        if($status != 'success' || count($seat_ids_of_loggedinuser) == 0 ){
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        if ($status != 'success' || count($seat_ids_of_loggedinuser) == 0) {
 
             return response()->json([
                 'status' => $status,
@@ -52,9 +53,10 @@ class PunchingApiSectionMontlyController extends Controller
 
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
-                'status' => 'No employees in view','month' => $date->format('F Y'),
+                'status' => 'No employees in view', 'month' => $date->format('F Y'),
                 'calender_info' => $calender_info,
-                'monthlypunchings' => [],], 200);
+                'monthlypunchings' => [],
+            ], 200);
         }
         //get all govtcalender between start data and enddate
 
@@ -62,14 +64,17 @@ class PunchingApiSectionMontlyController extends Controller
 
         $data = [];
         $sections = [];
+        $section_ids = [];
+
         foreach ($employees_in_view as $employee) {
 
             $item =  $employee;
             $aadhaarid = $employee['aadhaarid'];
             $sections[] = $employee['section_name'];
+            $section_ids[] = $employee['section_id'];
             //mapped after fetching. so no need to check if it exists
             $item['start_date'] = $start_date;
-            if( $data_monthly &&  $data_monthly->has($aadhaarid)){
+            if ($data_monthly &&  $data_monthly->has($aadhaarid)) {
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
                 $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
@@ -107,21 +112,21 @@ class PunchingApiSectionMontlyController extends Controller
                 $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {
                     //copy all properties of $punching to $dayinfo
-                    $dayinfo = [...$dayinfo, ...$punching->toArray(),
-                    'in_time' => substr($punching->in_datetime,10,-3),
-                    'out_time' => substr($punching->out_datetime,10,-3),
+                    $dayinfo = [
+                        ...$dayinfo, ...$punching->toArray(),
+                        'in_time' => substr($punching->in_datetime, 10, -3),
+                        'out_time' => substr($punching->out_datetime, 10, -3),
                     ];
 
-                    if( $total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching->grace_sec > 60){
+                    if ($total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching->grace_sec > 60) {
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
                     } else {
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
                     }
-
                 } else {
                     //no punching found
                     //set name, designation,
-                    $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid  ];
+                    $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid];
                 }
                 $dayinfo['section'] = $employee['section_name'];;
 
@@ -131,6 +136,13 @@ class PunchingApiSectionMontlyController extends Controller
             $data[] = $item;
         }
 
+        $attendancebooks = AttendanceBook::wherein('section_id', $section_ids)->pluck('title')
+            ->transform(function ($item) {
+                return "/{$item}";
+            });
+
+        $sections = [...$sections, ...$attendancebooks->toArray()];
+
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
             'calender_info' => $calender_info,
@@ -139,5 +151,4 @@ class PunchingApiSectionMontlyController extends Controller
             'employees_in_view' =>  $employees_in_view,
         ], 200);
     }
-
 }

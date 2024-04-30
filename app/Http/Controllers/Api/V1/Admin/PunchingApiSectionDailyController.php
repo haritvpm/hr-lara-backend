@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
+use App\Models\AttendanceBook;
 
 class PunchingApiSectionDailyController extends Controller
 {
@@ -69,12 +70,17 @@ class PunchingApiSectionDailyController extends Controller
         ->get();
 
         $data2 = [];
+        $sections = [];
+        $section_ids = [];
 
         foreach ($employees_in_view as $employee) {
             $aadhaarid = $employee['aadhaarid'];
             $item = [];
             $item['name'] = $employee['name'];
             $item['aadhaarid'] = $employee['aadhaarid'];
+
+            $sections[] = $employee['section_name'];
+            $section_ids[] = $employee['section_id'];
 
             if( $data_monthly &&  $data_monthly->has($aadhaarid)){
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
@@ -119,6 +125,12 @@ class PunchingApiSectionDailyController extends Controller
         }
 
 
+        $attendancebooks = AttendanceBook::wherein('section_id', $section_ids)->pluck('title')
+            ->transform(function ($item) {
+                return "/{$item}";
+            });
+
+        $sections = [...$sections, ...$attendancebooks->toArray()];
 
         return response()->json([
             'date_dmY' => $date_str, // '2021-01-01'
@@ -126,7 +138,7 @@ class PunchingApiSectionDailyController extends Controller
             'is_future' => $date->gt(Carbon::today()),
             'punchings' => $data2,
             'employees_in_view' =>  $employees_in_view,
-            // '$aadhaarids' => $aadhaarids,
+            'sections' => array_values(array_unique($sections)),
         ], 200);
     }
 

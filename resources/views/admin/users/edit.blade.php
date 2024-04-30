@@ -12,20 +12,20 @@
             @csrf
             <div class="form-group">
                 <label class="required" for="username">{{ trans('cruds.user.fields.username') }}</label>
-                <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" required>
+                <input class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" type="text" name="username" id="username" value="{{ old('username', $user->username) }}" required  autocomplete="off">
                 @if($errors->has('username'))
                     <span class="text-danger">{{ $errors->first('username') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.user.fields.username_helper') }}</span>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="name">{{ trans('cruds.user.fields.name') }}</label>
                 <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $user->name) }}">
                 @if($errors->has('name'))
                     <span class="text-danger">{{ $errors->first('name') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.user.fields.name_helper') }}</span>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="employee_id">{{ trans('cruds.user.fields.employee') }}</label>
                 <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id">

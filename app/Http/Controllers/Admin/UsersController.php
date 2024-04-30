@@ -31,7 +31,8 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        //$employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
 
         $roles = Role::pluck('title', 'id');
 
@@ -50,7 +51,8 @@ class UsersController extends Controller
     {
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        //$employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
 
         $roles = Role::pluck('title', 'id');
 
