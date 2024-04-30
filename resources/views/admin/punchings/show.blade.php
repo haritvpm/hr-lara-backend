@@ -193,10 +193,18 @@
                     </tr>
                     <tr>
                         <th>
+                        computer_hint
+                        </th>
+                        <td>
+                        {{ $punching->computer_hint }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.punching.fields.hint') }}
                         </th>
                         <td>
-                            {{ App\Models\Punching::HINT_SELECT[$punching->hint] ?? '' }}
+                            {{ $punching->hint ?? '' }}
                         </td>
                     </tr>
                     <tr>

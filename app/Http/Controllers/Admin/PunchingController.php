@@ -120,7 +120,7 @@ class PunchingController extends Controller
                 return $row->ot_nonsitting_sec ? $row->ot_nonsitting_sec : '';
             });
             $table->editColumn('hint', function ($row) {
-                return $row->hint ? Punching::HINT_SELECT[$row->hint] : '';
+                return $row->hint ? $row->hint : '';
             });
 
             $table->editColumn('grace_total_exceeded_one_hour', function ($row) {

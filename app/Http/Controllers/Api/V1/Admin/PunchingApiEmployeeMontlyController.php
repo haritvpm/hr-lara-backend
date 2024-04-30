@@ -17,7 +17,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
-use App\Services\PunchingService;
+use App\Services\PunchingCalcService;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
 use App\Models\Employee;
@@ -111,6 +111,25 @@ class PunchingApiEmployeeMontlyController extends Controller
             'employee_punching' => $empMonPunchings,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);
+    }
+    public function saveEmployeeHint(Request $request)
+    {
+        $aadhaarid = $request->aadhaarid;
+        $hint = $request->hint;
+        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
+        if (!$employee) {
+            return response()->json(['status' => 'Employee not found'], 400);
+        }
+        $punching = Punching::where('aadhaarid', $aadhaarid)
+            ->where('date', $request->date)
+            ->update(['hint' => $hint]);
+
+        //recalculate daily and monthly
+        $punchingService = new PunchingCalcService();
+        $punchingService->calculate($request->date, [$aadhaarid]);
+
+        return response()->json(['status' => 'success'], 200);
+
     }
 
 

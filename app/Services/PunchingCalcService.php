@@ -90,14 +90,7 @@ class PunchingCalcService
                 //use upsert insetad of updateorcreate inside calculateforemployee
 
                 $time_group = $time_groups[$time_group_id];
-                /*
-                $time_group = [
-                    'fn_from' => '10:15:00',
-                    'fn_to' => '13:15:00',
-                    'an_from' => '14:00:00',
-                    'an_to' => '17:15:00',
 
-                ];*/
 
                 $data[] = $this->calculateEmployeeDaily(
                     $date,
@@ -106,7 +99,7 @@ class PunchingCalcService
                     $allemp_punchingtraces_grouped,
                     $emp_new_punching_data,
                     $allemp_punchings_existing,
-                    $time_group, 
+                    $time_group,
                     $calender
                 );
             }
@@ -464,13 +457,20 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data['month'] = $start_date->format('Y-m-d');
             $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
             $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
+            $emp_new_monthly_attendance_data['total_grace_str'] = '';
+            $emp_new_monthly_attendance_data['total_extra_str'] = '';
             $emp_new_monthly_attendance_data['cl_taken'] = 0;
             $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
 
             \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
-                $emp_new_monthly_attendance_data['total_grace_sec'] = $emp_punchings->sum('grace_sec');
-                $emp_new_monthly_attendance_data['total_extra_sec'] = $emp_punchings->sum('extra_sec');
+                $total_grace_sec =  $emp_punchings->sum('grace_sec');
+                $emp_new_monthly_attendance_data['total_grace_sec'] = $total_grace_sec;
+                $emp_new_monthly_attendance_data['total_grace_str'] = gmdate("i", $total_grace_sec );
+                $total_extra_sec = $emp_punchings->sum('extra_sec');
+                $emp_new_monthly_attendance_data['total_extra_sec'] = $total_extra_sec;
+                $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec );
+
                 $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
                 $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
                 $total_full_day =  $emp_punchings->where('hint', 'casual')->count();
@@ -502,7 +502,7 @@ class PunchingCalcService
             uniqueBy: ['month', 'aadhaarid'],
             update: [
                 'total_grace_sec',  'total_extra_sec', 'cl_taken', 'employee_id',
-                'total_grace_exceeded300_date'
+                'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str'
             ]
         );
 
