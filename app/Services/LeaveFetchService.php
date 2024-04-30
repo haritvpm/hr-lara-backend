@@ -125,7 +125,9 @@ class LeaveFetchService
                 //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
                 //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
                 //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-           
+                
+                //upsert updates updated_at field of all records. so we cannot use that to find updated records
+
                 Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ], 
                 [ 'start_date','end_date',  'leave_type', 'reason', 'active_status',
                  'leave_cat', 'time_period',  'last_updated']);
