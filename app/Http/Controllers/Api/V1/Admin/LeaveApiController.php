@@ -17,7 +17,7 @@ class LeaveApiController extends Controller
     {
         abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new LeafResource(Leaf::with(['employee', 'created_by'])->get());
+        return new LeafResource(Leaf::with(['employee'])->get());
     }
 
     public function store(StoreLeafRequest $request)
@@ -33,7 +33,7 @@ class LeaveApiController extends Controller
     {
         abort_if(Gate::denies('leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new LeafResource($leaf->load(['employee', 'created_by']));
+        return new LeafResource($leaf->load(['employee']));
     }
 
     public function update(UpdateLeafRequest $request, Leaf $leaf)

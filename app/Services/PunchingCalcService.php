@@ -466,7 +466,7 @@ class PunchingCalcService
             if ($emp_punchings) {
                 $total_grace_sec =  $emp_punchings->sum('grace_sec');
                 $emp_new_monthly_attendance_data['total_grace_sec'] = $total_grace_sec;
-                $emp_new_monthly_attendance_data['total_grace_str'] = gmdate("i", $total_grace_sec );
+                $emp_new_monthly_attendance_data['total_grace_str'] = floor($total_grace_sec/60);
                 $total_extra_sec = $emp_punchings->sum('extra_sec');
                 $emp_new_monthly_attendance_data['total_extra_sec'] = $total_extra_sec;
                 $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec );
