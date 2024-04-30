@@ -18,7 +18,7 @@ class PunchingApiSectionDailyController extends Controller
     public function getpunchings(Request $request)
     {
 
-        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
+        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now()->startOfDay(); //today
         $date_str =  $date->format('Y-m-d');
 
         //get current logged in user's charges
@@ -135,7 +135,7 @@ class PunchingApiSectionDailyController extends Controller
         return response()->json([
             'date_dmY' => $date_str, // '2021-01-01'
             'is_today' => $date->isToday(),
-            'is_future' => $date->gt(Carbon::today()),
+            'is_future' => $date->gt(Carbon::now()),
             'punchings' => $data2,
             'employees_in_view' =>  $employees_in_view,
             'sections' => array_values(array_unique($sections)),

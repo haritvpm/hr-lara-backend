@@ -43,9 +43,7 @@
                         <th>
                             {{ trans('cruds.leaf.fields.employee') }}
                         </th>
-                        <th>
-                            {{ trans('cruds.employee.fields.pen') }}
-                        </th>
+                      
                         <th>
                             {{ trans('cruds.employee.fields.aadhaarid') }}
                         </th>
@@ -96,11 +94,9 @@
                             <td>
                                 {{ $leaf->employee->name ?? '' }}
                             </td>
+                           
                             <td>
-                                {{ $leaf->employee->pen ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->employee->aadhaarid ?? '' }}
+                                {{ $leaf->aadhaarid ?? '' }}
                             </td>
                             <td>
                                 {{ App\Models\Leaf::LEAVE_TYPE_SELECT[$leaf->leave_type] ?? '' }}

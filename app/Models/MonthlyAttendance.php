@@ -60,7 +60,7 @@ class MonthlyAttendance extends Model
 
     public static function forEmployeesInMonth($date, $aadhaarids)
     {
-        return MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
+        return MonthlyAttendance::where('month', $date->clone()->startOfMonth()->format('Y-m-d'))
         ->wherein('aadhaarid', $aadhaarids)
         ->get()->mapwithKeys(function ($item) {
             return [$item['aadhaarid'] => $item];
