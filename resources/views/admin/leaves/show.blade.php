@@ -1,19 +1,19 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.show') }} {{ trans('cruds.leaf.title') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.leaves.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
             </div>
-            <table class="table  ">
+            <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
@@ -21,6 +21,14 @@
                         </th>
                         <td>
                             {{ $leaf->id }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.aadhaarid') }}
+                        </th>
+                        <td>
+                            {{ $leaf->aadhaarid }}
                         </td>
                     </tr>
                     <tr>
@@ -89,18 +97,34 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaf.fields.created_by') }}
-                        </th>
-                        <td>
-                            {{ $leaf->created_by->name ?? '' }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.leaf.fields.in_lieu_of') }}
                         </th>
                         <td>
                             {{ $leaf->in_lieu_of }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.last_updated') }}
+                        </th>
+                        <td>
+                            {{ $leaf->last_updated }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.creation_date') }}
+                        </th>
+                        <td>
+                            {{ $leaf->creation_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.created_by_aadhaarid') }}
+                        </th>
+                        <td>
+                            {{ $leaf->created_by_aadhaarid }}
                         </td>
                     </tr>
                 </tbody>

@@ -100,18 +100,18 @@
                             </td>
                             <td>
                                 @can('govt_calendar_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.govt-calendars.show', $govtCalendar->id) }}">
+                                    <!-- <a class="btn btn-xs btn-primary" href="{{ route('admin.govt-calendars.show', $govtCalendar->id) }}">
                                         {{ trans('global.view') }}
-                                    </a>
+                                    </a> -->
                                 @endcan
 
                                 <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
                                 <a href="{{ route('admin.govt-calendars.fetch-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">FetchLeaves</a>
-                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">calculate</a>
-                                <a href="{{ route('admin.govt-calendars.download-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">DownloadLeaves</a>
+                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-primary">calculate</a>
+                                <!-- <a href="{{ route('admin.govt-calendars.download-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">DownloadLeaves</a> -->
 
                                 @can('govt_calendar_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
+                                    <a class="btn btn-dark" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan

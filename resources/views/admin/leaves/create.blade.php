@@ -1,14 +1,22 @@
 @extends('layouts.admin')
 @section('content')
 
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.leaf.title_singular') }}
     </div>
 
-    <div class="card-body_">
+    <div class="card-body">
         <form method="POST" action="{{ route("admin.leaves.store") }}" enctype="multipart/form-data">
             @csrf
+            <div class="form-group">
+                <label class="required" for="aadhaarid">{{ trans('cruds.leaf.fields.aadhaarid') }}</label>
+                <input class="form-control {{ $errors->has('aadhaarid') ? 'is-invalid' : '' }}" type="text" name="aadhaarid" id="aadhaarid" value="{{ old('aadhaarid', '') }}" required>
+                @if($errors->has('aadhaarid'))
+                    <span class="text-danger">{{ $errors->first('aadhaarid') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.aadhaarid_helper') }}</span>
+            </div>
             <div class="form-group">
                 <label class="required" for="employee_id">{{ trans('cruds.leaf.fields.employee') }}</label>
                 <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id" required>
@@ -93,24 +101,36 @@
                 <span class="help-block">{{ trans('cruds.leaf.fields.time_period_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="created_by_id">{{ trans('cruds.leaf.fields.created_by') }}</label>
-                <select class="form-control select2 {{ $errors->has('created_by') ? 'is-invalid' : '' }}" name="created_by_id" id="created_by_id" required>
-                    @foreach($created_bies as $id => $entry)
-                        <option value="{{ $id }}" {{ old('created_by_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('created_by'))
-                    <span class="text-danger">{{ $errors->first('created_by') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.leaf.fields.created_by_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="in_lieu_of">{{ trans('cruds.leaf.fields.in_lieu_of') }}</label>
                 <input class="form-control date {{ $errors->has('in_lieu_of') ? 'is-invalid' : '' }}" type="text" name="in_lieu_of" id="in_lieu_of" value="{{ old('in_lieu_of') }}">
                 @if($errors->has('in_lieu_of'))
                     <span class="text-danger">{{ $errors->first('in_lieu_of') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaf.fields.in_lieu_of_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="last_updated">{{ trans('cruds.leaf.fields.last_updated') }}</label>
+                <input class="form-control datetime {{ $errors->has('last_updated') ? 'is-invalid' : '' }}" type="text" name="last_updated" id="last_updated" value="{{ old('last_updated') }}">
+                @if($errors->has('last_updated'))
+                    <span class="text-danger">{{ $errors->first('last_updated') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.last_updated_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="creation_date">{{ trans('cruds.leaf.fields.creation_date') }}</label>
+                <input class="form-control datetime {{ $errors->has('creation_date') ? 'is-invalid' : '' }}" type="text" name="creation_date" id="creation_date" value="{{ old('creation_date') }}">
+                @if($errors->has('creation_date'))
+                    <span class="text-danger">{{ $errors->first('creation_date') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.creation_date_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="created_by_aadhaarid">{{ trans('cruds.leaf.fields.created_by_aadhaarid') }}</label>
+                <input class="form-control {{ $errors->has('created_by_aadhaarid') ? 'is-invalid' : '' }}" type="text" name="created_by_aadhaarid" id="created_by_aadhaarid" value="{{ old('created_by_aadhaarid', '') }}">
+                @if($errors->has('created_by_aadhaarid'))
+                    <span class="text-danger">{{ $errors->first('created_by_aadhaarid') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.created_by_aadhaarid_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

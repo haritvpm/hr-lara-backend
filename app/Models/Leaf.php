@@ -28,14 +28,17 @@ class Leaf extends Model
         'start_date',
         'end_date',
         'in_lieu_of',
+        'last_updated',
+        'creation_date',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
     protected $fillable = [
-        'employee_id',
         'aadhaarid',
+        'employee_id',
+        
         'leave_type',
         'start_date',
         'end_date',
@@ -43,10 +46,10 @@ class Leaf extends Model
         'active_status',
         'leave_cat',
         'time_period',
-//        'created_by_id',
-        'creation_date',
-        'last_updated',
         'in_lieu_of',
+        'last_updated',
+        'creation_date',
+        'created_by_aadhaarid',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -98,10 +101,10 @@ class Leaf extends Model
     //     $this->attributes['end_date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     // }
 
-    public function created_by()
-    {
-        return $this->belongsTo(Employee::class, 'created_by_id');
-    }
+   // public function created_by()
+   // {
+   //     return $this->belongsTo(Employee::class, 'created_by_id');
+   // }
 
     // public function getInLieuOfAttribute($value)
     // {
