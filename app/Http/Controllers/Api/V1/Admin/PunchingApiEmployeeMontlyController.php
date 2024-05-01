@@ -26,10 +26,14 @@ class PunchingApiEmployeeMontlyController extends Controller
 {
     public function getemployeeMonthlyPunchings(Request $request)
     {
+        \Log::info('getemployeeMonthlyPunchings: ' . $request);
+
         $aadhaarid = $request->aadhaarid;
-        $date = $request?->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
-        $start_date = $date->startOfMonth()->format('Y-m-d');
-        $end_date = $date->endOfMonth()->format('Y-m-d');
+        $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
+        \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
+        $date = Carbon::createFromFormat('Y-m-d', $date_str);
+        $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
+        $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         //$date_str = $date->format('Y-m-d');
         $employee = Employee::where('aadhaarid', $aadhaarid)->first();
         if (!$employee) {

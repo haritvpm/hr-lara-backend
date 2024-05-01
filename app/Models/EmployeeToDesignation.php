@@ -69,7 +69,7 @@ class EmployeeToDesignation extends Model
 
     public function scopeDesignationDuring($query, $date)
     {
-        \Log::info('dateeeee'. $date);
+        // \Log::info('dateeeee'. $date);
         return $query->where(function ($query) use ($date) {
             $query->where('start_date', '<=', $date)
                 ->where(function ($query) use ($date) {
