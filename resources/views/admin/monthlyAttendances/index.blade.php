@@ -37,10 +37,10 @@
                         {{ trans('cruds.monthlyAttendance.fields.month') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.cl_taken') }}
+                        {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.compen_taken') }}
+                        {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
@@ -121,8 +121,8 @@
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'month', name: 'month' },
-{ data: 'cl_taken', name: 'cl_taken' },
-{ data: 'compen_taken', name: 'compen_taken' },
+{ data: 'cl_marked', name: 'cl_marked' },
+{ data: 'compen_marked', name: 'compen_marked' },
 { data: 'compoff_granted', name: 'compoff_granted' },
 { data: 'total_grace_sec', name: 'total_grace_sec' },
 { data: 'total_extra_sec', name: 'total_extra_sec' },
@@ -140,7 +140,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 });
 
 </script>

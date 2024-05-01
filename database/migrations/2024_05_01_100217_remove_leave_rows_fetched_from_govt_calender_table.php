@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('govt_calendars', function (Blueprint $table) {
-           $table->integer('leave_rows_fetched')->nullable();
-
+           $table->dropColumn('leave_rows_fetched');
         });
     }
 

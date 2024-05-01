@@ -53,15 +53,7 @@ class LeaveFetchService
 
         //check calender for this date's count.
         $offset = 0;
-        // if($reportdate ){
-        //     $govtcalender = GovtCalendar::getGovtCalender($reportdate);
-        //     $offset = $govtcalender->leave_rows_fetched;
-        // } else {
-        //     //whole items in leave
-        //     //$offset = Leaf::count();
-        // }
 
-        // $updatedAt = Carbon::now();
 
         //check last fetch time. if it less than 5 minutes, dont fetch
 

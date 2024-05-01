@@ -49,18 +49,18 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.cl_taken') }}
+                            {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->cl_taken }}
+                            {{ $monthlyAttendance->cl_marked }}
                         </td>
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.compen_taken') }}
+                            {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->compen_taken }}
+                            {{ $monthlyAttendance->compen_marked }}
                         </td>
                     </tr>
                     <tr>

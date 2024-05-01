@@ -18,20 +18,20 @@
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.aadhaarid_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="cl_taken">{{ trans('cruds.monthlyAttendance.fields.cl_taken') }}</label>
-                <input class="form-control {{ $errors->has('cl_taken') ? 'is-invalid' : '' }}" type="number" name="cl_taken" id="cl_taken" value="{{ old('cl_taken', '') }}" step="0.1">
-                @if($errors->has('cl_taken'))
-                    <span class="text-danger">{{ $errors->first('cl_taken') }}</span>
+                <label for="cl_marked">{{ trans('cruds.monthlyAttendance.fields.cl_marked') }}</label>
+                <input class="form-control {{ $errors->has('cl_marked') ? 'is-invalid' : '' }}" type="number" name="cl_marked" id="cl_marked" value="{{ old('cl_marked', '') }}" step="0.1">
+                @if($errors->has('cl_marked'))
+                    <span class="text-danger">{{ $errors->first('cl_marked') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.cl_taken_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.cl_marked_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="compen_taken">{{ trans('cruds.monthlyAttendance.fields.compen_taken') }}</label>
-                <input class="form-control {{ $errors->has('compen_taken') ? 'is-invalid' : '' }}" type="number" name="compen_taken" id="compen_taken" value="{{ old('compen_taken', '') }}" step="1">
-                @if($errors->has('compen_taken'))
-                    <span class="text-danger">{{ $errors->first('compen_taken') }}</span>
+                <label for="compen_marked">{{ trans('cruds.monthlyAttendance.fields.compen_marked') }}</label>
+                <input class="form-control {{ $errors->has('compen_marked') ? 'is-invalid' : '' }}" type="number" name="compen_marked" id="compen_marked" value="{{ old('compen_marked', '') }}" step="1">
+                @if($errors->has('compen_marked'))
+                    <span class="text-danger">{{ $errors->first('compen_marked') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.compen_taken_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.compen_marked_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="compoff_granted">{{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}</label>

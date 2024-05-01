@@ -461,7 +461,8 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
             $emp_new_monthly_attendance_data['total_grace_str'] = '';
             $emp_new_monthly_attendance_data['total_extra_str'] = '';
-            $emp_new_monthly_attendance_data['cl_taken'] = 0;
+            $emp_new_monthly_attendance_data['cl_marked'] = 0;
+            $emp_new_monthly_attendance_data['compen_marked'] = 0;
             $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
 
             \Log::info('aadhaarid:' . $aadhaarid);
@@ -473,11 +474,14 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['total_extra_sec'] = $total_extra_sec;
                 $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec);
 
+                //see MarkHintDrawerComponent in frontend for possible hints
                 $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
                 $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
                 $total_full_day =  $emp_punchings->where('hint', 'casual')->count();
                 $total_cl =   ($total_half_day_fn +  $total_half_day_an) / (float)2 + $total_full_day;
-                $emp_new_monthly_attendance_data['cl_taken'] = $total_cl;
+                $emp_new_monthly_attendance_data['cl_marked'] = $total_cl;
+                $total_compen =  $emp_punchings->where('hint', 'comp_leave')->count();
+                $emp_new_monthly_attendance_data['compen_marked'] = $total_compen;
 
                 //find the day on which total grace time exceeded 300 minutes
                 $total_grace = 0;
@@ -503,7 +507,7 @@ class PunchingCalcService
             $data->all(),
             uniqueBy: ['month', 'aadhaarid'],
             update: [
-                'total_grace_sec',  'total_extra_sec', 'cl_taken', 'employee_id',
+                'total_grace_sec',  'total_extra_sec', 'cl_marked', 'employee_id',
                 'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str'
             ]
         );
@@ -559,10 +563,10 @@ class PunchingCalcService
             \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_monthlypunchings) {
 
-                $total_cl =  $emp_monthlypunchings->sum('cl_taken');
+                $total_cl =  $emp_monthlypunchings->sum('cl_marked');
                 $emp_new_yearly_attendance_data['cl_marked'] = $total_cl;
 
-                $total_compen =  $emp_monthlypunchings->sum('compen_taken');
+                $total_compen =  $emp_monthlypunchings->sum('compen_marked');
                 $emp_new_yearly_attendance_data['compen_marked'] = $total_compen;
             }
 

@@ -54,11 +54,11 @@ class MonthlyAttendanceController extends Controller
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
 
-            $table->editColumn('cl_taken', function ($row) {
-                return $row->cl_taken ? $row->cl_taken : '';
+            $table->editColumn('cl_marked', function ($row) {
+                return $row->cl_marked ? $row->cl_marked : '';
             });
-            $table->editColumn('compen_taken', function ($row) {
-                return $row->compen_taken ? $row->compen_taken : '';
+            $table->editColumn('compen_marked', function ($row) {
+                return $row->compen_marked ? $row->compen_marked : '';
             });
             $table->editColumn('compoff_granted', function ($row) {
                 return $row->compoff_granted ? $row->compoff_granted : '';
