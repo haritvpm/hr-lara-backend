@@ -114,9 +114,11 @@ class PunchingApiEmployeeMontlyController extends Controller
     }
     public function saveEmployeeHint(Request $request)
     {
-        $aadhaarid = $request->aadhaarid;
-        $hint = $request->hint;
+\Log::info('saveEmployeeHint: ' . $request);
 
+$aadhaarid = $request->aadhaarid;
+        $hint = $request->hint;
+        $remarks = $request->remarks;
         //check if logged in user is controller for this employee
         [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
         //get section of employee
@@ -137,6 +139,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             ->where('date', $request->date)
             ->update([
                 'hint' => $hint,
+                'remarks' => $remarks,
                 'finalized_by_controller' => $loggedInUserIsController,
         ]);
 
