@@ -9,7 +9,7 @@ use App\Models\GovtCalendar;
 use App\Models\Punching;
 use App\Models\PunchingTrace;
 use App\Models\Employee;
-use App\Models\User;
+use App\Models\YearlyAttendance;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
 use App\Models\OfficeTime;
@@ -34,6 +34,13 @@ class PunchingCalcService
         });
         return $query->orderBy('created_date', 'asc')->get();
     }
+    public function getAadhaaridsOfPunchingTracesForPeriod($start_date,  $end_date)
+    {
+        $query = PunchingTrace::whereBetween('att_date', [$start_date, $end_date])
+            ->where('auth_status', 'Y');
+        return $query->orderBy('created_date', 'asc')->get(['aadhaarid']);
+    }
+
     public function getPunchingsForDay($date,  $aadhaar_ids)
     {
         return Punching::where('date', $date)
@@ -130,9 +137,9 @@ class PunchingCalcService
 
         //calculate sum of extra and grace seconds for this month and update monthlyattendance table
         $data = $this->calculateMonthlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
+        $this->calculateYearlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
 
-
-        return $data;
+        //return $data;
     }
 
     public function calculateEmployeeDaily(
@@ -269,8 +276,7 @@ class PunchingCalcService
 
             $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
 
-            if( $isHoliday)
-            {
+            if ($isHoliday) {
                 $computer_hint = '';
                 $grace_total_exceeded_one_hour = 0;
             }
@@ -311,7 +317,7 @@ class PunchingCalcService
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
-            if ( !$isHoliday && ( $computer_hint !== 'casual' || $hint != null) ) //if hint exists, no need to use computer hint for else
+            if (!$isHoliday && ($computer_hint !== 'casual' || $hint != null)) //if hint exists, no need to use computer hint for else
             {
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
@@ -391,11 +397,9 @@ class PunchingCalcService
                     $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
                 } else if ($evening_late && !$morning_late) {
                     $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
-                }
-                else if ($morning_late && $evening_late ) {
+                } else if ($morning_late && $evening_late) {
                     $computer_hint =  'casual';
-                }
-                else {
+                } else {
                     //10.08 to 4.05
                     //find which end has more has more time diff. morning or evening
                     $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
@@ -427,10 +431,8 @@ class PunchingCalcService
         $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfMonth();
 
         if ($aadhaar_ids == null) {
-            $all_punchingtraces =  $this->getPunchingTracesForPeriod($start_date, $end_date, $aadhaar_ids);
-            $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
+            $aadhaar_ids =  $this->getAadhaaridsOfPunchingTracesForPeriod($start_date, $end_date)->pluck('aadhaarid');
         }
-
         // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
         //if( $aadhaar_to_empIds == null)
         {
@@ -466,10 +468,10 @@ class PunchingCalcService
             if ($emp_punchings) {
                 $total_grace_sec =  $emp_punchings->sum('grace_sec');
                 $emp_new_monthly_attendance_data['total_grace_sec'] = $total_grace_sec;
-                $emp_new_monthly_attendance_data['total_grace_str'] = floor($total_grace_sec/60);
+                $emp_new_monthly_attendance_data['total_grace_str'] = floor($total_grace_sec / 60);
                 $total_extra_sec = $emp_punchings->sum('extra_sec');
                 $emp_new_monthly_attendance_data['total_extra_sec'] = $total_extra_sec;
-                $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec );
+                $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec);
 
                 $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
                 $total_half_day_an =  $emp_punchings->where('hint', 'casual_an')->count();
@@ -503,6 +505,77 @@ class PunchingCalcService
             update: [
                 'total_grace_sec',  'total_extra_sec', 'cl_taken', 'employee_id',
                 'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str'
+            ]
+        );
+
+        return   $data;
+    }
+
+
+    public function calculateYearlyAttendance($date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
+    {
+        $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfYear();
+        $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfYear();
+
+        if ($aadhaar_ids == null) {
+            $aadhaar_ids   =  $this->getAadhaaridsOfPunchingTracesForPeriod($start_date, $end_date)->pluck('aadhaarid');
+        }
+
+
+        $emps = Employee::wherein('aadhaarid', $aadhaar_ids)->get();
+        $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
+
+        $monthlypunchings = MonthlyAttendance::whereBetween('month', [$start_date, $end_date])
+            ->wherein('aadhaarid', $aadhaar_ids)
+            ->get();
+
+        $monthlypunchings_grouped = $monthlypunchings->groupBy('aadhaarid');
+        //\Log::info('aadhaar_to_empIds count:' . $aadhaar_to_empIds);
+
+        $data = collect([]);
+
+        foreach ($aadhaar_to_empIds as $aadhaarid => $employee_id) {
+            $emp_monthlypunchings = $monthlypunchings_grouped->has($aadhaarid) ?
+                $monthlypunchings_grouped->get($aadhaarid) : null;
+
+            // 'year',
+            // 'cl_marked',
+            // 'cl_submitted',
+            // 'compen_marked',
+            // 'compen_submitted',
+            // 'other_leaves_marked',
+
+            $emp_new_yearly_attendance_data = [];
+            $emp_new_yearly_attendance_data['aadhaarid'] = $aadhaarid;
+            $emp_new_yearly_attendance_data['employee_id'] = $employee_id;
+            $emp_new_yearly_attendance_data['year'] = $start_date->format('Y-m-d');
+
+            $emp_new_yearly_attendance_data['cl_marked'] = 0;
+            $emp_new_yearly_attendance_data['cl_submitted'] = 0;
+            $emp_new_yearly_attendance_data['compen_marked'] = 0;
+            $emp_new_yearly_attendance_data['compen_submitted'] = 0;
+            $emp_new_yearly_attendance_data['other_leaves_marked'] = 0;
+
+            \Log::info('aadhaarid:' . $aadhaarid);
+            if ($emp_monthlypunchings) {
+
+                $total_cl =  $emp_monthlypunchings->sum('cl_taken');
+                $emp_new_yearly_attendance_data['cl_marked'] = $total_cl;
+
+                $total_compen =  $emp_monthlypunchings->sum('compen_taken');
+                $emp_new_yearly_attendance_data['compen_marked'] = $total_compen;
+            }
+
+            $data[] = $emp_new_yearly_attendance_data;
+        }
+
+        YearlyAttendance::upsert(
+            $data->all(),
+            uniqueBy: ['year', 'aadhaarid'],
+            update: [
+                'employee_id',
+                'cl_marked',  'cl_submitted', 'compen_marked',
+                'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted'
             ]
         );
 

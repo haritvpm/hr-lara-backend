@@ -434,4 +434,23 @@ class EmployeeService
 
         return $data;
     }
+
+    public static function getSectionOfEmployeeOnDate($aadhaarid, $date)
+    {
+        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
+        if (!$employee) {
+            return [null,'Employee not found', 400];
+        }
+
+        $employeeToSection = EmployeeToSection::duringPeriod($date, $date)
+            ->where('employee_id', $employee->id)
+            ->with('section')
+            ->first();
+
+        if (!$employeeToSection) {
+            return [null,'Employee not found  in any section', 400];
+        }
+
+        return [$employeeToSection->section, 'success', 200];
+    }
 }

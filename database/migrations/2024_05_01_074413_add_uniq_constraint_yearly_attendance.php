@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('govt_calendars', function (Blueprint $table) {
-           // $table->integer('leave_rows_fetched')->nullable();
-
+        Schema::table('yearly_attendances', function (Blueprint $table) {
+            $table->unique(['year', 'aadhaarid']);
         });
     }
 
@@ -22,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('govt_calendars', function (Blueprint $table) {
+        Schema::table('yearly_attendances', function (Blueprint $table) {
             //
         });
     }

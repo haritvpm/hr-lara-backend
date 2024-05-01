@@ -116,13 +116,29 @@ class PunchingApiEmployeeMontlyController extends Controller
     {
         $aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
-        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
-        if (!$employee) {
-            return response()->json(['status' => 'Employee not found'], 400);
+
+        //check if logged in user is controller for this employee
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        //get section of employee
+        [$section, $status, $code] =  EmployeeService::getSectionOfEmployeeOnDate( $aadhaarid, $request->date);
+        if(!$section || $status != 'success'){
+            return response()->json(['status' => $status], $code);
         }
+
+        //get this section's controller and reporting officer
+        $loggedInUserIsController = $seat_ids_of_loggedinuser->contains($section->seat_of_controlling_officer_id);
+        $loggedInUserIsSectionOfficer = $seat_ids_of_loggedinuser->contains($section->seat_of_reporting_officer_id);
+
+        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer) {
+            return response()->json(['status' => 'Not authorized'], 400);
+        }
+
         $punching = Punching::where('aadhaarid', $aadhaarid)
             ->where('date', $request->date)
-            ->update(['hint' => $hint]);
+            ->update([
+                'hint' => $hint,
+                'finalized_by_controller' => $loggedInUserIsController,
+        ]);
 
         //recalculate daily and monthly
         $punchingService = new PunchingCalcService();
