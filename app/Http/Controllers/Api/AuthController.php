@@ -123,7 +123,7 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        $user = User::with(['roles', 'roles.permissions'])->find(Auth::id());
+        $user = User::with(['roles', 'roles.permissions', 'employee'])->find(Auth::id());
 
         $permList = collect();
         foreach ($user->roles as $role) {
@@ -139,6 +139,7 @@ class AuthController extends Controller
             'avatar' => '',
             'roles' =>  $user->roles->pluck('title'),
             'permissions' => $permList->unique(),
+            'aadhaarid' => $user?->employee?->aadhaarid ?? null,
         ]);
     }
     public function resetpassword(Request $request)

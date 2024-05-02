@@ -21,9 +21,9 @@ class PunchingApiSectionMontlyController extends Controller
     public function getmonthlypunchings(Request $request)
     {
 
-        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
-        $start_date = $date->startOfMonth()->format('Y-m-d');
-        $end_date = $date->endOfMonth()->format('Y-m-d');
+        $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::today(); //today
+        $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
+        $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         $date_str = $date->format('Y-m-d');
 
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
@@ -108,7 +108,8 @@ class PunchingApiSectionMontlyController extends Controller
                 $d = $date->day($i);
                 $d_str = $d->format('Y-m-d');
                 $emp_start_date = Carbon::parse($employee['start_date']);
-                $emp_end_date = Carbon::parse($employee['end_date']);
+                //if end_date is not set, then set it to end of year
+                $emp_end_date = $employee['end_date'] ? Carbon::parse($end_date_str) : $emp_start_date->clone()->endOfYear();
 
                 $dayinfo = [];
 
