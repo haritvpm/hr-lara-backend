@@ -119,6 +119,7 @@ class PunchingApiEmployeeMontlyController extends Controller
     public function saveEmployeeHint(Request $request)
     {
 \Log::info('saveEmployeeHint: ' . $request);
+\Log::info('date: ' . $request->date);
 
 $aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
@@ -139,13 +140,15 @@ $aadhaarid = $request->aadhaarid;
             return response()->json(['status' => 'Not authorized'], 400);
         }
 
-        $punching = Punching::where('aadhaarid', $aadhaarid)
-            ->where('date', $request->date)
-            ->update([
+        //since this might be first time, insert if not exists
+        $punching = Punching::updateOrCreate(
+            ['aadhaarid' => $aadhaarid, 'date' => $request->date],
+            [
                 'hint' => $hint,
                 'remarks' => $remarks,
                 'finalized_by_controller' => $loggedInUserIsController,
-        ]);
+            ]
+        );
 
         //recalculate daily and monthly
         $punchingService = new PunchingCalcService();

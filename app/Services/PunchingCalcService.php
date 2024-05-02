@@ -491,7 +491,7 @@ class PunchingCalcService
                     $d = $date->day($i);
                     $d_str = $d->format('Y-m-d');
                     $total_grace_till_this_date += $emp_punchings->where('date', $d_str)->first()?->grace_sec ?? 0;
-                    \Log::info('total_grace_till_this_date:' . $total_grace_till_this_date);
+                   // \Log::info('total_grace_till_this_date:' . $total_grace_till_this_date);
                     if ($total_grace_till_this_date > 300 * 60) {
                         $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = $d_str;
                         break;
@@ -508,7 +508,7 @@ class PunchingCalcService
             uniqueBy: ['month', 'aadhaarid'],
             update: [
                 'total_grace_sec',  'total_extra_sec', 'cl_marked', 'employee_id',
-                'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str'
+                'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str','compen_marked'
             ]
         );
 
