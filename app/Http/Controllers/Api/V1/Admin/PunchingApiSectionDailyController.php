@@ -136,7 +136,7 @@ class PunchingApiSectionDailyController extends Controller
             'date_dmY' => $date_str, // '2021-01-01'
             'is_today' => $date->isToday(),
             'is_future' => $date->gt(Carbon::now()),
-            'is_holiday'=> $calender_info['govtholidaystatus'] ?? false,
+            'is_holiday'=> $calender_info['holiday'] ?? false,
             'calender'=> $calender_info,
             'punchings' => $data2,
             'employees_in_view' => $employees_in_view,
