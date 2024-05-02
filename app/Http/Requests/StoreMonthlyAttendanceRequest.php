@@ -21,10 +21,10 @@ class StoreMonthlyAttendanceRequest extends FormRequest
                 'string',
                 'required',
             ],
-            'cl_taken' => [
+            'cl_marked' => [
                 'numeric',
             ],
-            'compen_taken' => [
+            'compen_marked' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',

@@ -40,10 +40,7 @@ class UpdateLeafRequest extends FormRequest
             'leave_cat' => [
                 'required',
             ],
-            'created_by_id' => [
-                'required',
-                'integer',
-            ],
+           
             'in_lieu_of' => [
                 'date_format:' . config('panel.date_format'),
                 'nullable',

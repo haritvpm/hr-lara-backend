@@ -24,138 +24,66 @@
     
 
 @endcan
-<div class="card_">
-    <div class="card-header_">
+<div class="card">
+    <div class="card-header">
         {{ trans('cruds.leaf.title_singular') }} {{ trans('global.list') }}
     </div>
 
-    <div class="card-body_">
-        <div class="table-responsive_">
-            <table class=" table   table-hover datatable datatable-Leaf">
-                <thead>
-                    <tr>
-                        <th width="10">
+    <div class="card-body">
+        <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Leaf">
+            <thead>
+                <tr>
+                    <th width="10">
 
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.id') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.employee') }}
-                        </th>
-                      
-                        <th>
-                            {{ trans('cruds.employee.fields.aadhaarid') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.leave_type') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.start_date') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.end_date') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.reason') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.active_status') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.leave_cat') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.time_period') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.created_by') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.employee.fields.aadhaarid') }}
-                        </th>
-                        <th>
-                            {{ trans('cruds.leaf.fields.in_lieu_of') }}
-                        </th>
-                        <th>
-                            &nbsp;
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($leaves as $key => $leaf)
-                        <tr data-entry-id="{{ $leaf->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $leaf->id ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->employee->name ?? '' }}
-                            </td>
-                           
-                            <td>
-                                {{ $leaf->aadhaarid ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Leaf::LEAVE_TYPE_SELECT[$leaf->leave_type] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->start_date ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->end_date ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->reason ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->active_status ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Leaf::LEAVE_CAT_SELECT[$leaf->leave_cat] ?? '' }}
-                            </td>
-                            <td>
-                                {{ App\Models\Leaf::TIME_PERIOD_SELECT[$leaf->time_period] ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->created_by->name ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->created_by->aadhaarid ?? '' }}
-                            </td>
-                            <td>
-                                {{ $leaf->in_lieu_of ?? '' }}
-                            </td>
-                            <td>
-                                @can('leaf_show')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('admin.leaves.show', $leaf->id) }}">
-                                        {{ trans('global.view') }}
-                                    </a>
-                                @endcan
-
-                                @can('leaf_edit')
-                                    <a class="btn btn-xs btn-info" href="{{ route('admin.leaves.edit', $leaf->id) }}">
-                                        {{ trans('global.edit') }}
-                                    </a>
-                                @endcan
-
-                                @can('leaf_delete')
-                                    <form action="{{ route('admin.leaves.destroy', $leaf->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                        <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                    </form>
-                                @endcan
-
-                            </td>
-
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.id') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.aadhaarid') }}
+                    </th>
+                    <!-- <th>
+                        {{ trans('cruds.leaf.fields.employee') }}
+                    </th> -->
+                    <th>
+                        {{ trans('cruds.leaf.fields.leave_type') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.start_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.end_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.reason') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.active_status') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.leave_cat') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.time_period') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.in_lieu_of') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.last_updated') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.creation_date') }}
+                    </th>
+                    <!-- <th>
+                        {{ trans('cruds.leaf.fields.created_by_aadhaarid') }}
+                    </th> -->
+                    <th>
+                        &nbsp;
+                    </th>
+                </tr>
+            </thead>
+        </table>
     </div>
 </div>
 
@@ -168,14 +96,14 @@
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
 @can('leaf_delete')
-  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
   let deleteButton = {
     text: deleteButtonTrans,
     url: "{{ route('admin.leaves.massDestroy') }}",
     className: 'btn-danger',
     action: function (e, dt, node, config) {
-      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
-          return $(entry).data('entry-id')
+      var ids = $.map(dt.rows({ selected: true }).data(), function (entry) {
+          return entry.id
       });
 
       if (ids.length === 0) {
@@ -197,18 +125,42 @@
   dtButtons.push(deleteButton)
 @endcan
 
-  $.extend(true, $.fn.dataTable.defaults, {
+  let dtOverrideGlobals = {
+    buttons: dtButtons,
+    processing: true,
+    serverSide: true,
+    retrieve: true,
+    aaSorting: [],
+    ajax: "{{ route('admin.leaves.index') }}",
+    columns: [
+      { data: 'placeholder', name: 'placeholder' },
+{ data: 'id', name: 'id' },
+{ data: 'aadhaarid', name: 'aadhaarid' },
+// { data: 'employee_name', name: 'employee.name' },
+{ data: 'leave_type', name: 'leave_type' },
+{ data: 'start_date', name: 'start_date' },
+{ data: 'end_date', name: 'end_date' },
+{ data: 'reason', name: 'reason' },
+{ data: 'active_status', name: 'active_status' },
+{ data: 'leave_cat', name: 'leave_cat' },
+{ data: 'time_period', name: 'time_period' },
+{ data: 'in_lieu_of', name: 'in_lieu_of' },
+{ data: 'last_updated', name: 'last_updated' },
+{ data: 'creation_date', name: 'creation_date' },
+//{ data: 'created_by_aadhaarid', name: 'created_by_aadhaarid' },
+{ data: 'actions', name: '{{ trans('global.actions') }}' }
+    ],
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
     pageLength: 100,
-  });
-  let table = $('.datatable-Leaf:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  };
+  let table = $('.datatable-Leaf').DataTable(dtOverrideGlobals);
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-
-})
+  
+});
 
 </script>
 @endsection

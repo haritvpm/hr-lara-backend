@@ -24,8 +24,12 @@ class MonthlyAttendance extends Model
         'aadhaarid',
         'employee_id',
         'month',
-        'cl_taken',
-        'compen_taken',
+        'cl_marked',
+        'cl_submitted',
+        'compen_marked',
+        'compen_submitted',
+        'other_leaves_marked',
+        'other_leaves_submitted',
         'compoff_granted',
         'total_grace_sec',
         'total_extra_sec',
@@ -69,7 +73,7 @@ class MonthlyAttendance extends Model
     }
     public static function forEmployeeInMonth($date, $aadhaarid)
     {
-        return MonthlyAttendance::where('month', $date->startOfMonth()->format('Y-m-d'))
+        return MonthlyAttendance::where('month', $date->clone()->startOfMonth()->format('Y-m-d'))
         ->where('aadhaarid', $aadhaarid)
         ->get()->mapwithKeys(function ($item) {
             return [$item['aadhaarid'] => $item];

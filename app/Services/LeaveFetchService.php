@@ -52,14 +52,8 @@ class LeaveFetchService
 
 
         //check calender for this date's count.
-        $offset = 0; 
-        if($reportdate ){
-            $govtcalender = GovtCalendar::getGovtCalender($reportdate);
-            $offset = $govtcalender->leave_rows_fetched;
-        } else {
-            //whole items in leave
-            //$offset = Leaf::count();
-        }
+        $offset = 0;
+
 
         //check last fetch time. if it less than 5 minutes, dont fetch
 
@@ -98,7 +92,23 @@ class LeaveFetchService
                 //if(  $jsonData['attendance_type'] != 'E' && $jsonData['auth_status'] == 'Y'  )
                 {
                     // assert($reportdate === $jsonData[$i]['att_date']);
-                    $datatoinsert[] = $this->mapTraceToDBFields($offset + $i, $jsonData[$i]);
+                    $item = $this->mapTraceToDBFields($offset + $i, $jsonData[$i]);
+/*
+                    //check if there is a change in active_status. if so, note the aadharrid
+                    $existingrow = Leaf::where('aadhaarid', $datatoinsert['aadhaarid'])
+                        ->where('creation_date', $datatoinsert['creation_date'])
+                        ->first();
+                    if( $existingrow){
+                        if($existingrow->active_status != $datatoinsert['active_status'] ||
+                            $existingrow->leave_type != $datatoinsert['leave_type'] ||
+                            $existingrow->start_date != $datatoinsert['start_date'] ||
+                            $existingrow->end_date != $datatoinsert['end_date'] ||
+                            $existingrow->last_updated != $datatoinsert['last_updated'] ||
+                            $existingrow->time_period != $datatoinsert['time_period']){
+                    }
+*/
+
+                    $datatoinsert[] = $item;
                 }
             }
 
@@ -107,21 +117,10 @@ class LeaveFetchService
                 //DB::transaction(function () use ($datatoinsert, $jsonData, &$error) {
                 //All databases except SQL Server require the columns in the second argument of the upsert method to have a "primary" or "unique" index.
                 //In addition, the MySQL database driver ignores the second argument of the upsert method and always uses the "primary" and "unique" indexes of the table to detect existing records.
-                /*
-                 'employee_id',
-        'aadhaarid',
-        'leave_type',
-        'start_date',
-        'end_date',
-        'reason',
-        'active_status',
-        'leave_cat',
-        'time_period',
-        'created_by_id',
-        'creation_date',
-        'last_updated',
-                */
-                Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ], 
+
+                //upsert updates updated_at field of all records. so we cannot use that to find updated records
+
+                Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ],
                 [ 'start_date','end_date',  'leave_type', 'reason', 'active_status',
                  'leave_cat', 'time_period',  'last_updated']);
 
@@ -142,18 +141,24 @@ class LeaveFetchService
             }
         }
 
-        \Log::info('Newly fetched rows:' . $insertedcount);
+        $newLeaves = Leaf::whereDate('created_at', Carbon::today())
+                    ->orwhereDate('updated_at', Carbon::today())
+                            ->get();
+
+
+        \Log::info('Newly created/updated rows:' . $insertedcount);
+        \Log::info('Newly created/updated rows as per db :' . $newLeaves->count());
 
         //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
 
         if ($insertedcount) {
-           
+
            // (new PunchingCalcService())->calculate($reportdate);
         }
 
         return $insertedcount;
     }
-  
+
     private function mapTraceToDBFields($day_offset, $traceItem)
     {
 
@@ -166,13 +171,13 @@ class LeaveFetchService
         $trace['active_status'] = $traceItem['active_status'];
         $trace['leave_cat'] = $traceItem['leave_cat'];
         $trace['time_period'] = $traceItem['time_period'];
-      //  $trace['created_by_id'] = $traceItem['created_by_id'];
+        $trace['created_by_aadhaarid'] = $traceItem['created_by'];
         $trace['creation_date'] = $traceItem['creation_date'];
         $trace['last_updated'] = $traceItem['last_updated'];
         if( $trace['last_updated'] == '0000-00-00 00:00:00' ){
             $trace['last_updated'] = null;
         }
-        
+
         return $trace;
         // $trace->save();
     }

@@ -26,10 +26,14 @@ class PunchingApiEmployeeMontlyController extends Controller
 {
     public function getemployeeMonthlyPunchings(Request $request)
     {
+        \Log::info('getemployeeMonthlyPunchings: ' . $request);
+
         $aadhaarid = $request->aadhaarid;
-        $date = $request?->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now(); //today
-        $start_date = $date->startOfMonth()->format('Y-m-d');
-        $end_date = $date->endOfMonth()->format('Y-m-d');
+        $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
+        \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
+        $date = Carbon::createFromFormat('Y-m-d', $date_str);
+        $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
+        $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         //$date_str = $date->format('Y-m-d');
         $employee = Employee::where('aadhaarid', $aadhaarid)->first();
         if (!$employee) {
@@ -114,15 +118,37 @@ class PunchingApiEmployeeMontlyController extends Controller
     }
     public function saveEmployeeHint(Request $request)
     {
-        $aadhaarid = $request->aadhaarid;
+\Log::info('saveEmployeeHint: ' . $request);
+\Log::info('date: ' . $request->date);
+
+$aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
-        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
-        if (!$employee) {
-            return response()->json(['status' => 'Employee not found'], 400);
+        $remarks = $request->remarks;
+        //check if logged in user is controller for this employee
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        //get section of employee
+        [$section, $status, $code] =  EmployeeService::getSectionOfEmployeeOnDate( $aadhaarid, $request->date);
+        if(!$section || $status != 'success'){
+            return response()->json(['status' => $status], $code);
         }
-        $punching = Punching::where('aadhaarid', $aadhaarid)
-            ->where('date', $request->date)
-            ->update(['hint' => $hint]);
+
+        //get this section's controller and reporting officer
+        $loggedInUserIsController = $seat_ids_of_loggedinuser->contains($section->seat_of_controlling_officer_id);
+        $loggedInUserIsSectionOfficer = $seat_ids_of_loggedinuser->contains($section->seat_of_reporting_officer_id);
+
+        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer) {
+            return response()->json(['status' => 'Not authorized'], 400);
+        }
+
+        //since this might be first time, insert if not exists
+        $punching = Punching::updateOrCreate(
+            ['aadhaarid' => $aadhaarid, 'date' => $request->date],
+            [
+                'hint' => $hint,
+                'remarks' => $remarks,
+                'finalized_by_controller' => $loggedInUserIsController,
+            ]
+        );
 
         //recalculate daily and monthly
         $punchingService = new PunchingCalcService();

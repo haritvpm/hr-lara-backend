@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Controllers\Controller;
+use Gate;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Punching;
 use App\Models\GovtCalendar;
-use App\Models\AttendanceBook;
-use Gate;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Services\EmployeeService;
+use App\Models\AttendanceBook;
+use App\Models\YearlyAttendance;
 use App\Models\MonthlyAttendance;
+use App\Services\EmployeeService;
+use App\Http\Controllers\Controller;
 
 
 class PunchingApiSectionMontlyController extends Controller
@@ -61,6 +62,7 @@ class PunchingApiSectionMontlyController extends Controller
         //get all govtcalender between start data and enddate
 
         $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
+        $data_yearly = YearlyAttendance::forEmployeesInYear($date, $aadhaarids);
 
         $data = [];
         $sections = [];
@@ -79,13 +81,21 @@ class PunchingApiSectionMontlyController extends Controller
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
                 $item['total_grace_str'] = $data_monthly[$aadhaarid]['total_grace_str'];
                 $item['total_extra_str'] = $data_monthly[$aadhaarid]['total_extra_str'];
-                $item['cl_taken'] = $data_monthly[$aadhaarid]['cl_taken'];
                 $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
             } else {
                 $item['total_grace_sec'] = 0;
                 $item['total_extra_sec'] = 0;
-                $item['cl_taken'] = 0;
                 $item['total_grace_exceeded300_date'] = null;
+            }
+
+            if ($data_yearly &&  $data_yearly->has($aadhaarid)) {
+                $item['cl_marked'] = $data_yearly[$aadhaarid]['cl_marked'];
+                $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'];
+                $item['other_leaves_marked'] = $data_yearly[$aadhaarid]['other_leaves_marked'];
+            } else {
+                $item['cl_marked'] = 0;
+                $item['compen_marked'] = 0;
+                $item['other_leaves_marked'] = 0;
             }
 
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
@@ -109,7 +119,7 @@ class PunchingApiSectionMontlyController extends Controller
                 $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
                 $dayinfo['is_future'] = $d->gt(Carbon::now());
                 $dayinfo['is_today'] = $d->isToday();
-
+                $dayinfo['date'] = $d_str;
 
                 $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {

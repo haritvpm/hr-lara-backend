@@ -35,23 +35,33 @@ class YearlyAttendance extends Model
         'deleted_at',
     ];
 
-    protected function serializeDate(DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
-    }
+    // protected function serializeDate(DateTimeInterface $date)
+    // {
+    //     return $date->format('Y-m-d H:i:s');
+    // }
 
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function getYearAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getYearAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setYearAttribute($value)
+    // public function setYearAttribute($value)
+    // {
+    //     $this->attributes['year'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
+
+    public static function forEmployeesInYear($date, $aadhaarids)
     {
-        $this->attributes['year'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+        return YearlyAttendance::where('year', $date->clone()->startOfYear()->format('Y-m-d'))
+        ->wherein('aadhaarid', $aadhaarids)
+        ->get()->mapwithKeys(function ($item) {
+            return [$item['aadhaarid'] => $item];
+        });
+
     }
 }
