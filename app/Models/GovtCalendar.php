@@ -134,4 +134,21 @@ class GovtCalendar extends Model
         }
         return $calender_info;
     }
+    public static function getCalenderInfoForDate($date)
+    {
+        $date = Carbon::parse($date);
+        $calender = GovtCalendar::where('date', $date)->first();
+        $calender_info = [];
+
+        $calender_info['day'] = $date->dayOfMonth();
+        $calender_info['date'] = $date;
+        $calender_info['holiday'] = $calender->govtholidaystatus ?? false;
+        $calender_info['rh'] = $calender->restrictedholidaystatus ?? false;
+        $calender_info['office_ends_at'] = $calender->office_ends_at ?? '';
+        $calender_info['future_date'] = $date->gt(Carbon::now());
+        $calender_info['is_today'] = $date->isToday();
+        $calender_info['attendance_trace_fetch_complete'] = $calender->attendance_trace_fetch_complete ?? false;
+
+        return $calender_info;
+    }
 }

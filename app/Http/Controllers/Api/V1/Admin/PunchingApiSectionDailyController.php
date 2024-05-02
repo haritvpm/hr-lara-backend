@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\AttendanceBook;
-use App\Models\MonthlyAttendance;
-use App\Models\Punching;
-use App\Models\User;
-use App\Models\YearlyAttendance;
-use App\Services\EmployeeService;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Punching;
+use App\Models\GovtCalendar;
 use Illuminate\Http\Request;
+use App\Models\AttendanceBook;
+use App\Models\YearlyAttendance;
+use App\Models\MonthlyAttendance;
+use App\Services\EmployeeService;
+use App\Http\Controllers\Controller;
 
 class PunchingApiSectionDailyController extends Controller
 {
@@ -45,10 +46,7 @@ class PunchingApiSectionDailyController extends Controller
         $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
         $data_yearly = YearlyAttendance::forEmployeesInYear($date, $aadhaarids);
 
-        //this should be done when we finish aebas fetch
-        // $data_monthly = (new PunchingService())->calculate($date_str, $aadhaarids)->mapwithKeys(function ($item) {
-        //     return [$item['aadhaarid'] => $item];
-        // });
+        $calender_info = GovtCalendar::getCalenderInfoForDate($date_str);
 
         $punchings = Punching::with(['employee', 'punchin_trace', 'punchout_trace', 'leave'])
             ->wherein('aadhaarid', $aadhaarids)
@@ -71,6 +69,8 @@ class PunchingApiSectionDailyController extends Controller
             if ($data_monthly && $data_monthly->has($aadhaarid)) {
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
+                $item['total_grace_str'] = $data_monthly[$aadhaarid]['total_grace_str'];
+                $item['total_extra_str'] = $data_monthly[$aadhaarid]['total_extra_str'];
                 $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
             } else {
                 $item['total_grace_sec'] = 0;
@@ -95,12 +95,19 @@ class PunchingApiSectionDailyController extends Controller
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];
             $item['section'] = $employees_in_view_mapped[$aadhaarid]['section_name'];
 
+            $emp_start_date = Carbon::parse($employee['start_date']);
+            $emp_end_date = Carbon::parse($employee['end_date']);
+            $item['in_section'] = $emp_start_date->lessThanOrEqualTo($date) && $emp_end_date->greaterThanOrEqualTo($date);
+
+
             // $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $date_str)->first();
 
             $punching = $punchings->where('aadhaarid', $aadhaarid)->first();
 
             if ($punching) {
-                $item = [...$item, ...$punching->toArray()];
+                $item = [...$item, ...$punching->toArray(),
+                'in_time' => substr($punching->in_datetime, 10, -3),
+                'out_time' => substr($punching->out_datetime, 10, -3),];
             } else {
                 $item['punching_count'] = 0;
             }
@@ -129,6 +136,8 @@ class PunchingApiSectionDailyController extends Controller
             'date_dmY' => $date_str, // '2021-01-01'
             'is_today' => $date->isToday(),
             'is_future' => $date->gt(Carbon::now()),
+            'is_holiday'=> $calender_info['govtholidaystatus'] ?? false,
+            'calender'=> $calender_info,
             'punchings' => $data2,
             'employees_in_view' => $employees_in_view,
             'sections' => array_values(array_unique($sections)),
