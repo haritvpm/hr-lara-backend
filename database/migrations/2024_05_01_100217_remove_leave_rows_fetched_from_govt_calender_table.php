@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('govt_calendars', 'leave_rows_fetched'))
+        {
         Schema::table('govt_calendars', function (Blueprint $table) {
            $table->dropColumn('leave_rows_fetched');
         });
+    }
     }
 
     /**
