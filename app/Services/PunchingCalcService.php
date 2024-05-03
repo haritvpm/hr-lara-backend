@@ -465,7 +465,7 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data['compen_marked'] = 0;
             $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
 
-            \Log::info('aadhaarid:' . $aadhaarid);
+          //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
                 $total_grace_sec =  $emp_punchings->sum('grace_sec');
                 $emp_new_monthly_attendance_data['total_grace_sec'] = $total_grace_sec;
@@ -560,7 +560,7 @@ class PunchingCalcService
             $emp_new_yearly_attendance_data['compen_submitted'] = 0;
             $emp_new_yearly_attendance_data['other_leaves_marked'] = 0;
 
-            \Log::info('aadhaarid:' . $aadhaarid);
+          //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_monthlypunchings) {
 
                 $total_cl =  $emp_monthlypunchings->sum('cl_marked');
