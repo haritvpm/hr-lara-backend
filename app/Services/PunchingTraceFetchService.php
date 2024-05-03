@@ -58,12 +58,14 @@ class PunchingTraceFetchService
         //check last fetch time. if it less than 5 minutes, dont fetch
 
         if ($govtcalender->attendancetodaytrace_lastfetchtime) {
+            \Log::info('$govtcalender->attendancetodaytrace_lastfetchtime=' . $govtcalender->attendancetodaytrace_lastfetchtime);
+
             $lastfetch =  Carbon::parse($govtcalender->attendancetodaytrace_lastfetchtime);
-            $diff = Carbon::now()->diffInMinutes($lastfetch);
+            $diff = Carbon::now()->diffInMinutes($lastfetch, true);
             \Log::info('diff=' . $diff);
             if ($diff < 5) {
                 \Log::info('fetchTrace - last fetched in less than five minutes- ignoring');
-                return 0;
+              //  return 0;
             }
         }
 

@@ -109,7 +109,7 @@ class PunchingApiSectionMontlyController extends Controller
                 $d_str = $d->format('Y-m-d');
                 $emp_start_date = Carbon::parse($employee['start_date']);
                 //if end_date is not set, then set it to end of year
-                $emp_end_date = $employee['end_date'] ? Carbon::parse($end_date_str) : $emp_start_date->clone()->endOfYear();
+                $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date']) : $emp_start_date->clone()->endOfYear();
 
                 $dayinfo = [];
 
