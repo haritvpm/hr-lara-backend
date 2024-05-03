@@ -335,7 +335,7 @@ class PunchingCalcService
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
                 }
-            } else {
+            } else if(!$isHoliday ) { //if holiday, let them get compen directly
                 //punched, but not enough time worked or office ends and 3 pm/12pm situations
                 //set grace as 0. but allow extra time as whole day's time
                 $extra_sec = $duration_sec;
