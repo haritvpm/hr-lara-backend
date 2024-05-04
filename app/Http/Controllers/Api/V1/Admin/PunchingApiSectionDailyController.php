@@ -95,10 +95,9 @@ class PunchingApiSectionDailyController extends Controller
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];
             $item['section'] = $employees_in_view_mapped[$aadhaarid]['section_name'];
 
-            $emp_start_date = Carbon::parse($employee['start_date']);
-            $emp_end_date = Carbon::parse($employee['end_date']);
+            $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
+            $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date'])->endOfDay() : $emp_start_date->clone()->endOfYear();
             $item['in_section'] = $emp_start_date->lessThanOrEqualTo($date) && $emp_end_date->greaterThanOrEqualTo($date);
-
 
             // $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $date_str)->first();
 

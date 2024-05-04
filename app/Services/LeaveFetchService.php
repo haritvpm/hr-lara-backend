@@ -4,9 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
-use App\Models\GovtCalendar;
+use App\Models\Setting;
 use App\Models\Leaf;
-use App\Models\PunchingTrace;
+use App\Models\Punching;
 use App\Services\PunchingCalcService;
 
 class LeaveFetchService
@@ -89,7 +89,7 @@ class LeaveFetchService
             //$newOrUpdatedLeaves = [];
             for ($i = 0; $i < count($jsonData); $i++) {
                 //ignore errors
-                
+
                     $item = $this->mapTraceToDBFields($offset + $i, $jsonData[$i]);
 
                     //check if there is a change in active_status. if so, note the aadharrid
@@ -114,7 +114,7 @@ class LeaveFetchService
 */
 
                     $datatoinsert[] = $item;
-                
+
             }
 
             $error = 0;
@@ -188,57 +188,7 @@ class LeaveFetchService
         return $trace;
         // $trace->save();
     }
-    // //to be called every day on leave fetch. 
-    // //takes care of leaves submitted after date
-    // public function processNewAndUpdatedLeaves($newOrUpdatedLeaves)
-    // {
-    //     //only process leave dates upto max one month and start of this year
-        
 
-    //     foreach ($newOrUpdatedLeaves as $item) {
-    //         $leaf = Leaf::where('aadhaarid', $item['aadhaarid'])
-    //             ->where('creation_date', $item['creation_date'])
-    //             ->first();
-            
-    //         //for each date from $leaf->start_date  to $leaf->end_date, updateOrCreate the punching with leave_id
-            
-                
-    //         $punchings = Punching::where('aadhaarid', $item['aadhaarid'])
-    //             ->where('date', '>=', $leaf->start_date )
-    //             ->where('date', '<=', $leaf->end_date)
-    //             ->get();
-            
-    //         \Log::info('leave' . $leaf );
-
-    //         foreach ($punchings as $punching) {
-    //             \Log::info('punching:' . $punching->id);
-
-    //             $punching->leave_id = $leaf->id;
-    //             $punching->save();
-    //         }
-
-    //     }
-    // }
-    // //to be called on daily punching calc. this takes care of leaves submitted before date
-    // public function processTodayLeaves()
-    // {
-    //     //autogen
-    //     $today = Carbon::today();
-    //     $leaves = Leaf::whereDate('start_date', '<=', $today)
-    //         ->whereDate('end_date', '>=', $today)
-    //         ->get();
-
-    //     foreach ($leaves as $leaf) {
-    //         $punchings = Punching::where('aadhaarid', $leaf->aadhaarid)
-    //             ->where('date', $today)
-    //             ->get();
-
-    //         foreach ($punchings as $punching) {
-    //             $punching->leave_id = $leaf->id;
-    //             $punching->save();
-    //         }
-    //     }
-    // }
     public function processLeaves()
     {
         //get chunks of 1000 leaves from Leaf table and process them
@@ -265,62 +215,78 @@ class LeaveFetchService
             ['key' => 'firstNOffset'],
             [ 'firstNOffset' => $firstNOffset]
         );
-        
+
     }
-    public function processLeave($leave)
+    private function processLeave($leave)
     {
+        $punchingCalcService = new PunchingCalcService();
         //we set proceeded to 1 if start_date and end_date is less than today
         //and also if "active_status" is Y, R or C
-        $leave_start_date = Carbon::parse($leave->start_date);
-        $leave_end_date = Carbon::parse($leave->end_date);
-        if( $leave_start_date < Carbon::today()->startOfYear() ){ 
+        $leave_start_date_actual = Carbon::parse($leave->start_date);
+        $leave_end_date_actual = Carbon::parse($leave->end_date);
+
+        $leave_start_date = $leave_start_date_actual->clone();
+        if( $leave_start_date < Carbon::today()->startOfYear() ){
             $leave_start_date =  Carbon::today()->startOfYear();
-        }   
+        }
+        $leave_end_date = $leave_end_date_actual->clone();
         if( $leave_end_date > Carbon::today()) {
             $leave_end_date = Carbon::today();
         }
-       
+
 
         //for each date from $leaf->start_date to $leaf->end_date, updateOrCreate the Punching with leave_id
         //if Punching does not exist, create it
 
         $punchings = Punching::where('aadhaarid', $leave->aadhaarid)
-            ->where('date', '>=', $leave->start_date)
-            ->where('date', '<=', $leave->end_date)
+            ->where('date', '>=', $leave_start_date)
+            ->where('date', '<=',  $leave_end_date)
             ->get()->mapwithkeys(function ($item) {
                 return [$item['date'] => $item];
             });
 
         for ($date = $leave_start_date; $date <= $leave_end_date; $date->addDay()) {
-            $punching = $punchings[$date->format('Y-m-d')];
+            $date_str = $date->format('Y-m-d');
+            $punching =  $punchings[ $date_str] ?? null;
+            $needs_leave_count_update = 0;
             if ($punching) {
-               
-                $this->updatePunchingHint($punching, $leave);
+
+                $needs_leave_count_update = $this->updatePunchingHint($punching, $leave);
             } else {
                 $punching = new Punching();
                 $punching->aadhaarid = $leave->aadhaarid;
                 $punching->date = $date;
-               
-                $this->updatePunchingHint($punching, $leave);
+
+                $needs_leave_count_update = $this->updatePunchingHint($punching, $leave);
+            }
+
+            if( $needs_leave_count_update ){
+                $punchingCalcService->calculateMonthlyAttendance($date_str, [$leave->aadhaarid]);
+                $punchingCalcService->calculateYearlyAttendance ($date_str, [$leave->aadhaarid]);
+
             }
         }
 
-        if( $leave_start_date <= Carbon::today() && $leave_start_date <= Carbon::today() 
+        if( $leave_start_date_actual <= Carbon::today()
+            && $leave_end_date_actual <= Carbon::today()
             && in_array($leave->active_status, ['Y', 'R', 'C'])) {
             $leave->processed = 1;
             $leave->save();
         }
     }
-    public function updatePunchingHint($punching,$leave )
+    private function updatePunchingHint($punching, $leave )
     {
         $punching->leave_id = $leave->id;
         if( $leave->active_status === 'R' || $leave->active_status === 'C' ){
-            return ;
-        } 
+            //$punching->hint = '';
+        }
+
         //for now, just dont show pending leaves
-        if( $leave->active_status !== 'Y' ){
-            return ;
-        } 
+        //if it gets rejected, we need to update punching
+        if( $leave->active_status != 'Y' ){
+            $punching->save();
+            return 0; //no need to update leave count
+        }
 
         if( $leave->leave_type == 'CL' ){
             if( $leave->leave_cat === 'F' ){
@@ -330,21 +296,22 @@ class LeaveFetchService
             }
 
         } else if( $leave->leave_type == 'EL' ){
-          
+
              $punching->hint = 'earned';
         } else if( $leave->leave_type == 'MD' ){
-          
+
             $punching->hint = 'medical';
         } else if( $leave->leave_type == 'HP' ){
-          
+
             $punching->hint = 'halfpay';
         } else if( $leave->leave_type == 'RH' ){
-          
+
             $punching->hint = 'restricted';
         } else {
             $punching->hint = 'other';
         }
 
         $punching->save();
+        return 1; //need to update leave count
     }
 }

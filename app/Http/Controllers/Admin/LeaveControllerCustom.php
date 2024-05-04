@@ -18,7 +18,7 @@ class LeaveControllerCustom extends Controller
 {
     public function aebasdownload()
     {
-    
+
     $list =  (new AebasFetchService())->fetchApi(9, offset: 0);
 
        $callback = function() use ($list)
@@ -39,18 +39,23 @@ class LeaveControllerCustom extends Controller
         return response()->stream($callback, 200, $headers);
     }
 
-    
+
     public function aebasfetch()
     {
-    
+
 
         \Log::info("fetch all leaving!. " );
         $insertedcount = (new LeaveFetchService())->fetchLeave();
 
         \Session::flash('message', 'Fetched Leaves ' . $insertedcount );
-
         return redirect()->back();
-            
-    }
 
+    }
+    public function calc()
+    {
+        (new \App\Services\LeaveFetchService())->processLeaves();
+        \Session::flash('message', 'Processed Leaves');
+        return redirect()->back();
+
+    }
 }

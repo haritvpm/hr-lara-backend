@@ -58,6 +58,8 @@ class PunchingApiEmployeeMontlyController extends Controller
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
         //for each employee in punching as a row, show columns for each day of month
+        // $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
+        // $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date'])->endOfDay() : $emp_start_date->clone()->endOfYear();
 
         $empMonPunchings = [];
         for ($i = 1; $i <= $date->daysInMonth; $i++) {
@@ -82,11 +84,14 @@ class PunchingApiEmployeeMontlyController extends Controller
             $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::now()) && !$d->isToday() ;
             $dayinfo['is_today'] = $d->isToday();
+           // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
+
+            $dayinfo['in_section'] = $employeeToSection != null;
 
             $punching = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
 

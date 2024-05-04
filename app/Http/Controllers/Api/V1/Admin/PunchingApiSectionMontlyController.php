@@ -107,9 +107,9 @@ class PunchingApiSectionMontlyController extends Controller
 
                 $d = $date->day($i);
                 $d_str = $d->format('Y-m-d');
-                $emp_start_date = Carbon::parse($employee['start_date']);
+                $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
                 //if end_date is not set, then set it to end of year
-                $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date']) : $emp_start_date->clone()->endOfYear();
+                $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date'])->endOfDay() : $emp_start_date->clone()->endOfYear();
 
                 $dayinfo = [];
 
@@ -122,7 +122,7 @@ class PunchingApiSectionMontlyController extends Controller
                 $dayinfo['is_today'] = $d->isToday();
                 $dayinfo['date'] = $d_str;
 
-                $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+                $punching = Punching::with('leave')->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {
                     //copy all properties of $punching to $dayinfo
                     $dayinfo = [
