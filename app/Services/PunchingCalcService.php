@@ -424,11 +424,13 @@ class PunchingCalcService
     }
 
 
-    public function calculateMonthlyAttendance($date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
-
+    public function  calculateMonthlyAttendance($date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
     {
         $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfMonth();
         $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfMonth();
+
+  //      $date_ =  Carbon::createFromFormat('Y-m-d', $date)->startOfDay();
+      //  $isToday = $date_->isToday();
 
         if ($aadhaar_ids == null) {
             $aadhaar_ids =  $this->getAadhaaridsOfPunchingTracesForPeriod($start_date, $end_date)->pluck('aadhaarid');
@@ -464,6 +466,7 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data['cl_marked'] = 0;
             $emp_new_monthly_attendance_data['compen_marked'] = 0;
             $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
+            $emp_new_monthly_attendance_data['single_punchings'] = 0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
@@ -483,8 +486,11 @@ class PunchingCalcService
                 $total_compen =  $emp_punchings->where('hint', 'comp_leave')->count();
                 $emp_new_monthly_attendance_data['compen_marked'] = $total_compen;
 
+                $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', $date)->count();
+                $emp_new_monthly_attendance_data['single_punchings'] =$total_single_punchings;
+
                 //find the day on which total grace time exceeded 300 minutes
-                $total_grace = 0;
+
                 $date = $start_date->clone();
                 $total_grace_till_this_date = 0;
                 for ($i = 1; $i <= $start_date->daysInMonth; $i++) {
@@ -559,6 +565,7 @@ class PunchingCalcService
             $emp_new_yearly_attendance_data['compen_marked'] = 0;
             $emp_new_yearly_attendance_data['compen_submitted'] = 0;
             $emp_new_yearly_attendance_data['other_leaves_marked'] = 0;
+            $emp_new_yearly_attendance_data['single_punchings'] =0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_monthlypunchings) {
@@ -568,6 +575,9 @@ class PunchingCalcService
 
                 $total_compen =  $emp_monthlypunchings->sum('compen_marked');
                 $emp_new_yearly_attendance_data['compen_marked'] = $total_compen;
+
+                $total_single_punchings =  $emp_monthlypunchings->sum('single_punchings');
+                $emp_new_yearly_attendance_data['single_punchings'] = $total_single_punchings;
             }
 
             $data[] = $emp_new_yearly_attendance_data;
