@@ -16,7 +16,7 @@ class YearlyAttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('yearly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('monthly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = YearlyAttendance::with(['employee'])->select(sprintf('%s.*', (new YearlyAttendance)->table));

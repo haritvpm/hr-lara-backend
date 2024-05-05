@@ -10,7 +10,7 @@ use App\Models\GovtCalendar;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Jobs\AebasFetchDay;
+use App\Jobs\AebasFetchDayJob;
 use App\Services\PunchingCalcService;
 use Carbon\Carbon;
 use App\Services\PunchingTraceFetchService;
@@ -75,7 +75,7 @@ class GovtCalendarCustomController extends Controller
 
            if($date > now()) break;
 
-           //\Log::info("call AebasFetchDay --".  $date_string);
+           //\Log::info("call AebasFetchDayJob --".  $date_string);
 
            //AebasFetch::dispatch($date)->delay(now()->addMinutes($i));
 
@@ -83,8 +83,8 @@ class GovtCalendarCustomController extends Controller
            //QUEUE_CONNECTION=database
 
           // $this->dispatch($job);
-          //AebasFetchDay::dispatch($date)->delay(now()->addMinutes($i));
-          //AebasFetchDay::dispatch($date_string);
+          //AebasFetchDayJob::dispatch($date)->delay(now()->addMinutes($i));
+          //AebasFetchDayJob::dispatch($date_string);
           //(new PunchingTraceFetchService())->fetchTrace( $date);
 
        }
@@ -105,12 +105,12 @@ class GovtCalendarCustomController extends Controller
 
         return redirect()->back();
     }
-    
+
     public function downloadleaves(Request $request)
     {
         $date = $request->date;
         $list =  (new AebasFetchService())->fetchApi(11, 0, $date );
-   
+
            $callback = function() use ($list)
             {
                 $FH = fopen('php://output', 'w');

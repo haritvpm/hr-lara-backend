@@ -162,4 +162,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Monthly Attendance
     Route::apiResource('monthly-attendances', 'MonthlyAttendanceApiController');
+
+    // Yearly Attendance
+    Route::apiResource('yearly-attendances', 'YearlyAttendanceApiController');
+
+    // Setting
+    Route::apiResource('settings', 'SettingApiController');
 });

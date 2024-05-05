@@ -40,6 +40,9 @@
                         {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
                     </th>
                     <th>
+                    cl_submitted
+                    </th>
+                    <th>
                         {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
                     </th>
                     <th>
@@ -122,6 +125,7 @@
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'month', name: 'month' },
 { data: 'cl_marked', name: 'cl_marked' },
+{ data: 'cl_submitted', name: 'cl_submitted' },
 { data: 'compen_marked', name: 'compen_marked' },
 { data: 'compoff_granted', name: 'compoff_granted' },
 { data: 'total_grace_sec', name: 'total_grace_sec' },

@@ -17,6 +17,10 @@ class StoreLeafRequest extends FormRequest
     public function rules()
     {
         return [
+            'aadhaarid' => [
+                'string',
+                'required',
+            ],
             'employee_id' => [
                 'required',
                 'integer',

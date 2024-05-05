@@ -284,6 +284,9 @@ class PunchingCalcService
             //TODO check if casual 20 limit has reached. if so set leave
 
             $emp_new_punching_data['computer_hint'] = $computer_hint;
+            if( !$hint){ //if hint exists, no need to use computer hint
+                $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
+            }
             $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
 
             //if real hint set by so exists, use that instead of computer hint
@@ -442,7 +445,7 @@ class PunchingCalcService
             $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
         }
 
-        $punchings = Punching::whereBetween('date', [$start_date, $end_date])
+        $punchings = Punching::with('leave')->whereBetween('date', [$start_date, $end_date])
             ->wherein('aadhaarid', $aadhaar_ids)
             ->get();
 
@@ -467,6 +470,7 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data['compen_marked'] = 0;
             $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
             $emp_new_monthly_attendance_data['single_punchings'] = 0;
+            $emp_new_monthly_attendance_data['cl_submitted'] = 0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
@@ -485,6 +489,17 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['cl_marked'] = $total_cl;
                 $total_compen =  $emp_punchings->where('hint', 'comp_leave')->count();
                 $emp_new_monthly_attendance_data['compen_marked'] = $total_compen;
+
+                $total_cl_submitted =  $emp_punchings->sum(function ($punching) {
+                    if($punching->leave_id == null || $punching->leave->leave_type != 'CL')
+                        return 0;
+                    if($punching->leave->leave_cat == 'F')
+                        return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
+
+                    return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 0.5 : 0 ;
+
+                });
+                $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
                 $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', $date)->count();
                 $emp_new_monthly_attendance_data['single_punchings'] =$total_single_punchings;
@@ -514,7 +529,8 @@ class PunchingCalcService
             uniqueBy: ['month', 'aadhaarid'],
             update: [
                 'total_grace_sec',  'total_extra_sec', 'cl_marked', 'employee_id',
-                'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str','compen_marked'
+                'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str',
+                'compen_marked','cl_submitted','single_punchings'
             ]
         );
 
@@ -573,6 +589,9 @@ class PunchingCalcService
                 $total_cl =  $emp_monthlypunchings->sum('cl_marked');
                 $emp_new_yearly_attendance_data['cl_marked'] = $total_cl;
 
+                $total_cl_submitted =  $emp_monthlypunchings->sum('cl_submitted');
+                $emp_new_yearly_attendance_data['cl_submitted'] = $total_cl_submitted;
+
                 $total_compen =  $emp_monthlypunchings->sum('compen_marked');
                 $emp_new_yearly_attendance_data['compen_marked'] = $total_compen;
 
@@ -589,7 +608,7 @@ class PunchingCalcService
             update: [
                 'employee_id',
                 'cl_marked',  'cl_submitted', 'compen_marked',
-                'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted'
+                'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted','single_punchings'
             ]
         );
 
