@@ -26,6 +26,7 @@ class ProcessLeavesJob implements ShouldQueue
      */
     public function handle(): void
     {
+        //artisan queue:work --tries=1 --timeout=0
         (new LeaveFetchService())->processLeaves();
 
     }

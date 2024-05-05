@@ -76,9 +76,7 @@ class MonthlyAttendance extends Model
     {
         return MonthlyAttendance::where('month', $date->clone()->startOfMonth()->format('Y-m-d'))
         ->where('aadhaarid', $aadhaarid)
-        ->get()->mapwithKeys(function ($item) {
-            return [$item['aadhaarid'] => $item];
-        });
+        ->first();
 
     }
 

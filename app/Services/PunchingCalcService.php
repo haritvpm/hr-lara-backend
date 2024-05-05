@@ -123,7 +123,7 @@ class PunchingCalcService
                 'duration_str',
                 'grace_sec',   'extra_sec',
                 'grace_str',   'extra_str',
-                'grace_total_exceeded_one_hour', 'computer_hint'
+                'grace_total_exceeded_one_hour', 'computer_hint', 'hint'
             ]
         );
 
@@ -182,7 +182,7 @@ class PunchingCalcService
         $emp_new_punching_data['extra_str'] = '';
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
         $emp_new_punching_data['computer_hint'] = null;
-
+        $emp_new_punching_data['hint'] = $hint;
         if ($punch_count) {
         }
         if ($punch_count  >= 1) {
@@ -284,6 +284,7 @@ class PunchingCalcService
             //TODO check if casual 20 limit has reached. if so set leave
 
             $emp_new_punching_data['computer_hint'] = $computer_hint;
+         
             if( !$hint){ //if hint exists, no need to use computer hint
                 $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
             }
@@ -501,7 +502,7 @@ class PunchingCalcService
                 });
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
-                $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', $date)->count();
+                $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', Carbon::today()->format('Y-m-d'))->count();
                 $emp_new_monthly_attendance_data['single_punchings'] =$total_single_punchings;
 
                 //find the day on which total grace time exceeded 300 minutes

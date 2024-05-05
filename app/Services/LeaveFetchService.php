@@ -216,15 +216,15 @@ class LeaveFetchService
         }
         Setting::updateOrCreate(
             ['key' => 'firstNOffset'],
-            [ 'firstNOffset' => $firstNOffset]
+            ['value' => $firstNOffset]
         );
         Setting::updateOrCreate(
             ['key' => 'LastLeaveProcessed'],
-            [ 'LastLeaveProcessed' => Carbon::now()]
+            ['value' => Carbon::now()]
         );
         Setting::updateOrCreate(
             ['key' => 'LastLeaveProcessDuration'],
-            [ 'LastLeaveProcessDuration' => $start_time->diffInSeconds(Carbon::now())]
+            ['value' => $start_time->diffInMinutes(Carbon::now())]
 
         );
 

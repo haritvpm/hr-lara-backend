@@ -65,4 +65,11 @@ class YearlyAttendance extends Model
         });
 
     }
+    public static function forEmployeeInYear($date, $aadhaarid)
+    {
+        return YearlyAttendance::where('year', $date->clone()->startOfYear()->format('Y-m-d'))
+        ->where('aadhaarid', $aadhaarid)
+        ->first();
+
+    }
 }

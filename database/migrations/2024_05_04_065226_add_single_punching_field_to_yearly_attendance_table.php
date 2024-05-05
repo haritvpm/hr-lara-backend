@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('yearly_attendances', function (Blueprint $table) {
-            //
+            $table->dropColumn('single_punchings');
         });
     }
 };

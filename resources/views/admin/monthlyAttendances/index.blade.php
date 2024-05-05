@@ -55,7 +55,8 @@
                         {{ trans('cruds.monthlyAttendance.fields.total_extra_sec') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }}
+                        <!-- {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }} -->
+                        single_punchings
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.total_extra_str') }}
@@ -130,7 +131,7 @@
 { data: 'compoff_granted', name: 'compoff_granted' },
 { data: 'total_grace_sec', name: 'total_grace_sec' },
 { data: 'total_extra_sec', name: 'total_extra_sec' },
-{ data: 'total_grace_str', name: 'total_grace_str' },
+{ data: 'single_punchings', name: 'single_punchings' },
 { data: 'total_extra_str', name: 'total_extra_str' },
 { data: 'grace_exceeded_sec', name: 'grace_exceeded_sec' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }

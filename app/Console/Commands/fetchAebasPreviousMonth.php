@@ -7,21 +7,21 @@ use Carbon\Carbon;
 use App\Jobs\AebasFetchDayJob;
 use Illuminate\Console\Command;
 
-class fetchAebasPreviousMonths extends Command
+class fetchAebasPreviousMonth extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:fetch-aebas-previous-months';
+    protected $signature = 'app:aebas-fetch-month {month}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fetches aebas data for this years jan 1 to march 31 description';
+    protected $description = 'Fetches aebas data for current year\'s month=jan/feb/... ';
 
     /**
      * Execute the console command.
@@ -34,7 +34,9 @@ class fetchAebasPreviousMonths extends Command
         //QUEUE_CONNECTION=database
 
         //for each day of this year from jan 1 to mar 31
-        $start_date =  Carbon::parse('2024-01-01')->startOfDay();
+        //first day of jan
+        $start_date =  Carbon::parse($this->argument('month'))->startOfMonth();
+       // $start_date =  Carbon::parse(  )->startOfDay();
         $end_date = $start_date->clone()->endOfMonth();
         //$end_date = $start_date->clone()->addMonths(2)->endOfMonth();
         $dates = CarbonPeriod::create($start_date, $end_date);
