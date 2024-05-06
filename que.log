@@ -1,0 +1,230 @@
+  2024-05-06 12:16:09 App\Jobs\CalcMonthJob  2024-05-06 12:16:09 App\Jobs\CalcMonthJob  2024-05-06 12:16:09 App\Jobs\CalcMonthJob .......................... .......................... RUNNING
+ RUNNING
+ .......................... RUNNING
+  2024-05-06 12:16:10 App\Jobs\CalcMonthJob .................... 212.68ms DONE
+  2024-05-06 12:16:10 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:10 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:11 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:11 App\Jobs\CalcMonthJob .................... 170.18ms DONE
+  2024-05-06 12:16:11 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:11 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:11 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:12 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... 4s FAIL
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .................... 362.94ms DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .................... 280.33ms DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:14 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:15 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:15 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:15 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:15 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:16 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:16 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:16 App\Jobs\CalcMonthJob .......................... 1s DONE
+  2024-05-06 12:16:16 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:17 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:17 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:18 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:18 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... 1s DONE
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:19 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 5s DONE
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 1s DONE
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:16:20 App\Jobs\CalcMonthJob .......................... 2s DONE
+  2024-05-06 12:16:22 App\Jobs\CalcMonthJob .......................... 2s DONE
+  2024-05-06 12:16:22 App\Jobs\CalcMonthJob .......................... 2s DONE
+  2024-05-06 12:16:22 App\Jobs\CalcMonthJob .......................... 2s DONE
+  2024-05-06 12:16:22 App\Jobs\CalcMonthJob .......................... 2s DONE
+  2024-05-06 12:21:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:22 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:22 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:22 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:23 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:23 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:23 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:23 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:21:52 App\Jobs\AebasFetchDayJob ..................... 29s DONE
+  2024-05-06 12:21:52 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:13 App\Jobs\AebasFetchDayJob ..................... 51s DONE
+  2024-05-06 12:22:13 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:14 App\Jobs\AebasFetchDayJob ..................... 22s DONE
+  2024-05-06 12:22:14 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:16 App\Jobs\AebasFetchDayJob ..................... 53s DONE
+  2024-05-06 12:22:16 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:16 App\Jobs\AebasFetchDayJob ..................... 53s DONE
+  2024-05-06 12:22:16 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:19 App\Jobs\AebasFetchDayJob ..................... 58s DONE
+  2024-05-06 12:22:19 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:19 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:22:19 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:20 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:22:20 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:21 App\Jobs\AebasFetchDayJob ..................... 58s DONE
+  2024-05-06 12:22:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:32 App\Jobs\AebasFetchDayJob ..................... 18s DONE
+  2024-05-06 12:22:32 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:22:39 App\Jobs\AebasFetchDayJob ..................... 19s DONE
+  2024-05-06 12:22:39 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:09 App\Jobs\AebasFetchDayJob ..................... 54s DONE
+  2024-05-06 12:23:09 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:11 App\Jobs\AebasFetchDayJob ..................... 55s DONE
+  2024-05-06 12:23:11 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:12 App\Jobs\AebasFetchDayJob ..................... 55s DONE
+  2024-05-06 12:23:12 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:15 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:23:15 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:16 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:23:16 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:19 App\Jobs\AebasFetchDayJob ..................... 58s DONE
+  2024-05-06 12:23:19 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:30 App\Jobs\AebasFetchDayJob ..................... 57s DONE
+  2024-05-06 12:23:30 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:23:30 App\Jobs\AebasFetchDayJob ..................... 18s DONE
+  2024-05-06 12:23:36 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:24:05 App\Jobs\AebasFetchDayJob ..................... 55s DONE
+  2024-05-06 12:24:12 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:24:12 App\Jobs\AebasFetchDayJob ..................... 56s DONE
+  2024-05-06 12:24:19 App\Jobs\AebasFetchDayJob ..................... 59s DONE
+  2024-05-06 12:24:26 App\Jobs\AebasFetchDayJob ..................... 55s DONE
+  2024-05-06 12:24:41 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:24:41 App\Jobs\AebasFetchDayJob .................. 3.86ms DONE
+  2024-05-06 12:31:39 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:39 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:39 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:39 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:39 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:40 App\Jobs\CalcMonthJob .................... 543.99ms FAIL
+  2024-05-06 12:31:40 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:40 App\Jobs\CalcMonthJob .................... 950.37ms DONE
+  2024-05-06 12:31:40 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:40 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:41 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:41 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:41 App\Jobs\CalcMonthJob .................... 546.14ms DONE
+  2024-05-06 12:31:41 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:42 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:42 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:42 App\Jobs\CalcMonthJob .......................... 1s DONE
+  2024-05-06 12:31:42 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:43 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:43 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:43 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:43 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:44 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:44 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .................... 364.67ms DONE
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:45 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:46 App\Jobs\CalcMonthJob .......................... 1s FAIL
+  2024-05-06 12:31:46 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... 5s DONE
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... 5s DONE
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .................... 198.40ms DONE
+  2024-05-06 12:31:47 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:48 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:48 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:48 App\Jobs\CalcMonthJob .......................... 5s DONE
+  2024-05-06 12:31:48 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:49 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:49 App\Jobs\CalcMonthJob .......................... RUNNING
+  2024-05-06 12:31:50 App\Jobs\CalcMonthJob .......................... 4s DONE
+  2024-05-06 12:31:51 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:51 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:51 App\Jobs\CalcMonthJob .......................... 5s DONE
+  2024-05-06 12:31:51 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:52 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:52 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:31:52 App\Jobs\CalcMonthJob .......................... 3s DONE
+  2024-05-06 12:45:36 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:36 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:37 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:37 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:37 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:37 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:57 App\Jobs\AebasFetchDayJob ..................... 20s DONE
+  2024-05-06 12:45:57 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:45:59 App\Jobs\AebasFetchDayJob ..................... 21s DONE
+  2024-05-06 12:45:59 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:18 App\Jobs\AebasFetchDayJob ..................... 20s DONE
+  2024-05-06 12:46:18 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:36 App\Jobs\AebasFetchDayJob ..................... 59s DONE
+  2024-05-06 12:46:36 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:36 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:37 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:41 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:46:57 App\Jobs\AebasFetchDayJob ..................... 19s DONE
+  2024-05-06 12:46:57 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:01 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ................. 11.35ms DONE
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob .................. 3.60ms DONE
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob .................. 3.23ms DONE
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob .................. 3.35ms DONE
+  2024-05-06 12:47:21 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:38 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:39 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:39 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:48 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:47:58 App\Jobs\AebasFetchDayJob ..................... 18s DONE
+  2024-05-06 12:47:58 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:05 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:10 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:25 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:28 App\Jobs\AebasFetchDayJob ..................... 18s DONE
+  2024-05-06 12:48:28 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:41 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:45 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:48:52 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:03 App\Jobs\AebasFetchDayJob ..................... 18s DONE
+  2024-05-06 12:49:08 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:09 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:10 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:36 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:52 App\Jobs\AebasFetchDayJob ...................... 1m FAIL
+  2024-05-06 12:49:55 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:49:58 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:50:10 App\Jobs\AebasFetchDayJob ................... 1m 1s FAIL
+  2024-05-06 12:50:11 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:50:39 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:50:40 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:50:54 App\Jobs\AebasFetchDayJob ..................... 59s DONE
+  2024-05-06 12:50:58 App\Jobs\AebasFetchDayJob ..................... 59s DONE
+  2024-05-06 12:51:06 App\Jobs\AebasFetchDayJob ...................... RUNNING
+  2024-05-06 12:51:11 App\Jobs\AebasFetchDayJob ..................... 59s DONE
+  2024-05-06 12:51:39 App\Jobs\AebasFetchDayJob ...................... 1m FAIL
+  2024-05-06 12:51:40 App\Jobs\AebasFetchDayJob ...................... 1m FAIL
+  2024-05-06 12:52:01 App\Jobs\AebasFetchDayJob ..................... 54s DONE

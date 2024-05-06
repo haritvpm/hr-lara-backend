@@ -139,6 +139,8 @@ class PunchingCalcService
         $data = $this->calculateMonthlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
         $this->calculateYearlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
 
+        $calender->update(['calc_count' => $calender->calc_count ?  $calender->calc_count + 1 : 1]);
+
         //return $data;
     }
 
