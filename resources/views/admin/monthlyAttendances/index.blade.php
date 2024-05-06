@@ -37,15 +37,6 @@
                         {{ trans('cruds.monthlyAttendance.fields.month') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
-                    </th>
-                    <th>
-                    cl_submitted
-                    </th>
-                    <th>
-                        {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
                     </th>
                     <th>
@@ -55,14 +46,37 @@
                         {{ trans('cruds.monthlyAttendance.fields.total_extra_sec') }}
                     </th>
                     <th>
-                        <!-- {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }} -->
-                        single_punchings
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_str') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.total_extra_str') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.compen_submitted') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.other_leaves_marked') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.other_leaves_submitted') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.cl_submitted') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.single_punchings') }}
                     </th>
                     <th>
                         &nbsp;
@@ -125,15 +139,20 @@
 { data: 'employee_name', name: 'employee.name' },
 { data: 'employee.aadhaarid', name: 'employee.aadhaarid' },
 { data: 'month', name: 'month' },
-{ data: 'cl_marked', name: 'cl_marked' },
-{ data: 'cl_submitted', name: 'cl_submitted' },
-{ data: 'compen_marked', name: 'compen_marked' },
 { data: 'compoff_granted', name: 'compoff_granted' },
 { data: 'total_grace_sec', name: 'total_grace_sec' },
 { data: 'total_extra_sec', name: 'total_extra_sec' },
-{ data: 'single_punchings', name: 'single_punchings' },
+{ data: 'total_grace_str', name: 'total_grace_str' },
 { data: 'total_extra_str', name: 'total_extra_str' },
 { data: 'grace_exceeded_sec', name: 'grace_exceeded_sec' },
+{ data: 'total_grace_exceeded_300_date', name: 'total_grace_exceeded_300_date' },
+{ data: 'compen_marked', name: 'compen_marked' },
+{ data: 'compen_submitted', name: 'compen_submitted' },
+{ data: 'other_leaves_marked', name: 'other_leaves_marked' },
+{ data: 'other_leaves_submitted', name: 'other_leaves_submitted' },
+{ data: 'cl_marked', name: 'cl_marked' },
+{ data: 'cl_submitted', name: 'cl_submitted' },
+{ data: 'single_punchings', name: 'single_punchings' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

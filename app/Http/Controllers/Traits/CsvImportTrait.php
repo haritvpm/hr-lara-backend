@@ -46,7 +46,24 @@ trait CsvImportTrait
             $for_insert = array_chunk($insert, 100);
 
             foreach ($for_insert as $insert_item) {
-                $model::insert($insert_item);
+                // $model::insert($insert_item);
+                foreach ($insert_item as $item) {
+
+                    foreach ($item as $key => $value) {
+                     if($value == null){
+                        unset($item[$key]);
+                     }
+                    }
+                    if(array_key_exists('id',$item )){
+                        $id = $item['id'];
+                        unset($item['id']);
+                        $model::where('id',$id)->update($item);
+                    } else {
+                        //dd('no id field found');
+                        $model::insert($item);
+
+                    }
+                }
             }
 
             $rows  = count($insert);

@@ -49,22 +49,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
-                        </th>
-                        <td>
-                            {{ $monthlyAttendance->cl_marked }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
-                        </th>
-                        <td>
-                            {{ $monthlyAttendance->compen_marked }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.monthlyAttendance.fields.compoff_granted') }}
                         </th>
                         <td>
@@ -109,6 +93,70 @@
                         </th>
                         <td>
                             {{ $monthlyAttendance->grace_exceeded_sec }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->total_grace_exceeded_300_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->compen_marked }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.compen_submitted') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->compen_submitted }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.other_leaves_marked') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->other_leaves_marked }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.other_leaves_submitted') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->other_leaves_submitted }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.cl_marked') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->cl_marked }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.cl_submitted') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->cl_submitted }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.single_punchings') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->single_punchings }}
                         </td>
                     </tr>
                 </tbody>

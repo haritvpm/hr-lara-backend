@@ -152,714 +152,750 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 36,
-                'title' => 'attendance_access',
-            ],
-            [
-                'id'    => 37,
                 'title' => 'govt_calendar_edit',
             ],
             [
-                'id'    => 38,
+                'id'    => 37,
                 'title' => 'govt_calendar_show',
             ],
             [
-                'id'    => 39,
+                'id'    => 38,
                 'title' => 'govt_calendar_access',
             ],
             [
-                'id'    => 40,
+                'id'    => 39,
                 'title' => 'office_related_access',
             ],
             [
-                'id'    => 41,
+                'id'    => 40,
                 'title' => 'administrative_office_create',
             ],
             [
-                'id'    => 42,
+                'id'    => 41,
                 'title' => 'administrative_office_edit',
             ],
             [
-                'id'    => 43,
+                'id'    => 42,
                 'title' => 'administrative_office_show',
             ],
             [
-                'id'    => 44,
+                'id'    => 43,
                 'title' => 'administrative_office_delete',
             ],
             [
-                'id'    => 45,
+                'id'    => 44,
                 'title' => 'administrative_office_access',
             ],
             [
-                'id'    => 46,
+                'id'    => 45,
                 'title' => 'seat_create',
             ],
             [
-                'id'    => 47,
+                'id'    => 46,
                 'title' => 'seat_edit',
             ],
             [
-                'id'    => 48,
+                'id'    => 47,
                 'title' => 'seat_show',
             ],
             [
-                'id'    => 49,
+                'id'    => 48,
                 'title' => 'seat_delete',
             ],
             [
-                'id'    => 50,
+                'id'    => 49,
                 'title' => 'seat_access',
             ],
             [
-                'id'    => 51,
+                'id'    => 50,
                 'title' => 'section_create',
             ],
             [
-                'id'    => 52,
+                'id'    => 51,
                 'title' => 'section_edit',
             ],
             [
-                'id'    => 53,
+                'id'    => 52,
                 'title' => 'section_show',
             ],
             [
-                'id'    => 54,
+                'id'    => 53,
                 'title' => 'section_delete',
             ],
             [
-                'id'    => 55,
+                'id'    => 54,
                 'title' => 'section_access',
             ],
             [
-                'id'    => 56,
+                'id'    => 55,
                 'title' => 'attendance_book_create',
             ],
             [
-                'id'    => 57,
+                'id'    => 56,
                 'title' => 'attendance_book_edit',
             ],
             [
-                'id'    => 58,
+                'id'    => 57,
                 'title' => 'attendance_book_show',
             ],
             [
-                'id'    => 59,
+                'id'    => 58,
                 'title' => 'attendance_book_delete',
             ],
             [
-                'id'    => 60,
+                'id'    => 59,
                 'title' => 'attendance_book_access',
             ],
             [
-                'id'    => 61,
+                'id'    => 60,
                 'title' => 'success_punching_create',
             ],
             [
-                'id'    => 62,
+                'id'    => 61,
                 'title' => 'success_punching_edit',
             ],
             [
-                'id'    => 63,
+                'id'    => 62,
                 'title' => 'success_punching_show',
             ],
             [
-                'id'    => 64,
+                'id'    => 63,
                 'title' => 'success_punching_delete',
             ],
             [
-                'id'    => 65,
+                'id'    => 64,
                 'title' => 'success_punching_access',
             ],
             [
-                'id'    => 66,
+                'id'    => 65,
                 'title' => 'punching_device_create',
             ],
             [
-                'id'    => 67,
+                'id'    => 66,
                 'title' => 'punching_device_edit',
             ],
             [
-                'id'    => 68,
+                'id'    => 67,
                 'title' => 'punching_device_show',
             ],
             [
-                'id'    => 69,
+                'id'    => 68,
                 'title' => 'punching_device_delete',
             ],
             [
-                'id'    => 70,
+                'id'    => 69,
                 'title' => 'punching_device_access',
             ],
             [
-                'id'    => 71,
+                'id'    => 70,
                 'title' => 'assembly_related_access',
             ],
             [
-                'id'    => 72,
+                'id'    => 71,
                 'title' => 'exemption_create',
             ],
             [
-                'id'    => 73,
+                'id'    => 72,
                 'title' => 'exemption_edit',
             ],
             [
-                'id'    => 74,
+                'id'    => 73,
                 'title' => 'exemption_show',
             ],
             [
-                'id'    => 75,
+                'id'    => 74,
                 'title' => 'exemption_delete',
             ],
             [
-                'id'    => 76,
+                'id'    => 75,
                 'title' => 'exemption_access',
             ],
             [
-                'id'    => 77,
+                'id'    => 76,
                 'title' => 'seniority_create',
             ],
             [
-                'id'    => 78,
+                'id'    => 77,
                 'title' => 'seniority_edit',
             ],
             [
-                'id'    => 79,
+                'id'    => 78,
                 'title' => 'seniority_show',
             ],
             [
-                'id'    => 80,
+                'id'    => 79,
                 'title' => 'seniority_delete',
             ],
             [
-                'id'    => 81,
+                'id'    => 80,
                 'title' => 'seniority_access',
             ],
             [
-                'id'    => 82,
+                'id'    => 81,
                 'title' => 'dept_designation_create',
             ],
             [
-                'id'    => 83,
+                'id'    => 82,
                 'title' => 'dept_designation_edit',
             ],
             [
-                'id'    => 84,
+                'id'    => 83,
                 'title' => 'dept_designation_show',
             ],
             [
-                'id'    => 85,
+                'id'    => 84,
                 'title' => 'dept_designation_delete',
             ],
             [
-                'id'    => 86,
+                'id'    => 85,
                 'title' => 'dept_designation_access',
             ],
             [
-                'id'    => 87,
+                'id'    => 86,
                 'title' => 'dept_employee_create',
             ],
             [
-                'id'    => 88,
+                'id'    => 87,
                 'title' => 'dept_employee_edit',
             ],
             [
-                'id'    => 89,
+                'id'    => 88,
                 'title' => 'dept_employee_show',
             ],
             [
-                'id'    => 90,
+                'id'    => 89,
                 'title' => 'dept_employee_delete',
             ],
             [
-                'id'    => 91,
+                'id'    => 90,
                 'title' => 'dept_employee_access',
             ],
             [
-                'id'    => 92,
+                'id'    => 91,
                 'title' => 'ot_form_create',
             ],
             [
-                'id'    => 93,
+                'id'    => 92,
                 'title' => 'ot_form_edit',
             ],
             [
-                'id'    => 94,
+                'id'    => 93,
                 'title' => 'ot_form_show',
             ],
             [
-                'id'    => 95,
+                'id'    => 94,
                 'title' => 'ot_form_delete',
             ],
             [
-                'id'    => 96,
+                'id'    => 95,
                 'title' => 'ot_form_access',
             ],
             [
-                'id'    => 97,
+                'id'    => 96,
                 'title' => 'ot_form_other_create',
             ],
             [
-                'id'    => 98,
+                'id'    => 97,
                 'title' => 'ot_form_other_edit',
             ],
             [
-                'id'    => 99,
+                'id'    => 98,
                 'title' => 'ot_form_other_show',
             ],
             [
-                'id'    => 100,
+                'id'    => 99,
                 'title' => 'ot_form_other_delete',
             ],
             [
-                'id'    => 101,
+                'id'    => 100,
                 'title' => 'ot_form_other_access',
             ],
             [
-                'id'    => 102,
+                'id'    => 101,
                 'title' => 'overtime_create',
             ],
             [
-                'id'    => 103,
+                'id'    => 102,
                 'title' => 'overtime_edit',
             ],
             [
-                'id'    => 104,
+                'id'    => 103,
                 'title' => 'overtime_show',
             ],
             [
-                'id'    => 105,
+                'id'    => 104,
                 'title' => 'overtime_delete',
             ],
             [
-                'id'    => 106,
+                'id'    => 105,
                 'title' => 'overtime_access',
             ],
             [
-                'id'    => 107,
+                'id'    => 106,
                 'title' => 'overtime_other_create',
             ],
             [
-                'id'    => 108,
+                'id'    => 107,
                 'title' => 'overtime_other_edit',
             ],
             [
-                'id'    => 109,
+                'id'    => 108,
                 'title' => 'overtime_other_show',
             ],
             [
-                'id'    => 110,
+                'id'    => 109,
                 'title' => 'overtime_other_delete',
             ],
             [
-                'id'    => 111,
+                'id'    => 110,
                 'title' => 'overtime_other_access',
             ],
             [
-                'id'    => 112,
+                'id'    => 111,
                 'title' => 'overtime_sitting_access',
             ],
             [
-                'id'    => 113,
+                'id'    => 112,
                 'title' => 'ot_routing_create',
             ],
             [
-                'id'    => 114,
+                'id'    => 113,
                 'title' => 'ot_routing_edit',
             ],
             [
-                'id'    => 115,
+                'id'    => 114,
                 'title' => 'ot_routing_show',
             ],
             [
-                'id'    => 116,
+                'id'    => 115,
                 'title' => 'ot_routing_delete',
             ],
             [
-                'id'    => 117,
+                'id'    => 116,
                 'title' => 'ot_routing_access',
             ],
             [
-                'id'    => 118,
+                'id'    => 117,
                 'title' => 'attendance_routing_create',
             ],
             [
-                'id'    => 119,
+                'id'    => 118,
                 'title' => 'attendance_routing_edit',
             ],
             [
-                'id'    => 120,
+                'id'    => 119,
                 'title' => 'attendance_routing_show',
             ],
             [
-                'id'    => 121,
+                'id'    => 120,
                 'title' => 'attendance_routing_delete',
             ],
             [
-                'id'    => 122,
+                'id'    => 121,
                 'title' => 'attendance_routing_access',
             ],
             [
-                'id'    => 123,
+                'id'    => 122,
                 'title' => 'office_location_create',
             ],
             [
-                'id'    => 124,
+                'id'    => 123,
                 'title' => 'office_location_edit',
             ],
             [
-                'id'    => 125,
+                'id'    => 124,
                 'title' => 'office_location_show',
             ],
             [
-                'id'    => 126,
+                'id'    => 125,
                 'title' => 'office_location_access',
             ],
             [
-                'id'    => 127,
+                'id'    => 126,
                 'title' => 'employee_to_seat_create',
             ],
             [
-                'id'    => 128,
+                'id'    => 127,
                 'title' => 'employee_to_seat_edit',
             ],
             [
-                'id'    => 129,
+                'id'    => 128,
                 'title' => 'employee_to_seat_show',
             ],
             [
-                'id'    => 130,
+                'id'    => 129,
                 'title' => 'employee_to_seat_delete',
             ],
             [
-                'id'    => 131,
+                'id'    => 130,
                 'title' => 'employee_to_seat_access',
             ],
             [
-                'id'    => 132,
+                'id'    => 131,
                 'title' => 'employee_to_section_create',
             ],
             [
-                'id'    => 133,
+                'id'    => 132,
                 'title' => 'employee_to_section_edit',
             ],
             [
-                'id'    => 134,
+                'id'    => 133,
                 'title' => 'employee_to_section_show',
             ],
             [
-                'id'    => 135,
+                'id'    => 134,
                 'title' => 'employee_to_section_delete',
             ],
             [
-                'id'    => 136,
+                'id'    => 135,
                 'title' => 'employee_to_section_access',
             ],
             [
-                'id'    => 137,
+                'id'    => 136,
                 'title' => 'employee_to_designation_create',
             ],
             [
-                'id'    => 138,
+                'id'    => 137,
                 'title' => 'employee_to_designation_edit',
             ],
             [
-                'id'    => 139,
+                'id'    => 138,
                 'title' => 'employee_to_designation_show',
             ],
             [
-                'id'    => 140,
+                'id'    => 139,
                 'title' => 'employee_to_designation_delete',
             ],
             [
-                'id'    => 141,
+                'id'    => 140,
                 'title' => 'employee_to_designation_access',
             ],
             [
-                'id'    => 142,
+                'id'    => 141,
                 'title' => 'account_access',
             ],
             [
-                'id'    => 143,
+                'id'    => 142,
                 'title' => 'acquittance_create',
             ],
             [
-                'id'    => 144,
+                'id'    => 143,
                 'title' => 'acquittance_edit',
             ],
             [
-                'id'    => 145,
+                'id'    => 144,
                 'title' => 'acquittance_show',
             ],
             [
-                'id'    => 146,
+                'id'    => 145,
                 'title' => 'acquittance_delete',
             ],
             [
-                'id'    => 147,
+                'id'    => 146,
                 'title' => 'acquittance_access',
             ],
             [
-                'id'    => 148,
+                'id'    => 147,
                 'title' => 'employee_to_acquittance_create',
             ],
             [
-                'id'    => 149,
+                'id'    => 148,
                 'title' => 'employee_to_acquittance_edit',
             ],
             [
-                'id'    => 150,
+                'id'    => 149,
                 'title' => 'employee_to_acquittance_show',
             ],
             [
-                'id'    => 151,
+                'id'    => 150,
                 'title' => 'employee_to_acquittance_delete',
             ],
             [
-                'id'    => 152,
+                'id'    => 151,
                 'title' => 'employee_to_acquittance_access',
             ],
             [
-                'id'    => 153,
+                'id'    => 152,
                 'title' => 'ddo_create',
             ],
             [
-                'id'    => 154,
+                'id'    => 153,
                 'title' => 'ddo_edit',
             ],
             [
-                'id'    => 155,
+                'id'    => 154,
                 'title' => 'ddo_show',
             ],
             [
-                'id'    => 156,
+                'id'    => 155,
                 'title' => 'ddo_delete',
             ],
             [
-                'id'    => 157,
+                'id'    => 156,
                 'title' => 'ddo_access',
             ],
             [
-                'id'    => 158,
+                'id'    => 157,
                 'title' => 'shift_create',
             ],
             [
-                'id'    => 159,
+                'id'    => 158,
                 'title' => 'shift_edit',
             ],
             [
-                'id'    => 160,
+                'id'    => 159,
                 'title' => 'shift_show',
             ],
             [
-                'id'    => 161,
+                'id'    => 160,
                 'title' => 'shift_delete',
             ],
             [
-                'id'    => 162,
+                'id'    => 161,
                 'title' => 'shift_access',
             ],
             [
-                'id'    => 163,
+                'id'    => 162,
                 'title' => 'employee_to_shift_create',
             ],
             [
-                'id'    => 164,
+                'id'    => 163,
                 'title' => 'employee_to_shift_edit',
             ],
             [
-                'id'    => 165,
+                'id'    => 164,
                 'title' => 'employee_to_shift_show',
             ],
             [
-                'id'    => 166,
+                'id'    => 165,
                 'title' => 'employee_to_shift_delete',
             ],
             [
-                'id'    => 167,
+                'id'    => 166,
                 'title' => 'employee_to_shift_access',
             ],
             [
-                'id'    => 168,
+                'id'    => 167,
                 'title' => 'td_create',
             ],
             [
-                'id'    => 169,
+                'id'    => 168,
                 'title' => 'td_edit',
             ],
             [
-                'id'    => 170,
+                'id'    => 169,
                 'title' => 'td_show',
             ],
             [
-                'id'    => 171,
+                'id'    => 170,
                 'title' => 'td_delete',
             ],
             [
-                'id'    => 172,
+                'id'    => 171,
                 'title' => 'td_access',
             ],
             [
-                'id'    => 173,
+                'id'    => 172,
                 'title' => 'tax_entry_create',
             ],
             [
-                'id'    => 174,
+                'id'    => 173,
                 'title' => 'tax_entry_edit',
             ],
             [
-                'id'    => 175,
+                'id'    => 174,
                 'title' => 'tax_entry_show',
             ],
             [
-                'id'    => 176,
+                'id'    => 175,
                 'title' => 'tax_entry_delete',
             ],
             [
-                'id'    => 177,
+                'id'    => 176,
                 'title' => 'tax_entry_access',
             ],
             [
-                'id'    => 178,
+                'id'    => 177,
                 'title' => 'punching_create',
             ],
             [
-                'id'    => 179,
+                'id'    => 178,
                 'title' => 'punching_edit',
             ],
             [
-                'id'    => 180,
+                'id'    => 179,
                 'title' => 'punching_show',
             ],
             [
-                'id'    => 181,
+                'id'    => 180,
                 'title' => 'punching_access',
             ],
             [
-                'id'    => 182,
+                'id'    => 181,
                 'title' => 'assembly_session_create',
             ],
             [
-                'id'    => 183,
+                'id'    => 182,
                 'title' => 'assembly_session_edit',
             ],
             [
-                'id'    => 184,
+                'id'    => 183,
                 'title' => 'assembly_session_show',
             ],
             [
-                'id'    => 185,
+                'id'    => 184,
                 'title' => 'assembly_session_delete',
             ],
             [
-                'id'    => 186,
+                'id'    => 185,
                 'title' => 'assembly_session_access',
             ],
             [
-                'id'    => 187,
+                'id'    => 186,
                 'title' => 'leaf_create',
             ],
             [
-                'id'    => 188,
+                'id'    => 187,
                 'title' => 'leaf_edit',
             ],
             [
-                'id'    => 189,
+                'id'    => 188,
                 'title' => 'leaf_show',
             ],
             [
-                'id'    => 190,
+                'id'    => 189,
                 'title' => 'leaf_delete',
             ],
             [
-                'id'    => 191,
+                'id'    => 190,
                 'title' => 'leaf_access',
             ],
             [
-                'id'    => 192,
+                'id'    => 191,
                 'title' => 'time_management_access',
             ],
             [
-                'id'    => 193,
+                'id'    => 192,
                 'title' => 'office_time_create',
             ],
             [
-                'id'    => 194,
+                'id'    => 193,
                 'title' => 'office_time_edit',
             ],
             [
-                'id'    => 195,
+                'id'    => 194,
                 'title' => 'office_time_show',
             ],
             [
-                'id'    => 196,
+                'id'    => 195,
                 'title' => 'office_time_delete',
             ],
             [
-                'id'    => 197,
+                'id'    => 196,
                 'title' => 'office_time_access',
             ],
             [
-                'id'    => 198,
+                'id'    => 197,
                 'title' => 'seat_to_js_as_ss_create',
             ],
             [
-                'id'    => 199,
+                'id'    => 198,
                 'title' => 'seat_to_js_as_ss_edit',
             ],
             [
-                'id'    => 200,
+                'id'    => 199,
                 'title' => 'seat_to_js_as_ss_show',
             ],
             [
-                'id'    => 201,
+                'id'    => 200,
                 'title' => 'seat_to_js_as_ss_delete',
             ],
             [
-                'id'    => 202,
+                'id'    => 201,
                 'title' => 'seat_to_js_as_ss_access',
             ],
             [
-                'id'    => 203,
+                'id'    => 202,
                 'title' => 'employee_ot_setting_create',
             ],
             [
-                'id'    => 204,
+                'id'    => 203,
                 'title' => 'employee_ot_setting_edit',
             ],
             [
-                'id'    => 205,
+                'id'    => 204,
                 'title' => 'employee_ot_setting_show',
             ],
             [
-                'id'    => 206,
+                'id'    => 205,
                 'title' => 'employee_ot_setting_delete',
             ],
             [
-                'id'    => 207,
+                'id'    => 206,
                 'title' => 'employee_ot_setting_access',
             ],
             [
-                'id'    => 208,
+                'id'    => 207,
                 'title' => 'monthly_attendance_create',
             ],
             [
-                'id'    => 209,
+                'id'    => 208,
                 'title' => 'monthly_attendance_edit',
             ],
             [
-                'id'    => 210,
+                'id'    => 209,
                 'title' => 'monthly_attendance_show',
             ],
             [
-                'id'    => 211,
+                'id'    => 210,
                 'title' => 'monthly_attendance_delete',
             ],
             [
-                'id'    => 212,
+                'id'    => 211,
                 'title' => 'monthly_attendance_access',
             ],
             [
+                'id'    => 212,
+                'title' => 'yearly_attendance_create',
+            ],
+            [
                 'id'    => 213,
+                'title' => 'yearly_attendance_edit',
+            ],
+            [
+                'id'    => 214,
+                'title' => 'yearly_attendance_show',
+            ],
+            [
+                'id'    => 215,
+                'title' => 'yearly_attendance_delete',
+            ],
+            [
+                'id'    => 216,
+                'title' => 'yearly_attendance_access',
+            ],
+            [
+                'id'    => 217,
+                'title' => 'setting_create',
+            ],
+            [
+                'id'    => 218,
+                'title' => 'setting_edit',
+            ],
+            [
+                'id'    => 219,
+                'title' => 'setting_show',
+            ],
+            [
+                'id'    => 220,
+                'title' => 'setting_delete',
+            ],
+            [
+                'id'    => 221,
+                'title' => 'setting_access',
+            ],
+            [
+                'id'    => 222,
                 'title' => 'profile_password_edit',
             ],
         ];

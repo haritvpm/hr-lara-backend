@@ -79,6 +79,16 @@
                             {{ $seat->level }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.seat.fields.roles') }}
+                        </th>
+                        <td>
+                            @foreach($seat->roles as $key => $roles)
+                                <span class="label label-info">{{ $roles->title }}</span>
+                            @endforeach
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

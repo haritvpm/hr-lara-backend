@@ -95,6 +95,14 @@
                             {{ $yearlyAttendance->other_leaves_submitted }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->single_punchings }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

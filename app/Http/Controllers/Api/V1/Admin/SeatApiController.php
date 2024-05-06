@@ -17,12 +17,13 @@ class SeatApiController extends Controller
     {
         abort_if(Gate::denies('seat_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SeatResource(Seat::all());
+        return new SeatResource(Seat::with(['roles'])->get());
     }
 
     public function store(StoreSeatRequest $request)
     {
         $seat = Seat::create($request->all());
+        $seat->roles()->sync($request->input('roles', []));
 
         return (new SeatResource($seat))
             ->response()
@@ -33,12 +34,13 @@ class SeatApiController extends Controller
     {
         abort_if(Gate::denies('seat_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new SeatResource($seat);
+        return new SeatResource($seat->load(['roles']));
     }
 
     public function update(UpdateSeatRequest $request, Seat $seat)
     {
         $seat->update($request->all());
+        $seat->roles()->sync($request->input('roles', []));
 
         return (new SeatResource($seat))
             ->response()

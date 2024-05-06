@@ -21,9 +21,9 @@
                         <th width="10">
 
                         </th>
-                        <!-- <th>
+                        <th>
                             {{ trans('cruds.govtCalendar.fields.id') }}
-                        </th> -->
+                        </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
@@ -65,9 +65,9 @@
                             <td>
 
                             </td>
-                            <!-- <td>
-                                {{ $govtCalendar->id ?? '' }}
-                            </td> -->
+                            <td>
+                            <small> {{ $govtCalendar->id ?? '' }}   </small>
+                            </td>
                             <td>
                                 @if($govtCalendar->govtholidaystatus==1)
                                 <span class="badge badge-danger">
