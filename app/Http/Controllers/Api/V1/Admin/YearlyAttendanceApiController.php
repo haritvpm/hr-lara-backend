@@ -15,7 +15,7 @@ class YearlyAttendanceApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('yearly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('monthly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return new YearlyAttendanceResource(YearlyAttendance::with(['employee'])->get());
     }

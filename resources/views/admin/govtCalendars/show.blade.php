@@ -119,6 +119,14 @@
                             {{ App\Models\GovtCalendar::OFFICE_ENDS_AT_SELECT[$govtCalendar->office_ends_at] ?? '' }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.govtCalendar.fields.attendance_trace_fetch_complete') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $govtCalendar->attendance_trace_fetch_complete ? 'checked' : '' }}>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

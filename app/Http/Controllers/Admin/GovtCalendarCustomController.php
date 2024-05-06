@@ -10,12 +10,13 @@ use App\Models\GovtCalendar;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Jobs\AebasFetchDay;
+use App\Jobs\AebasFetchDayJob;
 use App\Services\PunchingCalcService;
 use Carbon\Carbon;
 use App\Services\PunchingTraceFetchService;
 use App\Services\LeaveFetchService;
 use App\Services\AebasFetchService;
+use Carbon\CarbonPeriod;
 
 class GovtCalendarCustomController extends Controller
 {
@@ -60,22 +61,27 @@ class GovtCalendarCustomController extends Controller
     {
        \Log::info("fetchmonth attendance trace !. " );
        // (new PunchingTraceFetchService())->fetchTodayTrace($reportdate);
-       $today = today();
-       $dates = [];
-      // $punchingservice = new PunchingTraceFetchService();
+       //get last day of GovtCalendar
+       $from = GovtCalendar::orderBy('date', 'desc')->first();
 
-       for($i=1; $i <= $today->daysInMonth; ++$i)
-       {
-           $date = Carbon::createFromDate($today->year, $today->month, $i,0,0,0);
+       if(!$from) $from = Carbon::parse('2024-01-01');
+       else $from = Carbon::parse($from->date);
+       $today = Carbon::now();
+       $today->setTime(0,0,0);
+        \Log::info("fetchmonth --".  $from->toString() . " to " . $today->toString());
+
+        $dates = CarbonPeriod::create($from, $today);
+
+        foreach ($dates as $date) {
            $date_string = $date->format('Y-m-d');
 
            $calender = GovtCalendar::getGovtCalender($date_string);
 
            \Log::info("fetchmonth --".  $date->toString());
 
-           if($date > now()) break;
+          // if($date > now()) break;
 
-           //\Log::info("call AebasFetchDay --".  $date_string);
+           //\Log::info("call AebasFetchDayJob --".  $date_string);
 
            //AebasFetch::dispatch($date)->delay(now()->addMinutes($i));
 
@@ -83,8 +89,8 @@ class GovtCalendarCustomController extends Controller
            //QUEUE_CONNECTION=database
 
           // $this->dispatch($job);
-          //AebasFetchDay::dispatch($date)->delay(now()->addMinutes($i));
-          //AebasFetchDay::dispatch($date_string);
+          //AebasFetchDayJob::dispatch($date)->delay(now()->addMinutes($i));
+          //AebasFetchDayJob::dispatch($date_string);
           //(new PunchingTraceFetchService())->fetchTrace( $date);
 
        }
@@ -105,12 +111,12 @@ class GovtCalendarCustomController extends Controller
 
         return redirect()->back();
     }
-    
+
     public function downloadleaves(Request $request)
     {
         $date = $request->date;
         $list =  (new AebasFetchService())->fetchApi(11, 0, $date );
-   
+
            $callback = function() use ($list)
             {
                 $FH = fopen('php://output', 'w');

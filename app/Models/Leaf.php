@@ -53,6 +53,7 @@ class Leaf extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'processed',
     ];
 
     public const LEAVE_TYPE_SELECT = [

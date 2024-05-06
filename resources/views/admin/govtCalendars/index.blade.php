@@ -8,14 +8,14 @@
 
     <form action="{{url('admin/govt-calendars/fetchmonth')}}" method="post" id="filter" class="form-inline">
       @csrf
-      <button type="submit" class="btn btn-primary">FetchMonth</button>
+      <button type="submit" class="btn btn-primary">CreateDates</button>
 
       </form>
 
 
     <div class="card-body_">
         <div class="table-responsive_">
-            <table class=" table   table-hover datatable datatable-GovtCalendar">
+            <table class=" table table-sm  table-hover datatable datatable-GovtCalendar">
                 <thead>
                     <tr>
                         <th width="10">
@@ -27,20 +27,23 @@
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.govtholidaystatus') }}
-                        </th>
-                        <th>
+                        </th> -->
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.success_attendance_lastfetchtime') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.success_attendance_rows_fetched') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.govtCalendar.fields.attendancetodaytrace_lastfetchtime') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.attendance_today_trace_rows_fetched') }}
+                        </th>
+                        <th>
+                            Fetch complete
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
@@ -63,30 +66,40 @@
 
                             </td>
                             <td>
-                                {{ $govtCalendar->id ?? '' }}
+                            <small> {{ $govtCalendar->id ?? '' }}   </small>
                             </td>
                             <td>
                                 @if($govtCalendar->govtholidaystatus==1)
-                                <span class="badge badge-danger">{{ $govtCalendar->date ?? '' }}</span>
+                                <span class="badge badge-danger">
+                                    {{ \Carbon\Carbon::parse($govtCalendar->date)->format('Y M d') ?? '' }}
+                                </span>
 
                                 @else
-                                {{ $govtCalendar->date ?? '' }}
+                                <span class="badge badge-dark">
+                                {{ \Carbon\Carbon::parse($govtCalendar->date)->format('Y M d')  ?? '' }}
+                                </span>
+                                @endif
+                                @if(\Carbon\Carbon::parse($govtCalendar->date)->isToday())
+                                <span class="badge badge-info">Today</span>
                                 @endif
                             </td>
-                            <td>
+                            <!-- <td>
                                 {{ $govtCalendar->govtholidaystatus ?? '' }}
-                            </td>
-                            <td>
+                            </td> -->
+                            <!-- <td>
                                 {{ $govtCalendar->success_attendance_lastfetchtime ?? '' }}
                             </td>
                             <td>
                                 {{ $govtCalendar->success_attendance_rows_fetched ?? '' }}
-                            </td>
+                            </td> -->
                             <td>
-                                {{ $govtCalendar->attendancetodaytrace_lastfetchtime ?? '' }}
+                                <small> {{ $govtCalendar->attendancetodaytrace_lastfetchtime ?? '' }}</small>
                             </td>
                             <td>
                                 {{ $govtCalendar->attendance_today_trace_rows_fetched ?? '' }}
+                            </td>
+                            <td>
+                                {{ $govtCalendar->attendance_trace_fetch_complete ?? '' }}
                             </td>
                             <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
@@ -106,12 +119,12 @@
                                 @endcan
 
                                 <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
-                                <a href="{{ route('admin.govt-calendars.fetch-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">FetchLeaves</a>
-                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-primary">calculate</a>
+                                <!-- <a href="{{ route('admin.govt-calendars.fetch-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">FetchLeaves</a> -->
+                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-primary">Calc</a>
                                 <!-- <a href="{{ route('admin.govt-calendars.download-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">DownloadLeaves</a> -->
 
                                 @can('govt_calendar_edit')
-                                    <a class="btn btn-dark" href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
+                                    <a class="btn btn-dark btn-sm " href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
                                 @endcan

@@ -21,8 +21,7 @@ class PunchingTraceFetchService
     public function fetchTrace($fetchdate = null)
     {
         $apikey =  env('AEBAS_KEY');
-        \Log::info('apike-' . $apikey );
-
+      //  \Log::info('apike-' . $apikey );
 
         $offset = 0;
         $count = 500; //make it to 500 in prod
@@ -41,6 +40,8 @@ class PunchingTraceFetchService
                 $reportdate = $fetchdate;
             }
         }
+        \Log::info('fetchTrace - start for date=' . $reportdate);
+
 
         //do not call trace if this is a future date
 
@@ -53,6 +54,12 @@ class PunchingTraceFetchService
         //check calender for this date's count.
 
         $govtcalender = GovtCalendar::getGovtCalender($reportdate);
+
+        if($govtcalender->attendance_trace_fetch_complete){
+            \Log::info('fetchTrace - already fetched for this date- ignoring');
+            return 0;
+        }
+
         $offset = $govtcalender->attendance_today_trace_rows_fetched;
 
         //check last fetch time. if it less than 5 minutes, dont fetch

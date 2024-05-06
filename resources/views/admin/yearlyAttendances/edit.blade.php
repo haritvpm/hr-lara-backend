@@ -67,6 +67,14 @@
                 <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.other_leaves_submitted_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="single_punchings">{{ trans('cruds.yearlyAttendance.fields.single_punchings') }}</label>
+                <input class="form-control {{ $errors->has('single_punchings') ? 'is-invalid' : '' }}" type="number" name="single_punchings" id="single_punchings" value="{{ old('single_punchings', $yearlyAttendance->single_punchings) }}" step="1">
+                @if($errors->has('single_punchings'))
+                    <span class="text-danger">{{ $errors->first('single_punchings') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.single_punchings_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

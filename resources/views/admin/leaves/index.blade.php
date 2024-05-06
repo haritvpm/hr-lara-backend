@@ -14,6 +14,7 @@
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item"  href="{{ route('admin.leaves.aebasdownload') }}">Download All Leaves from AEBAS</a>
                 <a class="dropdown-item"  href="{{ route('admin.leaves.aebasfetch') }}">Fetch All Leaves from AEBAS</a>
+                <a class="dropdown-item"  href="{{ route('admin.leaves.calc') }}">Calc Leaves</a>
                 <!-- <a class="dropdown-item" href="#">Another action</a> -->
             </div>
 
@@ -21,7 +22,7 @@
 
     </div>
 
-    
+
 
 @endcan
 <div class="card">
@@ -159,7 +160,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 });
 
 </script>

@@ -56,7 +56,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
 
     // Govt Calendar
-    
+
     Route::get('govt-calendars/calculate/{date}', 'GovtCalendarCustomController@calculate')->name('govt-calendars.calculate');
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarCustomController@fetch')->name('govt-calendars.fetch');
     Route::get('govt-calendars/fetch-leaves/{date}', 'GovtCalendarCustomController@fetchleaves')->name('govt-calendars.fetch-leaves');
@@ -206,7 +206,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Leave
     Route::get('leaves/aebasdownload', 'LeaveControllerCustom@aebasdownload')->name('leaves.aebasdownload');
     Route::get('leaves/aebasfetch', 'LeaveControllerCustom@aebasfetch')->name('leaves.aebasfetch');
-           
+    Route::get('leaves/calc', 'LeaveControllerCustom@calc')->name('leaves.calc');
+
     Route::delete('leaves/destroy', 'LeaveController@massDestroy')->name('leaves.massDestroy');
     Route::resource('leaves', 'LeaveController');
 
@@ -229,6 +230,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Monthly Attendance
     Route::delete('monthly-attendances/destroy', 'MonthlyAttendanceController@massDestroy')->name('monthly-attendances.massDestroy');
     Route::resource('monthly-attendances', 'MonthlyAttendanceController');
+
+    // Yearly Attendance
+    Route::delete('yearly-attendances/destroy', 'YearlyAttendanceController@massDestroy')->name('yearly-attendances.massDestroy');
+    Route::resource('yearly-attendances', 'YearlyAttendanceController');
+
+    // Setting
+    Route::delete('settings/destroy', 'SettingController@massDestroy')->name('settings.massDestroy');
+    Route::resource('settings', 'SettingController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

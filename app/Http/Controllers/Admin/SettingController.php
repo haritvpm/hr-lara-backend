@@ -15,7 +15,7 @@ class SettingController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('setting_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $settings = Setting::all();
 

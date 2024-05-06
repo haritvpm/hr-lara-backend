@@ -45,4 +45,9 @@ class Seat extends Model
     {
         return $this->belongsToMany(OtRouting::class);
     }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
 }

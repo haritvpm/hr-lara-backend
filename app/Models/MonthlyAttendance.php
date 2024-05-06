@@ -37,6 +37,7 @@ class MonthlyAttendance extends Model
         'total_extra_str',
         'grace_exceeded_sec',
         'total_grace_exceeded300_date',
+        'single_punchings',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -75,9 +76,7 @@ class MonthlyAttendance extends Model
     {
         return MonthlyAttendance::where('month', $date->clone()->startOfMonth()->format('Y-m-d'))
         ->where('aadhaarid', $aadhaarid)
-        ->get()->mapwithKeys(function ($item) {
-            return [$item['aadhaarid'] => $item];
-        });
+        ->first();
 
     }
 

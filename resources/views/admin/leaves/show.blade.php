@@ -127,6 +127,14 @@
                             {{ $leaf->created_by_aadhaarid }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.processed') }}
+                        </th>
+                        <td>
+                            {{ $leaf->processed }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

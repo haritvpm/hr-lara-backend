@@ -17,7 +17,8 @@ return [
     //also set QUEUE_CONNECTION=database in env
 
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    // 'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' =>  'database',
 
     /*
     |--------------------------------------------------------------------------
@@ -44,6 +45,7 @@ return [
             'queue' => 'default',
             'retry_after' => 90,
             'after_commit' => false,
+            'timeout' => 300,
         ],
 
         'beanstalkd' => [

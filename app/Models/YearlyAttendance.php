@@ -30,6 +30,7 @@ class YearlyAttendance extends Model
         'compen_submitted',
         'other_leaves_marked',
         'other_leaves_submitted',
+        'single_punchings',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -62,6 +63,13 @@ class YearlyAttendance extends Model
         ->get()->mapwithKeys(function ($item) {
             return [$item['aadhaarid'] => $item];
         });
+
+    }
+    public static function forEmployeeInYear($date, $aadhaarid)
+    {
+        return YearlyAttendance::where('year', $date->clone()->startOfYear()->format('Y-m-d'))
+        ->where('aadhaarid', $aadhaarid)
+        ->first();
 
     }
 }
