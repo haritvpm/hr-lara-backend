@@ -91,8 +91,8 @@ class PunchingApiEmployeeMontlyController extends Controller
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
-
-            $dayinfo['in_section'] = $employeeToSection != null;
+            // if this is self, no need to check for section
+            $dayinfo['in_section'] = $employeeToSection != null || $me->employee->aadhaarid == $aadhaarid;
 
             $punching = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
 

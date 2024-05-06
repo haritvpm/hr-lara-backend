@@ -33,7 +33,7 @@ php artisan queue:failed-table
 
 
 
-    php artisan queue:work
+    artisan queue:work --tries=1 --timeout=0
 
     The queue worker executes each job by calling its handle method, and then marks the job as completed. If an error occurs while processing a job, the worker will retry the job a certain number of times before moving it to the failed job queue.
     */
