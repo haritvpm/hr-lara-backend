@@ -36,7 +36,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         //$date_str = $date->format('Y-m-d');
-        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
+        $employee = Employee::with('designation')->where('aadhaarid', $aadhaarid)->first();
         if (!$employee) {
             return response()->json(['status' => 'Employee not found'], 400);
         }
@@ -85,6 +85,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::now()) && !$d->isToday() ;
             $dayinfo['is_today'] = $d->isToday();
+            
            // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
@@ -113,7 +114,8 @@ class PunchingApiEmployeeMontlyController extends Controller
         $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
         $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
 
-
+        $employee['designation_now'] = $employee->designation->first()->designation->designation;
+        
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
             'employee'  => $employee,
