@@ -20,17 +20,18 @@ use Carbon\Carbon;
 use App\Services\PunchingCalcService;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
+use App\Models\YearlyAttendance;
 use App\Models\Employee;
 
 class PunchingApiEmployeeMontlyController extends Controller
 {
     public function getemployeeMonthlyPunchings(Request $request)
     {
-        \Log::info('getemployeeMonthlyPunchings: ' . $request);
+       // \Log::info('getemployeeMonthlyPunchings: ' . $request);
 
         $aadhaarid = $request->aadhaarid;
         $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
-        \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
+      //  \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
         $date = Carbon::createFromFormat('Y-m-d', $date_str);
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
@@ -110,6 +111,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
 
         $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
+        $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
 
 
         return response()->json([
@@ -117,6 +119,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             'employee'  => $employee,
             'calender_info' => $calender_info ,
             'data_monthly' => $data_monthly,
+            'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
             // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
         ], 200);

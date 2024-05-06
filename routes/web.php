@@ -230,6 +230,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Monthly Attendance
     Route::delete('monthly-attendances/destroy', 'MonthlyAttendanceController@massDestroy')->name('monthly-attendances.massDestroy');
     Route::resource('monthly-attendances', 'MonthlyAttendanceController');
+
+    // Yearly Attendance
+    Route::delete('yearly-attendances/destroy', 'YearlyAttendanceController@massDestroy')->name('yearly-attendances.massDestroy');
+    Route::resource('yearly-attendances', 'YearlyAttendanceController');
+
+    // Setting
+    Route::delete('settings/destroy', 'SettingController@massDestroy')->name('settings.massDestroy');
+    Route::resource('settings', 'SettingController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

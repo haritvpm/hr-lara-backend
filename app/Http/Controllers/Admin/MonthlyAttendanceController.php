@@ -54,12 +54,6 @@ class MonthlyAttendanceController extends Controller
                 return $row->employee ? (is_string($row->employee) ? $row->employee : $row->employee->aadhaarid) : '';
             });
 
-            $table->editColumn('cl_marked', function ($row) {
-                return $row->cl_marked ? $row->cl_marked : '';
-            });
-            $table->editColumn('compen_marked', function ($row) {
-                return $row->compen_marked ? $row->compen_marked : '';
-            });
             $table->editColumn('compoff_granted', function ($row) {
                 return $row->compoff_granted ? $row->compoff_granted : '';
             });
@@ -77,6 +71,28 @@ class MonthlyAttendanceController extends Controller
             });
             $table->editColumn('grace_exceeded_sec', function ($row) {
                 return $row->grace_exceeded_sec ? $row->grace_exceeded_sec : '';
+            });
+
+            $table->editColumn('compen_marked', function ($row) {
+                return $row->compen_marked ? $row->compen_marked : '';
+            });
+            $table->editColumn('compen_submitted', function ($row) {
+                return $row->compen_submitted ? $row->compen_submitted : '';
+            });
+            $table->editColumn('other_leaves_marked', function ($row) {
+                return $row->other_leaves_marked ? $row->other_leaves_marked : '';
+            });
+            $table->editColumn('other_leaves_submitted', function ($row) {
+                return $row->other_leaves_submitted ? $row->other_leaves_submitted : '';
+            });
+            $table->editColumn('cl_marked', function ($row) {
+                return $row->cl_marked ? $row->cl_marked : '';
+            });
+            $table->editColumn('cl_submitted', function ($row) {
+                return $row->cl_submitted ? $row->cl_submitted : '';
+            });
+            $table->editColumn('single_punchings', function ($row) {
+                return $row->single_punchings ? $row->single_punchings : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);

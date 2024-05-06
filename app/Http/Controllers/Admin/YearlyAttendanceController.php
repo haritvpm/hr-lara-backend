@@ -16,7 +16,7 @@ class YearlyAttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('yearly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('monthly_attendance_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = YearlyAttendance::with(['employee'])->select(sprintf('%s.*', (new YearlyAttendance)->table));
@@ -71,6 +71,9 @@ class YearlyAttendanceController extends Controller
             });
             $table->editColumn('other_leaves_submitted', function ($row) {
                 return $row->other_leaves_submitted ? $row->other_leaves_submitted : '';
+            });
+            $table->editColumn('single_punchings', function ($row) {
+                return $row->single_punchings ? $row->single_punchings : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);

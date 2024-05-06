@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\AebasFetchService;
 use App\Services\LeaveFetchService;
+use App\Jobs\ProcessLeavesJob; // Import the missing class
 
 class LeaveControllerCustom extends Controller
 {
@@ -53,8 +54,9 @@ class LeaveControllerCustom extends Controller
     }
     public function calc()
     {
-        (new \App\Services\LeaveFetchService())->processLeaves();
-        \Session::flash('message', 'Processed Leaves');
+       // (new \App\Services\LeaveFetchService())->processLeaves();
+        ProcessLeavesJob::dispatch();
+        \Session::flash('message', 'Processing Leaves in the background. check after 2 minutes');
         return redirect()->back();
 
     }

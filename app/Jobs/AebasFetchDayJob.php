@@ -7,9 +7,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Services\PunchingService;
+use App\Services\PunchingTraceFetchService;
 
-class AebasFetchDay implements ShouldQueue
+class AebasFetchDayJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,8 +30,8 @@ php artisan queue:table
 php artisan queue:failed-table
 
     To process the queue in Laravel, you need to start the queue worker using the php artisan queue:work command. This command starts a long-running PHP process that continuously polls the queue for new jobs to process.
-    
-    
+
+
 
     php artisan queue:work
 
@@ -39,7 +39,7 @@ php artisan queue:failed-table
     */
     public function handle(): void
     {
-        (new PunchingService())->fetchTrace( $this->date);
+        (new PunchingTraceFetchService())->fetchTrace( $this->date);
 
         \Log::info ('processing AebasFetch' . $this->date);
     }

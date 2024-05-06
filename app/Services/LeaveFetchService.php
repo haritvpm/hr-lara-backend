@@ -192,12 +192,15 @@ class LeaveFetchService
     public function processLeaves()
     {
         //get chunks of 1000 leaves from Leaf table and process them
+        $start_time = Carbon::now();
         $offset = 0;
         $count = 1000;
         $error = 0;
         $firstNOffset = 0;
         for (;; $offset += $count) {
-            $leaves = Leaf::offset($offset)->limit($count)->wherenot('processed',1)->get();
+            $leaves = Leaf::offset($offset)->limit($count)
+            ->wherenot('processed',1)
+            ->get();
             if ($leaves->count() == 0) {
                 break;
             }
@@ -213,7 +216,16 @@ class LeaveFetchService
         }
         Setting::updateOrCreate(
             ['key' => 'firstNOffset'],
-            [ 'firstNOffset' => $firstNOffset]
+            ['value' => $firstNOffset]
+        );
+        Setting::updateOrCreate(
+            ['key' => 'LastLeaveProcessed'],
+            ['value' => Carbon::now()]
+        );
+        Setting::updateOrCreate(
+            ['key' => 'LastLeaveProcessDuration'],
+            ['value' => $start_time->diffInMinutes(Carbon::now())]
+
         );
 
     }
@@ -276,20 +288,22 @@ class LeaveFetchService
     }
     private function updatePunchingHint($punching, $leave )
     {
-        $punching->leave_id = $leave->id;
+
         if( $leave->active_status === 'R' || $leave->active_status === 'C' ){
-            //$punching->hint = '';
+            $punching->leave_id = null;
+        } else {
+            $punching->leave_id = $leave->id;
         }
 
         //for now, just dont show pending leaves
         //if it gets rejected, we need to update punching
         if( $leave->active_status != 'Y' ){
             $punching->save();
-            return 0; //no need to update leave count
+            return 1; //no need to update leave count
         }
 
         if( $leave->leave_type == 'CL' ){
-            if( $leave->leave_cat === 'F' ){
+            if( $leave->leave_cat == 'F' ){
                 $punching->hint = 'casual';
             } else {
                 $punching->hint =  $leave->time_period == 'FN' ? 'casual_fn' : 'casual_an';

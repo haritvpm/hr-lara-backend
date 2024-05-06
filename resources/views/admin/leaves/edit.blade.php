@@ -134,6 +134,14 @@
                 <span class="help-block">{{ trans('cruds.leaf.fields.created_by_aadhaarid_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="processed">{{ trans('cruds.leaf.fields.processed') }}</label>
+                <input class="form-control {{ $errors->has('processed') ? 'is-invalid' : '' }}" type="number" name="processed" id="processed" value="{{ old('processed', $leaf->processed) }}" step="1">
+                @if($errors->has('processed'))
+                    <span class="text-danger">{{ $errors->first('processed') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.processed_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

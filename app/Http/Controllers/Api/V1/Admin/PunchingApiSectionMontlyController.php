@@ -90,10 +90,14 @@ class PunchingApiSectionMontlyController extends Controller
 
             if ($data_yearly &&  $data_yearly->has($aadhaarid)) {
                 $item['cl_marked'] = $data_yearly[$aadhaarid]['cl_marked'];
+                $item['cl_submitted'] = $data_yearly[$aadhaarid]['cl_submitted'];
+                $item['single_punchings'] = $data_yearly[$aadhaarid]['single_punchings'];
                 $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'];
                 $item['other_leaves_marked'] = $data_yearly[$aadhaarid]['other_leaves_marked'];
             } else {
                 $item['cl_marked'] = 0;
+                $item['cl_submitted'] = 0;
+                $item['single_punchings'] = 0;
                 $item['compen_marked'] = 0;
                 $item['other_leaves_marked'] = 0;
             }

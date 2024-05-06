@@ -39,6 +39,14 @@
                 <span class="help-block">{{ trans('cruds.punching.fields.employee_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="name">{{ trans('cruds.punching.fields.name') }}</label>
+                <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text" name="name" id="name" value="{{ old('name', $punching->name) }}">
+                @if($errors->has('name'))
+                    <span class="text-danger">{{ $errors->first('name') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.name_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="designation">{{ trans('cruds.punching.fields.designation') }}</label>
                 <input class="form-control {{ $errors->has('designation') ? 'is-invalid' : '' }}" type="text" name="designation" id="designation" value="{{ old('designation', $punching->designation) }}">
                 @if($errors->has('designation'))
@@ -230,6 +238,14 @@
                     <span class="text-danger">{{ $errors->first('grace_total_exceeded_one_hour') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.punching.fields.grace_total_exceeded_one_hour_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="computer_hint">{{ trans('cruds.punching.fields.computer_hint') }}</label>
+                <input class="form-control {{ $errors->has('computer_hint') ? 'is-invalid' : '' }}" type="text" name="computer_hint" id="computer_hint" value="{{ old('computer_hint', $punching->computer_hint) }}">
+                @if($errors->has('computer_hint'))
+                    <span class="text-danger">{{ $errors->first('computer_hint') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.computer_hint_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

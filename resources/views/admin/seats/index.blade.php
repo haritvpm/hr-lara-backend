@@ -44,6 +44,9 @@
                             {{ trans('cruds.seat.fields.level') }}
                         </th>
                         <th>
+                            {{ trans('cruds.seat.fields.roles') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -81,6 +84,11 @@
                             </td>
                             <td>
                                 {{ $seat->level ?? '' }}
+                            </td>
+                            <td>
+                                @foreach($seat->roles as $key => $item)
+                                    <span class="badge badge-info">{{ $item->title }}</span>
+                                @endforeach
                             </td>
                             <td>
                                 @can('seat_show')

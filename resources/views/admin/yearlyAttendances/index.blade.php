@@ -55,6 +55,9 @@
                         {{ trans('cruds.yearlyAttendance.fields.other_leaves_submitted') }}
                     </th>
                     <th>
+                        {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -121,6 +124,7 @@
 { data: 'compen_submitted', name: 'compen_submitted' },
 { data: 'other_leaves_marked', name: 'other_leaves_marked' },
 { data: 'other_leaves_submitted', name: 'other_leaves_submitted' },
+{ data: 'single_punchings', name: 'single_punchings' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

@@ -103,6 +103,18 @@ class GovtCalendar extends Model
             //  $reportdate = Carbon::createFromFormat('Y-m-d', $reportdate)->format(config('app.date_format'));
             \Log::info('calendear date ncreated -' . $reportdate);
             $calender->date = $reportdate;
+            //if date is sunday or second saturday of the month, set holiday
+            $date = Carbon::createFromFormat('Y-m-d', $reportdate);
+            if ($date->isSunday() ) {
+                $calender->govtholidaystatus = 1;
+            } else if ( $date->dayOfWeek == 6) {
+                $month = $date->monthName;       //September
+                $year= $date->format('Y');   //2022
+                $second_sat = Carbon::parse("Second saturday of {$month} {$year}");
+                if($date->eq($second_sat)){
+                    $calender->govtholidaystatus = 1;
+                }
+            }
             //$calender->attendance_today_trace_fetched = 0;
             $calender->attendance_today_trace_rows_fetched = 0;
             //$calender->success_attendance_fetched = 0;
