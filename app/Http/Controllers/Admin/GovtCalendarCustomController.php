@@ -36,22 +36,31 @@ class GovtCalendarCustomController extends Controller
     }
     public function calculate(Request $request)
     {
-        $date = $request->date;
-        \Log::info("calculate attendance tr !. " .  $date);
+        $date_str = $request->date;
+        \Log::info("calculate attendance tr !. " .  $date_str);
 
-        if(!$date) $date = Carbon::now()->format('Y-m-d'); //today
+      
+        if(!$date_str) $date_str = Carbon::today()->format('Y-m-d'); //today
+        
+        $date = Carbon::parse($date_str);
+        $date->setTime(0,0,0);
+
 
         //dont do anything if $date is today
-        $c_today = Carbon::now()->format('Y-m-d');
-        if ($date == $c_today) {
-            \Session::flash('message', 'Today attendance is not calculated' );
+        $c_today = Carbon::today();
+        $c_today->setTime(0,0,0);
+
+        
+
+        if ($date->greaterThan($c_today)) {
+            \Session::flash('message', 'Tomorrow attendance is not calculated' );
 
             return redirect()->back();
         }
 
 
-        \Log::info("calculate attendance !. " .  $date);
-        (new PunchingCalcService())->calculate($date);
+        \Log::info("calculate attendance !. " .  $date_str);
+        (new PunchingCalcService())->calculate($date_str);
 
         return redirect()->back();
     }
@@ -66,7 +75,7 @@ class GovtCalendarCustomController extends Controller
 
        if(!$from) $from = Carbon::parse('2024-01-01');
        else $from = Carbon::parse($from->date);
-       $today = Carbon::now();
+       $today = Carbon::now()->endOfMonth();
        $today->setTime(0,0,0);
         \Log::info("fetchmonth --".  $from->toString() . " to " . $today->toString());
 

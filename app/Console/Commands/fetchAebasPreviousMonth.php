@@ -45,8 +45,7 @@ class fetchAebasPreviousMonth extends Command
             $reportdate = $date->format('Y-m-d');
             \Log::info("fetchin attendance trace for date: " . $reportdate);
 
-
-            //AebasFetchDayJob::dispatch($reportdate)->delay(now()->addMinutes(3));
+            AebasFetchDayJob::dispatch($reportdate)->delay(now()->addMinutes(3));
 
         }
     }

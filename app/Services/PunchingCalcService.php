@@ -251,7 +251,7 @@ class PunchingCalcService
                     $can_take_casual_fn = $can_take_casual_an = false;
                 }
             } else {
-                $can_take_casual_an = false;
+                $can_take_casual_an = $can_take_casual_fn = false;
             }
 
             $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
