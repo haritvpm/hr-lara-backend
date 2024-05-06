@@ -2,26 +2,26 @@
 
 namespace App\Console\Commands;
 
-use Carbon\CarbonPeriod;
+use App\Jobs\CalcMonthJob;
 use Carbon\Carbon;
-use App\Jobs\AebasFetchDayJob;
+use Carbon\CarbonPeriod;
 use Illuminate\Console\Command;
 
-class fetchAebasPreviousMonth extends Command
+class calcMonth extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:fetch-month {month}';
+    protected $signature = 'app:calc-month {month}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Fetches aebas data for current year\'s month=jan/feb/... ';
+    protected $description = 'Calculates for all dates of given month';
 
     /**
      * Execute the console command.
@@ -32,7 +32,6 @@ class fetchAebasPreviousMonth extends Command
 
         //dont forget to set queue driver in env
         //QUEUE_CONNECTION=database
-
         //for each day of this year from jan 1 to mar 31
         //first day of jan
         $start_date =  Carbon::parse($this->argument('month'))->startOfMonth();
@@ -43,10 +42,9 @@ class fetchAebasPreviousMonth extends Command
         $dates = CarbonPeriod::create($start_date, $end_date);
         foreach ($dates as $date) {
             $reportdate = $date->format('Y-m-d');
-            \Log::info("fetchin attendance trace for date: " . $reportdate);
+            \Log::info("CalcMonthJob attendance for date: " . $reportdate);
 
-
-            //AebasFetchDayJob::dispatch($reportdate)->delay(now()->addMinutes(3));
+            CalcMonthJob::dispatch($reportdate);
 
         }
     }

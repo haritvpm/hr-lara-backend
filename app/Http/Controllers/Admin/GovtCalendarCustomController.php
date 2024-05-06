@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use App\Services\PunchingTraceFetchService;
 use App\Services\LeaveFetchService;
 use App\Services\AebasFetchService;
+use Carbon\CarbonPeriod;
 
 class GovtCalendarCustomController extends Controller
 {
@@ -60,20 +61,25 @@ class GovtCalendarCustomController extends Controller
     {
        \Log::info("fetchmonth attendance trace !. " );
        // (new PunchingTraceFetchService())->fetchTodayTrace($reportdate);
-       $today = today();
-       $dates = [];
-      // $punchingservice = new PunchingTraceFetchService();
+       //get last day of GovtCalendar
+       $from = GovtCalendar::orderBy('date', 'desc')->first();
 
-       for($i=1; $i <= $today->daysInMonth; ++$i)
-       {
-           $date = Carbon::createFromDate($today->year, $today->month, $i,0,0,0);
+       if(!$from) $from = Carbon::parse('2024-01-01');
+       else $from = Carbon::parse($from->date);
+       $today = Carbon::now();
+       $today->setTime(0,0,0);
+        \Log::info("fetchmonth --".  $from->toString() . " to " . $today->toString());
+
+        $dates = CarbonPeriod::create($from, $today);
+
+        foreach ($dates as $date) {
            $date_string = $date->format('Y-m-d');
 
            $calender = GovtCalendar::getGovtCalender($date_string);
 
            \Log::info("fetchmonth --".  $date->toString());
 
-           if($date > now()) break;
+          // if($date > now()) break;
 
            //\Log::info("call AebasFetchDayJob --".  $date_string);
 

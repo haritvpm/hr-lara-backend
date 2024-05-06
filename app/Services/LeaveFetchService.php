@@ -199,7 +199,7 @@ class LeaveFetchService
         $firstNOffset = 0;
         for (;; $offset += $count) {
             $leaves = Leaf::offset($offset)->limit($count)
-           // ->wherenot('processed',1)
+            ->wherenot('processed',1)
             ->get();
             if ($leaves->count() == 0) {
                 break;
