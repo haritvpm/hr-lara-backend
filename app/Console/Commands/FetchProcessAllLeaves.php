@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\ProcessLeavesJob;
 use Illuminate\Console\Command;
 
 class FetchProcessAllLeaves extends Command
@@ -21,7 +22,7 @@ class FetchProcessAllLeaves extends Command
     protected $description = 'Fetch all leaves and process them';
 
     /**
-     * Execute the console command.
+     * Execute the console command. artisan queue:work --tries=1 --timeout=0
      */
     public function handle()
     {

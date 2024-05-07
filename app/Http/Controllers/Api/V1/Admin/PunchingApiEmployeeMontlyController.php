@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Gate;
+use Carbon\Carbon;
+use App\Models\Leaf;
+use App\Models\User;
+use App\Models\Section;
+use App\Models\Employee;
+use App\Models\Punching;
+use App\Models\GovtCalendar;
+use Illuminate\Http\Request;
+use App\Models\PunchingTrace;
+use App\Models\EmployeeToSeat;
+use App\Models\YearlyAttendance;
+use App\Models\EmployeeToSection;
+use App\Models\MonthlyAttendance;
+use App\Services\EmployeeService;
 use App\Http\Controllers\Controller;
+use App\Services\PunchingCalcService;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
-use App\Models\User;
-use App\Models\PunchingTrace;
-use App\Models\EmployeeToSeat;
-use App\Models\Punching;
-use App\Models\Section;
-use App\Models\EmployeeToSection;
-use App\Models\GovtCalendar;
-use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Carbon\Carbon;
-use App\Services\PunchingCalcService;
-use App\Services\EmployeeService;
-use App\Models\MonthlyAttendance;
-use App\Models\YearlyAttendance;
-use App\Models\Employee;
 
 class PunchingApiEmployeeMontlyController extends Controller
 {
@@ -116,6 +117,10 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
 
+        $emp_leaves = Leaf::where('aadhaarid', $aadhaarid)
+        ->orderBy('creation_date', 'desc')
+        ->get();
+
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
             'employee'  => $employee,
@@ -123,7 +128,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             'data_monthly' => $data_monthly,
             'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
-            // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+             'emp_leaves' =>  $emp_leaves,
         ], 200);
     }
     public function saveEmployeeHint(Request $request)

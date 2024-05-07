@@ -198,10 +198,10 @@ class LeaveFetchService
         $error = 0;
         $firstNOffset = 0;
         for (;; $offset += $count) {
-            $leaves = Leaf::offset($offset)->limit($count)
+            $leaves = Leaf::orderBy('creation_date', 'asc')->offset($offset)->limit($count)
             //->wherein('active_status', ['Y', 'N'])
            // ->wherenot('processed',1)
-            ->orderBy('creation_date', 'asc')
+
             ->get();
             if ($leaves->count() == 0) {
                 break;
@@ -292,7 +292,7 @@ class LeaveFetchService
     {
 
         if( $leave->active_status === 'R' || $leave->active_status === 'C' ){
-            
+
             if( $punching?->leave_id == $leave->id ){ //was N before. now it is R or C
                 $punching->leave_id = null;
             }

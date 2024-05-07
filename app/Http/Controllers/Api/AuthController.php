@@ -3,18 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Seat;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\ApiRequests\UpdatePasswordApiRequest;
 use Illuminate\Support\Facades\Validator;
-
 
 class AuthController extends Controller
 {
-
-
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'logout']]);
@@ -29,21 +26,22 @@ class AuthController extends Controller
         $credentials = $request->only('username', 'password');
 
         $token = Auth::guard('api')->attempt($credentials);
-        if (!$token) {
+        if (! $token) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unauthorized',
             ], 401);
         }
 
-        $user =  Auth::guard('api')->user();
+        $user = Auth::guard('api')->user();
+
         return response()->json([
             'status' => 'success',
             'user' => $user,
             'access_token' => $token,
             'refresh_token' => $token,
             'type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 600
+            'expires_in' => auth('api')->factory()->getTTL() * 600,
 
         ]);
 
@@ -75,6 +73,7 @@ class AuthController extends Controller
         ]);
 
         $token = Auth::login($user);
+
         return response()->json([
             'status' => 'success',
             'message' => 'User created successfully',
@@ -89,6 +88,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
@@ -98,50 +98,63 @@ class AuthController extends Controller
     public function refresh()
     {
         \Log::info('in refres');
-        if (!auth()->guard('api')->check()) {
+        if (! auth()->guard('api')->check()) {
             return response()->json([
                 'status' => 'failed',
-
 
             ]);
         }
 
+        $token = Auth::guard('api')->refresh();
 
-        $token =  Auth::guard('api')->refresh();
         return response()->json([
             'status' => 'success',
             //'user' => Auth::guard('api')->user(),
             'access_token' => $token,
             'refresh_token' => $token,
             'type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 600
-
+            'expires_in' => auth('api')->factory()->getTTL() * 600,
 
         ]);
     }
-
 
     public function me(Request $request)
     {
         $user = User::with(['roles', 'roles.permissions', 'employee'])->find(Auth::id());
 
         $permList = collect();
+        $allroles = $user->roles;
         foreach ($user->roles as $role) {
             foreach ($role->permissions as $p) {
                 $permList->add($p->title);
             }
         }
+        //get roles of this user's seat
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        if (count($seat_ids_of_loggedinuser)) {
+
+            $roles = Seat::whereIn('id', $seat_ids_of_loggedinuser)->with('roles', 'roles.permissions')->get()->pluck('roles')->flatten();
+            $allroles = $allroles->merge($roles);
+            foreach ($roles as $role) {
+                foreach ($role->permissions as $p) {
+                    $permList->add($p->title);
+                    //\Log::info('seat p: ' . $p->title);
+
+                }
+            }
+        }
 
         return response()->json([
-            'id' =>  $user->id,
+            'id' => $user->id,
             'username' => $user->username,
             'email' => $user->email,
             'avatar' => '',
-            'roles' =>  $user->roles->pluck('title'),
+            'roles' => $allroles->pluck('title')->unique(),
             'permissions' => $permList->unique(),
             'aadhaarid' => $user?->employee?->aadhaarid ?? null,
         ]);
     }
+
     public function resetpassword(Request $request)
     {
         $user = User::find(Auth::id());
@@ -150,8 +163,9 @@ class AuthController extends Controller
             'password' => 'required|string|min:9',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $response['response'] = $validator->messages();
+
             return response()->json([
                 'message' => $validator->errors()->first(),
             ], 400);
@@ -165,7 +179,7 @@ class AuthController extends Controller
         );
 
         return response()->json([
-            'id' =>  $user->id,
+            'id' => $user->id,
             'username' => $user->username,
         ]);
     }
