@@ -85,7 +85,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::now()) && !$d->isToday() ;
             $dayinfo['is_today'] = $d->isToday();
-            
+
            // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
@@ -115,7 +115,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
-        
+
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
             'employee'  => $employee,

@@ -44,7 +44,7 @@ class calcMonth extends Command
             $reportdate = $date->format('Y-m-d');
             \Log::info("CalcMonthJob attendance for date: " . $reportdate);
 
-            CalcMonthJob::dispatch($reportdate);
+            CalcMonthJob::dispatch($reportdate)->delay(now()->addMinutes(1));;
 
         }
     }
