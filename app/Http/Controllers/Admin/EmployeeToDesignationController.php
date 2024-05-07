@@ -92,7 +92,7 @@ class EmployeeToDesignationController extends Controller
             return back()->withErrors(['error' => 'Employee is already assigned to another desig'])->withInput();
         }
         $desigExisting = EmployeeToDesignation::where('employee_id', $request->employee_id)
-            ->duringPeriod($request->start_date, $request->start_date)
+            ->designationDuring($request->start_date)
             ->first();
         if ($desigExisting) {
             return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();
@@ -121,7 +121,7 @@ class EmployeeToDesignationController extends Controller
     {
 
         $desigExisting = EmployeeToDesignation::where('employee_id', $request->employee_id)
-            ->duringPeriod($request->start_date, $request->start_date)
+            ->designationDuring($request->start_date)
             ->first();
         if ($desigExisting && $desigExisting->id != $employeeToDesignation->id) {
             return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();

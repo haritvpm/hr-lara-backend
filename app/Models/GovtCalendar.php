@@ -44,6 +44,7 @@ class GovtCalendar extends Model
         'updated_at',
         'deleted_at',
         'attendance_trace_fetch_complete',
+        'calc_count',
 //        'leave_rows_fetched',
     ];
 

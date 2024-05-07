@@ -68,7 +68,7 @@ class PunchingCalcService
         $emp_ids = $emps->pluck('id');
 
         //we need Punching if it exists, to get hints like half day leave
-        $allemp_punchings_existing  =  $this->getPunchingsForDay($date,  $aadhaar_ids)->groupBy('aadhaarid');
+        // $allemp_punchings_existing  =  $this->getPunchingsForDay($date,  $aadhaar_ids)->groupBy('aadhaarid');
 
         $time_groups  = OfficeTime::get()->mapWithKeys(function ($item, int $key) {
             return [$item['id'] => $item];
@@ -105,7 +105,7 @@ class PunchingCalcService
                     $employee_id,
                     $allemp_punchingtraces_grouped,
                     $emp_new_punching_data,
-                    $allemp_punchings_existing,
+                  //  $allemp_punchings_existing,
                     $time_group,
                     $calender
                 );
@@ -139,6 +139,8 @@ class PunchingCalcService
         $data = $this->calculateMonthlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
         $this->calculateYearlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
 
+        $calender->update(['calc_count' => $calender->calc_count ?  $calender->calc_count + 1 : 1]);
+
         //return $data;
     }
 
@@ -148,7 +150,7 @@ class PunchingCalcService
         $employee_id,
         $allemp_punchingtraces_grouped,
         $emp_new_punching_data,
-        $allemp_punchings_existing,
+     //   $allemp_punchings_existing,
         $time_group,
         $calender
     ) {
@@ -162,11 +164,17 @@ class PunchingCalcService
 
         $emp_new_punching_data['punching_count'] = $punch_count;
 
-        $punching_existing = $allemp_punchings_existing->has($aadhaarid) ?
-            $allemp_punchings_existing->get($aadhaarid) : null;
+        // $punching_existing = $allemp_punchings_existing->has($aadhaarid) ?
+        //     $allemp_punchings_existing->get($aadhaarid) : null;
 
-        $hint = $punching_existing && $punching_existing->has('hint') &&
-            $punching_existing['hint'] ? $punching_existing['hint'] : null;
+        $punching_existing = Punching::where('date', $date)
+            ->where('aadhaarid', $aadhaarid)
+            ->first();
+
+        $hint = $punching_existing?->hint ?? null;
+
+        //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
+            \Log::info('hint:' . $hint);
 
         $c_punch_in = null;
         $c_punch_out = null;
@@ -251,7 +259,7 @@ class PunchingCalcService
                     $can_take_casual_fn = $can_take_casual_an = false;
                 }
             } else {
-                $can_take_casual_an = false;
+                $can_take_casual_an = $can_take_casual_fn = false;
             }
 
             $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
@@ -284,16 +292,17 @@ class PunchingCalcService
             //TODO check if casual 20 limit has reached. if so set leave
 
             $emp_new_punching_data['computer_hint'] = $computer_hint;
-         
+
             if( !$hint){ //if hint exists, no need to use computer hint
-                $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
+              //  $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
             }
             $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
 
             //if real hint set by so exists, use that instead of computer hint
             //adjust punching times  based on computer hint or hint. so for example, only half day is calculated
-            if ($grace_total_exceeded_one_hour > 1800) {
-                if (($can_take_casual_fn && $computer_hint == 'casual_fn') || $hint == 'casual_fn') {
+            //if ($grace_total_exceeded_one_hour > 1800)
+            {
+                if ($can_take_casual_fn && /*$computer_hint == 'casual_fn') ||*/ $hint == 'casual_fn') {
 
                     $c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
                     //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
@@ -302,7 +311,7 @@ class PunchingCalcService
                     $isFullDay = false;
                     //   $max_grace_seconds = 1800;
                 } else
-                if (($can_take_casual_an && $computer_hint == 'casual_an') || $hint == 'casual_an') {
+                if ($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') {
                     $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
                     //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
                     //$duration_seconds_needed = 3 * 3600;
@@ -321,7 +330,7 @@ class PunchingCalcService
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
-            if (!$isHoliday && ($computer_hint !== 'casual' || $hint != null)) //if hint exists, no need to use computer hint for else
+            if (!$isHoliday /*&& ($computer_hint !== 'casual' || $hint != null)*/) //if hint exists, no need to use computer hint for else
             {
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
@@ -339,12 +348,12 @@ class PunchingCalcService
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
                 }
-            } else if(!$isHoliday ) { //if holiday, let them get compen directly
+            } else if($isHoliday ) { //if holiday, let them get compen directly
                 //punched, but not enough time worked or office ends and 3 pm/12pm situations
                 //set grace as 0. but allow extra time as whole day's time
-                $extra_sec = $duration_sec;
-                $emp_new_punching_data['extra_sec'] = $extra_sec;
-                $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
+              //  $extra_sec = $duration_sec;
+              //  $emp_new_punching_data['extra_sec'] = $extra_sec;
+              //  $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
         }
         // \Log::info($emp_new_punching_data);

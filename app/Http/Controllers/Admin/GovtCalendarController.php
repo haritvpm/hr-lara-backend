@@ -15,7 +15,7 @@ class GovtCalendarController extends Controller
     {
         abort_if(Gate::denies('govt_calendar_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $govtCalendars = GovtCalendar::with(['session'])->get();
+        $govtCalendars = GovtCalendar::with(['session'])->orderBy('date', 'desc')->get();
 
         return view('admin.govtCalendars.index', compact('govtCalendars'));
     }

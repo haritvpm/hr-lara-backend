@@ -36,7 +36,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         //$date_str = $date->format('Y-m-d');
-        $employee = Employee::where('aadhaarid', $aadhaarid)->first();
+        $employee = Employee::with('designation')->where('aadhaarid', $aadhaarid)->first();
         if (!$employee) {
             return response()->json(['status' => 'Employee not found'], 400);
         }
@@ -85,14 +85,15 @@ class PunchingApiEmployeeMontlyController extends Controller
             $dayinfo['is_holiday'] =  $calender_info['day' . $i]['holiday'];
             $dayinfo['is_future'] = $d->gt(Carbon::now()) && !$d->isToday() ;
             $dayinfo['is_today'] = $d->isToday();
+
            // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
             }
-
-            $dayinfo['in_section'] = $employeeToSection != null;
+            // if this is self, no need to check for section
+            $dayinfo['in_section'] = $employeeToSection != null || $me->employee->aadhaarid == $aadhaarid;
 
             $punching = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
 
@@ -113,6 +114,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
         $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
 
+        $employee['designation_now'] = $employee->designation->first()->designation->designation;
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021

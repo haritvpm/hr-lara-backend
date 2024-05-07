@@ -21,9 +21,9 @@
                         <th width="10">
 
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.id') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.govtCalendar.fields.date') }}
                         </th>
@@ -65,9 +65,9 @@
                             <td>
 
                             </td>
-                            <td>
+                            <!-- <td>
                             <small> {{ $govtCalendar->id ?? '' }}   </small>
-                            </td>
+                            </td> -->
                             <td>
                                 @if($govtCalendar->govtholidaystatus==1)
                                 <span class="badge badge-danger">
@@ -151,8 +151,9 @@
 
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
-    order: [[ 1, 'desc' ]],
-    pageLength: 100,
+    order: [],
+    //order: [[ 2, 'desc' ]],
+    pageLength: 50,
   });
   let table = $('.datatable-GovtCalendar:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
