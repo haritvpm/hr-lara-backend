@@ -94,7 +94,10 @@ class MonthlyAttendanceController extends Controller
             $table->editColumn('single_punchings', function ($row) {
                 return $row->single_punchings ? $row->single_punchings : '';
             });
-
+            $table->editColumn('total_grace_exceeded300_date', function ($row) {
+                return $row->total_grace_exceeded300_date ? $row->total_grace_exceeded300_date : '';
+            });
+            
             $table->rawColumns(['actions', 'placeholder', 'employee']);
 
             return $table->make(true);

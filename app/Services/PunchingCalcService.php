@@ -329,8 +329,13 @@ class PunchingCalcService
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
+    
+            
+            $isFullDayleave = $hint && $hint != 'casual_an' && $hint != 'casual_fn' && $hint != 'clear';
+            $isSinglePunching = $hint == 'single_punch';
 
-            if (!$isHoliday /*&& ($computer_hint !== 'casual' || $hint != null)*/) //if hint exists, no need to use computer hint for else
+
+            if (!$isHoliday && !$isFullDayleave &&  !$isSinglePunching) //if hint exists, no need to use computer hint for else
             {
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);

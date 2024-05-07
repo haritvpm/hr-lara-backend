@@ -97,8 +97,8 @@ class PunchingController extends Controller
             $table->editColumn('punching_count', function ($row) {
                 return $row->punching_count ? $row->punching_count : '';
             });
-            $table->addColumn('leave_reason', function ($row) {
-                return $row->leave ? $row->leave->reason : '';
+            $table->addColumn('leave_id', function ($row) {
+                return $row->leave ? $row->leave_id : '';
             });
 
             $table->editColumn('leave.start_date', function ($row) {

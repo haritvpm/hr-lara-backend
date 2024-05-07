@@ -46,6 +46,9 @@
                             Fetch complete
                         </th>
                         <th>
+                            Calc Count
+                        </th>
+                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <th>
@@ -101,6 +104,8 @@
                             <td>
                                 {{ $govtCalendar->attendance_trace_fetch_complete ?? '' }}
                             </td>
+                            <td>
+                                {{ $govtCalendar->calc_count ?? '' }}   
                             <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}>

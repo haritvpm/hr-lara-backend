@@ -153,7 +153,7 @@
 // { data: 'grace_str', name: 'grace_str' },
 // { data: 'extra_str', name: 'extra_str' },
 { data: 'punching_count', name: 'punching_count' },
-{ data: 'leave_reason', name: 'leave.reason' },
+{ data: 'leave_id', name: 'leave_id' },
 // { data: 'leave.start_date', name: 'leave.start_date' },
 // { data: 'leave.end_date', name: 'leave.end_date' },
 { data: 'remarks', name: 'remarks' },

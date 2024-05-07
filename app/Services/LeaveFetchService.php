@@ -199,7 +199,9 @@ class LeaveFetchService
         $firstNOffset = 0;
         for (;; $offset += $count) {
             $leaves = Leaf::offset($offset)->limit($count)
-            ->wherenot('processed',1)
+            //->wherein('active_status', ['Y', 'N'])
+           // ->wherenot('processed',1)
+            ->orderBy('creation_date', 'asc')
             ->get();
             if ($leaves->count() == 0) {
                 break;
@@ -238,11 +240,11 @@ class LeaveFetchService
         $leave_end_date_actual = Carbon::parse($leave->end_date);
 
         $leave_start_date = $leave_start_date_actual->clone();
-        if( $leave_start_date < Carbon::today()->startOfYear() ){
+        if( $leave_start_date->lt(Carbon::today()->startOfYear()) ){
             $leave_start_date =  Carbon::today()->startOfYear();
         }
         $leave_end_date = $leave_end_date_actual->clone();
-        if( $leave_end_date > Carbon::today()) {
+        if( $leave_end_date->gt(Carbon::today())) {
             $leave_end_date = Carbon::today();
         }
 
@@ -290,7 +292,11 @@ class LeaveFetchService
     {
 
         if( $leave->active_status === 'R' || $leave->active_status === 'C' ){
-            $punching->leave_id = null;
+            
+            if( $punching?->leave_id == $leave->id ){ //was N before. now it is R or C
+                $punching->leave_id = null;
+            }
+
         } else {
             $punching->leave_id = $leave->id;
         }
