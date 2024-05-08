@@ -29,7 +29,7 @@ class calcMonth extends Command
     public function handle()
     {
         $reportdate = Carbon::today();
-
+        //php artisan queue:work --tries=1 --timeout=0
         //dont forget to set queue driver in env
         //QUEUE_CONNECTION=database
         //for each day of this year from jan 1 to mar 31

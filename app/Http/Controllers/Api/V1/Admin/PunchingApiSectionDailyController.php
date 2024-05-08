@@ -115,6 +115,12 @@ class PunchingApiSectionDailyController extends Controller
             $item['section'] = $employee['section_name'];
             $item['designation'] = $employee['designation'];
 
+            if($item['name']==null){
+                $item['name'] = $employee['name'];
+                $item['designation'] = $employee['designation'];
+
+            }
+
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
             if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
                 $item['grace_exceeded300_and_today_has_grace'] = true;

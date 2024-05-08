@@ -72,12 +72,19 @@ class MonthlyAttendance extends Model
         });
 
     }
+
     public static function forEmployeeInMonth($date, $aadhaarid)
     {
         return MonthlyAttendance::where('month', $date->clone()->startOfMonth()->format('Y-m-d'))
         ->where('aadhaarid', $aadhaarid)
         ->first();
 
+    }
+    protected $appends = ['month_name'];
+    public function getMonthNameAttribute()
+    {
+     $month_name = Carbon::parse($this->month)->format('F Y');
+        return $month_name;
     }
 
 }

@@ -2,26 +2,27 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Gate;
+use Carbon\Carbon;
+use App\Models\Leaf;
+use App\Models\User;
+use App\Models\Section;
+use App\Models\Employee;
+use App\Models\Punching;
+use App\Models\GovtCalendar;
+use Illuminate\Http\Request;
+use App\Models\PunchingTrace;
+use App\Models\EmployeeToSeat;
+use App\Models\YearlyAttendance;
+use App\Models\EmployeeToSection;
+use App\Models\MonthlyAttendance;
+use App\Services\EmployeeService;
 use App\Http\Controllers\Controller;
+use App\Services\PunchingCalcService;
 use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
-use App\Models\User;
-use App\Models\PunchingTrace;
-use App\Models\EmployeeToSeat;
-use App\Models\Punching;
-use App\Models\Section;
-use App\Models\EmployeeToSection;
-use App\Models\GovtCalendar;
-use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Carbon\Carbon;
-use App\Services\PunchingCalcService;
-use App\Services\EmployeeService;
-use App\Models\MonthlyAttendance;
-use App\Models\YearlyAttendance;
-use App\Models\Employee;
 
 class PunchingApiEmployeeMontlyController extends Controller
 {
@@ -61,6 +62,12 @@ class PunchingApiEmployeeMontlyController extends Controller
         //for each employee in punching as a row, show columns for each day of month
         // $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
         // $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date'])->endOfDay() : $emp_start_date->clone()->endOfYear();
+        $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
+        $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
+        $total_grace_exceeded300_date = null;
+        if ($data_monthly ) {
+            $total_grace_exceeded300_date = $data_monthly['total_grace_exceeded300_date'];
+        }
 
         $empMonPunchings = [];
         for ($i = 1; $i <= $date->daysInMonth; $i++) {
@@ -99,6 +106,14 @@ class PunchingApiEmployeeMontlyController extends Controller
 
             if( $punching){
                 $dayinfo = [...$dayinfo, ...$punching->toArray()];
+
+                $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse( $total_grace_exceeded300_date ) : null;
+                if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
+                    $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
+                } else {
+                    $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
+                }
+
             }
             //punching trace might have section null. so get it from employeeToSection
             if($employeeToSection){
@@ -111,10 +126,22 @@ class PunchingApiEmployeeMontlyController extends Controller
         }
 
 
-        $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
-        $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
+
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
+
+        $emp_leaves = Leaf::where('aadhaarid', $aadhaarid)
+        ->orderBy('creation_date', 'desc')
+        ->get()->transform(function ($item) {
+
+            $date_start = Carbon::parse($item->start_date);
+            $date_to = Carbon::parse($item->end_date);
+            $diff = $date_start->diffInDays($date_to)+1;
+
+            return [
+                ...$item->toArray(), 'day_count' => $diff,
+            ];
+        });
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021
@@ -123,7 +150,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             'data_monthly' => $data_monthly,
             'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
-            // 'employees_in_view' =>  $employees_in_view->groupBy('aadhaarid'),
+             'emp_leaves' =>  $emp_leaves,
         ], 200);
     }
     public function saveEmployeeHint(Request $request)

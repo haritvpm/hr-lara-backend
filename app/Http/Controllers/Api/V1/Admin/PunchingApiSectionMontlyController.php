@@ -50,7 +50,6 @@ class PunchingApiSectionMontlyController extends Controller
         );
         // \Log::info('employees_in_view: ' . $employees_in_view);
 
-        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
@@ -60,6 +59,7 @@ class PunchingApiSectionMontlyController extends Controller
             ], 200);
         }
         //get all govtcalender between start data and enddate
+        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
         $data_yearly = YearlyAttendance::forEmployeesInYear($date, $aadhaarids);
@@ -146,6 +146,14 @@ class PunchingApiSectionMontlyController extends Controller
                     $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid];
                 }
                 $dayinfo['section'] = $employee['section_name'];;
+
+                //sometimes, if there is only leave in punching, name, desig etc will be overwritten
+                if($dayinfo['name']==null){
+                    $dayinfo['name'] = $employee['name'];
+                    $dayinfo['designation'] = $employee['designation'];
+                    // if(!$dayinfo['grace_str']) $dayinfo['grace_str'] = '0';
+                    // if(!$dayinfo['extra_str']) $dayinfo['extra_str'] = '0';
+                }
 
                 $item['day' . $i] = [...$dayinfo];
             }

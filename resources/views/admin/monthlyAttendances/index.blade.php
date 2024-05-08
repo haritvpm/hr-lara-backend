@@ -55,7 +55,7 @@
                         {{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
@@ -145,7 +145,7 @@
 { data: 'total_grace_str', name: 'total_grace_str' },
 { data: 'total_extra_str', name: 'total_extra_str' },
 { data: 'grace_exceeded_sec', name: 'grace_exceeded_sec' },
-{ data: 'total_grace_exceeded_300_date', name: 'total_grace_exceeded_300_date' },
+{ data: 'total_grace_exceeded300_date', name: 'total_grace_exceeded300_date' },
 { data: 'compen_marked', name: 'compen_marked' },
 { data: 'compen_submitted', name: 'compen_submitted' },
 { data: 'other_leaves_marked', name: 'other_leaves_marked' },
@@ -157,7 +157,7 @@
     ],
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
-    pageLength: 100,
+    pageLength: 25,
   };
   let table = $('.datatable-MonthlyAttendance').DataTable(dtOverrideGlobals);
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
