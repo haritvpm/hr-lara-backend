@@ -147,6 +147,14 @@ class PunchingApiSectionMontlyController extends Controller
                 }
                 $dayinfo['section'] = $employee['section_name'];;
 
+                //sometimes, if there is only leave in punching, name, desig etc will be overwritten
+                if($dayinfo['name']==null){
+                    $dayinfo['name'] = $employee['name'];
+                    $dayinfo['designation'] = $employee['designation'];
+                    // if(!$dayinfo['grace_str']) $dayinfo['grace_str'] = '0';
+                    // if(!$dayinfo['extra_str']) $dayinfo['extra_str'] = '0';
+                }
+
                 $item['day' . $i] = [...$dayinfo];
             }
 
