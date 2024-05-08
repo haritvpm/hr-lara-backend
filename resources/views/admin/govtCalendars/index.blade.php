@@ -46,6 +46,9 @@
                             Fetch complete
                         </th>
                         <th>
+                            Calc Count
+                        </th>
+                        <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
                         </th>
                         <th>
@@ -102,6 +105,8 @@
                                 {{ $govtCalendar->attendance_trace_fetch_complete ?? '' }}
                             </td>
                             <td>
+                                {{ $govtCalendar->calc_count ?? '' }}
+                            <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}>
                             </td>
@@ -153,7 +158,7 @@
     orderCellsTop: true,
     order: [],
     //order: [[ 2, 'desc' ]],
-    pageLength: 50,
+    pageLength: 30,
   });
   let table = $('.datatable-GovtCalendar:not(.ajaxTable)').DataTable({ buttons: dtButtons })
   $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){

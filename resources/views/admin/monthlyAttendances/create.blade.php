@@ -66,10 +66,10 @@
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="total_grace_exceeded_300_date">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}</label>
-                <input class="form-control date {{ $errors->has('total_grace_exceeded_300_date') ? 'is-invalid' : '' }}" type="text" name="total_grace_exceeded_300_date" id="total_grace_exceeded_300_date" value="{{ old('total_grace_exceeded_300_date') }}">
-                @if($errors->has('total_grace_exceeded_300_date'))
-                    <span class="text-danger">{{ $errors->first('total_grace_exceeded_300_date') }}</span>
+                <label for="total_grace_exceeded300_date">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}</label>
+                <input class="form-control date {{ $errors->has('total_grace_exceeded300_date') ? 'is-invalid' : '' }}" type="text" name="total_grace_exceeded300_date" id="total_grace_exceeded300_date" value="{{ old('total_grace_exceeded300_date') }}">
+                @if($errors->has('total_grace_exceeded300_date'))
+                    <span class="text-danger">{{ $errors->first('total_grace_exceeded300_date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date_helper') }}</span>
             </div>

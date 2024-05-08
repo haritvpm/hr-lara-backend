@@ -3,13 +3,14 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
+use App\Services\LeaveFetchService;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use App\Services\LeaveFetchService;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class ProcessLeavesJob implements ShouldQueue
+class ProcessLeavesJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -27,7 +28,9 @@ class ProcessLeavesJob implements ShouldQueue
     public function handle(): void
     {
         //artisan queue:work --tries=1 --timeout=0
-        (new LeaveFetchService())->processLeaves();
+        $leaveService = new LeaveFetchService();
+        $leaveService->fetchLeave();
+        $leaveService->processLeaves();
 
     }
 }
