@@ -167,7 +167,7 @@ class PunchingCalcService
         // $punching_existing = $allemp_punchings_existing->has($aadhaarid) ?
         //     $allemp_punchings_existing->get($aadhaarid) : null;
 
-        $punching_existing = Punching::where('date', $date)
+        $punching_existing = Punching::with('leave')->where('date', $date)
             ->where('aadhaarid', $aadhaarid)
             ->first();
 
@@ -265,6 +265,10 @@ class PunchingCalcService
             $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
 
 
+            //check if leave approved. if so,  calculate grace only if half day leave.
+            //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
+            [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
+
 
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
@@ -296,13 +300,15 @@ class PunchingCalcService
             if( !$hint){ //if hint exists, no need to use computer hint
               //  $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
             }
+
             $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
 
             //if real hint set by so exists, use that instead of computer hint
             //adjust punching times  based on computer hint or hint. so for example, only half day is calculated
             //if ($grace_total_exceeded_one_hour > 1800)
             {
-                if ($can_take_casual_fn && /*$computer_hint == 'casual_fn') ||*/ $hint == 'casual_fn') {
+                if (($can_take_casual_fn && /*$computer_hint == 'casual_fn') ||*/ $hint == 'casual_fn') ||
+                    ($hasLeave && $isFnLeave)) {
 
                     $c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
                     //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
@@ -311,7 +317,8 @@ class PunchingCalcService
                     $isFullDay = false;
                     //   $max_grace_seconds = 1800;
                 } else
-                if ($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') {
+                if (($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') ||
+                    ($hasLeave && $isAnLeave)) {
                     $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
                     //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
                     //$duration_seconds_needed = 3 * 3600;
@@ -329,13 +336,19 @@ class PunchingCalcService
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
-    
-            
-            $isFullDayleave = $hint && $hint != 'casual_an' && $hint != 'casual_fn' && $hint != 'clear';
+
+
+            $isFullDayleaveHint = $hint && $hint != 'casual_an' && $hint != 'casual_fn' && $hint != 'clear' ;
+            $isFullDayleave =  $isFullDayleaveHint;
+            //if approved leave exists, use that instead of hint
+            if($hasLeave ){
+                $isFullDayleave = $isFullLeave;
+            }
+
             $isSinglePunching = $hint == 'single_punch';
 
 
-            if (!$isHoliday && !$isFullDayleave &&  !$isSinglePunching) //if hint exists, no need to use computer hint for else
+            if (!$isHoliday && !$isFullDayleave && !$isSinglePunching) //if hint exists, no need to use computer hint for else
             {
                 //calculate grace
                 $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
@@ -353,12 +366,12 @@ class PunchingCalcService
                     $emp_new_punching_data['extra_sec'] = $extra_sec;
                     $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
                 }
-            } else if($isHoliday ) { //if holiday, let them get compen directly
+            } else if(!$isHoliday && !$isSinglePunching) { //if holiday, let them get compen directly
                 //punched, but not enough time worked or office ends and 3 pm/12pm situations
                 //set grace as 0. but allow extra time as whole day's time
-              //  $extra_sec = $duration_sec;
-              //  $emp_new_punching_data['extra_sec'] = $extra_sec;
-              //  $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
+                $extra_sec = $duration_sec;
+                $emp_new_punching_data['extra_sec'] = $extra_sec;
+                $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
         }
         // \Log::info($emp_new_punching_data);
@@ -368,8 +381,30 @@ class PunchingCalcService
 
         //extra time
     }
+    private function checkLeaveExists($punching_existing)
+    {
+        $hasLeave = $isFullLeave = $isFnLeave = $isAnLeave = false;
+        if ($punching_existing && $punching_existing->leave_id) {
+            $leave = $punching_existing->leave_id ? $punching_existing->leave : null;
 
-    public function setHintIfPunchMoreThanOneHourLate(
+            if ($leave && $leave->leave_type && (/*$leave->active_status == 'N' ||*/ $leave->active_status == 'Y')) {
+                $hasLeave = true;
+                if($leave->leave_cat == 'F'){
+                    $isFullLeave = true;
+                } else if($leave->leave_cat == 'H') {
+                    if($leave->time_period == 'FN'){
+                        $isFnLeave = true;
+                    } else {
+                        $isAnLeave = true;
+                    }
+                }
+
+            }
+        }
+        return [$hasLeave, $isFullLeave, $isFnLeave, $isAnLeave];
+    }
+
+    private function setHintIfPunchMoreThanOneHourLate(
         $c_punch_in,
         $c_punch_out,
         $duration_seconds_needed,

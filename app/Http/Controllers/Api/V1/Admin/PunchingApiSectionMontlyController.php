@@ -50,7 +50,6 @@ class PunchingApiSectionMontlyController extends Controller
         );
         // \Log::info('employees_in_view: ' . $employees_in_view);
 
-        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
@@ -60,6 +59,7 @@ class PunchingApiSectionMontlyController extends Controller
             ], 200);
         }
         //get all govtcalender between start data and enddate
+        $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
         $data_yearly = YearlyAttendance::forEmployeesInYear($date, $aadhaarids);

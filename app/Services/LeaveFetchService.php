@@ -26,6 +26,11 @@ class LeaveFetchService
 
 
         $offset = 0;
+
+        $firstNOffset = Setting::where('key', 'firstNOffset')->first();
+        if( $firstNOffset ){
+            $offset = $firstNOffset->value;
+        }
         $count = 500; //make it to 500 in prod
 
         // should be in format 2024-02-11
@@ -225,7 +230,7 @@ class LeaveFetchService
             ['value' => Carbon::now()]
         );
         Setting::updateOrCreate(
-            ['key' => 'LastLeaveProcessDuration'],
+            ['key' => 'LastLeaveProcessMinutes'],
             ['value' => $start_time->diffInMinutes(Carbon::now())]
 
         );

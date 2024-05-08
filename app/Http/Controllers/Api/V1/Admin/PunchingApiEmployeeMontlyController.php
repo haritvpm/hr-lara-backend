@@ -119,7 +119,16 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $emp_leaves = Leaf::where('aadhaarid', $aadhaarid)
         ->orderBy('creation_date', 'desc')
-        ->get();
+        ->get()->transform(function ($item) {
+
+            $date_start = Carbon::parse($item->start_date);
+            $date_to = Carbon::parse($item->end_date);
+            $diff = $date_start->diffInDays($date_to)+1;
+
+            return [
+                ...$item->toArray(), 'day_count' => $diff,
+            ];
+        });
 
         return response()->json([
             'month' => $date->format('F Y'), // 'January 2021

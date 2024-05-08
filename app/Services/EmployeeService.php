@@ -318,7 +318,7 @@ class EmployeeService
     {
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
-        $all_subordinate_seats = collect([]);
+        $all_subordinate_seats = collect($seat_ids_of_loggedinuser);
         $seat_ids = $seat_ids_of_loggedinuser;
 
         while(1){
