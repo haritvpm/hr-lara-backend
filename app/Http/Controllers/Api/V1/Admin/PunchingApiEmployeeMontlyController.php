@@ -62,6 +62,12 @@ class PunchingApiEmployeeMontlyController extends Controller
         //for each employee in punching as a row, show columns for each day of month
         // $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
         // $emp_end_date = $employee['end_date'] ? Carbon::parse($employee['end_date'])->endOfDay() : $emp_start_date->clone()->endOfYear();
+        $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
+        $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
+        $total_grace_exceeded300_date = null;
+        if ($data_monthly ) {
+            $total_grace_exceeded300_date = $data_monthly['total_grace_exceeded300_date'];
+        }
 
         $empMonPunchings = [];
         for ($i = 1; $i <= $date->daysInMonth; $i++) {
@@ -100,6 +106,14 @@ class PunchingApiEmployeeMontlyController extends Controller
 
             if( $punching){
                 $dayinfo = [...$dayinfo, ...$punching->toArray()];
+
+                $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse( $total_grace_exceeded300_date ) : null;
+                if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
+                    $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
+                } else {
+                    $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
+                }
+
             }
             //punching trace might have section null. so get it from employeeToSection
             if($employeeToSection){
@@ -112,8 +126,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         }
 
 
-        $data_monthly = MonthlyAttendance::forEmployeeInMonth($date, $aadhaarid);
-        $data_yearly = YearlyAttendance::forEmployeeInYear($date, $aadhaarid);
+
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
 

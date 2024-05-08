@@ -72,4 +72,11 @@ class YearlyAttendance extends Model
         ->first();
 
     }
+
+    protected $appends = ['year_number'];
+    public function getYearNumberAttribute()
+    {
+         $year_number = Carbon::parse($this->month)->format('Y');
+        return $year_number;
+    }
 }
