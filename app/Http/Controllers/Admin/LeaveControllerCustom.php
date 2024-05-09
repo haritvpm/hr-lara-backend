@@ -56,7 +56,7 @@ class LeaveControllerCustom extends Controller
     {
        // (new \App\Services\LeaveFetchService())->processLeaves();
         ProcessLeavesJob::dispatch();
-        \Session::flash('message', 'Processing Leaves in the background. check after 2 minutes');
+        \Session::flash('message', 'Added job. Run <php artisan queue:work --tries=1 --timeout=0> to process the job.');
         return redirect()->back();
 
     }

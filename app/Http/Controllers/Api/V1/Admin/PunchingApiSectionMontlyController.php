@@ -174,6 +174,7 @@ class PunchingApiSectionMontlyController extends Controller
             'sections' => array_values(array_unique($sections)),
             'monthlypunchings' => $data,
             'employees_in_view' =>  $employees_in_view,
+           // 'data_yearly' => $data_yearly,
         ], 200);
     }
 }
