@@ -64,14 +64,6 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.desig_display_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="pan">{{ trans('cruds.employee.fields.pan') }}</label>
-                <input class="form-control {{ $errors->has('pan') ? 'is-invalid' : '' }}" type="text" name="pan" id="pan" value="{{ old('pan', $employee->pan) }}">
-                @if($errors->has('pan'))
-                    <span class="text-danger">{{ $errors->first('pan') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.employee.fields.pan_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="has_punching">{{ trans('cruds.employee.fields.has_punching') }}</label>
                 <input class="form-control {{ $errors->has('has_punching') ? 'is-invalid' : '' }}" type="number" name="has_punching" id="has_punching" value="{{ old('has_punching', $employee->has_punching) }}" step="1">
                 @if($errors->has('has_punching'))
@@ -102,22 +94,6 @@
                     <span class="text-danger">{{ $errors->first('is_shift') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employee.fields.is_shift_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="klaid">{{ trans('cruds.employee.fields.klaid') }}</label>
-                <input class="form-control {{ $errors->has('klaid') ? 'is-invalid' : '' }}" type="text" name="klaid" id="klaid" value="{{ old('klaid', $employee->klaid) }}">
-                @if($errors->has('klaid'))
-                    <span class="text-danger">{{ $errors->first('klaid') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.employee.fields.klaid_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="electionid">{{ trans('cruds.employee.fields.electionid') }}</label>
-                <input class="form-control {{ $errors->has('electionid') ? 'is-invalid' : '' }}" type="text" name="electionid" id="electionid" value="{{ old('electionid', $employee->electionid) }}">
-                @if($errors->has('electionid'))
-                    <span class="text-danger">{{ $errors->first('electionid') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.employee.fields.electionid_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

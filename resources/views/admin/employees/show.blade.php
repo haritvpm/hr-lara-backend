@@ -73,14 +73,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.pan') }}
-                        </th>
-                        <td>
-                            {{ $employee->pan }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.employee.fields.has_punching') }}
                         </th>
                         <td>
@@ -101,22 +93,6 @@
                         </th>
                         <td>
                             <input type="checkbox" disabled="disabled" {{ $employee->is_shift ? 'checked' : '' }}>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.klaid') }}
-                        </th>
-                        <td>
-                            {{ $employee->klaid }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.electionid') }}
-                        </th>
-                        <td>
-                            {{ $employee->electionid }}
                         </td>
                     </tr>
                 </tbody>

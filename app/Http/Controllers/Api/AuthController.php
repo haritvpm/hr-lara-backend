@@ -147,8 +147,8 @@ class AuthController extends Controller
         return response()->json([
             'id' => $user->id,
             'username' => $user->username,
-            'email' => $user->email,
-            'avatar' => '',
+            // 'email' => $user->email,
+            // 'avatar' => '',
             'roles' => $allroles->pluck('title')->unique(),
             'permissions' => $permList->unique(),
             'aadhaarid' => $user?->employee?->aadhaarid ?? null,
@@ -177,6 +177,70 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]
         );
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+        ]);
+    }
+
+    public function profile(Request $request)
+    {
+        $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user?->employee?->employee_extra?->email ?? null,
+            'avatar' => '',
+            'aadhaarid' => $user?->employee?->aadhaarid ?? null,
+            'name_mal' => $user?->employee?->name_mal ?? null,
+            'name' => $user?->employee?->name ?? null,
+            'mobile' => $user?->employee?->employee_extra?->mobile ?? null,
+            'dateOfJoinInKLA' => $user?->employee?->employee_extra?->date_of_joining_kla ?? null,
+        ]);
+    }
+
+    public function saveprofile(Request $request)
+    {
+        $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
+
+        // $validator = Validator::make($request->all(), [
+        //     'email' => 'email'|'unique:employee_extras,email,' . $user->employee?->employeeExtra?->id,
+        //     'mobile' => 'numeric|digits:10',
+        //     'dateOfJoinInKLA' => 'date',
+        // ]);
+
+        // if ($validator->fails()) {
+        //     $response['response'] = $validator->messages();
+
+        //     return response()->json([
+        //         'message' => $validator->errors()->first(),
+        //     ], 400);
+        // }
+        $user->employee->update(
+            [
+                'name_mal' => $request->name_mal,
+            ]
+        );
+        if($user->employee->employeeExtra){
+            $user->employee->employeeExtra->update(
+                [
+                    'email' => $request->email,
+                    'mobile' => $request->mobile,
+                    'date_of_joining_kla' => $request->dateOfJoinInKLA,
+                ]
+            );
+        } else {
+            $user->employee->employeeExtra()->create(
+                [
+                    'email' => $request->email,
+                    'mobile' => $request->mobile,
+                    'date_of_joining_kla' => $request->dateOfJoinInKLA,
+                ]
+            );
+        }
+
 
         return response()->json([
             'id' => $user->id,

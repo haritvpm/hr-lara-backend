@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Models\Employee;
 use App\Models\Leaf;
@@ -133,28 +132,6 @@ class PunchingController extends Controller
         }
 
         return view('admin.punchings.index');
-    }
-
-    public function create()
-    {
-        abort_if(Gate::denies('punching_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $punchin_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $punchout_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.punchings.create', compact('employees', 'leaves', 'punchin_traces', 'punchout_traces'));
-    }
-
-    public function store(StorePunchingRequest $request)
-    {
-        $punching = Punching::create($request->all());
-
-        return redirect()->route('admin.punchings.index');
     }
 
     public function edit(Punching $punching)

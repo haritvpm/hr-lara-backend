@@ -39,11 +39,15 @@
                     <th>
                         {{ trans('cruds.employee.fields.id') }}
                     </th>
-                   
+                    <th>
+                        {{ trans('cruds.employee.fields.srismt') }}
+                    </th>
                     <th>
                         {{ trans('cruds.employee.fields.name') }}
                     </th>
-
+                    <th>
+                        {{ trans('cruds.employee.fields.name_mal') }}
+                    </th>
                     <th>
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
@@ -121,7 +125,9 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
+{ data: 'srismt', name: 'srismt' },
 { data: 'name', name: 'name' },
+{ data: 'name_mal', name: 'name_mal' },
 { data: 'aadhaarid', name: 'aadhaarid' },
 { data: 'pen', name: 'pen' },
 { data: 'desig_display', name: 'desig_display' },

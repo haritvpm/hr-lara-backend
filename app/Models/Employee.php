@@ -38,12 +38,9 @@ class Employee extends Model
         'aadhaarid',
         'pen',
         'desig_display',
-        'pan',
         'has_punching',
         'status',
         'is_shift',
-        'klaid',
-        'electionid',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -110,6 +107,8 @@ class Employee extends Model
     {
         return $this->hasOne(Seniority::class, 'employee_id');
     }
-
-
+    public function employeeExtra()
+    {
+        return $this->hasOne(EmployeeExtra::class, 'employee_id');
+    }
 }

@@ -12,6 +12,8 @@ Route::group([
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('resetpassword', [AuthController::class, 'resetpassword']);
+    Route::get('profile', [AuthController::class,'profile']);
+    Route::post('profile', [AuthController::class,'saveprofile']);
 
 });
 
@@ -143,13 +145,13 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/my-sectionemployees/unposted-employees', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployees');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
 
-    Route::apiResource('punchings', 'PunchingApiController', ['except' => ['destroy']]);
+    Route::apiResource('punchings', 'PunchingApiController', ['except' => ['store', 'destroy']]);
 
     // Assembly Session
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 
     // Leave
-    Route::apiResource('leaves', 'LeaveApiController');
+    Route::apiResource('leaves', 'LeaveApiController', ['except' => ['store']]);
 
     // Office Times
     Route::apiResource('office-times', 'OfficeTimesApiController');
@@ -168,4 +170,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Setting
     Route::apiResource('settings', 'SettingApiController');
+
+    // Employee Extra
+    Route::apiResource('employee-extras', 'EmployeeExtraApiController');
 });

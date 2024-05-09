@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EmployeeToShift extends Model
+class EmployeeExtra extends Model
 {
     use HasFactory;
 
-    public $table = 'employee_to_shifts';
+    public $table = 'employee_extras';
 
     protected $dates = [
-        'start_date',
-        'end_date',
+        'date_of_joining_kla',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -22,9 +22,13 @@ class EmployeeToShift extends Model
 
     protected $fillable = [
         'employee_id',
-        'shift_id',
-        'start_date',
-        'end_date',
+        'address',
+        'date_of_joining_kla',
+        'pan',
+        'klaid',
+        'electionid',
+        'mobile',
+        'email',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -40,8 +44,13 @@ class EmployeeToShift extends Model
         return $this->belongsTo(Employee::class, 'employee_id');
     }
 
-    public function shift()
+    public function getDateOfJoiningKlaAttribute($value)
     {
-        return $this->belongsTo(Shift::class, 'shift_id');
+        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    }
+
+    public function setDateOfJoiningKlaAttribute($value)
+    {
+        $this->attributes['date_of_joining_kla'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     }
 }

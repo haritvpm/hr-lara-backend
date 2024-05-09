@@ -40,12 +40,11 @@ class GovtCalendar extends Model
         'punching',
         'session_id',
         'office_ends_at',
+        'attendance_trace_fetch_complete',
+        'calc_count',
         'created_at',
         'updated_at',
         'deleted_at',
-        'attendance_trace_fetch_complete',
-        'calc_count',
-//        'leave_rows_fetched',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

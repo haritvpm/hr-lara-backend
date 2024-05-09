@@ -716,186 +716,198 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 177,
-                'title' => 'punching_create',
-            ],
-            [
-                'id'    => 178,
                 'title' => 'punching_edit',
             ],
             [
-                'id'    => 179,
+                'id'    => 178,
                 'title' => 'punching_show',
             ],
             [
-                'id'    => 180,
+                'id'    => 179,
                 'title' => 'punching_access',
             ],
             [
-                'id'    => 181,
+                'id'    => 180,
                 'title' => 'assembly_session_create',
             ],
             [
-                'id'    => 182,
+                'id'    => 181,
                 'title' => 'assembly_session_edit',
             ],
             [
-                'id'    => 183,
+                'id'    => 182,
                 'title' => 'assembly_session_show',
             ],
             [
-                'id'    => 184,
+                'id'    => 183,
                 'title' => 'assembly_session_delete',
             ],
             [
-                'id'    => 185,
+                'id'    => 184,
                 'title' => 'assembly_session_access',
             ],
             [
-                'id'    => 186,
-                'title' => 'leaf_create',
-            ],
-            [
-                'id'    => 187,
+                'id'    => 185,
                 'title' => 'leaf_edit',
             ],
             [
-                'id'    => 188,
+                'id'    => 186,
                 'title' => 'leaf_show',
             ],
             [
-                'id'    => 189,
+                'id'    => 187,
                 'title' => 'leaf_delete',
             ],
             [
-                'id'    => 190,
+                'id'    => 188,
                 'title' => 'leaf_access',
             ],
             [
-                'id'    => 191,
+                'id'    => 189,
                 'title' => 'time_management_access',
             ],
             [
-                'id'    => 192,
+                'id'    => 190,
                 'title' => 'office_time_create',
             ],
             [
-                'id'    => 193,
+                'id'    => 191,
                 'title' => 'office_time_edit',
             ],
             [
-                'id'    => 194,
+                'id'    => 192,
                 'title' => 'office_time_show',
             ],
             [
-                'id'    => 195,
+                'id'    => 193,
                 'title' => 'office_time_delete',
             ],
             [
-                'id'    => 196,
+                'id'    => 194,
                 'title' => 'office_time_access',
             ],
             [
-                'id'    => 197,
+                'id'    => 195,
                 'title' => 'seat_to_js_as_ss_create',
             ],
             [
-                'id'    => 198,
+                'id'    => 196,
                 'title' => 'seat_to_js_as_ss_edit',
             ],
             [
-                'id'    => 199,
+                'id'    => 197,
                 'title' => 'seat_to_js_as_ss_show',
             ],
             [
-                'id'    => 200,
+                'id'    => 198,
                 'title' => 'seat_to_js_as_ss_delete',
             ],
             [
-                'id'    => 201,
+                'id'    => 199,
                 'title' => 'seat_to_js_as_ss_access',
             ],
             [
-                'id'    => 202,
+                'id'    => 200,
                 'title' => 'employee_ot_setting_create',
             ],
             [
-                'id'    => 203,
+                'id'    => 201,
                 'title' => 'employee_ot_setting_edit',
             ],
             [
-                'id'    => 204,
+                'id'    => 202,
                 'title' => 'employee_ot_setting_show',
             ],
             [
-                'id'    => 205,
+                'id'    => 203,
                 'title' => 'employee_ot_setting_delete',
             ],
             [
-                'id'    => 206,
+                'id'    => 204,
                 'title' => 'employee_ot_setting_access',
             ],
             [
-                'id'    => 207,
+                'id'    => 205,
                 'title' => 'monthly_attendance_create',
             ],
             [
-                'id'    => 208,
+                'id'    => 206,
                 'title' => 'monthly_attendance_edit',
             ],
             [
-                'id'    => 209,
+                'id'    => 207,
                 'title' => 'monthly_attendance_show',
             ],
             [
-                'id'    => 210,
+                'id'    => 208,
                 'title' => 'monthly_attendance_delete',
             ],
             [
-                'id'    => 211,
+                'id'    => 209,
                 'title' => 'monthly_attendance_access',
             ],
             [
-                'id'    => 212,
+                'id'    => 210,
                 'title' => 'yearly_attendance_create',
             ],
             [
-                'id'    => 213,
+                'id'    => 211,
                 'title' => 'yearly_attendance_edit',
             ],
             [
-                'id'    => 214,
+                'id'    => 212,
                 'title' => 'yearly_attendance_show',
             ],
             [
-                'id'    => 215,
+                'id'    => 213,
                 'title' => 'yearly_attendance_delete',
             ],
             [
-                'id'    => 216,
+                'id'    => 214,
                 'title' => 'yearly_attendance_access',
             ],
             [
-                'id'    => 217,
+                'id'    => 215,
                 'title' => 'setting_create',
             ],
             [
-                'id'    => 218,
+                'id'    => 216,
                 'title' => 'setting_edit',
             ],
             [
-                'id'    => 219,
+                'id'    => 217,
                 'title' => 'setting_show',
             ],
             [
-                'id'    => 220,
+                'id'    => 218,
                 'title' => 'setting_delete',
             ],
             [
-                'id'    => 221,
+                'id'    => 219,
                 'title' => 'setting_access',
             ],
             [
+                'id'    => 220,
+                'title' => 'employee_extra_create',
+            ],
+            [
+                'id'    => 221,
+                'title' => 'employee_extra_edit',
+            ],
+            [
                 'id'    => 222,
+                'title' => 'employee_extra_show',
+            ],
+            [
+                'id'    => 223,
+                'title' => 'employee_extra_delete',
+            ],
+            [
+                'id'    => 224,
+                'title' => 'employee_extra_access',
+            ],
+            [
+                'id'    => 225,
                 'title' => 'profile_password_edit',
             ],
         ];
