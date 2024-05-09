@@ -79,12 +79,16 @@ class PunchingApiSectionDailyController extends Controller
             }
             if ($data_yearly && $data_yearly->has($aadhaarid)) {
                 $item['cl_marked'] = $data_yearly[$aadhaarid]['cl_marked'];
+                $item['cl_submitted'] = $data_yearly[$aadhaarid]['cl_submitted'];
                 $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'];
+                $item['compen_submitted'] = $data_yearly[$aadhaarid]['compen_submitted'];
                 $item['other_leaves_marked'] = $data_yearly[$aadhaarid]['other_leaves_marked'];
 
             } else {
                 $item['cl_marked'] = 0;
+                $item['cl_submitted'] = 0;
                 $item['compen_marked'] = 0;
+                $item['compen_submitted'] = 0;
                 $item['other_leaves_marked'] = 0;
             }
 
@@ -114,6 +118,12 @@ class PunchingApiSectionDailyController extends Controller
             //punching might have section empty. so overwrite with employee section
             $item['section'] = $employee['section_name'];
             $item['designation'] = $employee['designation'];
+
+            if($item['name']==null){
+                $item['name'] = $employee['name'];
+                $item['designation'] = $employee['designation'];
+
+            }
 
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
             if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
