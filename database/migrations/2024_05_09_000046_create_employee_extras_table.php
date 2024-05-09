@@ -12,9 +12,9 @@ class CreateEmployeeExtrasTable extends Migration
             $table->bigIncrements('id');
             $table->longText('address')->nullable();
             $table->date('date_of_joining_kla')->nullable();
-            $table->string('pan')->unique();
+            $table->string('pan')->nullable();
             $table->string('klaid')->unique();
-            $table->string('electionid')->unique();
+            $table->string('electionid')->nullable();
             $table->string('mobile')->unique();
             $table->string('email')->nullable();
             $table->timestamps();

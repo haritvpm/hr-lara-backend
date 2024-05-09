@@ -21,22 +21,22 @@ class StoreEmployeeExtraRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
-            'pan' => [
-                'string',
-                'min:10',
-                'required',
-                'unique:employee_extras',
-            ],
-            'klaid' => [
-                'string',
-                'required',
-                'unique:employee_extras',
-            ],
-            'electionid' => [
-                'string',
-                'required',
-                'unique:employee_extras',
-            ],
+            // 'pan' => [
+            //     'string',
+            //     'min:10',
+            //     'required',
+            //     'unique:employee_extras',
+            // ],
+            // 'klaid' => [
+            //     'string',
+            //     'required',
+            //     'unique:employee_extras',
+            // ],
+            // 'electionid' => [
+            //     'string',
+            //     'required',
+            //     'unique:employee_extras',
+            // ],
             'mobile' => [
                 'string',
                 'min:10',
