@@ -105,7 +105,9 @@ class PunchingApiEmployeeMontlyController extends Controller
             $punching = $punchings->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
 
             if( $punching){
-                $dayinfo = [...$dayinfo, ...$punching->toArray()];
+                $dayinfo = [...$dayinfo, ...$punching->toArray(),
+                'in_time' => substr($punching->in_datetime, 10, -3),
+                'out_time' => substr($punching->out_datetime, 10, -3),];
 
                 $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse( $total_grace_exceeded300_date ) : null;
                 if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
@@ -117,7 +119,9 @@ class PunchingApiEmployeeMontlyController extends Controller
             }
             //punching trace might have section null. so get it from employeeToSection
             if($employeeToSection){
-                $dayinfo = [...$dayinfo,  'section' => $employeeToSection->section->name ];
+                $dayinfo = [...$dayinfo,  'section' => $employeeToSection->section->name,
+                'name' => $employeeToSection->employee->name,
+                ];
             }
 
 
