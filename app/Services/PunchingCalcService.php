@@ -9,6 +9,7 @@ use App\Models\GovtCalendar;
 use App\Models\Punching;
 use App\Models\PunchingTrace;
 use App\Models\Employee;
+use App\Models\EmployeeToSection;
 use App\Models\YearlyAttendance;
 use App\Services\EmployeeService;
 use App\Models\MonthlyAttendance;
@@ -60,10 +61,14 @@ class PunchingCalcService
 
         if ($aadhaar_ids == null) {
             $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
+            //also get all emloyee to section mappings and get those employees
+            $all_section_emp_ids = EmployeeToSection::duringPeriod( $date,$date )->pluck('employee_id');
+            $aadhaar_ids_of_section_emps = Employee::wherein('id', $all_section_emp_ids)->pluck('aadhaarid');
+            $aadhaar_ids = $aadhaar_ids->merge($aadhaar_ids_of_section_emps)->unique();
         }
         // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
 
-        $emps = Employee::wherein('aadhaarid', $aadhaar_ids)->get();
+        $emps = Employee::wherein('aadhaarid', $aadhaar_ids)->get(['id', 'aadhaarid']);
         $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
         $emp_ids = $emps->pluck('id');
 
@@ -174,7 +179,7 @@ class PunchingCalcService
         $hint = $punching_existing?->hint ?? null;
 
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
-            \Log::info('hint:' . $hint);
+        //\Log::info('hint:' . $hint);
 
         $c_punch_in = null;
         $c_punch_out = null;
@@ -191,8 +196,7 @@ class PunchingCalcService
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
         $emp_new_punching_data['computer_hint'] = null;
         $emp_new_punching_data['hint'] = $hint;
-        if ($punch_count) {
-        }
+       
         if ($punch_count  >= 1) {
             //TODO is it punch in or out ? has to be set by under
             //todo, check hint to set this as punchin or out. now set as in
@@ -212,35 +216,41 @@ class PunchingCalcService
         $duration_sec = 0;
         $duration_str = '';
         $flexi_15minutes = $time_group['flexi_minutes'] ?? 15;
+        //use today's date. imagine legislation punching out next day. our flexiend is based on today
+        //get employee time group. now assume normal
 
+        $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
+        $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
+
+        $normal_an_in = $normal_an_out = null;
+        if ($time_group['groupname'] != 'parttime') {
+            $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
+            $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
+        } else {
+            $normal_an_out = $normal_fn_out;
+        }
+
+
+        $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
+        $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
+        $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
+        $c_flexi_5pm = $normal_an_out->clone()->subMinutes($flexi_15minutes);
+        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds(3600);
+
+        $max_grace_seconds = 3600;
+        //check if leave approved. if so,  calculate grace only if half day leave.
+        //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
+        [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
+        $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
+
+        
         if ($c_punch_in && $c_punch_out) {
-            //get employee time group. now assume normal
-            //
 
-            //use today's date. imagine legislation punching out next day. our flexiend is based on today
             $duration_sec = $c_punch_in->diffInSeconds($c_punch_out);
             $emp_new_punching_data['duration_sec'] = $duration_sec;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
-
-            $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
-            $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
-
-            $normal_an_in = $normal_an_out = null;
-            if ($time_group['groupname'] != 'parttime') {
-                $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
-                $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
-            } else {
-                $normal_an_out = $normal_fn_out;
-            }
-
-
-            $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
-            $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
-            $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
-            $c_flexi_5pm = $normal_an_out->clone()->subMinutes($flexi_15minutes);
-
-            $max_grace_seconds = 3600;
+            
             //todo ooffice ends at noon or 3.00 pm
 
 
@@ -265,11 +275,6 @@ class PunchingCalcService
             $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
 
 
-            //check if leave approved. if so,  calculate grace only if half day leave.
-            //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
-            [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
-
-
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
 
             $isFullDay = true;
@@ -286,7 +291,6 @@ class PunchingCalcService
                 $can_take_casual_an
             );
 
-            $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
 
             if ($isHoliday) {
                 $computer_hint = '';
@@ -311,7 +315,7 @@ class PunchingCalcService
                     ($hasLeave && $isFnLeave)) {
 
                     $c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
-                    //    $c_flexi_1030am = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '14:15:00');  //2pm +15
+                    $c_flexi_1030am = $normal_an_in->clone()->addMinutes($flexi_15minutes); //2pm +15
                     $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
 
                     $isFullDay = false;
@@ -320,7 +324,7 @@ class PunchingCalcService
                 if (($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') ||
                     ($hasLeave && $isAnLeave)) {
                     $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
-                    //  $c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
+                    //$c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
                     //$duration_seconds_needed = 3 * 3600;
                     $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
                     $isFullDay = false;
@@ -334,6 +338,8 @@ class PunchingCalcService
             //if punches in before 10 am or punches out after 5.30, dont take that, use 10am and 5.30
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
+
+            $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds(3600);
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
@@ -374,6 +380,29 @@ class PunchingCalcService
                 $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
         }
+        
+        //even i punched, can be unauthorised if punched after 11.30 am
+        $computer_hint = $emp_new_punching_data['computer_hint'] ?? null;
+
+        if( !$isHoliday /*&& !$computer_hint*/  && !$hint && !$hasLeave ){
+            if ($punch_count >= 1) {
+                
+                if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
+                    $emp_new_punching_data['computer_hint'] = 'unauthorised';
+                }
+            } 
+            else
+            if ($punch_count == 0){
+                //if no punching even after 1 hour from c_flexi_1030am and there is no leave or hint, set 'unauthorised' hint
+                \Log::info('Carbon::now() ' . Carbon::now());
+                \Log::info('time_after_which_unauthorised ' . $time_after_which_unauthorised);
+
+                if( Carbon::now()->greaterThan($time_after_which_unauthorised)){
+                    $emp_new_punching_data['computer_hint'] = 'unauthorised';
+                }
+            }
+        }
+
         // \Log::info($emp_new_punching_data);
 
         return $emp_new_punching_data;
@@ -438,7 +467,7 @@ class PunchingCalcService
             $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi) / 60) * 60; //ignore extra seconds
 
             //one hour max grace check.
-            if ($grace_sec > 3600) { //if exceeded by more than 30 minutes
+            if ($grace_sec > 3600) { //if exceeded by more than 60 minutes
 
                 //see if this punch was after 11.30 am
 

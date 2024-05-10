@@ -12,12 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-       /*
+       
         $schedule->command('app:fetch-attendace-trace-today')
             ->cron('0-59/15 10 * * *'); //every 15 min between 10 to 11
 
         $schedule->command('app:fetch-attendace-trace-today')
-            ->cron('12,15,45 11-17 * * *'); //hourly from  11 to 17
+            ->cron('12,15,59 11-17 * * *'); //hourly from  11 to 17
 
         $schedule->command('app:fetch-attendace-trace-yesterday')
             ->cron('0 8,10 * * *') //will the server be up at 8 am?
@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('app:fetch-process-all-leaves')
             ->cron('30 13 * * *'); //1.30 pm
-*/
+
       
     }
 
