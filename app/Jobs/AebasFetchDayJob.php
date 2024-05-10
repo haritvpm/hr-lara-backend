@@ -22,6 +22,13 @@ class AebasFetchDayJob implements ShouldQueue, ShouldBeUnique
     }
 
     /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 3600;
+
+    /**
      * Execute the job.
      */
     /*

@@ -38,14 +38,15 @@ return [
         'sync' => [
             'driver' => 'sync',
         ],
+//The --timeout value should always be at least several seconds shorter than your retry_after configuration value.
 
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            'retry_after' => 3700,
             'after_commit' => false,
-            'timeout' => 300,
+            'timeout' => 3600,
         ],
 
         'beanstalkd' => [

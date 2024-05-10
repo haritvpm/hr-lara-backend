@@ -15,6 +15,15 @@ class CalcMonthJob implements ShouldQueue, ShouldBeUnique
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 3600;
+
+    
     private $date_str;
     /**
      * Create a new job instance.
