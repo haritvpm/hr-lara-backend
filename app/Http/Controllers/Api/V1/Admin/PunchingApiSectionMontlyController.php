@@ -6,6 +6,7 @@ use Gate;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Punching;
+use Carbon\CarbonPeriod;
 use App\Models\GovtCalendar;
 use Illuminate\Http\Request;
 use App\Models\AttendanceBook;
@@ -25,6 +26,13 @@ class PunchingApiSectionMontlyController extends Controller
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
         $date_str = $date->format('Y-m-d');
+        $month_mode = config('app.month_mode');
+
+        if($month_mode == 'spark')
+        {
+            $start_date = $date->clone()->startOfMonth()->addDays(15)->format('Y-m-d');
+            $end_date = $date->clone()->addMonth()->startOfMonth()->addDays(14)->format('Y-m-d');
+        }
 
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
 
@@ -76,6 +84,7 @@ class PunchingApiSectionMontlyController extends Controller
             $section_ids[] = $employee['section_id'];
             //mapped after fetching. so no need to check if it exists
             $item['start_date'] = $start_date;
+            $item['e'] = $end_date;
             if ($data_monthly &&  $data_monthly->has($aadhaarid)) {
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
@@ -109,9 +118,10 @@ class PunchingApiSectionMontlyController extends Controller
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
 
-            for ($i = 1; $i <= $date->daysInMonth; $i++) {
+            $period = CarbonPeriod::create(Carbon::parse($start_date), Carbon::parse($end_date));
+            $i=1;
+            foreach ($period as $d) {
 
-                $d = $date->day($i);
                 $d_str = $d->format('Y-m-d');
                 $emp_start_date = Carbon::parse($employee['start_date'])->startOfDay();
                 //if end_date is not set, then set it to end of year
@@ -158,6 +168,7 @@ class PunchingApiSectionMontlyController extends Controller
                 }
 
                 $item['day' . $i] = [...$dayinfo];
+                $i++;
             }
 
             $data[] = $item;
@@ -171,7 +182,7 @@ class PunchingApiSectionMontlyController extends Controller
         $sections = [...$sections, ...$attendancebooks->toArray()];
 
         return response()->json([
-            'month' => $date->format('F Y'), // 'January 2021
+            'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021
             'calender_info' => $calender_info,
             'sections' => array_values(array_unique($sections)),
             'monthlypunchings' => $data,

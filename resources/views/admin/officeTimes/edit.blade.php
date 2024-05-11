@@ -67,6 +67,14 @@
                 <span class="help-block">{{ trans('cruds.officeTime.fields.flexi_minutes_helper') }}</span>
             </div>
             <div class="form-group">
+                <label class="required" for="with_effect_from">{{ trans('cruds.officeTime.fields.with_effect_from') }}</label>
+                <input class="form-control date {{ $errors->has('with_effect_from') ? 'is-invalid' : '' }}" type="text" name="with_effect_from" id="with_effect_from" value="{{ old('with_effect_from', $officeTime->with_effect_from) }}" required>
+                @if($errors->has('with_effect_from'))
+                    <span class="text-danger">{{ $errors->first('with_effect_from') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.officeTime.fields.with_effect_from_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

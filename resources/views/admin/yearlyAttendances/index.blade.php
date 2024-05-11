@@ -58,6 +58,12 @@
                         {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
                     </th>
                     <th>
+                        {{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.yearlyAttendance.fields.start_with_compen') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>

@@ -908,6 +908,22 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 225,
+                'title' => 'grace_time_create',
+            ],
+            [
+                'id'    => 226,
+                'title' => 'grace_time_edit',
+            ],
+            [
+                'id'    => 227,
+                'title' => 'grace_time_delete',
+            ],
+            [
+                'id'    => 228,
+                'title' => 'grace_time_access',
+            ],
+            [
+                'id'    => 229,
                 'title' => 'profile_password_edit',
             ],
         ];

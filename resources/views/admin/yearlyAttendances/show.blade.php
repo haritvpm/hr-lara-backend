@@ -103,6 +103,22 @@
                             {{ $yearlyAttendance->single_punchings }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->start_with_cl }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.start_with_compen') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->start_with_compen }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

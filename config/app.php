@@ -16,6 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'month_mode' => 'spark',
 
     /*
     |--------------------------------------------------------------------------
@@ -195,11 +196,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        //Hari's custom 
+        //Hari's custom
         // App\Services\EmployeeService::class,
         // App\Services\PunchingService::class,
         // App\Services\AebasFetchService::class,
-        
+
     ],
 
     /*

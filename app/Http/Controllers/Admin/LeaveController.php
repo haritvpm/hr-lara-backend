@@ -76,6 +76,12 @@ class LeaveController extends Controller
             $table->editColumn('processed', function ($row) {
                 return $row->processed ? $row->processed : '';
             });
+            $table->editColumn('owner_seat', function ($row) {
+                return $row->owner_seat ? $row->owner_seat : '';
+            });
+            $table->editColumn('remarks', function ($row) {
+                return $row->remarks ? $row->remarks : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);
 

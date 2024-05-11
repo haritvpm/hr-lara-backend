@@ -66,6 +66,30 @@
                 <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.other_leaves_submitted_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="single_punchings">{{ trans('cruds.yearlyAttendance.fields.single_punchings') }}</label>
+                <input class="form-control {{ $errors->has('single_punchings') ? 'is-invalid' : '' }}" type="number" name="single_punchings" id="single_punchings" value="{{ old('single_punchings', '') }}" step="1">
+                @if($errors->has('single_punchings'))
+                    <span class="text-danger">{{ $errors->first('single_punchings') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.single_punchings_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="start_with_cl">{{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}</label>
+                <input class="form-control {{ $errors->has('start_with_cl') ? 'is-invalid' : '' }}" type="number" name="start_with_cl" id="start_with_cl" value="{{ old('start_with_cl', '') }}" step="0.1">
+                @if($errors->has('start_with_cl'))
+                    <span class="text-danger">{{ $errors->first('start_with_cl') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.start_with_cl_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="start_with_compen">{{ trans('cruds.yearlyAttendance.fields.start_with_compen') }}</label>
+                <input class="form-control {{ $errors->has('start_with_compen') ? 'is-invalid' : '' }}" type="number" name="start_with_compen" id="start_with_compen" value="{{ old('start_with_compen', '') }}" step="1">
+                @if($errors->has('start_with_compen'))
+                    <span class="text-danger">{{ $errors->first('start_with_compen') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.start_with_compen_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

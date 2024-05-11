@@ -96,6 +96,18 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.is_shift_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="grace_group_id">{{ trans('cruds.employee.fields.grace_group') }}</label>
+                <select class="form-control select2 {{ $errors->has('grace_group') ? 'is-invalid' : '' }}" name="grace_group_id" id="grace_group_id">
+                    @foreach($grace_groups as $id => $entry)
+                        <option value="{{ $id }}" {{ (old('grace_group_id') ? old('grace_group_id') : $employee->grace_group->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('grace_group'))
+                    <span class="text-danger">{{ $errors->first('grace_group') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employee.fields.grace_group_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

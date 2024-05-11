@@ -8,6 +8,7 @@ use App\Http\Requests\MassDestroyEmployeeRequest;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
+use App\Models\GraceTime;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class EmployeeController extends Controller
         abort_if(Gate::denies('employee_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Employee::query()->select(sprintf('%s.*', (new Employee)->table));
+            $query = Employee::with(['grace_group'])->select(sprintf('%s.*', (new Employee)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -74,8 +75,11 @@ class EmployeeController extends Controller
             $table->editColumn('is_shift', function ($row) {
                 return '<input type="checkbox" disabled ' . ($row->is_shift ? 'checked' : null) . '>';
             });
+            $table->addColumn('grace_group_title', function ($row) {
+                return $row->grace_group ? $row->grace_group->title : '';
+            });
 
-            $table->rawColumns(['actions', 'placeholder', 'is_shift']);
+            $table->rawColumns(['actions', 'placeholder', 'is_shift', 'grace_group']);
 
             return $table->make(true);
         }
@@ -87,7 +91,9 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.employees.create');
+        $grace_groups = GraceTime::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.employees.create', compact('grace_groups'));
     }
 
     public function store(StoreEmployeeRequest $request)
@@ -101,7 +107,11 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.employees.edit', compact('employee'));
+        $grace_groups = GraceTime::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        $employee->load('grace_group');
+
+        return view('admin.employees.edit', compact('employee', 'grace_groups'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
@@ -115,7 +125,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employee->load('employeeEmployeeToDesignations');
+        $employee->load('grace_group', 'employeeEmployeeToDesignations');
 
         return view('admin.employees.show', compact('employee'));
     }

@@ -242,6 +242,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Employee Extra
     Route::delete('employee-extras/destroy', 'EmployeeExtraController@massDestroy')->name('employee-extras.massDestroy');
     Route::resource('employee-extras', 'EmployeeExtraController');
+
+    // Grace Time
+    Route::delete('grace-times/destroy', 'GraceTimeController@massDestroy')->name('grace-times.massDestroy');
+    Route::resource('grace-times', 'GraceTimeController', ['except' => ['show']]);
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

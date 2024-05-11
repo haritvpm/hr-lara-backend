@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Section;
 use App\Models\Employee;
 use App\Models\Punching;
+use Carbon\CarbonPeriod;
 use App\Models\GovtCalendar;
 use Illuminate\Http\Request;
 use App\Models\PunchingTrace;
@@ -34,8 +35,20 @@ class PunchingApiEmployeeMontlyController extends Controller
         $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
       //  \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
         $date = Carbon::createFromFormat('Y-m-d', $date_str);
+
+
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
+
+        $month_mode = config('app.month_mode');
+
+        if($month_mode == 'spark')
+        {
+            $start_date = $date->clone()->startOfMonth()->addDays(15)->format('Y-m-d');
+            $end_date = $date->clone()->addMonth()->startOfMonth()->addDays(14)->format('Y-m-d');
+        }
+
+
         //$date_str = $date->format('Y-m-d');
         $employee = Employee::with('designation')->where('aadhaarid', $aadhaarid)->first();
         if (!$employee) {
@@ -70,9 +83,10 @@ class PunchingApiEmployeeMontlyController extends Controller
         }
 
         $empMonPunchings = [];
-        for ($i = 1; $i <= $date->daysInMonth; $i++) {
+        $period = CarbonPeriod::create(Carbon::parse($start_date), Carbon::parse($end_date));
+        $i=1;
+        foreach ($period as $d) {
 
-            $d = $date->day($i);
             $d_str = $d->format('Y-m-d');
             $dayinfo = [];
 
@@ -125,7 +139,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             }
 
 
-
+            $i = $i + 1;
             $empMonPunchings[] =  $dayinfo;
         }
 
@@ -148,7 +162,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         });
 
         return response()->json([
-            'month' => $date->format('F Y'), // 'January 2021
+            'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021
             'employee'  => $employee,
             'calender_info' => $calender_info ,
             'data_monthly' => $data_monthly,

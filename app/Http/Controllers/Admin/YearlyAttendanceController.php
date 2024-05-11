@@ -75,6 +75,12 @@ class YearlyAttendanceController extends Controller
             $table->editColumn('single_punchings', function ($row) {
                 return $row->single_punchings ? $row->single_punchings : '';
             });
+            $table->editColumn('start_with_cl', function ($row) {
+                return $row->start_with_cl ? $row->start_with_cl : '';
+            });
+            $table->editColumn('start_with_compen', function ($row) {
+                return $row->start_with_compen ? $row->start_with_compen : '';
+            });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);
 

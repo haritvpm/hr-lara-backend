@@ -95,6 +95,14 @@
                             <input type="checkbox" disabled="disabled" {{ $employee->is_shift ? 'checked' : '' }}>
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.employee.fields.grace_group') }}
+                        </th>
+                        <td>
+                            {{ $employee->grace_group->title ?? '' }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

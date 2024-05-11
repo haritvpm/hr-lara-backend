@@ -67,7 +67,9 @@
                     <th>
                         {{ trans('cruds.employee.fields.is_shift') }}
                     </th>
-
+                    <th>
+                        {{ trans('cruds.employee.fields.grace_group') }}
+                    </th>
                     <th>
                         &nbsp;
                     </th>
@@ -134,7 +136,7 @@
 { data: 'has_punching', name: 'has_punching' },
 { data: 'status', name: 'status' },
 { data: 'is_shift', name: 'is_shift' },
-
+{ data: 'grace_group_title', name: 'grace_group.title' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

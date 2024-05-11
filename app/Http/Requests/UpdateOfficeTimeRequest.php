@@ -20,7 +20,6 @@ class UpdateOfficeTimeRequest extends FormRequest
             'groupname' => [
                 'string',
                 'required',
-                'unique:office_times,groupname,' . request()->route('office_time')->id,
             ],
             'description' => [
                 'string',
@@ -47,6 +46,10 @@ class UpdateOfficeTimeRequest extends FormRequest
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
+            ],
+            'with_effect_from' => [
+                'required',
+                'date_format:' . config('panel.date_format'),
             ],
         ];
     }

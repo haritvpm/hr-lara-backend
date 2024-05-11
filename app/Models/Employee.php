@@ -41,6 +41,7 @@ class Employee extends Model
         'has_punching',
         'status',
         'is_shift',
+        'grace_group_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -110,5 +111,9 @@ class Employee extends Model
     public function employeeExtra()
     {
         return $this->hasOne(EmployeeExtra::class, 'employee_id');
+    }
+      public function grace_group()
+    {
+        return $this->belongsTo(GraceTime::class, 'grace_group_id');
     }
 }

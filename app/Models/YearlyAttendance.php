@@ -31,6 +31,8 @@ class YearlyAttendance extends Model
         'other_leaves_marked',
         'other_leaves_submitted',
         'single_punchings',
+        'start_with_cl',
+        'start_with_compen',
         'created_at',
         'updated_at',
         'deleted_at',

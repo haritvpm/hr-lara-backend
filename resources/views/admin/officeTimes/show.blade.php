@@ -79,6 +79,14 @@
                             {{ $officeTime->flexi_minutes }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.officeTime.fields.with_effect_from') }}
+                        </th>
+                        <td>
+                            {{ $officeTime->with_effect_from }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

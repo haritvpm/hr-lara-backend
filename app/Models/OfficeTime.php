@@ -14,6 +14,7 @@ class OfficeTime extends Model
     public $table = 'office_times';
 
     protected $dates = [
+        'with_effect_from',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -27,6 +28,7 @@ class OfficeTime extends Model
         'an_from',
         'an_to',
         'flexi_minutes',
+        'with_effect_from',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -35,5 +37,10 @@ class OfficeTime extends Model
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+    public static function getOfficeTimes($date)
+    {
+        $office_times = OfficeTime::whereDate('with_effect_from', '<=', $date)->orderBy('with_effect_from', 'desc')->get();
+        return $office_times;
     }
 }
