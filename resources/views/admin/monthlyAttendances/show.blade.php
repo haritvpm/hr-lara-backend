@@ -97,7 +97,7 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}
+                            {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
                         </th>
                         <td>
                             {{ $monthlyAttendance->total_grace_exceeded300_date }}

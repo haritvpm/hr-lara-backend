@@ -514,13 +514,28 @@ class PunchingCalcService
 
     public function  calculateMonthlyAttendance($date, $aadhaar_ids = null, $aadhaar_to_empIds = null)
     {
-
-        $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfMonth();
-        $end_date = Carbon::createFromFormat('Y-m-d', $date)->endOfMonth();
+        $date_input =  Carbon::createFromFormat('Y-m-d', $date);
+        $start_date = $date_input->clone()->startOfMonth();
+        $end_date = $date_input->clone()->endOfMonth();
+        $month_db_day = $start_date->clone();
         $month_mode = config('app.month_mode');
         if($month_mode == 'spark'){
-            $start_date = Carbon::createFromFormat('Y-m-d', $date)->startOfMonth()->addDays(15);
-            $end_date = Carbon::createFromFormat('Y-m-d', $date)->addMonth()->startOfMonth()->addDays(14);
+         //   dd( $date_input->day);
+
+            if( $date_input->day >= 16  ){
+                $start_date = $date_input->clone()->startOfMonth()->addDays(15);
+                $end_date = $date_input->clone()->addMonth()->startOfMonth()->addDays(14);
+                $month_db_day = $end_date->clone();
+            }
+            else
+            {
+                $start_date = $date_input->clone()->subMonth()->startOfMonth()->addDays(15);
+                $end_date = $date_input->clone()->startOfMonth()->addDays(14);
+                $month_db_day = $start_date->clone();
+         //   dd( $month_db_day->format('Y-m-d'));
+
+
+            }
         }
 
 
@@ -555,7 +570,8 @@ class PunchingCalcService
             $emp_new_monthly_attendance_data = [];
             $emp_new_monthly_attendance_data['aadhaarid'] = $aadhaarid;
             $emp_new_monthly_attendance_data['employee_id'] = $employee_id;
-            $emp_new_monthly_attendance_data['month'] = $start_date->clone()->startOfMonth()->format('Y-m-d');
+         //   dd( $month_db_day->startOfMonth()->format('Y-m-d'));
+            $emp_new_monthly_attendance_data['month'] = $month_db_day->startOfMonth()->format('Y-m-d');
             $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
             $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
             $emp_new_monthly_attendance_data['total_grace_str'] = '';

@@ -86,12 +86,14 @@ class PunchingApiSectionMontlyController extends Controller
             $item['start_date'] = $start_date;
             $item['e'] = $end_date;
             if ($data_monthly &&  $data_monthly->has($aadhaarid)) {
+                $item['grace_limit'] = $data_monthly[$aadhaarid]['grace_minutes'];
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
                 $item['total_grace_str'] = $data_monthly[$aadhaarid]['total_grace_str'];
                 $item['total_extra_str'] = $data_monthly[$aadhaarid]['total_extra_str'];
                 $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
             } else {
+                $item['grace_limit'] = 300;
                 $item['total_grace_sec'] = 0;
                 $item['total_extra_sec'] = 0;
                 $item['total_grace_exceeded300_date'] = null;

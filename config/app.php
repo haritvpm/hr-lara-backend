@@ -16,7 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'month_mode' => 'spark',
+    // 'month_mode' => 'spark',
 
     /*
     |--------------------------------------------------------------------------

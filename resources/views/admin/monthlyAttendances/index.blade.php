@@ -55,7 +55,7 @@
                         {{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}
+                        {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.compen_marked') }}
@@ -77,6 +77,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.monthlyAttendance.fields.single_punchings') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.grace_minutes') }}
                     </th>
                     <th>
                         &nbsp;
@@ -153,6 +156,7 @@
 { data: 'cl_marked', name: 'cl_marked' },
 { data: 'cl_submitted', name: 'cl_submitted' },
 { data: 'single_punchings', name: 'single_punchings' },
+{ data: 'grace_minutes', name: 'grace_minutes' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
