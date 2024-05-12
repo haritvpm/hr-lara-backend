@@ -302,6 +302,7 @@ class PunchingCalcService
         //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
         [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
         $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
+        $isSinglePunching =  $single_punch_type != null;
 
 
         if ($c_punch_in && $c_punch_out) {
@@ -409,7 +410,6 @@ class PunchingCalcService
                 $isFullDayleave = $isFullLeave;
             }
 
-            $isSinglePunching =  $single_punch_type != null;
 
 
             if (!$isHoliday && !$isFullDayleave && !$isSinglePunching) //if hint exists, no need to use computer hint for else
@@ -437,22 +437,24 @@ class PunchingCalcService
                 $emp_new_punching_data['extra_sec'] = $extra_sec;
                 $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
-            else if(!$isHoliday && $isSinglePunching) {
-                if($single_punch_type == 'in'){
-                    if($c_punch_in->greaterThan($c_flexi_1030am)){
-                        $grace_sec = $c_punch_in->diffInSeconds($c_flexi_1030am);
-                        $emp_new_punching_data['grace_sec'] = $grace_sec;
-                        $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
-                    }
-                } else if ($single_punch_type == 'out'){
-                    if($c_punch_out->lessThan($c_flexi_5pm)){
-                        $grace_sec = $c_flexi_5pm->diffInSeconds($c_punch_out);
-                        $emp_new_punching_data['grace_sec'] = $grace_sec;
-                        $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
-                    }
-                }
 
+        }
+
+        if(!$isHoliday && $isSinglePunching) {
+            if($single_punch_type == 'in'){
+                if($c_punch_in->greaterThan($c_flexi_1030am)){
+                    $grace_sec = $c_punch_in->diffInSeconds($c_flexi_1030am,true);
+                    $emp_new_punching_data['grace_sec'] = $grace_sec;
+                    $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+                }
+            } else if ($single_punch_type == 'out'){
+                if($c_punch_out->lessThan($c_flexi_5pm)){
+                    $grace_sec = $c_flexi_5pm->diffInSeconds($c_punch_out,true);
+                    $emp_new_punching_data['grace_sec'] = $grace_sec;
+                    $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+                }
             }
+
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
