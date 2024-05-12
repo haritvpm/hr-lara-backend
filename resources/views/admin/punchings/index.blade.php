@@ -102,6 +102,18 @@
                         {{ trans('cruds.punching.fields.grace_total_exceeded_one_hour') }}
                     </th> -->
                     <th>
+                        {{ trans('cruds.punching.fields.single_punch_type') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.single_punch_regularised_by') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.time_group') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.punching.fields.is_unauthorised') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -158,6 +170,10 @@
 // { data: 'controller_set_punch_in', name: 'controller_set_punch_in' },
 // { data: 'controller_set_punch_out', name: 'controller_set_punch_out' },
 // { data: 'grace_total_exceeded_one_hour', name: 'grace_total_exceeded_one_hour' },
+{ data: 'single_punch_type', name: 'single_punch_type' },
+{ data: 'single_punch_regularised_by', name: 'single_punch_regularised_by' },
+{ data: 'time_group', name: 'time_group' },
+{ data: 'is_unauthorised', name: 'is_unauthorised' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

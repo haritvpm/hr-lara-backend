@@ -93,6 +93,7 @@ class PunchingCalcService
             $emp_new_punching_data['date'] = $date; //->format('Y-m-d');
             $emp_new_punching_data['aadhaarid'] = $aadhaarid;
             $emp_new_punching_data['employee_id'] = $employee_id;
+            $emp_new_punching_data['time_group'] = null;
 
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
@@ -100,6 +101,8 @@ class PunchingCalcService
                 // $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
                 $emp_new_punching_data['name'] = $employee_section_maps[$aadhaarid]['name'];
                 $time_group_name = $employee_section_maps[$aadhaarid]['time_group'] ?? 'default';
+                $emp_new_punching_data['time_group'] =  $time_group_name;
+
                 //only call this if we have an employee section map
                 //use upsert insetad of updateorcreate inside calculateforemployee
                 // if($employee_section_maps[$aadhaarid]['time_group']){
@@ -134,7 +137,10 @@ class PunchingCalcService
                 'duration_str',
                 'grace_sec',   'extra_sec',
                 'grace_str',   'extra_str',
-                'grace_total_exceeded_one_hour', 'computer_hint', 'hint'
+                'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
+                'single_punch_type',
+                'time_group',
+                'is_unauthorised',
             ]
         );
 
@@ -183,7 +189,7 @@ class PunchingCalcService
             ->first();
 
         $hint = $punching_existing?->hint ?? null;
-
+        $single_punch_type = $punching_existing?->single_punch_type ?? null;
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
         //\Log::info('hint:' . $hint);
 
@@ -202,25 +208,12 @@ class PunchingCalcService
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
         $emp_new_punching_data['computer_hint'] = null;
         $emp_new_punching_data['hint'] = $hint;
+        $emp_new_punching_data['single_punch_type'] = $single_punch_type;
+        $emp_new_punching_data['is_unauthorised'] = null;
 
-        if ($punch_count  >= 1) {
-            //TODO is it punch in or out ? has to be set by under
-            //todo, check hint to set this as punchin or out. now set as in
-            $punch = $punchingtraces[0];
-            $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
-            $c_punch_in = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
-            $emp_new_punching_data['in_datetime'] =  $c_punch_in->toDateTimeString();
-        }
-        if ($punch_count >= 2) {
-
-            $punch = $punchingtraces[$punch_count - 1];
-            $emp_new_punching_data['punchout_trace_id'] = $punch['id'];
-            $c_punch_out =  Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
-            $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
-        }
 
         $duration_sec = 0;
-        $duration_str = '';
+        // $duration_str = '';
         $flexi_15minutes = $time_group['flexi_minutes'] ?? 15;
         //use today's date. imagine legislation punching out next day. our flexiend is based on today
         //get employee time group. now assume normal
@@ -235,6 +228,66 @@ class PunchingCalcService
         } else {
             $normal_an_out = $normal_fn_out;
         }
+
+
+        //Decide if this is punchin or out
+        //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
+        if ($punch_count  == 1 || $single_punch_type != null) {
+            //TODO is it punch in or out ? has to be set by under
+            $punch = $punchingtraces[0];
+            $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
+            $isPunchIn = (!$single_punch_type || ($single_punch_type && $single_punch_type == 'in')) ? true : false;
+
+            if(!$single_punch_type){ //not set by controller
+                if($time_group['groupname'] != 'parttime'){
+                    //if punch is one hour before normal_an_out, make this punchout instead of punchin.
+                    if($c_punch->lt($normal_an_out->clone()->subSeconds(3600))){
+                        $isPunchIn = false;
+                    }
+                } else {
+                    //find half-time between $normal_fn_in and  $normal_fn_out and decide if this is punchin or out
+                    $half_time = $normal_fn_in->clone()->addSeconds($normal_fn_in->diffInSeconds($normal_fn_out) / 2);
+                    if($c_punch->gt($half_time)){
+                        $isPunchIn = false;
+                    }
+                }
+            }
+
+
+            if( $isPunchIn || $single_punch_type == 'in'){
+                $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
+                $c_punch_in =  $c_punch->clone();
+                $emp_new_punching_data['in_datetime'] =  $c_punch_in->toDateTimeString();
+                if(!$single_punch_type){ //if single punch type is set, dont change it
+                    $emp_new_punching_data['single_punch_type'] = $single_punch_type = 'in';
+                }
+            } else {
+                $punch = $punchingtraces[$punch_count - 1];//take last in case there are multiple punchings
+                $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
+                $emp_new_punching_data['punchout_trace_id'] = $punch['id'];
+                $c_punch_out = $c_punch->clone();
+                $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
+                if(!$single_punch_type){
+                    $emp_new_punching_data['single_punch_type'] = $single_punch_type = 'out';
+                }
+            }
+
+
+        }
+
+        if ($punch_count >= 2 && $single_punch_type == null) {
+            $punch = $punchingtraces[0];
+            $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
+            $c_punch_in = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
+            $emp_new_punching_data['in_datetime'] =  $c_punch_in->toDateTimeString();
+
+            $punch = $punchingtraces[$punch_count - 1];
+            $emp_new_punching_data['punchout_trace_id'] = $punch['id'];
+            $c_punch_out =  Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
+            $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
+        }
+
+
 
 
         $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
@@ -256,9 +309,7 @@ class PunchingCalcService
             $emp_new_punching_data['duration_sec'] = $duration_sec;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
-
-            //todo ooffice ends at noon or 3.00 pm
-
+            //office ends at noon or 3.00 pm
 
             $office_ends_at_300pm = 0;
             $office_ends_at_noon = 0;
@@ -357,7 +408,7 @@ class PunchingCalcService
                 $isFullDayleave = $isFullLeave;
             }
 
-            $isSinglePunching = $hint == 'single_punch';
+            $isSinglePunching =  $single_punch_type != null;
 
 
             if (!$isHoliday && !$isFullDayleave && !$isSinglePunching) //if hint exists, no need to use computer hint for else
@@ -385,6 +436,22 @@ class PunchingCalcService
                 $emp_new_punching_data['extra_sec'] = $extra_sec;
                 $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
+            else if(!$isHoliday && $isSinglePunching) {
+                if($single_punch_type == 'in'){
+                    if($c_punch_in->greaterThan($c_flexi_1030am)){
+                        $grace_sec = $c_punch_in->diffInSeconds($c_flexi_1030am);
+                        $emp_new_punching_data['grace_sec'] = $grace_sec;
+                        $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+                    }
+                } else if ($single_punch_type == 'out'){
+                    if($c_punch_out->lessThan($c_flexi_5pm)){
+                        $grace_sec = $c_flexi_5pm->diffInSeconds($c_punch_out);
+                        $emp_new_punching_data['grace_sec'] = $grace_sec;
+                        $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+                    }
+                }
+
+            }
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
@@ -395,6 +462,8 @@ class PunchingCalcService
 
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['computer_hint'] = 'unauthorised';
+                    $emp_new_punching_data['is_unauthorised'] = true;
+
                 }
             }
             else
@@ -405,6 +474,8 @@ class PunchingCalcService
 
                 if( Carbon::now()->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['computer_hint'] = 'unauthorised';
+                    $emp_new_punching_data['is_unauthorised'] = true;
+
                 }
             }
         }
@@ -619,7 +690,7 @@ class PunchingCalcService
                 //if this is calculated today, exclude today's single punchings
                 $total_single_punchings = $emp_punchings->where('date', '<>', Carbon::today()->format('Y-m-d'))
                                     ->filter(function ($value, $key) {
-                                    return $value->punching_count == 1 || $value->hint == 'single_punch';
+                                    return $value->punching_count == 1 || $value->single_punch_type != null ;
                                 });
 
                 $emp_new_monthly_attendance_data['single_punchings'] =$total_single_punchings->count();

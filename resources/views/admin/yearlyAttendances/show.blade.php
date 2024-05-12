@@ -97,14 +97,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
-                        </th>
-                        <td>
-                            {{ $yearlyAttendance->single_punchings }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}
                         </th>
                         <td>
@@ -117,6 +109,30 @@
                         </th>
                         <td>
                             {{ $yearlyAttendance->start_with_compen }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->single_punchings }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.single_punchings_regularised') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->single_punchings_regularised }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.yearlyAttendance.fields.unauthorised_count') }}
+                        </th>
+                        <td>
+                            {{ $yearlyAttendance->unauthorised_count }}
                         </td>
                     </tr>
                 </tbody>

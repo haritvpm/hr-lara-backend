@@ -76,10 +76,16 @@
                         {{ trans('cruds.monthlyAttendance.fields.cl_submitted') }}
                     </th>
                     <th>
+                        {{ trans('cruds.monthlyAttendance.fields.grace_minutes') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.monthlyAttendance.fields.single_punchings') }}
                     </th>
                     <th>
-                        {{ trans('cruds.monthlyAttendance.fields.grace_minutes') }}
+                        {{ trans('cruds.monthlyAttendance.fields.single_punchings_regularised') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.monthlyAttendance.fields.unauthorised_count') }}
                     </th>
                     <th>
                         &nbsp;
@@ -155,8 +161,10 @@
 { data: 'other_leaves_submitted', name: 'other_leaves_submitted' },
 { data: 'cl_marked', name: 'cl_marked' },
 { data: 'cl_submitted', name: 'cl_submitted' },
-{ data: 'single_punchings', name: 'single_punchings' },
 { data: 'grace_minutes', name: 'grace_minutes' },
+{ data: 'single_punchings', name: 'single_punchings' },
+{ data: 'single_punchings_regularised', name: 'single_punchings_regularised' },
+{ data: 'unauthorised_count', name: 'unauthorised_count' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

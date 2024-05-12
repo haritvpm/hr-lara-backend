@@ -49,6 +49,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.punching.fields.name') }}
+                        </th>
+                        <td>
+                            {{ $punching->name }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.punching.fields.designation') }}
                         </th>
                         <td>
@@ -193,18 +201,10 @@
                     </tr>
                     <tr>
                         <th>
-                        computer_hint
-                        </th>
-                        <td>
-                        {{ $punching->computer_hint }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.punching.fields.hint') }}
                         </th>
                         <td>
-                            {{ $punching->hint ?? '' }}
+                            {{ App\Models\Punching::HINT_SELECT[$punching->hint] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -229,6 +229,46 @@
                         </th>
                         <td>
                             {{ $punching->grace_total_exceeded_one_hour }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.computer_hint') }}
+                        </th>
+                        <td>
+                            {{ $punching->computer_hint }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.single_punch_type') }}
+                        </th>
+                        <td>
+                            {{ $punching->single_punch_type }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.single_punch_regularised_by') }}
+                        </th>
+                        <td>
+                            {{ $punching->single_punch_regularised_by }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.time_group') }}
+                        </th>
+                        <td>
+                            {{ $punching->time_group }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.punching.fields.is_unauthorised') }}
+                        </th>
+                        <td>
+                            <input type="checkbox" disabled="disabled" {{ $punching->is_unauthorised ? 'checked' : '' }}>
                         </td>
                     </tr>
                 </tbody>

@@ -67,10 +67,10 @@
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.grace_exceeded_sec_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="total_grace_exceeded300_date">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}</label>
-                <input class="form-control date {{ $errors->has('total_grace_exceeded300_date') ? 'is-invalid' : '' }}" type="text" name="total_grace_exceeded300_date" id="total_grace_exceeded300_date" value="{{ old('total_grace_exceeded300_date', $monthlyAttendance->total_grace_exceeded300_date) }}">
-                @if($errors->has('total_grace_exceeded300_date'))
-                    <span class="text-danger">{{ $errors->first('total_grace_exceeded300_date') }}</span>
+                <label for="total_grace_exceeded_300_date">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}</label>
+                <input class="form-control date {{ $errors->has('total_grace_exceeded_300_date') ? 'is-invalid' : '' }}" type="text" name="total_grace_exceeded_300_date" id="total_grace_exceeded_300_date" value="{{ old('total_grace_exceeded_300_date', $monthlyAttendance->total_grace_exceeded_300_date) }}">
+                @if($errors->has('total_grace_exceeded_300_date'))
+                    <span class="text-danger">{{ $errors->first('total_grace_exceeded_300_date') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date_helper') }}</span>
             </div>
@@ -123,12 +123,36 @@
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.cl_submitted_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="grace_minutes">{{ trans('cruds.monthlyAttendance.fields.grace_minutes') }}</label>
+                <input class="form-control {{ $errors->has('grace_minutes') ? 'is-invalid' : '' }}" type="number" name="grace_minutes" id="grace_minutes" value="{{ old('grace_minutes', $monthlyAttendance->grace_minutes) }}" step="1">
+                @if($errors->has('grace_minutes'))
+                    <span class="text-danger">{{ $errors->first('grace_minutes') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.grace_minutes_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="single_punchings">{{ trans('cruds.monthlyAttendance.fields.single_punchings') }}</label>
                 <input class="form-control {{ $errors->has('single_punchings') ? 'is-invalid' : '' }}" type="number" name="single_punchings" id="single_punchings" value="{{ old('single_punchings', $monthlyAttendance->single_punchings) }}" step="1">
                 @if($errors->has('single_punchings'))
                     <span class="text-danger">{{ $errors->first('single_punchings') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.single_punchings_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="single_punchings_regularised">{{ trans('cruds.monthlyAttendance.fields.single_punchings_regularised') }}</label>
+                <input class="form-control {{ $errors->has('single_punchings_regularised') ? 'is-invalid' : '' }}" type="number" name="single_punchings_regularised" id="single_punchings_regularised" value="{{ old('single_punchings_regularised', $monthlyAttendance->single_punchings_regularised) }}" step="1">
+                @if($errors->has('single_punchings_regularised'))
+                    <span class="text-danger">{{ $errors->first('single_punchings_regularised') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.single_punchings_regularised_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="unauthorised_count">{{ trans('cruds.monthlyAttendance.fields.unauthorised_count') }}</label>
+                <input class="form-control {{ $errors->has('unauthorised_count') ? 'is-invalid' : '' }}" type="number" name="unauthorised_count" id="unauthorised_count" value="{{ old('unauthorised_count', $monthlyAttendance->unauthorised_count) }}" step="1">
+                @if($errors->has('unauthorised_count'))
+                    <span class="text-danger">{{ $errors->first('unauthorised_count') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.monthlyAttendance.fields.unauthorised_count_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

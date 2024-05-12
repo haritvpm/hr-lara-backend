@@ -11,10 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('monthly_attendances', function (Blueprint $table) {
-            $table->integer('grace_minutes')->nullable()->default(300);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+        Schema::table('yearly_attendances', function (Blueprint $table) {
             $table->integer('single_punchings_regularised')->nullable();
             $table->integer('unauthorised_count')->nullable();
         });
@@ -25,11 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('monthly_attendances', function (Blueprint $table) {
-            $table->dropColumn('grace_minutes');
-            $table->dropColumn('start_date');
-            $table->dropColumn('end_date');
-
+        Schema::table('yearly_attendances', function (Blueprint $table) {
+            //
         });
     }
 };
