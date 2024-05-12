@@ -155,7 +155,7 @@ class PunchingCalcService
         //calculate sum of extra and grace seconds for this month and update monthlyattendance table
         $data = $this->calculateMonthlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
         $this->calculateYearlyAttendance($date, $aadhaar_ids, $emp_ids, $aadhaar_to_empIds);
-
+\Log::info("calender" . $calender);
         $calender->update(['calc_count' => $calender->calc_count ?  $calender->calc_count + 1 : 1]);
 
         //return $data;
@@ -192,7 +192,7 @@ class PunchingCalcService
         $single_punch_type = $punching_existing?->single_punch_type ?? null;
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
         //\Log::info('hint:' . $hint);
-
+        //$single_punch_type =  null; //temp uncomment to test
         $c_punch_in = null;
         $c_punch_out = null;
         $emp_new_punching_data['punchin_trace_id'] = null;
@@ -208,7 +208,7 @@ class PunchingCalcService
         $emp_new_punching_data['grace_total_exceeded_one_hour'] = 0;
         $emp_new_punching_data['computer_hint'] = null;
         $emp_new_punching_data['hint'] = $hint;
-        $emp_new_punching_data['single_punch_type'] = $single_punch_type;
+        $emp_new_punching_data['single_punch_type'] = $single_punch_type;//temp uncomment.
         $emp_new_punching_data['is_unauthorised'] = null;
 
 
@@ -232,7 +232,7 @@ class PunchingCalcService
 
         //Decide if this is punchin or out
         //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
-        if ($punch_count  == 1 || $single_punch_type != null) {
+        if ($punch_count  == 1 || $single_punch_type) {
             //TODO is it punch in or out ? has to be set by under
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
@@ -240,8 +240,9 @@ class PunchingCalcService
 
             if(!$single_punch_type){ //not set by controller
                 if($time_group['groupname'] != 'parttime'){
+                    $half_time = $normal_fn_in->clone()->addSeconds($normal_fn_in->diffInSeconds($normal_an_out) / 2);
                     //if punch is one hour before normal_an_out, make this punchout instead of punchin.
-                    if($c_punch->lt($normal_an_out->clone()->subSeconds(3600))){
+                    if($c_punch->gt($half_time) /*&& $c_punch->lt($normal_an_out->clone()->subSeconds(3600))*/){
                         $isPunchIn = false;
                     }
                 } else {
@@ -274,7 +275,7 @@ class PunchingCalcService
 
 
         }
-
+       // if($aadhaarid == '20094472'){ dd($emp_new_punching_data['single_punch_type']);}
         if ($punch_count >= 2 && $single_punch_type == null) {
             $punch = $punchingtraces[0];
             $emp_new_punching_data['punchin_trace_id'] = $punch['id'];

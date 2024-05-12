@@ -180,6 +180,10 @@ class PunchingApiEmployeeMontlyController extends Controller
         $aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
         $remarks = $request->remarks;
+        $isSinglePunch= $request?->isSinglePunch ?? false;
+        $single_punch_type =  $isSinglePunch ? $request?->single_punch_type : null;
+        $regulariseSinglePunch = $request?->regulariseSinglePunch ?? false;
+
         //check if logged in user is controller for this employee
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
         //get section of employee
@@ -196,6 +200,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             return response()->json(['status' => 'Not authorized'], 400);
         }
 
+
         //since this might be first time, insert if not exists
         $punching = Punching::updateOrCreate(
             ['aadhaarid' => $aadhaarid, 'date' => $request->date],
@@ -203,6 +208,9 @@ class PunchingApiEmployeeMontlyController extends Controller
                 'hint' => $hint,
                 'remarks' => $remarks,
                 'finalized_by_controller' => $loggedInUserIsController,
+                'single_punch_type' => $single_punch_type,
+                'single_punch_regularised_by' => $regulariseSinglePunch ? $me->employee->aadhaarid : null,
+
             ]
         );
 
