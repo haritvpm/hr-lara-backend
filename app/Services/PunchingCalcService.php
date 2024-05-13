@@ -302,6 +302,7 @@ class PunchingCalcService
         //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
         [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
         $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
+        $date_carbon = Carbon::createFromFormat('Y-m-d', $date);
         $isSinglePunching =  $single_punch_type != null;
 
 
@@ -459,8 +460,13 @@ class PunchingCalcService
 
         //even i punched, can be unauthorised if punched after 11.30 am
         $computer_hint = $emp_new_punching_data['computer_hint'] ?? null;
+        $canSetUnauthorised = $date_carbon->lt(Carbon::today()) ||
+                                ($date_carbon->isToday() && Carbon::now()->greaterThan($time_after_which_unauthorised)) ;
 
-        if( !$isHoliday /*&& !$computer_hint*/  && !$hint && !$hasLeave ){
+        $canSetUnauthorised = $canSetUnauthorised && !$isHoliday && !$hasLeave ;
+        $canSetUnauthorised = $canSetUnauthorised && (!$hint || $hint == 'clear');
+
+        if( $canSetUnauthorised ){
             if ($punch_count >= 1) {
 
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
@@ -472,14 +478,13 @@ class PunchingCalcService
             else
             if ($punch_count == 0){
                 //if no punching even after 1 hour from c_flexi_1030am and there is no leave or hint, set 'unauthorised' hint
-                \Log::info('Carbon::now() ' . Carbon::now());
+             //   \Log::info('Carbon::now() ' . Carbon::now());
                 \Log::info('time_after_which_unauthorised ' . $time_after_which_unauthorised);
 
-                if( Carbon::now()->greaterThan($time_after_which_unauthorised)){
-                    $emp_new_punching_data['computer_hint'] = 'unauthorised';
-                    $emp_new_punching_data['is_unauthorised'] = true;
+                $emp_new_punching_data['computer_hint'] = 'unauthorised';
+                $emp_new_punching_data['is_unauthorised'] = true;
 
-                }
+
             }
         }
 
@@ -708,9 +713,11 @@ class PunchingCalcService
                 });
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
-                $total_unauthorised =  $emp_punchings->where('hint', 'unauthorised')->count();
+                $total_unauthorised =  $emp_punchings->where('is_unauthorised', 1)->count();
                 $emp_new_monthly_attendance_data['unauthorised_count'] = $total_unauthorised;
-
+                // if('69038788' == $aadhaarid){
+                //     dd($total_unauthorised);
+                // }
 
                 // $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', Carbon::today()->format('Y-m-d'))->count();
                 //if this is calculated today, exclude today's single punchings

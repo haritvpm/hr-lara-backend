@@ -241,6 +241,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $data = MonthlyAttendance::wherein('month', $dates)
             ->where('aadhaarid', $aadhaarid)
+            ->orderBy('month', 'desc')
             ->get();
 
         return response()->json([
