@@ -475,7 +475,6 @@ class PunchingCalcService
             if ($punch_count >= 1) {
 
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
-                    $emp_new_punching_data['computer_hint'] = 'unauthorised';
                     $emp_new_punching_data['is_unauthorised'] = true;
 
                 }
@@ -484,9 +483,8 @@ class PunchingCalcService
             if ($punch_count == 0){
                 //if no punching even after 1 hour from c_flexi_1030am and there is no leave or hint, set 'unauthorised' hint
              //   \Log::info('Carbon::now() ' . Carbon::now());
-                \Log::info('time_after_which_unauthorised ' . $time_after_which_unauthorised);
+               // \Log::info('time_after_which_unauthorised ' . $time_after_which_unauthorised);
 
-                $emp_new_punching_data['computer_hint'] = 'unauthorised';
                 $emp_new_punching_data['is_unauthorised'] = true;
 
 

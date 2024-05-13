@@ -161,6 +161,16 @@ class PunchingApiEmployeeMontlyController extends Controller
                     ...$item->toArray(), 'day_count' => $diff,
                 ];
             });
+        $now_str = Carbon::now()->format('Y-m-d');
+        $employeeToSectionNow =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
+            ->duringPeriod($now_str,  $now_str)
+            ->first();
+        $logged_in_user_is_controller = false;
+
+        if ($seat_ids_of_loggedinuser && $employeeToSectionNow) {
+            $logged_in_user_is_controller  = $seat_ids_of_loggedinuser->contains($employeeToSectionNow?->section?->seat_of_controlling_officer_id);
+           // $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
+        }
 
         return response()->json([
             'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021
@@ -170,6 +180,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
             'emp_leaves' =>  $emp_leaves,
+            'logged_in_user_is_controller' => $logged_in_user_is_controller,
         ], 200);
     }
     public function saveEmployeeHint(Request $request)
