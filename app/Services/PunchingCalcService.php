@@ -109,6 +109,9 @@ class PunchingCalcService
                 //     dd($employee_section_maps[$aadhaarid]);
                 // }
               //  dd($time_group_name);
+            //   if(!$time_groups->where('groupname', $time_group_name)->first()){
+            //     dd($time_group_name);
+            //   }
 
                 $time_group = $time_groups->where('groupname', $time_group_name)->first()->toArray() ;
                // dd($time_group);
@@ -190,9 +193,11 @@ class PunchingCalcService
 
         $hint = $punching_existing?->hint ?? null;
         $single_punch_type = $punching_existing?->single_punch_type ?? null;
+        $fetchComplete = $calender->attendance_trace_fetch_complete ?? false;
+      
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
         //\Log::info('hint:' . $hint);
-        //$single_punch_type =  null; //temp uncomment to test
+        //$single_punch_type =  null; //temp uncomment to reset
         $c_punch_in = null;
         $c_punch_out = null;
         $emp_new_punching_data['punchin_trace_id'] = null;
@@ -232,7 +237,7 @@ class PunchingCalcService
 
         //Decide if this is punchin or out
         //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
-        if ($punch_count  == 1 || $single_punch_type) {
+        if ($fetchComplete && ($punch_count  == 1 || $single_punch_type)) {
             //TODO is it punch in or out ? has to be set by under
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
