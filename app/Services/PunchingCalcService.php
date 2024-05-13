@@ -641,24 +641,43 @@ class PunchingCalcService
             $emp_punchings = $punchings_grouped->has($aadhaarid) ?
                 $punchings_grouped->get($aadhaarid) : null;
 
-            $emp_new_monthly_attendance_data = [];
-            $emp_new_monthly_attendance_data['aadhaarid'] = $aadhaarid;
-            $emp_new_monthly_attendance_data['employee_id'] = $employee_id;
-         //   dd( $month_db_day->startOfMonth()->format('Y-m-d'));
-            $emp_new_monthly_attendance_data['month'] = $month_db_day->startOfMonth()->format('Y-m-d');
-            $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
-            $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
-            $emp_new_monthly_attendance_data['total_grace_str'] = '';
-            $emp_new_monthly_attendance_data['total_extra_str'] = '';
-            $emp_new_monthly_attendance_data['cl_marked'] = 0;
-            $emp_new_monthly_attendance_data['compen_marked'] = 0;
-            $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
-            $emp_new_monthly_attendance_data['single_punchings'] = 0;
-            $emp_new_monthly_attendance_data['cl_submitted'] = 0;
-            $emp_new_monthly_attendance_data['grace_minutes'] = 300;
-            $emp_new_monthly_attendance_data['start_date'] = $start_date->format('Y-m-d');
-            $emp_new_monthly_attendance_data['end_date'] = $end_date->format('Y-m-d');
-
+            $emp_new_monthly_attendance_data = [
+                'aadhaarid' => $aadhaarid,
+                'employee_id' => $employee_id,
+                'month' => $month_db_day->startOfMonth()->format('Y-m-d'),
+                'total_grace_sec' => 0,
+                'total_extra_sec' => 0,
+                'total_grace_str' => '',
+                'total_extra_str' => '',
+                'cl_marked' => 0,
+                'compen_marked' => 0,
+                'total_grace_exceeded300_date' => null,
+                'single_punchings' => 0,
+                'cl_submitted' => 0,
+                'grace_minutes' => 300,
+                'start_date' => $start_date->format('Y-m-d'),
+                'end_date' => $end_date->format('Y-m-d'),
+                'single_punchings_regularised' => 0,
+                'unauthorised_count' => 0,
+            ];
+        //     $emp_new_monthly_attendance_data['aadhaarid'] = $aadhaarid;
+        //     $emp_new_monthly_attendance_data['employee_id'] = $employee_id;
+        //  //   dd( $month_db_day->startOfMonth()->format('Y-m-d'));
+        //     $emp_new_monthly_attendance_data['month'] = $month_db_day->startOfMonth()->format('Y-m-d');
+        //     $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
+        //     $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
+        //     $emp_new_monthly_attendance_data['total_grace_str'] = '';
+        //     $emp_new_monthly_attendance_data['total_extra_str'] = '';
+        //     $emp_new_monthly_attendance_data['cl_marked'] = 0;
+        //     $emp_new_monthly_attendance_data['compen_marked'] = 0;
+        //     $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
+        //     $emp_new_monthly_attendance_data['single_punchings'] = 0;
+        //     $emp_new_monthly_attendance_data['cl_submitted'] = 0;
+        //     $emp_new_monthly_attendance_data['grace_minutes'] = 300;
+        //     $emp_new_monthly_attendance_data['start_date'] = $start_date->format('Y-m-d');
+        //     $emp_new_monthly_attendance_data['end_date'] = $end_date->format('Y-m-d');
+        //     $emp_new_monthly_attendance_data['single_punchings_regularised'] = 0;
+        //     $emp_new_monthly_attendance_data['unauthorised_count'] = 0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
@@ -689,6 +708,10 @@ class PunchingCalcService
                 });
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
+                $total_unauthorised =  $emp_punchings->where('hint', 'unauthorised')->count();
+                $emp_new_monthly_attendance_data['unauthorised_count'] = $total_unauthorised;
+
+
                 // $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', Carbon::today()->format('Y-m-d'))->count();
                 //if this is calculated today, exclude today's single punchings
                 $total_single_punchings = $emp_punchings->where('date', '<>', Carbon::today()->format('Y-m-d'))
@@ -698,6 +721,9 @@ class PunchingCalcService
 
                 $emp_new_monthly_attendance_data['single_punchings'] =$total_single_punchings->count();
 
+
+                $total_single_punchings_regularised = $emp_punchings->whereNotNull ('single_punch_regularised_by')->count();
+                $emp_new_monthly_attendance_data['single_punchings_regularised'] = $total_single_punchings_regularised;
                 //find the day on which total grace time exceeded 300 minutes
 
 
@@ -737,6 +763,7 @@ class PunchingCalcService
                 'total_grace_sec',  'total_extra_sec', 'cl_marked', 'employee_id',
                 'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str',
                 'compen_marked','cl_submitted','single_punchings', 'grace_minutes', 'start_date', 'end_date',
+                'single_punchings_regularised', 'unauthorised_count',
             ]
         );
 
@@ -770,24 +797,20 @@ class PunchingCalcService
             $emp_monthlypunchings = $monthlypunchings_grouped->has($aadhaarid) ?
                 $monthlypunchings_grouped->get($aadhaarid) : null;
 
-            // 'year',
-            // 'cl_marked',
-            // 'cl_submitted',
-            // 'compen_marked',
-            // 'compen_submitted',
-            // 'other_leaves_marked',
+            $emp_new_yearly_attendance_data = [
+                'aadhaarid' => $aadhaarid,
+                'employee_id' => $employee_id,
+                'year' => $start_date->format('Y-m-d'),
+                'cl_marked' => 0,
+                'cl_submitted' => 0,
+                'compen_marked' => 0,
+                'compen_submitted' => 0,
+                'other_leaves_marked' => 0,
+                'single_punchings' => 0,
+                'single_punchings_regularised'=> 0,
+                'unauthorised_count'=> 0,
+            ];
 
-            $emp_new_yearly_attendance_data = [];
-            $emp_new_yearly_attendance_data['aadhaarid'] = $aadhaarid;
-            $emp_new_yearly_attendance_data['employee_id'] = $employee_id;
-            $emp_new_yearly_attendance_data['year'] = $start_date->format('Y-m-d');
-
-            $emp_new_yearly_attendance_data['cl_marked'] = 0;
-            $emp_new_yearly_attendance_data['cl_submitted'] = 0;
-            $emp_new_yearly_attendance_data['compen_marked'] = 0;
-            $emp_new_yearly_attendance_data['compen_submitted'] = 0;
-            $emp_new_yearly_attendance_data['other_leaves_marked'] = 0;
-            $emp_new_yearly_attendance_data['single_punchings'] =0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_monthlypunchings) {
@@ -803,6 +826,12 @@ class PunchingCalcService
 
                 $total_single_punchings =  $emp_monthlypunchings->sum('single_punchings');
                 $emp_new_yearly_attendance_data['single_punchings'] = $total_single_punchings;
+
+                $total_single_punchings_regularised =  $emp_monthlypunchings->sum('single_punchings_regularised');
+                $emp_new_yearly_attendance_data['single_punchings_regularised'] = $total_single_punchings_regularised;
+
+                $total_unauthorised =  $emp_monthlypunchings->sum('unauthorised_count');
+                $emp_new_yearly_attendance_data['unauthorised_count'] = $total_unauthorised;
             }
 
             $data[] = $emp_new_yearly_attendance_data;
@@ -814,7 +843,9 @@ class PunchingCalcService
             update: [
                 'employee_id',
                 'cl_marked',  'cl_submitted', 'compen_marked',
-                'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted','single_punchings'
+                'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted','single_punchings',
+                'single_punchings_regularised', 'unauthorised_count'
+
             ]
         );
 
