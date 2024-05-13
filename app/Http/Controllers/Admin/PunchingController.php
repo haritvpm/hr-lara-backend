@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Models\Employee;
 use App\Models\Leaf;
@@ -126,35 +125,28 @@ class PunchingController extends Controller
             $table->editColumn('grace_total_exceeded_one_hour', function ($row) {
                 return $row->grace_total_exceeded_one_hour ? $row->grace_total_exceeded_one_hour : '';
             });
+            $table->editColumn('computer_hint', function ($row) {
+                return $row->computer_hint ? $row->computer_hint : '';
+            });
+            $table->editColumn('single_punch_type', function ($row) {
+                return $row->single_punch_type ? $row->single_punch_type : '';
+            });
+            $table->editColumn('single_punch_regularised_by', function ($row) {
+                return $row->single_punch_regularised_by ? $row->single_punch_regularised_by : '';
+            });
+            $table->editColumn('time_group', function ($row) {
+                return $row->time_group ? $row->time_group : '';
+            });
+            $table->editColumn('is_unauthorised', function ($row) {
+                return '<input type="checkbox" disabled ' . ($row->is_unauthorised ? 'checked' : null) . '>';
+            });
 
-            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave']);
+            $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave', 'is_unauthorised']);
 
             return $table->make(true);
         }
 
         return view('admin.punchings.index');
-    }
-
-    public function create()
-    {
-        abort_if(Gate::denies('punching_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $punchin_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $punchout_traces = PunchingTrace::pluck('att_time', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $leaves = Leaf::pluck('reason', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.punchings.create', compact('employees', 'leaves', 'punchin_traces', 'punchout_traces'));
-    }
-
-    public function store(StorePunchingRequest $request)
-    {
-        $punching = Punching::create($request->all());
-
-        return redirect()->route('admin.punchings.index');
     }
 
     public function edit(Punching $punching)

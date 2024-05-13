@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class GovtCalendar extends Model
 {
@@ -40,12 +41,11 @@ class GovtCalendar extends Model
         'punching',
         'session_id',
         'office_ends_at',
+        'attendance_trace_fetch_complete',
+        'calc_count',
         'created_at',
         'updated_at',
         'deleted_at',
-        'attendance_trace_fetch_complete',
-        'calc_count',
-//        'leave_rows_fetched',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -133,17 +133,23 @@ class GovtCalendar extends Model
             return [$item['date'] => $item];
         });
         $calender_info = [];
-        for ($i = 1; $i <= $date->daysInMonth; $i++) {
+        $period = CarbonPeriod::create($start_date, $end_date);
 
-            $d = $date->day($i);
+        $i = 1;
+        foreach ($period as $d)
+        {
             $d_str = $d->format('Y-m-d');
             $calender_info['day' . $i]['day'] = 'day' . $i;
+            $calender_info['day' . $i]['d_str'] =  $d_str;
+            $calender_info['day' . $i]['d_'] =  $d->format('d');
+         //   $calender_info['day' . $i]['d_'] =  $d->format('M d');
             $calender_info['day' . $i]['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
             $calender_info['day' . $i]['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
             $calender_info['day' . $i]['office_ends_at'] = $calender[$d_str]->office_ends_at ?? '';
             $calender_info['day' . $i]['future_date'] = $d->gt(Carbon::now());
             $calender_info['day' . $i]['is_today'] = $d->isToday();
             $calender_info['day' . $i]['attendance_trace_fetch_complete'] = $calender[$d_str]->attendance_trace_fetch_complete ?? false;
+            $i++;
         }
         return $calender_info;
     }

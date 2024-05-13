@@ -35,6 +35,12 @@
                             {{ trans('cruds.employeeToShift.fields.shift') }}
                         </th>
                         <th>
+                            {{ trans('cruds.employeeToShift.fields.start_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.employeeToShift.fields.end_date') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -56,6 +62,12 @@
                             </td>
                             <td>
                                 {{ $employeeToShift->shift->name ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToShift->start_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ $employeeToShift->end_date ?? '' }}
                             </td>
                             <td>
                                 @can('employee_to_shift_show')

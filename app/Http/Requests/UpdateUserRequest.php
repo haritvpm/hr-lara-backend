@@ -23,10 +23,7 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'unique:users,username,' . request()->route('user')->id,
             ],
-            'email' => [
-                'required',
-                'unique:users,email,' . request()->route('user')->id,
-            ],
+           
             'roles.*' => [
                 'integer',
             ],
@@ -34,11 +31,7 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'array',
             ],
-            'mobile' => [
-                'string',
-                'min:10',
-                'nullable',
-            ],
+           
         ];
     }
 }

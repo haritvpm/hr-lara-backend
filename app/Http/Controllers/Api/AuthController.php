@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Seat;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -147,8 +148,8 @@ class AuthController extends Controller
         return response()->json([
             'id' => $user->id,
             'username' => $user->username,
-            'email' => $user->email,
-            'avatar' => '',
+            // 'email' => $user->email,
+            // 'avatar' => '',
             'roles' => $allroles->pluck('title')->unique(),
             'permissions' => $permList->unique(),
             'aadhaarid' => $user?->employee?->aadhaarid ?? null,
@@ -177,6 +178,73 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]
         );
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+        ]);
+    }
+
+    public function profile(Request $request)
+    {
+        $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
+
+        return response()->json([
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user?->employee?->employeeExtra?->email ?? null,
+            'avatar' => '',
+            'aadhaarid' => $user?->employee?->aadhaarid ?? null,
+            'srismt' => $user?->employee?->srismt ?? null,
+            'name_mal' => $user?->employee?->name_mal ?? null,
+            'name' => $user?->employee?->name ?? null,
+            'mobile' => $user?->employee?->employeeExtra?->mobile ?? null,
+            'pan' => $user?->employee?->employeeExtra?->pan ?? null,
+            'klaid' => $user?->employee?->employeeExtra?->klaid ?? null,
+            'dateOfJoinInKLA' => $user?->employee?->employeeExtra?->date_of_joining_kla ?? null,
+        ]);
+    }
+
+    public function saveprofile(Request $request)
+    {
+        $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
+
+        $dateOfJoinInKLA = $request->dateOfJoinInKLA ? Carbon::parse($request->dateOfJoinInKLA)->format('Y-m-d') : null;
+        
+        \Log::info('in save profile', $request->all());
+        $validator = Validator::make($request->all(), [
+           // 'email' => 'email'|'unique:employee_extras,email,' . $user->employee?->employeeExtra?->id,
+            'mobile' => 'required|numeric|digits:10',
+            'dateOfJoinInKLA' => 'date',
+        ]);
+
+        if ($validator->fails()) {
+            $response['response'] = $validator->messages();
+
+            return response()->json([
+                'message' => $validator->errors()->first(),
+            ], 400);
+        }
+        $user->employee->update(
+            [
+                'name_mal' => $request->name_mal,
+                'srismt' => $request->srismt,
+            ]
+        );
+        $values = [
+            'email' => $request->email,
+            'mobile' => $request->mobile,
+            'date_of_joining_kla' => $dateOfJoinInKLA,
+            'pan' => $request->pan,
+            'klaid' => $request->klaid,
+           
+        ];
+        if($user->employee->employeeExtra){
+            $user->employee->employeeExtra->update($values);
+        } else {
+            $user->employee->employeeExtra()->create($values);
+        }
+
 
         return response()->json([
             'id' => $user->id,

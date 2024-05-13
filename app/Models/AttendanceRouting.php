@@ -19,8 +19,8 @@ class AttendanceRouting extends Model
     ];
 
     protected $fillable = [
-        'viewer_js_as_ss_employee_id',
         'viewer_seat_id',
+        'viewer_js_as_ss_employee_id',
         'created_at',
         'updated_at',
         'deleted_at',

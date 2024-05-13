@@ -72,8 +72,20 @@ class YearlyAttendanceController extends Controller
             $table->editColumn('other_leaves_submitted', function ($row) {
                 return $row->other_leaves_submitted ? $row->other_leaves_submitted : '';
             });
+            $table->editColumn('start_with_cl', function ($row) {
+                return $row->start_with_cl ? $row->start_with_cl : '';
+            });
+            $table->editColumn('start_with_compen', function ($row) {
+                return $row->start_with_compen ? $row->start_with_compen : '';
+            });
             $table->editColumn('single_punchings', function ($row) {
                 return $row->single_punchings ? $row->single_punchings : '';
+            });
+            $table->editColumn('single_punchings_regularised', function ($row) {
+                return $row->single_punchings_regularised ? $row->single_punchings_regularised : '';
+            });
+            $table->editColumn('unauthorised_count', function ($row) {
+                return $row->unauthorised_count ? $row->unauthorised_count : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);

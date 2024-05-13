@@ -55,7 +55,19 @@
                         {{ trans('cruds.yearlyAttendance.fields.other_leaves_submitted') }}
                     </th>
                     <th>
+                        {{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.yearlyAttendance.fields.start_with_compen') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.yearlyAttendance.fields.single_punchings') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.yearlyAttendance.fields.single_punchings_regularised') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.yearlyAttendance.fields.unauthorised_count') }}
                     </th>
                     <th>
                         &nbsp;
@@ -124,7 +136,11 @@
 { data: 'compen_submitted', name: 'compen_submitted' },
 { data: 'other_leaves_marked', name: 'other_leaves_marked' },
 { data: 'other_leaves_submitted', name: 'other_leaves_submitted' },
+{ data: 'start_with_cl', name: 'start_with_cl' },
+{ data: 'start_with_compen', name: 'start_with_compen' },
 { data: 'single_punchings', name: 'single_punchings' },
+{ data: 'single_punchings_regularised', name: 'single_punchings_regularised' },
+{ data: 'unauthorised_count', name: 'unauthorised_count' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

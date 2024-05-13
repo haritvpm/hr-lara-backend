@@ -91,13 +91,19 @@ class MonthlyAttendanceController extends Controller
             $table->editColumn('cl_submitted', function ($row) {
                 return $row->cl_submitted ? $row->cl_submitted : '';
             });
+            $table->editColumn('grace_minutes', function ($row) {
+                return $row->grace_minutes ? $row->grace_minutes : '';
+            });
             $table->editColumn('single_punchings', function ($row) {
                 return $row->single_punchings ? $row->single_punchings : '';
             });
-            $table->editColumn('total_grace_exceeded300_date', function ($row) {
-                return $row->total_grace_exceeded300_date ? $row->total_grace_exceeded300_date : '';
+            $table->editColumn('single_punchings_regularised', function ($row) {
+                return $row->single_punchings_regularised ? $row->single_punchings_regularised : '';
             });
-            
+            $table->editColumn('unauthorised_count', function ($row) {
+                return $row->unauthorised_count ? $row->unauthorised_count : '';
+            });
+
             $table->rawColumns(['actions', 'placeholder', 'employee']);
 
             return $table->make(true);

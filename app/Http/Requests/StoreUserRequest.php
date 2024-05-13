@@ -23,10 +23,7 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'unique:users',
             ],
-            'email' => [
-                'required',
-                'unique:users',
-            ],
+           
             'password' => [
                 'required',
             ],
@@ -37,11 +34,7 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'array',
             ],
-            'mobile' => [
-                'string',
-                'min:10',
-                'nullable',
-            ],
+            
         ];
     }
 }

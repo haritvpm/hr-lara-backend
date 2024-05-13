@@ -39,11 +39,15 @@
                     <th>
                         {{ trans('cruds.employee.fields.id') }}
                     </th>
-                   
+                    <th>
+                        {{ trans('cruds.employee.fields.srismt') }}
+                    </th>
                     <th>
                         {{ trans('cruds.employee.fields.name') }}
                     </th>
-
+                    <th>
+                        {{ trans('cruds.employee.fields.name_mal') }}
+                    </th>
                     <th>
                         {{ trans('cruds.employee.fields.aadhaarid') }}
                     </th>
@@ -63,7 +67,9 @@
                     <th>
                         {{ trans('cruds.employee.fields.is_shift') }}
                     </th>
-
+                    <th>
+                        {{ trans('cruds.employee.fields.grace_group') }}
+                    </th>
                     <th>
                         &nbsp;
                     </th>
@@ -121,14 +127,16 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
+{ data: 'srismt', name: 'srismt' },
 { data: 'name', name: 'name' },
+{ data: 'name_mal', name: 'name_mal' },
 { data: 'aadhaarid', name: 'aadhaarid' },
 { data: 'pen', name: 'pen' },
 { data: 'desig_display', name: 'desig_display' },
 { data: 'has_punching', name: 'has_punching' },
 { data: 'status', name: 'status' },
 { data: 'is_shift', name: 'is_shift' },
-
+{ data: 'grace_group_title', name: 'grace_group.title' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

@@ -2,6 +2,9 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
+use App\Jobs\ProcessLeavesJob;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,8 +17,27 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
+/*
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+*/
 
+//* * * * * cd /home/kla/hrApp/hrmsapp-lara && php artisan schedule:run >> /dev/null 2>&1
+
+Schedule::command('app:fetch-attendace-trace-today')
+->cron('0-59/15 10-12 * * *'); //every 15 min between 10 to 12
+
+Schedule::command('app:fetch-attendace-trace-today')
+->cron('15,45 12-17 * * *'); //half hourly from  12 to 17
+
+Schedule::command('app:fetch-attendace-trace-yesterday')
+->cron('0 8,10,11,14 * * *') //will the server be up at 8 am?
+->timezone('Asia/Kolkata')
+->after(function () {
+    // The task has executed...
+});
+
+Schedule::job(new ProcessLeavesJob)
+->cron('30 13 * * *'); //1.30 pm
 

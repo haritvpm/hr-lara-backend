@@ -47,6 +47,9 @@
                             {{ trans('cruds.officeTime.fields.flexi_minutes') }}
                         </th>
                         <th>
+                            {{ trans('cruds.officeTime.fields.with_effect_from') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -80,6 +83,9 @@
                             </td>
                             <td>
                                 {{ $officeTime->flexi_minutes ?? '' }}
+                            </td>
+                            <td>
+                                {{ $officeTime->with_effect_from ?? '' }}
                             </td>
                             <td>
                                 @can('office_time_show')
