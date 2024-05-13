@@ -187,7 +187,7 @@ class EmployeeService
     public static function getDesignationOfEmployeesOnDate($date_str, $emp_ids)
     {
         $employee_section_maps = Employee::with(['employeeEmployeeToDesignations' => function ($q) use ($date_str) {
-            $q->DesignationDuring($date_str)->with(['designation']);
+            $q->DesignationDuring($date_str)->with(['designation', 'designation.default_time_group']);
         }])
             ->wherein('id', $emp_ids)
             ->get();
@@ -198,14 +198,14 @@ class EmployeeService
 
             $desig = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->designation : '';
 
-            $time_group_id = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
+            $time_group = count($employee?->employee_employee_to_designations) ? $employee->employee_employee_to_designations[0]->designation->default_time_group?->groupname : null;
 
             return [
                 $item['aadhaarid'] => [
                     'name' => $employee?->name,
                     'designation' => $desig,
                     'shift' => $employee?->is_shift,
-                    'time_group_id' => $time_group_id,
+                    'time_group' => $time_group,
                 ],
             ];
         });

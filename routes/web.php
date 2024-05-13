@@ -197,7 +197,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('tax-entries', 'TaxEntriesController');
 
     // Punching
-    Route::resource('punchings', 'PunchingController', ['except' => ['destroy']]);
+    Route::resource('punchings', 'PunchingController', ['except' => ['create', 'store', 'destroy']]);
 
     // Assembly Session
     Route::delete('assembly-sessions/destroy', 'AssemblySessionController@massDestroy')->name('assembly-sessions.massDestroy');
@@ -209,7 +209,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('leaves/calc', 'LeaveControllerCustom@calc')->name('leaves.calc');
 
     Route::delete('leaves/destroy', 'LeaveController@massDestroy')->name('leaves.massDestroy');
-    Route::resource('leaves', 'LeaveController');
+    Route::resource('leaves', 'LeaveController', ['except' => ['create', 'store']]);
 
     // Office Times
     Route::delete('office-times/destroy', 'OfficeTimesController@massDestroy')->name('office-times.massDestroy');
@@ -238,6 +238,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Setting
     Route::delete('settings/destroy', 'SettingController@massDestroy')->name('settings.massDestroy');
     Route::resource('settings', 'SettingController');
+
+    // Employee Extra
+    Route::delete('employee-extras/destroy', 'EmployeeExtraController@massDestroy')->name('employee-extras.massDestroy');
+    Route::resource('employee-extras', 'EmployeeExtraController');
+
+    // Grace Time
+    Route::delete('grace-times/destroy', 'GraceTimeController@massDestroy')->name('grace-times.massDestroy');
+    Route::resource('grace-times', 'GraceTimeController', ['except' => ['show']]);
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

@@ -2,9 +2,7 @@
 @section('content')
 @can('leaf_create')
     <div style="margin-bottom: 10px;" class="row">
-            <a class="ml-2 btn btn-success" href="{{ route('admin.leaves.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.leaf.title_singular') }}
-            </a>
+      
 
 
         <div class="ml-2 dropdown">
@@ -78,7 +76,16 @@
                     </th>
                     <!-- <th>
                         {{ trans('cruds.leaf.fields.created_by_aadhaarid') }}
-                    </th> -->
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.processed') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.owner_seat') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.remarks') }}
+                    </th>
                     <th>
                         &nbsp;
                     </th>
@@ -149,6 +156,9 @@
 { data: 'last_updated', name: 'last_updated' },
 { data: 'creation_date', name: 'creation_date' },
 //{ data: 'created_by_aadhaarid', name: 'created_by_aadhaarid' },
+{ data: 'processed', name: 'processed' },
+{ data: 'owner_seat', name: 'owner_seat' },
+{ data: 'remarks', name: 'remarks' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

@@ -141,6 +141,22 @@
                 <span class="help-block">{{ trans('cruds.leaf.fields.processed_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="owner_seat">{{ trans('cruds.leaf.fields.owner_seat') }}</label>
+                <input class="form-control {{ $errors->has('owner_seat') ? 'is-invalid' : '' }}" type="text" name="owner_seat" id="owner_seat" value="{{ old('owner_seat', '') }}">
+                @if($errors->has('owner_seat'))
+                    <span class="text-danger">{{ $errors->first('owner_seat') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.owner_seat_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="remarks">{{ trans('cruds.leaf.fields.remarks') }}</label>
+                <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', '') }}">
+                @if($errors->has('remarks'))
+                    <span class="text-danger">{{ $errors->first('remarks') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.remarks_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

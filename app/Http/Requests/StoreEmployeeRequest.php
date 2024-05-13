@@ -42,23 +42,11 @@ class StoreEmployeeRequest extends FormRequest
                 'string',
                 'nullable',
             ],
-            'pan' => [
-                'string',
-                'nullable',
-            ],
             'has_punching' => [
                 'nullable',
                 'integer',
                 'min:-2147483648',
                 'max:2147483647',
-            ],
-            'klaid' => [
-                'string',
-                'nullable',
-            ],
-            'electionid' => [
-                'string',
-                'nullable',
             ],
         ];
     }

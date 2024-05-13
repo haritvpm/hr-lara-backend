@@ -13,6 +13,8 @@ class EmployeeToShift extends Model
     public $table = 'employee_to_shifts';
 
     protected $dates = [
+        'start_date',
+        'end_date',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -21,6 +23,8 @@ class EmployeeToShift extends Model
     protected $fillable = [
         'employee_id',
         'shift_id',
+        'start_date',
+        'end_date',
         'created_at',
         'updated_at',
         'deleted_at',

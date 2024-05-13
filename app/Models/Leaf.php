@@ -50,10 +50,12 @@ class Leaf extends Model
         'last_updated',
         'creation_date',
         'created_by_aadhaarid',
+        'processed',
+        'owner_seat',
+        'remarks',
         'created_at',
         'updated_at',
         'deleted_at',
-        'processed',
     ];
 
     public const LEAVE_TYPE_SELECT = [

@@ -38,9 +38,9 @@ class Punching extends Model
         'dies_non'       => 'Dies Non',
         'RH'             => 'RH',
         'holiday'       =>  'Holiday',
-        'maternity'     =>  'Maternity',    
+        'maternity'     =>  'Maternity',
         'paternity'     =>  'Paternity',
-        
+
     ];
 
     protected $fillable = [
@@ -69,9 +69,12 @@ class Punching extends Model
         'hint',
         'controller_set_punch_in',
         'controller_set_punch_out',
-
         'grace_total_exceeded_one_hour',
         'computer_hint',
+        'single_punch_type',
+        'single_punch_regularised_by',
+        'time_group',
+        'is_unauthorised',
         'created_at',
         'updated_at',
         'deleted_at',

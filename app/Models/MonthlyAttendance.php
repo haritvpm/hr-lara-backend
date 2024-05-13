@@ -37,7 +37,13 @@ class MonthlyAttendance extends Model
         'total_extra_str',
         'grace_exceeded_sec',
         'total_grace_exceeded300_date',
+      
+        'grace_minutes',
         'single_punchings',
+        'single_punchings_regularised',
+	'unauthorised_count',
+        'start_date',
+        'end_date',
         'created_at',
         'updated_at',
         'deleted_at',

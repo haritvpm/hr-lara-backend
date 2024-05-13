@@ -97,10 +97,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded300_date') }}
+                            {{ trans('cruds.monthlyAttendance.fields.total_grace_exceeded_300_date') }}
                         </th>
                         <td>
-                            {{ $monthlyAttendance->total_grace_exceeded300_date }}
+                            {{ $monthlyAttendance->total_grace_exceeded_300_date }}
                         </td>
                     </tr>
                     <tr>
@@ -153,10 +153,34 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.monthlyAttendance.fields.grace_minutes') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->grace_minutes }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.monthlyAttendance.fields.single_punchings') }}
                         </th>
                         <td>
                             {{ $monthlyAttendance->single_punchings }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.single_punchings_regularised') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->single_punchings_regularised }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.monthlyAttendance.fields.unauthorised_count') }}
+                        </th>
+                        <td>
+                            {{ $monthlyAttendance->unauthorised_count }}
                         </td>
                     </tr>
                 </tbody>

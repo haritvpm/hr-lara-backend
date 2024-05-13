@@ -248,6 +248,41 @@
                 <span class="help-block">{{ trans('cruds.punching.fields.computer_hint_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="single_punch_type">{{ trans('cruds.punching.fields.single_punch_type') }}</label>
+                <input class="form-control {{ $errors->has('single_punch_type') ? 'is-invalid' : '' }}" type="text" name="single_punch_type" id="single_punch_type" value="{{ old('single_punch_type', $punching->single_punch_type) }}">
+                @if($errors->has('single_punch_type'))
+                    <span class="text-danger">{{ $errors->first('single_punch_type') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.single_punch_type_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="single_punch_regularised_by">{{ trans('cruds.punching.fields.single_punch_regularised_by') }}</label>
+                <input class="form-control {{ $errors->has('single_punch_regularised_by') ? 'is-invalid' : '' }}" type="text" name="single_punch_regularised_by" id="single_punch_regularised_by" value="{{ old('single_punch_regularised_by', $punching->single_punch_regularised_by) }}">
+                @if($errors->has('single_punch_regularised_by'))
+                    <span class="text-danger">{{ $errors->first('single_punch_regularised_by') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.single_punch_regularised_by_attendanceid_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="time_group">{{ trans('cruds.punching.fields.time_group') }}</label>
+                <input class="form-control {{ $errors->has('time_group') ? 'is-invalid' : '' }}" type="text" name="time_group" id="time_group" value="{{ old('time_group', $punching->time_group) }}">
+                @if($errors->has('time_group'))
+                    <span class="text-danger">{{ $errors->first('time_group') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.time_group_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <div class="form-check {{ $errors->has('is_unauthorised') ? 'is-invalid' : '' }}">
+                    <input type="hidden" name="is_unauthorised" value="0">
+                    <input class="form-check-input" type="checkbox" name="is_unauthorised" id="is_unauthorised" value="1" {{ $punching->is_unauthorised || old('is_unauthorised', 0) === 1 ? 'checked' : '' }}>
+                    <label class="form-check-label" for="is_unauthorised">{{ trans('cruds.punching.fields.is_unauthorised') }}</label>
+                </div>
+                @if($errors->has('is_unauthorised'))
+                    <span class="text-danger">{{ $errors->first('is_unauthorised') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.punching.fields.is_unauthorised_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

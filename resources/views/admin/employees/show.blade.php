@@ -73,14 +73,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.pan') }}
-                        </th>
-                        <td>
-                            {{ $employee->pan }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.employee.fields.has_punching') }}
                         </th>
                         <td>
@@ -105,18 +97,10 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.employee.fields.klaid') }}
+                            {{ trans('cruds.employee.fields.grace_group') }}
                         </th>
                         <td>
-                            {{ $employee->klaid }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.employee.fields.electionid') }}
-                        </th>
-                        <td>
-                            {{ $employee->electionid }}
+                            {{ $employee->grace_group->title ?? '' }}
                         </td>
                     </tr>
                 </tbody>

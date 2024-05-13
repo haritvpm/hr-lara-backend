@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyLeafRequest;
-use App\Http\Requests\StoreLeafRequest;
 use App\Http\Requests\UpdateLeafRequest;
 use App\Models\Employee;
 use App\Models\Leaf;
@@ -20,7 +19,7 @@ class LeaveController extends Controller
         abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Leaf::select(sprintf('%s.*', (new Leaf)->table));
+            $query = Leaf::with(['employee'])->select(sprintf('%s.*', (new Leaf)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -74,29 +73,22 @@ class LeaveController extends Controller
             $table->editColumn('created_by_aadhaarid', function ($row) {
                 return $row->created_by_aadhaarid ? $row->created_by_aadhaarid : '';
             });
+            $table->editColumn('processed', function ($row) {
+                return $row->processed ? $row->processed : '';
+            });
+            $table->editColumn('owner_seat', function ($row) {
+                return $row->owner_seat ? $row->owner_seat : '';
+            });
+            $table->editColumn('remarks', function ($row) {
+                return $row->remarks ? $row->remarks : '';
+            });
 
-            $table->rawColumns(['actions', 'placeholder']);
+            $table->rawColumns(['actions', 'placeholder', 'employee']);
 
             return $table->make(true);
         }
 
         return view('admin.leaves.index');
-    }
-
-    public function create()
-    {
-        abort_if(Gate::denies('leaf_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('admin.leaves.create', compact('employees'));
-    }
-
-    public function store(StoreLeafRequest $request)
-    {
-        $leaf = Leaf::create($request->all());
-
-        return redirect()->route('admin.leaves.index');
     }
 
     public function edit(Leaf $leaf)

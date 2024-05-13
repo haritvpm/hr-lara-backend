@@ -67,12 +67,44 @@
                 <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.other_leaves_submitted_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="start_with_cl">{{ trans('cruds.yearlyAttendance.fields.start_with_cl') }}</label>
+                <input class="form-control {{ $errors->has('start_with_cl') ? 'is-invalid' : '' }}" type="number" name="start_with_cl" id="start_with_cl" value="{{ old('start_with_cl', $yearlyAttendance->start_with_cl) }}" step="0.1">
+                @if($errors->has('start_with_cl'))
+                    <span class="text-danger">{{ $errors->first('start_with_cl') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.start_with_cl_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="start_with_compen">{{ trans('cruds.yearlyAttendance.fields.start_with_compen') }}</label>
+                <input class="form-control {{ $errors->has('start_with_compen') ? 'is-invalid' : '' }}" type="number" name="start_with_compen" id="start_with_compen" value="{{ old('start_with_compen', $yearlyAttendance->start_with_compen) }}" step="1">
+                @if($errors->has('start_with_compen'))
+                    <span class="text-danger">{{ $errors->first('start_with_compen') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.start_with_compen_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label for="single_punchings">{{ trans('cruds.yearlyAttendance.fields.single_punchings') }}</label>
                 <input class="form-control {{ $errors->has('single_punchings') ? 'is-invalid' : '' }}" type="number" name="single_punchings" id="single_punchings" value="{{ old('single_punchings', $yearlyAttendance->single_punchings) }}" step="1">
                 @if($errors->has('single_punchings'))
                     <span class="text-danger">{{ $errors->first('single_punchings') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.single_punchings_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="single_punchings_regularised">{{ trans('cruds.yearlyAttendance.fields.single_punchings_regularised') }}</label>
+                <input class="form-control {{ $errors->has('single_punchings_regularised') ? 'is-invalid' : '' }}" type="number" name="single_punchings_regularised" id="single_punchings_regularised" value="{{ old('single_punchings_regularised', $yearlyAttendance->single_punchings_regularised) }}" step="1">
+                @if($errors->has('single_punchings_regularised'))
+                    <span class="text-danger">{{ $errors->first('single_punchings_regularised') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.single_punchings_regularised_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="unauthorised_count">{{ trans('cruds.yearlyAttendance.fields.unauthorised_count') }}</label>
+                <input class="form-control {{ $errors->has('unauthorised_count') ? 'is-invalid' : '' }}" type="number" name="unauthorised_count" id="unauthorised_count" value="{{ old('unauthorised_count', $yearlyAttendance->unauthorised_count) }}" step="1">
+                @if($errors->has('unauthorised_count'))
+                    <span class="text-danger">{{ $errors->first('unauthorised_count') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.yearlyAttendance.fields.unauthorised_count_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

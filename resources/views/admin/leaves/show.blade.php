@@ -135,6 +135,22 @@
                             {{ $leaf->processed }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.owner_seat') }}
+                        </th>
+                        <td>
+                            {{ $leaf->owner_seat }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.remarks') }}
+                        </th>
+                        <td>
+                            {{ $leaf->remarks }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

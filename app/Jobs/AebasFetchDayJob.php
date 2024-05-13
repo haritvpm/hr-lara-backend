@@ -8,9 +8,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Services\PunchingTraceFetchService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 
-class AebasFetchDayJob implements ShouldQueue, ShouldBeUnique
+class AebasFetchDayJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -20,6 +19,13 @@ class AebasFetchDayJob implements ShouldQueue, ShouldBeUnique
     {
         $this->date = $date;
     }
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 3600;
 
     /**
      * Execute the job.
