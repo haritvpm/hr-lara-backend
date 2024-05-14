@@ -145,6 +145,7 @@ class GovtCalendar extends Model
             $calender_info['day' . $i]['day'] = 'day' . $i;
             $calender_info['day' . $i]['d_str'] =  $d_str;
             $calender_info['day' . $i]['d_'] =  $d->format('d');
+            $calender_info['day' . $i]['dayofweek'] =  $d->format('l');
          //   $calender_info['day' . $i]['d_'] =  $d->format('M d');
             $calender_info['day' . $i]['holiday'] = $calender[$d_str]->govtholidaystatus ?? false;
             $calender_info['day' . $i]['rh'] = $calender[$d_str]->restrictedholidaystatus ?? false;
