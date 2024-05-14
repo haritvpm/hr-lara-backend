@@ -143,7 +143,8 @@ class PunchingCalcService
                 'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
                 'single_punch_type',
                 'time_group',
-                'is_unauthorised',
+                'is_unauthorised', 'duration_sec_needed'
+
             ]
         );
 
@@ -194,10 +195,12 @@ class PunchingCalcService
         $hint = $punching_existing?->hint ?? null;
         $single_punch_type = $punching_existing?->single_punch_type ?? null;
         $fetchComplete = $calender->attendance_trace_fetch_complete ?? false;
-      
+
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
         //\Log::info('hint:' . $hint);
+        ///////////////////////
         //$single_punch_type =  null; //temp uncomment to reset
+        //////////////////////
         $c_punch_in = null;
         $c_punch_out = null;
         $emp_new_punching_data['punchin_trace_id'] = null;
@@ -218,26 +221,28 @@ class PunchingCalcService
 
 
         $duration_sec = 0;
-        // $duration_str = '';
-        $flexi_15minutes = $time_group['flexi_minutes'] ?? 15;
-        //use today's date. imagine legislation punching out next day. our flexiend is based on today
-        //get employee time group. now assume normal
 
-        $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
-        $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
-
-        $normal_an_in = $normal_an_out = null;
-        if ($time_group['groupname'] != 'parttime') {
-            $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
-            $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
-        } else {
-            $normal_an_out = $normal_fn_out;
-        }
+        //get office times for this time group
+        [$flexi_15minutes,
+            $normal_fn_in,
+            $normal_fn_out,
+            $normal_an_in,
+            $normal_an_out,
+            $c_flexi_10am,
+            $c_flexi_530pm,
+            $c_flexi_1030am,
+            $c_flexi_5pm,
+            $time_after_which_unauthorised,
+            $can_take_casual_fn,
+            $can_take_casual_an,
+            $duration_seconds_needed,
+            $max_grace_seconds
+        ] = $this->getOfficeTimesForTimeGroup($date, $calender, $time_group);
 
 
         //Decide if this is punchin or out
         //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
-        if ($fetchComplete && ($punch_count  == 1 || $single_punch_type)) {
+        if (($punch_count  == 1 || $single_punch_type)) {
             //TODO is it punch in or out ? has to be set by under
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
@@ -264,7 +269,7 @@ class PunchingCalcService
                 $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
                 $c_punch_in =  $c_punch->clone();
                 $emp_new_punching_data['in_datetime'] =  $c_punch_in->toDateTimeString();
-                if(!$single_punch_type){ //if single punch type is set, dont change it
+                if(!$single_punch_type && $fetchComplete){ //if single punch type is set, dont change it
                     $emp_new_punching_data['single_punch_type'] = $single_punch_type = 'in';
                 }
             } else {
@@ -273,7 +278,7 @@ class PunchingCalcService
                 $emp_new_punching_data['punchout_trace_id'] = $punch['id'];
                 $c_punch_out = $c_punch->clone();
                 $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
-                if(!$single_punch_type){
+                if(!$single_punch_type && $fetchComplete){
                     $emp_new_punching_data['single_punch_type'] = $single_punch_type = 'out';
                 }
             }
@@ -293,16 +298,6 @@ class PunchingCalcService
             $emp_new_punching_data['out_datetime'] =  $c_punch_out->toDateTimeString();
         }
 
-
-
-
-        $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
-        $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
-        $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
-        $c_flexi_5pm = $normal_an_out->clone()->subMinutes($flexi_15minutes);
-        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds(3600);
-
-        $max_grace_seconds = 3600;
         //check if leave approved. if so,  calculate grace only if half day leave.
         //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
         [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
@@ -311,33 +306,15 @@ class PunchingCalcService
         $isSinglePunching =  $single_punch_type != null;
 
 
+        $emp_new_punching_data['duration_sec_needed'] = $duration_seconds_needed;
+
+
         if ($c_punch_in && $c_punch_out) {
 
             $duration_sec = $c_punch_in->diffInSeconds($c_punch_out);
             $emp_new_punching_data['duration_sec'] = $duration_sec;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
 
-            //office ends at noon or 3.00 pm
-
-            $office_ends_at_300pm = 0;
-            $office_ends_at_noon = 0;
-            $can_take_casual_fn = $can_take_casual_an = true;
-            if ($time_group['groupname'] != 'parttime') { //theirs end at 11 am
-                if ($office_ends_at_300pm) {
-                    $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '15:00:00'); //
-                    //  $max_grace_seconds = 1800; // ?
-                    $can_take_casual_fn = false;
-                } else
-                if ($office_ends_at_noon) {
-                    $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:15:00'); //
-                    //  $max_grace_seconds = 1800; // ?
-                    $can_take_casual_fn = $can_take_casual_an = false;
-                }
-            } else {
-                $can_take_casual_an = $can_take_casual_fn = false;
-            }
-
-            $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
 
 
             // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
@@ -384,7 +361,6 @@ class PunchingCalcService
                     $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
 
                     $isFullDay = false;
-                    //   $max_grace_seconds = 1800;
                 } else
                 if (($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') ||
                     ($hasLeave && $isAnLeave)) {
@@ -393,7 +369,6 @@ class PunchingCalcService
                     //$duration_seconds_needed = 3 * 3600;
                     $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
                     $isFullDay = false;
-                    //   $max_grace_seconds = 1800;
                 } else if ($computer_hint == 'casual') {
                     //punched, but not enough time worked or office ends and 3 pm/12pm situations
 
@@ -404,7 +379,8 @@ class PunchingCalcService
             $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
             $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
 
-            $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds(3600);
+            //since $c_flexi_1030am might be changed, recalculate this
+            $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
 
             //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
 
@@ -446,16 +422,16 @@ class PunchingCalcService
 
         }
 
-        if(!$isHoliday && $isSinglePunching) {
+        if(/*$fetchComplete &&*/ !$isHoliday && $isSinglePunching) {
             if($single_punch_type == 'in'){
-                if($c_punch_in->greaterThan($c_flexi_1030am)){
-                    $grace_sec = $c_punch_in->diffInSeconds($c_flexi_1030am,true);
+                if($c_punch_in->greaterThan($normal_fn_in)){
+                    $grace_sec = $c_punch_in->diffInSeconds($normal_fn_in,true);
                     $emp_new_punching_data['grace_sec'] = $grace_sec;
                     $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
                 }
             } else if ($single_punch_type == 'out'){
-                if($c_punch_out->lessThan($c_flexi_5pm)){
-                    $grace_sec = $c_flexi_5pm->diffInSeconds($c_punch_out,true);
+                if($c_punch_out->lessThan($normal_an_out)){
+                    $grace_sec = $normal_an_out->diffInSeconds($c_punch_out,true);
                     $emp_new_punching_data['grace_sec'] = $grace_sec;
                     $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
                 }
@@ -498,6 +474,72 @@ class PunchingCalcService
 
         //extra time
     }
+
+    private function getOfficeTimesForTimeGroup( $date, $calender, $time_group )
+    {
+        $max_grace_seconds = 3600;
+        $flexi_15minutes = $time_group['flexi_minutes'] ?? 15;
+        //use today's date. imagine legislation punching out next day. our flexiend is based on today
+        //get employee time group. now assume normal
+
+        $normal_fn_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_from']); //10.15
+        $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
+
+        $normal_an_in = $normal_an_out = null;
+        if ($time_group['groupname'] != 'parttime') {
+            $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
+            $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
+        } else {
+            $normal_an_out = $normal_fn_out;
+        }
+
+        $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
+        $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
+        $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
+        $c_flexi_5pm = $normal_an_out->clone()->subMinutes($flexi_15minutes);
+        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
+
+        //office ends at noon or 3.00 pm
+        $office_ends_at_300pm = $calender->office_ends_at === '3pm';
+        $office_ends_at_noon = $calender->office_ends_at === 'noon';
+        $can_take_casual_fn = $can_take_casual_an = true;
+        if ($time_group['groupname'] != 'parttime') { //theirs end at 11 am
+            if ($office_ends_at_300pm) {
+                $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '15:00:00'); //
+                //  $max_grace_seconds = 1800; // ?
+                $can_take_casual_fn = false;
+            } else
+            if ($office_ends_at_noon) {
+                $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:15:00'); //
+                //  $max_grace_seconds = 1800; // ?
+                $can_take_casual_fn = $can_take_casual_an = false;
+            }
+        } else {
+            $can_take_casual_an = $can_take_casual_fn = false;
+        }
+
+        $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
+
+        return [
+                $flexi_15minutes,
+                $normal_fn_in,
+                $normal_fn_out,
+                $normal_an_in,
+                $normal_an_out,
+                $c_flexi_10am,
+                $c_flexi_530pm,
+                $c_flexi_1030am,
+                $c_flexi_5pm,
+                $time_after_which_unauthorised,
+                $can_take_casual_fn,
+                $can_take_casual_an,
+                $duration_seconds_needed,
+                $max_grace_seconds
+        ];
+
+    }
+
+
     private function checkLeaveExists($punching_existing)
     {
         $hasLeave = $isFullLeave = $isFnLeave = $isAnLeave = false;
@@ -668,24 +710,6 @@ class PunchingCalcService
                 'single_punchings_regularised' => 0,
                 'unauthorised_count' => 0,
             ];
-        //     $emp_new_monthly_attendance_data['aadhaarid'] = $aadhaarid;
-        //     $emp_new_monthly_attendance_data['employee_id'] = $employee_id;
-        //  //   dd( $month_db_day->startOfMonth()->format('Y-m-d'));
-        //     $emp_new_monthly_attendance_data['month'] = $month_db_day->startOfMonth()->format('Y-m-d');
-        //     $emp_new_monthly_attendance_data['total_grace_sec'] = 0;
-        //     $emp_new_monthly_attendance_data['total_extra_sec'] = 0;
-        //     $emp_new_monthly_attendance_data['total_grace_str'] = '';
-        //     $emp_new_monthly_attendance_data['total_extra_str'] = '';
-        //     $emp_new_monthly_attendance_data['cl_marked'] = 0;
-        //     $emp_new_monthly_attendance_data['compen_marked'] = 0;
-        //     $emp_new_monthly_attendance_data['total_grace_exceeded300_date'] = null;
-        //     $emp_new_monthly_attendance_data['single_punchings'] = 0;
-        //     $emp_new_monthly_attendance_data['cl_submitted'] = 0;
-        //     $emp_new_monthly_attendance_data['grace_minutes'] = 300;
-        //     $emp_new_monthly_attendance_data['start_date'] = $start_date->format('Y-m-d');
-        //     $emp_new_monthly_attendance_data['end_date'] = $end_date->format('Y-m-d');
-        //     $emp_new_monthly_attendance_data['single_punchings_regularised'] = 0;
-        //     $emp_new_monthly_attendance_data['unauthorised_count'] = 0;
 
           //  \Log::info('aadhaarid:' . $aadhaarid);
             if ($emp_punchings) {
