@@ -100,10 +100,12 @@ class PunchingApiSectionMontlyController extends Controller
             }
 
             if ($data_yearly &&  $data_yearly->has($aadhaarid)) {
-                $item['cl_marked'] = $data_yearly[$aadhaarid]['cl_marked'];
+                $item['start_with_cl'] = $data_yearly[$aadhaarid]['start_with_cl'] ?? 0;
+                $item['cl_marked'] = $data_yearly[$aadhaarid]['cl_marked'] ;
                 $item['cl_submitted'] = $data_yearly[$aadhaarid]['cl_submitted'];
                 $item['single_punchings'] = $data_yearly[$aadhaarid]['single_punchings'];
-                $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'];
+                $item['start_with_compen'] = $data_yearly[$aadhaarid]['start_with_compen'] ?? 0;
+                $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'] ;
                 $item['compen_submitted'] = $data_yearly[$aadhaarid]['compen_submitted'];
                 $item['other_leaves_marked'] = $data_yearly[$aadhaarid]['other_leaves_marked'];
             } else {
@@ -113,6 +115,8 @@ class PunchingApiSectionMontlyController extends Controller
                 $item['compen_marked'] = 0;
                 $item['compen_submitted'] = 0;
                 $item['other_leaves_marked'] = 0;
+                $item['start_with_compen'] = 0;
+                $item['start_with_cl'] = 0;
             }
 
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
@@ -183,13 +187,14 @@ class PunchingApiSectionMontlyController extends Controller
 
         $sections = [...$sections, ...$attendancebooks->toArray()];
 
+
+
         return response()->json([
             'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021
             'calender_info' => $calender_info,
             'sections' => array_values(array_unique($sections)),
             'monthlypunchings' => $data,
             'employees_in_view' =>  $employees_in_view,
-           // 'data_yearly' => $data_yearly,
         ], 200);
     }
 }

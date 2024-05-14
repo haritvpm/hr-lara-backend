@@ -83,6 +83,8 @@ class PunchingApiSectionDailyController extends Controller
                 $item['compen_marked'] = $data_yearly[$aadhaarid]['compen_marked'];
                 $item['compen_submitted'] = $data_yearly[$aadhaarid]['compen_submitted'];
                 $item['other_leaves_marked'] = $data_yearly[$aadhaarid]['other_leaves_marked'];
+                $item['start_with_compen'] = $data_yearly[$aadhaarid]['start_with_compen'] ?? 0;
+                $item['start_with_cl'] = $data_yearly[$aadhaarid]['start_with_cl'] ?? 0;
 
             } else {
                 $item['cl_marked'] = 0;
@@ -90,6 +92,8 @@ class PunchingApiSectionDailyController extends Controller
                 $item['compen_marked'] = 0;
                 $item['compen_submitted'] = 0;
                 $item['other_leaves_marked'] = 0;
+                $item['start_with_compen'] = 0;
+                $item['start_with_cl'] = 0;
             }
 
             $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];

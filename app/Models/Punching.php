@@ -75,6 +75,7 @@ class Punching extends Model
         'single_punch_regularised_by',
         'time_group',
         'is_unauthorised',
+        'duration_sec_needed',
         'created_at',
         'updated_at',
         'deleted_at',
