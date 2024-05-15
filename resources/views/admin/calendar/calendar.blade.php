@@ -23,39 +23,31 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js'></script>
 <script>
     $(document).ready(function () {
+            var SITEURL = "{{url('/admin')}}";
             // page is now ready, initialize the calendar...
-            events={!! json_encode($events) !!};
+
+
+         $.ajaxSetup({
+             headers: {
+             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+             }
+         });
+
             $('#calendar').fullCalendar({
                 // put your options and callbacks here
-                events: events,
-                customButtons: {
-                    myCustomButton: {
-                        text: 'custom!',
-                        click: function() {
-                            alert('clicked the custom button!');
-                        }
+                events: SITEURL + "/fullcalender",
+                displayEventTime: false,
+                editable: true,
+
+                eventClick: function (event, element, view) {
+                    //event should have {start:moment(),title:"Title",editlink:"abc"}
+                    //goto  SITEURL/govt-calendars/event.id
+                    //if (event.editlink)
+                    {
+                        window.location.href = SITEURL + "/govt-calendars/" + event.id;
                     }
-                },
-                eventClick: function(calEvent, jsEvent, view) {
-                    alert('Event: ' + calEvent.title);
-                    //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-                    //alert('View: ' + view.name);
 
-                    // change the border color just for fun
-                    $(this).css('border-color', 'red');
-
-                },
-                eventRender: function(event, element) {
-                    event.allDay = true;
-                    element.popover({
-                        animation:true,
-                        html:true,
-                        content: event.title,
-                        trigger: 'hover'
-                    });
-                }
-
-
+            }
 
 
             })

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\SystemCalendarController;
+
 Route::redirect('/', '/login');
 //Route::redirect('/', '/hr-lara-backend/login');
 
@@ -251,6 +253,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Compen Granted
     Route::delete('compen-granteds/destroy', 'CompenGrantedController@massDestroy')->name('compen-granteds.massDestroy');
     Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
+
+    Route::get('fullcalender', [SystemCalendarController::class, 'indexajax']);
+    Route::post('fullcalenderAjax', [SystemCalendarController::class, 'ajax']);
 
     Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 });
