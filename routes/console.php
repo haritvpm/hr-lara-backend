@@ -32,7 +32,7 @@ Schedule::command('app:fetch-attendace-trace-today')
 ->cron('15,45 12-17 * * *'); //half hourly from  12 to 17
 
 Schedule::command('app:fetch-attendace-trace-yesterday')
-->cron('0 8,10,11,14 * * *') //will the server be up at 8 am?
+->cron('0,57 8,10,11 * * *') //will the server be up at 8 am?
 ->timezone('Asia/Kolkata')
 ->after(function () {
     // The task has executed...

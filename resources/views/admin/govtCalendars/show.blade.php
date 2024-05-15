@@ -8,11 +8,11 @@
 
     <div class="card-body">
         <div class="form-group">
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.govt-calendars.index') }}">
                     {{ trans('global.back_to_list') }}
                 </a>
-            </div>
+            </div> -->
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
@@ -129,9 +129,20 @@
                     </tr>
                 </tbody>
             </table>
+
             <div class="form-group">
+                    @can('govt_calendar_edit')
+                                    <a class="btn btn-dark btn-sm " href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
+                                        {{ trans('global.edit') }}
+                                    </a>
+                                @endcan
+
                 <a class="btn btn-default" href="{{ route('admin.govt-calendars.index') }}">
                     {{ trans('global.back_to_list') }}
+                </a>
+
+                <a class="btn btn-primary" href="{{ route('admin.systemCalendar',['date'=>$govtCalendar->date]) }}">
+                    Back to Calendar
                 </a>
             </div>
         </div>

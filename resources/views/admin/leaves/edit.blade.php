@@ -11,6 +11,14 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+                <label for="is_aebas_leave">{{ trans('cruds.leaf.fields.is_aebas_leave') }}</label>
+                <input class="form-control {{ $errors->has('is_aebas_leave') ? 'is-invalid' : '' }}" type="number" name="is_aebas_leave" id="is_aebas_leave" value="{{ old('is_aebas_leave', $leaf->is_aebas_leave) }}" step="1">
+                @if($errors->has('is_aebas_leave'))
+                    <span class="text-danger">{{ $errors->first('is_aebas_leave') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.is_aebas_leave_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="aadhaarid">{{ trans('cruds.leaf.fields.aadhaarid') }}</label>
                 <input class="form-control {{ $errors->has('aadhaarid') ? 'is-invalid' : '' }}" type="text" name="aadhaarid" id="aadhaarid" value="{{ old('aadhaarid', $leaf->aadhaarid) }}" required>
                 @if($errors->has('aadhaarid'))
@@ -102,14 +110,6 @@
                 <span class="help-block">{{ trans('cruds.leaf.fields.time_period_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="in_lieu_of">{{ trans('cruds.leaf.fields.in_lieu_of') }}</label>
-                <input class="form-control date {{ $errors->has('in_lieu_of') ? 'is-invalid' : '' }}" type="text" name="in_lieu_of" id="in_lieu_of" value="{{ old('in_lieu_of', $leaf->in_lieu_of) }}">
-                @if($errors->has('in_lieu_of'))
-                    <span class="text-danger">{{ $errors->first('in_lieu_of') }}</span>
-                @endif
-                <span class="help-block">{{ trans('cruds.leaf.fields.in_lieu_of_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="last_updated">{{ trans('cruds.leaf.fields.last_updated') }}</label>
                 <input class="form-control datetime {{ $errors->has('last_updated') ? 'is-invalid' : '' }}" type="text" name="last_updated" id="last_updated" value="{{ old('last_updated', $leaf->last_updated) }}">
                 @if($errors->has('last_updated'))
@@ -156,6 +156,14 @@
                     <span class="text-danger">{{ $errors->first('remarks') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.leaf.fields.remarks_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="casual_dates">{{ trans('cruds.leaf.fields.casual_dates') }}</label>
+                <textarea class="form-control {{ $errors->has('casual_dates') ? 'is-invalid' : '' }}" name="casual_dates" id="casual_dates">{{ old('casual_dates', $leaf->casual_dates) }}</textarea>
+                @if($errors->has('casual_dates'))
+                    <span class="text-danger">{{ $errors->first('casual_dates') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.leaf.fields.casual_dates_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

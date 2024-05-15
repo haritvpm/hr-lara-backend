@@ -27,7 +27,6 @@ class Leaf extends Model
     protected $dates = [
         'start_date',
         'end_date',
-        'in_lieu_of',
         'last_updated',
         'creation_date',
         'created_at',
@@ -36,9 +35,10 @@ class Leaf extends Model
     ];
 
     protected $fillable = [
+        'is_aebas_leave',
         'aadhaarid',
         'employee_id',
-        
+
         'leave_type',
         'start_date',
         'end_date',
@@ -46,13 +46,13 @@ class Leaf extends Model
         'active_status',
         'leave_cat',
         'time_period',
-        'in_lieu_of',
         'last_updated',
         'creation_date',
         'created_by_aadhaarid',
         'processed',
         'owner_seat',
         'remarks',
+        'casual_dates',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -82,6 +82,10 @@ class Leaf extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class, 'employee_id');
+    }
+    public function compensGranted()
+    {
+        return $this->hasMany(CompenGranted::class, 'leave_id');
     }
 
     // public function getStartDateAttribute($value)

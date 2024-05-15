@@ -93,7 +93,7 @@ class PunchingTraceFetchService
 
             // $url = 'http://localhost:3000/data';
             \Log::info($url);
-            $response = Http::timeout(60)->retry(3, 100)->withHeaders([
+            $response = Http::timeout(300)->retry(3, 100)->withHeaders([
                 'Access-Control-Allow-Origin' => '*',
                 'Content-Type' => 'application/json',
             ])->withOptions([
@@ -154,7 +154,8 @@ class PunchingTraceFetchService
 
         //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
 
-        if ($insertedcount) {
+        //if ($insertedcount) 
+        {
             $govtcalender->update([
                 //          'attendance_today_trace_fetched' =>  $govtcalender->attendance_today_trace_fetched+1,
                 'attendance_today_trace_rows_fetched' => $govtcalender->attendance_today_trace_rows_fetched + $insertedcount,
@@ -162,8 +163,10 @@ class PunchingTraceFetchService
                 'attendance_trace_fetch_complete' => $attendance_trace_fetch_complete,
 
             ]);
-
-            (new PunchingCalcService())->calculate($reportdate);
+            //if ($insertedcount) 
+            {
+                (new PunchingCalcService())->calculate($reportdate);
+            }
         }
 
         return $insertedcount;

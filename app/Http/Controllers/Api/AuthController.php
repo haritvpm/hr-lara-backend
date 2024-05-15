@@ -161,7 +161,7 @@ class AuthController extends Controller
         $user = User::find(Auth::id());
 
         $validator = Validator::make($request->all(), [
-            'password' => 'required|string|min:9',
+            'password' => 'required|string|min:6',
         ]);
 
         if ($validator->fails()) {

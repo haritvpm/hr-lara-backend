@@ -25,6 +25,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.leaf.fields.is_aebas_leave') }}
+                        </th>
+                        <td>
+                            {{ $leaf->is_aebas_leave }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.leaf.fields.aadhaarid') }}
                         </th>
                         <td>
@@ -97,14 +105,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.leaf.fields.in_lieu_of') }}
-                        </th>
-                        <td>
-                            {{ $leaf->in_lieu_of }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.leaf.fields.last_updated') }}
                         </th>
                         <td>
@@ -149,6 +149,14 @@
                         </th>
                         <td>
                             {{ $leaf->remarks }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.leaf.fields.casual_dates') }}
+                        </th>
+                        <td>
+                            {{ $leaf->casual_dates }}
                         </td>
                     </tr>
                 </tbody>

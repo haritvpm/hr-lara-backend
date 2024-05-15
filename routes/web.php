@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\SystemCalendarController;
+
 Route::redirect('/', '/login');
 //Route::redirect('/', '/hr-lara-backend/login');
 
@@ -29,6 +31,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::post('users/parse-csv-import', 'UsersController@parseCsvImport')->name('users.parseCsvImport');
     Route::post('users/process-csv-import', 'UsersController@processCsvImport')->name('users.processCsvImport');
+    Route::get('users/resetpassword/{id}', 'UsersControllerCustom@resetpassword')->name('users.resetpassword');
     Route::resource('users', 'UsersController');
 
     // Designation
@@ -246,6 +249,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Grace Time
     Route::delete('grace-times/destroy', 'GraceTimeController@massDestroy')->name('grace-times.massDestroy');
     Route::resource('grace-times', 'GraceTimeController', ['except' => ['show']]);
+
+    // Compen Granted
+    Route::delete('compen-granteds/destroy', 'CompenGrantedController@massDestroy')->name('compen-granteds.massDestroy');
+    Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
+
+    Route::get('fullcalender', [SystemCalendarController::class, 'indexajax']);
+    Route::post('fullcalenderAjax', [SystemCalendarController::class, 'ajax']);
+
+    Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

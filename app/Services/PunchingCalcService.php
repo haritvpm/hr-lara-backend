@@ -52,6 +52,7 @@ class PunchingCalcService
 
     public function calculate($date, $aadhaar_ids = null)
     {
+        \Log::info('calculate - start for date=' . $date);
         //grab punching trace for the employees.
         $all_punchingtraces =  $this->getPunchingTracesForDay($date,  $aadhaar_ids);
 
@@ -175,6 +176,7 @@ class PunchingCalcService
         $time_group,
         $calender
     ) {
+        $date_carbon = Carbon::createFromFormat('Y-m-d', $date);
 
         $punchingtraces =  $allemp_punchingtraces_grouped->has($aadhaarid) ?
             $allemp_punchingtraces_grouped->get($aadhaarid) : null;
@@ -194,7 +196,7 @@ class PunchingCalcService
 
         $hint = $punching_existing?->hint ?? null;
         $single_punch_type = $punching_existing?->single_punch_type ?? null;
-        $fetchComplete = $calender->attendance_trace_fetch_complete ?? false;
+        $fetchComplete = ($calender->attendance_trace_fetch_complete ?? false) && $date_carbon->lt(Carbon::now()->startOfDay());
 
         //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
         //\Log::info('hint:' . $hint);
@@ -302,7 +304,6 @@ class PunchingCalcService
         //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
         [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
         $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
-        $date_carbon = Carbon::createFromFormat('Y-m-d', $date);
         $isSinglePunching =  $single_punch_type != null;
 
 

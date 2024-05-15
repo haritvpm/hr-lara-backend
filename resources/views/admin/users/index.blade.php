@@ -107,6 +107,9 @@
                                 @endcan
 
                                 @can('user_edit')
+                                    <a class="btn btn-xs btn-danger" href="{{ route('admin.users.resetpassword', $user->id) }}">
+                                       Reset-PW
+                                    </a>
                                     <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
