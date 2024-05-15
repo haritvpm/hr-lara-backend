@@ -43,6 +43,9 @@ class LeaveController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
+            $table->editColumn('is_aebas_leave', function ($row) {
+                return $row->is_aebas_leave ? $row->is_aebas_leave : '';
+            });
             $table->editColumn('aadhaarid', function ($row) {
                 return $row->aadhaarid ? $row->aadhaarid : '';
             });
@@ -81,6 +84,9 @@ class LeaveController extends Controller
             });
             $table->editColumn('remarks', function ($row) {
                 return $row->remarks ? $row->remarks : '';
+            });
+            $table->editColumn('casual_dates', function ($row) {
+                return $row->casual_dates ? $row->casual_dates : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee']);

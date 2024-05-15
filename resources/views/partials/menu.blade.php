@@ -84,8 +84,8 @@
                     </li>
                 @endcan
                 @can('punching_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/settings*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/settings*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/compen-granteds*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/settings*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/compen-granteds*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/settings*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-address-card">
 
                             </i>
@@ -187,6 +187,16 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.leaf.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+				<li class="nav-item">
+                                    <a href="{{ route("admin.compen-granteds.index") }}" class="nav-link {{ request()->is("admin/compen-granteds") || request()->is("admin/compen-granteds/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.compenGranted.title') }}
                                         </p>
                                     </a>
                                 </li>
@@ -703,6 +713,16 @@
                         </ul>
                     </li>
                 @endcan
+                <li class="nav-item">
+                    <a href="{{ route("admin.systemCalendar") }}" class="nav-link {{ request()->is("admin/system-calendar") || request()->is("admin/system-calendar/*") ? "active" : "" }}">
+                        <i class="fas fa-fw fa-calendar nav-icon">
+
+                        </i>
+                        <p>
+                            {{ trans('global.systemCalendar') }}
+                        </p>
+                    </a>
+                </li>
                 @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
                     @can('profile_password_edit')
                         <li class="nav-item">

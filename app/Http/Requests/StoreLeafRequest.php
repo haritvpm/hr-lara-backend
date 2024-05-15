@@ -45,10 +45,6 @@ class StoreLeafRequest extends FormRequest
                 'required',
             ],
             
-            'in_lieu_of' => [
-                'date_format:' . config('panel.date_format'),
-                'nullable',
-            ],
         ];
     }
 }

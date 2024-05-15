@@ -39,6 +39,9 @@
                         {{ trans('cruds.leaf.fields.id') }}
                     </th>
                     <th>
+                        {{ trans('cruds.leaf.fields.is_aebas_leave') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.leaf.fields.aadhaarid') }}
                     </th>
                     <!-- <th>
@@ -66,9 +69,6 @@
                         {{ trans('cruds.leaf.fields.time_period') }}
                     </th>
                     <th>
-                        {{ trans('cruds.leaf.fields.in_lieu_of') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.leaf.fields.last_updated') }}
                     </th>
                     <th>
@@ -76,7 +76,7 @@
                     </th>
                     <!-- <th>
                         {{ trans('cruds.leaf.fields.created_by_aadhaarid') }}
-                    </th>
+                    </th>-->
                     <th>
                         {{ trans('cruds.leaf.fields.processed') }}
                     </th>
@@ -85,6 +85,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.leaf.fields.remarks') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.leaf.fields.casual_dates') }}
                     </th>
                     <th>
                         &nbsp;
@@ -143,6 +146,7 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
+{ data: 'is_aebas_leave', name: 'is_aebas_leave' },
 { data: 'aadhaarid', name: 'aadhaarid' },
 // { data: 'employee_name', name: 'employee.name' },
 { data: 'leave_type', name: 'leave_type' },
@@ -152,13 +156,13 @@
 { data: 'active_status', name: 'active_status' },
 { data: 'leave_cat', name: 'leave_cat' },
 { data: 'time_period', name: 'time_period' },
-{ data: 'in_lieu_of', name: 'in_lieu_of' },
 { data: 'last_updated', name: 'last_updated' },
 { data: 'creation_date', name: 'creation_date' },
 //{ data: 'created_by_aadhaarid', name: 'created_by_aadhaarid' },
 { data: 'processed', name: 'processed' },
 { data: 'owner_seat', name: 'owner_seat' },
 { data: 'remarks', name: 'remarks' },
+{ data: 'casual_dates', name: 'casual_dates' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

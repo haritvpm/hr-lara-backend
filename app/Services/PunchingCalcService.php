@@ -52,6 +52,7 @@ class PunchingCalcService
 
     public function calculate($date, $aadhaar_ids = null)
     {
+        \Log::info('calculate - start for date=' . $date);
         //grab punching trace for the employees.
         $all_punchingtraces =  $this->getPunchingTracesForDay($date,  $aadhaar_ids);
 

@@ -17,6 +17,10 @@ class UpdateLeafRequest extends FormRequest
     public function rules()
     {
         return [
+            'aadhaarid' => [
+                'string',
+                'required',
+            ],
             'employee_id' => [
                 'required',
                 'integer',
@@ -41,10 +45,6 @@ class UpdateLeafRequest extends FormRequest
                 'required',
             ],
            
-            'in_lieu_of' => [
-                'date_format:' . config('panel.date_format'),
-                'nullable',
-            ],
         ];
     }
 }
