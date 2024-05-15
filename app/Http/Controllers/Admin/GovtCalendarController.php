@@ -35,7 +35,9 @@ class GovtCalendarController extends Controller
     {
         $govtCalendar->update($request->all());
 
-        return redirect()->route('admin.govt-calendars.index');
+        return view('admin.govtCalendars.show', compact('govtCalendar'));
+        
+       // return redirect()->route('admin.govt-calendars.index');
     }
 
     public function show(GovtCalendar $govtCalendar)

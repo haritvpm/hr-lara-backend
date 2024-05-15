@@ -25,7 +25,9 @@
     $(document).ready(function () {
             var SITEURL = "{{url('/admin')}}";
             // page is now ready, initialize the calendar...
-
+            const urlParams = new URLSearchParams(window.location.search);
+            let currentDate = new Date().toJSON().slice(0, 10);
+            const dateQueryStr = urlParams.get('date') || currentDate;
 
          $.ajaxSetup({
              headers: {
@@ -38,7 +40,7 @@
                 events: SITEURL + "/fullcalender",
                 displayEventTime: false,
                 editable: true,
-
+                defaultDate: dateQueryStr ,
                 eventClick: function (event, element, view) {
                     //event should have {start:moment(),title:"Title",editlink:"abc"}
                     //goto  SITEURL/govt-calendars/event.id
@@ -47,9 +49,21 @@
                         window.location.href = SITEURL + "/govt-calendars/" + event.id;
                     }
 
-            }
+            },
+            eventRender: function (event, element, view) {
+               /// element.find('.fc-title').append("<br/>" + event.date);
+               let txt = event.is_holiday ? 'Holiday ' : ''  ;
+               txt += event.is_restricted ? 'RH ' : ''  ;
+               txt += event.is_sitting_day ? 'Sitting_day ' : ''  ;
 
-
+               element.popover({
+                    title: event.date,
+                    content: txt,
+                    trigger: 'hover',
+                    placement: 'top',
+                    container: 'body'
+                });
+            },
             })
         });
 </script>

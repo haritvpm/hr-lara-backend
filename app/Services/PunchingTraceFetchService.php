@@ -93,7 +93,7 @@ class PunchingTraceFetchService
 
             // $url = 'http://localhost:3000/data';
             \Log::info($url);
-            $response = Http::timeout(60)->retry(3, 100)->withHeaders([
+            $response = Http::timeout(300)->retry(3, 100)->withHeaders([
                 'Access-Control-Allow-Origin' => '*',
                 'Content-Type' => 'application/json',
             ])->withOptions([
