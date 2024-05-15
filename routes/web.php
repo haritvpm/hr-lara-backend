@@ -247,6 +247,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Grace Time
     Route::delete('grace-times/destroy', 'GraceTimeController@massDestroy')->name('grace-times.massDestroy');
     Route::resource('grace-times', 'GraceTimeController', ['except' => ['show']]);
+
+    // Compen Granted
+    Route::delete('compen-granteds/destroy', 'CompenGrantedController@massDestroy')->name('compen-granteds.massDestroy');
+    Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
+
+    Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

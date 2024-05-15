@@ -175,4 +175,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Employee Extra
     Route::apiResource('employee-extras', 'EmployeeExtraApiController');
+
+    // Grace Time
+    Route::apiResource('grace-times', 'GraceTimeApiController', ['except' => ['show']]);
+
+    // Compen Granted
+    Route::apiResource('compen-granteds', 'CompenGrantedApiController', ['except' => ['show']]);
 });
