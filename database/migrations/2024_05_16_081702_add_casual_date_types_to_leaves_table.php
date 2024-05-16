@@ -12,9 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->integer('is_aebas_leave')->nullable();
-            $table->text('casual_dates')->nullable();
-            $table->dropColumn('in_lieu_of');
+
+            if(Schema::hasColumn('leaves', 'start_date_type')) {
+                $table->dropColumn('start_date_type');
+                $table->dropColumn('end_date_type');
+            }
+
+
+
+
+            $table->string('start_date_type')->nullable();
+            $table->string('end_date_type')->nullable();
+
 
         });
     }
@@ -25,7 +34,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('leaves', function (Blueprint $table) {
-            //
+            if(Schema::hasColumn('leaves', 'start_date_type')) {
+                $table->dropColumn('start_date_type');
+                $table->dropColumn('end_date_type');
+            }
+
         });
     }
 };

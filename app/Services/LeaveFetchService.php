@@ -73,7 +73,7 @@ class LeaveFetchService
                 $returnkey = "leavedetails";
             }
             \Log::info($url);
-            $response = Http::timeout(60)->retry(3, 100)->withHeaders([
+            $response = Http::timeout(120)->retry(3, 100)->withHeaders([
                 'Access-Control-Allow-Origin' => '*',
                 'Content-Type' => 'application/json',
             ])->withOptions([

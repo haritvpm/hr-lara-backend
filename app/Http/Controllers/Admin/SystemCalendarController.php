@@ -9,17 +9,7 @@ use App\Models\GovtCalendar;
 
 class SystemCalendarController extends Controller
 {
-    public $sources = [
-        [
-            'model'      => '\App\Models\GovtCalendar',
-            'date_field' => 'date',
-            'field'      => 'id',
-            'prefix'     => '',
-            'suffix'     => '',
-            'route'      => 'admin.govt-calendars.edit',
-        ],
-    ];
-
+   
     public function index(Request $request)
     {
         // dd($request->all());
@@ -58,13 +48,19 @@ class SystemCalendarController extends Controller
                            return [
                                'id' => $calenderday->id,
                                'date' => $calenderday->date,
+                               'is_holiday' => $calenderday->govtholidaystatus,
+                               'is_restricted' => $calenderday->restrictedholidaystatus,
+                               'is_sitting_day' => $calenderday->is_sitting_day,
                                'title' => $calenderday->attendancetodaytrace_lastfetchtime ?
                                         Carbon::parse($calenderday->attendancetodaytrace_lastfetchtime)->format('H:i'):
-                                           'Not Fetched Yet' ,
+                                           'Not Fetched' ,
                                'start' => $calenderday->date,
                                'url'   => route('admin.govt-calendars.show', $calenderday->id),
                              //  'editlink' => route('admin.govt-calendars.edit', $calenderday->id),
-                               'color' => $calenderday->govtholidaystatus ? 'red' : 'black',
+                               'color' => $calenderday->govtholidaystatus ? 'red' 
+                                        :($calenderday->is_sitting_day ? 'green' 
+                                        :($calenderday->session_id ? 'blue' : 'black')),
+                               'textColor' => $calenderday->attendance_trace_fetch_complete ? 'yellow' : 'white',
                            ];
                        });
 
