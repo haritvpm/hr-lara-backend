@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->integer('is_aebas_leave')->nullable();
-            $table->text('casual_dates')->nullable();
-            $table->dropColumn('in_lieu_of');
+            $table->text('reason')->change();
+           if(Schema::hasColumn('leaves', 'casual_dates')) {
+            $table->dropColumn('casual_dates');
+           }
 
         });
     }
