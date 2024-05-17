@@ -27,7 +27,7 @@ class GovtCalendarApiControllerCustom extends Controller
             ->get();
 
         return response()->json([
-            $holidays
+            'holidays'=> $holidays
         ], 200);
     }
 }
