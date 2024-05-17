@@ -43,6 +43,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
 
     // Govt Calendar
+    ///////////
+    Route::get('/holidays/{date?}', 'GovtCalendarApiControllerCustom@getHolidays');
+    ///////////
     Route::apiResource('govt-calendars', 'GovtCalendarApiController', ['except' => ['store', 'destroy']]);
 
     // Administrative Office

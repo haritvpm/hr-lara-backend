@@ -252,8 +252,8 @@ class PunchingCalcService
 
             if(!$single_punch_type){ //not set by controller
                 if($time_group['groupname'] != 'parttime'){
-                    $half_time = $normal_fn_in->clone()->addSeconds($normal_fn_in->diffInSeconds($normal_an_out) / 2);
-                    //if punch is one hour before normal_an_out, make this punchout instead of punchin.
+                    $half_time = $normal_an_in->clone()->addSeconds( $normal_an_in->diffInSeconds($normal_an_out) / 2);
+                    //if punch is one hour after nooon, make this punchout instead of punchin.
                     if($c_punch->gt($half_time) /*&& $c_punch->lt($normal_an_out->clone()->subSeconds(3600))*/){
                         $isPunchIn = false;
                     }
