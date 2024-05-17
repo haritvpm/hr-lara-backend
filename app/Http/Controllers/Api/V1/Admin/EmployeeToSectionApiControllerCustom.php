@@ -35,10 +35,16 @@ class EmployeeToSectionApiControllerCustom extends Controller
         );
 
         if (!$employees_under_my_section) {
-            return response()->json(['status' => 'No employees under your section'], 200);
+          //  return response()->json(['status' => 'No employees under your section'], 200);
         }
 
-        $sections = Section::with('sectionAttendanceBooks')->wherein('id', $employees_under_my_section->pluck('section_id')->unique())->get();
+        $sections = Section::with('sectionAttendanceBooks')
+        // ->when($employees_under_my_section, function ($query) {
+        //     return $query->wherein('id', $employees_under_my_section->pluck('section_id'));
+        // })
+        ->wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
+        ->get()->unique();
+
         $attendancebooks = AttendanceBook::wherein('section_id',  $sections->pluck('id'))->get();
 
         return response()->json([
