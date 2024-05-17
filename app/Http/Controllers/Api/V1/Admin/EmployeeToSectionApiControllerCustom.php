@@ -43,6 +43,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
         //     return $query->wherein('id', $employees_under_my_section->pluck('section_id'));
         // })
         ->wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
+        ->orwherein('seat_of_controlling_officer_id', $seat_ids_of_loggedinuser)
         ->get()->unique();
 
         $attendancebooks = AttendanceBook::wherein('section_id',  $sections->pluck('id'))->get();

@@ -413,7 +413,7 @@ class EmployeeService
 
         //only get my sections' employees. not for which I am controller of
         $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, false);
+            [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, true);
 
         if (! $employee_section_maps) {
             return null;
