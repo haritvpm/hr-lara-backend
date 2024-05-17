@@ -164,8 +164,8 @@ class LeaveFetchService
         //$totalrowsindb  = PunchingTrace::where('att_date',$reportdate)->count();
 
         //if ($insertedcount) 
+        if($reportdate)
         {
-
            (new PunchingCalcService())->calculate($reportdate);
         }
 
