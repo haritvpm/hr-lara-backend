@@ -114,9 +114,9 @@ class User extends Authenticatable implements JWTSubject
 
         $seat_ids_of_loggedinuser = EmployeeToSeat::where('employee_id', $me->employee_id)->get()->pluck('seat_id');
 
-        if (!$seat_ids_of_loggedinuser || count($seat_ids_of_loggedinuser) == 0) {
-            $status = 'No seats in charge';
-            return [   $me , null,  $status];
+        if (!$seat_ids_of_loggedinuser || ($seat_ids_of_loggedinuser && count($seat_ids_of_loggedinuser) == 0)) {
+           // $status = 'No seats in charge';
+            //return [   $me , null,  $status];
         }
         $status = 'success';
 
