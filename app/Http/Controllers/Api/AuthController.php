@@ -132,7 +132,7 @@ class AuthController extends Controller
         }
         //get roles of this user's seat
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-        if (count($seat_ids_of_loggedinuser)) {
+        if ($seat_ids_of_loggedinuser && count($seat_ids_of_loggedinuser)) {
 
             $roles = Seat::whereIn('id', $seat_ids_of_loggedinuser)->with('roles', 'roles.permissions')->get()->pluck('roles')->flatten();
             $allroles = $allroles->merge($roles);
