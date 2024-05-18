@@ -34,30 +34,6 @@ class Leaf extends Model
         'deleted_at',
     ];
 
-    protected $fillable = [
-        'is_aebas_leave',
-        'aadhaarid',
-        'employee_id',
-
-        'leave_type',
-        'start_date',
-        'end_date',
-        'reason',
-        'active_status',
-        'leave_cat',
-        'time_period',
-        'last_updated',
-        'creation_date',
-        'created_by_aadhaarid',
-        'processed',
-        'owner_seat',
-        'remarks',
-        'casual_dates',
-        'created_at',
-        'updated_at',
-        'deleted_at',
-    ];
-
     public const LEAVE_TYPE_SELECT = [
         'CASUAL'       => 'CASUAL',
         'COMPEN_LEAVE' => 'COMPEN_LEAVE',
@@ -74,6 +50,29 @@ class Leaf extends Model
         'LWA'          => 'LWA',
     ];
 
+    protected $fillable = [
+        'is_aebas_leave',
+        'aadhaarid',
+        'employee_id',
+        'leave_type',
+        'start_date',
+        'end_date',
+        'reason',
+        'active_status',
+        'leave_cat',
+        'time_period',
+        'last_updated',
+        'creation_date',
+        'created_by_aadhaarid',
+        'processed',
+        'owner_seat',
+        'remarks',
+        'start_date_type',
+        'end_date_type',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
     // protected function serializeDate(DateTimeInterface $date)
     // {
     //     return $date->format('Y-m-d H:i:s');

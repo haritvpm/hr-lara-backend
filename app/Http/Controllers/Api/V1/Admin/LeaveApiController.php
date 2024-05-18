@@ -20,13 +20,15 @@ class LeaveApiController extends Controller
         return new LeafResource(Leaf::with(['employee'])->get());
     }
 
-    public function store(StoreLeafRequest $request)
+    public function store(Request $request)
     {
-        $leaf = Leaf::create($request->all());
+        \Log::info('store leaf');
+        \Log::info($request->all());
+       // $leaf = Leaf::create($request->all());
 
-        return (new LeafResource($leaf))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        // return (new LeafResource($leaf))
+        //     ->response()
+        //     ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Leaf $leaf)
