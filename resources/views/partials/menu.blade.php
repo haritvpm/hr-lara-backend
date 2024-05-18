@@ -84,8 +84,8 @@
                     </li>
                 @endcan
                 @can('punching_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/compen-granteds*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/settings*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/compen-granteds*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/settings*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/govt-calendars*") ? "menu-open" : "" }} {{ request()->is("admin/attendance-routings*") ? "menu-open" : "" }} {{ request()->is("admin/settings*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/govt-calendars*") ? "active" : "" }} {{ request()->is("admin/attendance-routings*") ? "active" : "" }} {{ request()->is("admin/settings*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-address-card">
 
                             </i>
@@ -107,66 +107,6 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('punching_trace_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.punching-traces.index") }}" class="nav-link {{ request()->is("admin/punching-traces") || request()->is("admin/punching-traces/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-check">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.punchingTrace.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('success_punching_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.success-punchings.index") }}" class="nav-link {{ request()->is("admin/success-punchings") || request()->is("admin/success-punchings/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-check-double">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.successPunching.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('punching_device_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.punching-devices.index") }}" class="nav-link {{ request()->is("admin/punching-devices") || request()->is("admin/punching-devices/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-laptop">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.punchingDevice.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('punching_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.punchings.index") }}" class="nav-link {{ request()->is("admin/punchings") || request()->is("admin/punchings/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-fingerprint">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.punching.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('monthly_attendance_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.monthly-attendances.index") }}" class="nav-link {{ request()->is("admin/monthly-attendances") || request()->is("admin/monthly-attendances/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-moon">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.monthlyAttendance.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
                             @can('attendance_routing_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.attendance-routings.index") }}" class="nav-link {{ request()->is("admin/attendance-routings") || request()->is("admin/attendance-routings/*") ? "active" : "" }}">
@@ -179,41 +119,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('leaf_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.leaves.index") }}" class="nav-link {{ request()->is("admin/leaves") || request()->is("admin/leaves/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-hospital-symbol">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.leaf.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-				<li class="nav-item">
-                                    <a href="{{ route("admin.compen-granteds.index") }}" class="nav-link {{ request()->is("admin/compen-granteds") || request()->is("admin/compen-granteds/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-cogs">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.compenGranted.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('monthly_attendance_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.yearly-attendances.index") }}" class="nav-link {{ request()->is("admin/yearly-attendances") || request()->is("admin/yearly-attendances/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-calendar-alt">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.yearlyAttendance.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('govt_calendar_access')
+                            @can('setting_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.settings.index") }}" class="nav-link {{ request()->is("admin/settings") || request()->is("admin/settings/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -252,18 +158,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('seat_to_js_as_ss_access')
-                                <li class="nav-item">
-                                    <a href="{{ route("admin.seat-to-js-as-sses.index") }}" class="nav-link {{ request()->is("admin/seat-to-js-as-sses") || request()->is("admin/seat-to-js-as-sses/*") ? "active" : "" }}">
-                                        <i class="fa-fw nav-icon fas fa-chess-king">
 
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.seatToJsAsSs.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
                             @can('employee_to_seat_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.employee-to-seats.index") }}" class="nav-link {{ request()->is("admin/employee-to-seats") || request()->is("admin/employee-to-seats/*") ? "active" : "" }}">
@@ -698,7 +593,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            
+                            @endcan
+                            @can('grace_time_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.grace-times.index") }}" class="nav-link {{ request()->is("admin/grace-times") || request()->is("admin/grace-times/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -706,6 +602,129 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.graceTime.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcan
+                @can('user_management_access')
+                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/compen-granteds*") ? "menu-open" : "" }} {{ request()->is("admin/casual-leaves*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/compen-granteds*") ? "active" : "" }} {{ request()->is("admin/casual-leaves*") ? "active" : "" }}" href="#">
+                            <i class="fa-fw nav-icon fas fa-database">
+
+                            </i>
+                            <p>
+                                {{ trans('cruds.database.title') }}
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            @can('punching_trace_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.punching-traces.index") }}" class="nav-link {{ request()->is("admin/punching-traces") || request()->is("admin/punching-traces/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-check">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.punchingTrace.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('success_punching_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.success-punchings.index") }}" class="nav-link {{ request()->is("admin/success-punchings") || request()->is("admin/success-punchings/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-check-double">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.successPunching.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('punching_device_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.punching-devices.index") }}" class="nav-link {{ request()->is("admin/punching-devices") || request()->is("admin/punching-devices/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-laptop">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.punchingDevice.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('punching_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.punchings.index") }}" class="nav-link {{ request()->is("admin/punchings") || request()->is("admin/punchings/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-fingerprint">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.punching.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('monthly_attendance_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.monthly-attendances.index") }}" class="nav-link {{ request()->is("admin/monthly-attendances") || request()->is("admin/monthly-attendances/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-moon">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.monthlyAttendance.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('leaf_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.leaves.index") }}" class="nav-link {{ request()->is("admin/leaves") || request()->is("admin/leaves/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-hospital-symbol">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.leaf.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('yearly_attendance_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.yearly-attendances.index") }}" class="nav-link {{ request()->is("admin/yearly-attendances") || request()->is("admin/yearly-attendances/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-calendar-alt">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.yearlyAttendance.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('compen_granted_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.compen-granteds.index") }}" class="nav-link {{ request()->is("admin/compen-granteds") || request()->is("admin/compen-granteds/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.compenGranted.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('casual_leaf_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.casual-leaves.index") }}" class="nav-link {{ request()->is("admin/casual-leaves") || request()->is("admin/casual-leaves/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.casualLeaf.title') }}
                                         </p>
                                     </a>
                                 </li>
