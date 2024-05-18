@@ -22,9 +22,11 @@ class UsersControllerCustom extends Controller
     {
         abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $user = User::find($request->id);
+        \Log::info('reset password');
+
         $user->password = bcrypt($user->username);
         $user->save();
-        \Session::flash('success', 'Password reset successfully to username');
+        \Session::flash('message', 'Password reset successfully to username');
         return redirect()->route('admin.users.index');
     }
       
