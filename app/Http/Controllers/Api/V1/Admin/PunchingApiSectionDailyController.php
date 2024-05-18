@@ -37,6 +37,10 @@ class PunchingApiSectionDailyController extends Controller
             $me
         );
 
+        if(!$employees_in_view){
+            return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);
+        }
+
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
 
         $employees_in_view_mapped = $employees_in_view->mapwithKeys(function ($item) {
