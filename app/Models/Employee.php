@@ -116,4 +116,8 @@ class Employee extends Model
     {
         return $this->belongsTo(GraceTime::class, 'grace_group_id');
     }
+     public function employeeCompenGranteds()
+    {
+        return $this->hasMany(CompenGranted::class, 'employee_id', 'id');
+    }
 }

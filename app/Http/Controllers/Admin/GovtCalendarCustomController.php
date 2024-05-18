@@ -39,9 +39,9 @@ class GovtCalendarCustomController extends Controller
         $date_str = $request->date;
         \Log::info("calculate attendance tr !. " .  $date_str);
 
-      
+
         if(!$date_str) $date_str = Carbon::today()->format('Y-m-d'); //today
-        
+
         $date = Carbon::parse($date_str);
         $date->setTime(0,0,0);
 
@@ -50,7 +50,7 @@ class GovtCalendarCustomController extends Controller
         $c_today = Carbon::today();
         $c_today->setTime(0,0,0);
 
-        
+
 
         if ($date->greaterThan($c_today)) {
             \Session::flash('message', 'Tomorrow attendance is not calculated' );
@@ -64,7 +64,13 @@ class GovtCalendarCustomController extends Controller
 
         return redirect()->back();
     }
+    public function opendate(Request $request)
+    {
+        $date_string = $request->date;
+        $calender = GovtCalendar::getGovtCalender($date_string);
+        return redirect()->route('admin.govt-calendars.show', [$calender->id]);
 
+    }
 
     public function fetchmonth(Request $request)
     {

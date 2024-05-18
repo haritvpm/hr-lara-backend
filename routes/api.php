@@ -156,7 +156,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 
     // Leave
-    Route::apiResource('leaves', 'LeaveApiController', ['except' => ['store']]);
+    Route::apiResource('leaves', 'LeaveApiController');
 
     // Office Times
     Route::apiResource('office-times', 'OfficeTimesApiController');

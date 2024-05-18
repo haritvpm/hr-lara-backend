@@ -56,9 +56,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('punching-traces/process-csv-import', 'PunchingTraceController@processCsvImport')->name('punching-traces.processCsvImport');
     Route::resource('punching-traces', 'PunchingTraceController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
+    //our javascript calender
+    Route::get('fullcalender', [SystemCalendarController::class, 'indexajax']);
+    Route::post('fullcalenderAjax', [SystemCalendarController::class, 'ajax']);
 
+    Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 
     // Govt Calendar
+    Route::get('govt-calendars/date/{date}', 'GovtCalendarCustomController@opendate')->name('govt-calendars.opendate');
 
     Route::get('govt-calendars/calculate/{date}', 'GovtCalendarCustomController@calculate')->name('govt-calendars.calculate');
     Route::get('govt-calendars/fetch/{date}', 'GovtCalendarCustomController@fetch')->name('govt-calendars.fetch');
@@ -254,10 +259,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('compen-granteds/destroy', 'CompenGrantedController@massDestroy')->name('compen-granteds.massDestroy');
     Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
 
-    Route::get('fullcalender', [SystemCalendarController::class, 'indexajax']);
-    Route::post('fullcalenderAjax', [SystemCalendarController::class, 'ajax']);
 
-    Route::get('system-calendar', 'SystemCalendarController@index')->name('systemCalendar');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

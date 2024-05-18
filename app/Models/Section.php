@@ -77,4 +77,14 @@ class Section extends Model
     {
         return $this->belongsTo(Employee::class, 'js_as_ss_employee_id');
     }
+    // public function getNameAttribute($value)
+    // {
+    //     if($this->type === 'OFFICE_OF_JS_AS_SS')
+    //     {
+
+    //         return 'Office of ' . $this->js_as_ss_employee->            ;
+    //     }
+
+    //     return $value;
+    // }
 }

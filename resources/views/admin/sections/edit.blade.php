@@ -62,7 +62,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.section.fields.seat_of_reporting_officer_helper') }}</span>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="js_as_ss_employee_id">{{ trans('cruds.section.fields.js_as_ss_employee') }}</label>
                 <select class="form-control select2 {{ $errors->has('js_as_ss_employee') ? 'is-invalid' : '' }}" name="js_as_ss_employee_id" id="js_as_ss_employee_id">
                     @foreach($js_as_ss_employees as $id => $entry)
@@ -73,7 +73,7 @@
                     <span class="text-danger">{{ $errors->first('js_as_ss_employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.section.fields.js_as_ss_employee_helper') }}</span>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label>{{ trans('cruds.section.fields.type') }}</label>
                 <select class="form-control {{ $errors->has('type') ? 'is-invalid' : '' }}" name="type" id="type">
