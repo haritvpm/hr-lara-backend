@@ -30,7 +30,7 @@ class AuthController extends Controller
         if (! $token) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthorized',
+                'message' => 'Unauthorized login',
             ], 401);
         }
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'refresh_token' => $token,
             'type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 600,
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
 
         ]);
 
@@ -114,7 +114,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'refresh_token' => $token,
             'type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 600,
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
 
         ]);
     }
@@ -210,7 +210,7 @@ class AuthController extends Controller
         $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
 
         $dateOfJoinInKLA = $request->dateOfJoinInKLA ? Carbon::parse($request->dateOfJoinInKLA)->format('Y-m-d') : null;
-        
+
         \Log::info('in save profile', $request->all());
         $validator = Validator::make($request->all(), [
            // 'email' => 'email'|'unique:employee_extras,email,' . $user->employee?->employeeExtra?->id,
@@ -237,7 +237,7 @@ class AuthController extends Controller
             'date_of_joining_kla' => $dateOfJoinInKLA,
             'pan' => $request->pan,
             'klaid' => $request->klaid,
-           
+
         ];
         if($user->employee->employeeExtra){
             $user->employee->employeeExtra->update($values);
