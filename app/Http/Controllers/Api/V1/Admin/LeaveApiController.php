@@ -67,8 +67,10 @@ class LeaveApiController extends Controller
 
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
+            $owner_can_approve = false;
             if( $seat_ids_of_loggedinuser->contains($owner) == true){
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                $owner_can_approve = true;
             }
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
             $leaf = Leaf::create(
@@ -78,14 +80,15 @@ class LeaveApiController extends Controller
                     'employee_id'=> $me->employee_id,
                     'leave_type' => $request->leaveType,
                     'start_date' => Carbon::parse($request->fromDate)->format('Y-m-d'),
-                    'end_date'  => $request->toDate ? Carbon::parse($request->toDate)->format('Y-m-d') : null,
+                    'end_date'  => $request->toDate ? Carbon::parse($request->toDate)->format('Y-m-d') : Carbon::parse($request->fromDate)->format('Y-m-d'),
                     'reason' => $request->reason,
                     'active_status' => 'N',
                     'last_updated' => null,
                     'creation_date' => now(),
                     'created_by_aadhaarid' => $me->employee->aadhaarid,
                     'processed' => false,
-                    'owner_seat' =>  $owner ,
+                    'owner_seat' =>  $owner,
+                    'owner_can_approve' => $owner_can_approve,
                     'remarks' =>null,
                     'start_date_type' => $request->fromType,
                     'end_date_type'=> $request->toType,

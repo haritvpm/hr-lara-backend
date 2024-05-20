@@ -73,6 +73,7 @@ class Leaf extends Model
         'updated_at',
         'deleted_at',
         'leave_count',
+        'owner_can_approve',
     ];
     // protected function serializeDate(DateTimeInterface $date)
     // {
