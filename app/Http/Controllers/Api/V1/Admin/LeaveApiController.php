@@ -56,7 +56,7 @@ class LeaveApiController extends Controller
                     'employee_id'=> $me->employee_id,
                     'leave_type' => $request->leaveType,
                     'start_date' => Carbon::parse($request->fromDate)->format('Y-m-d'),
-                    'end_date'  => Carbon::parse($request->toDate)->format('Y-m-d'),
+                    'end_date'  => $request->toDate ? Carbon::parse($request->toDate)->format('Y-m-d') : null,
                     'reason' => $request->reason,
                     'active_status' => 'N',
                     'last_updated' => null,
@@ -68,6 +68,8 @@ class LeaveApiController extends Controller
                     'start_date_type' => $request->fromType,
                     'end_date_type'=> $request->toType,
                     'leave_count' => $request->leave_count,
+                    'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
+                    'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
 
                 ]
             );
@@ -89,9 +91,9 @@ class LeaveApiController extends Controller
                     }
                 }
             } else {
-                //find a non holiday date for month of $request->inlieuofdates if possible.
+                //find a non holiday date for month of $request->inlieuofdate if possible.
                 //only one date is allowed
-                $inLieofDate = Carbon::parse($request->inlieuofdates)->format('Y-m-d');
+                $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-d');
                 $compensGranted = new CompenGranted();
                 $compensGranted->aadhaarid = $me->employee->aadhaarid;
                 $compensGranted->leave_id = $leaf->id;
