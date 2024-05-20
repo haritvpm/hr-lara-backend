@@ -18,16 +18,33 @@ class LeaveApiController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+       // abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return new LeafResource(Leaf::with(['employee'])->get());
+       //find all leaves where owner_seat is the logged in user's seat
+       [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        if( $status == 'error'){
+            return response()->json(
+            [
+                'status' => 'error',
+                'message' => 'User has no seats mapped'
+            ], 400);
+        }
+
+        $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])->wherein('owner_seat', $seat_ids_of_loggedinuser)->get();
+            
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'leaves' => LeafResource::collection($leaves)
+                   
+            ], 200); 
     }
 
     public function store(Request $request)
     {
-        $me = User::with('employee')->find( auth()->user()->id );
-
-
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
         \Log::info('store leaf');
         \Log::info($request->all());
@@ -46,8 +63,13 @@ class LeaveApiController extends Controller
         \Log::info($sectionMapping);
 
         $leaf = null;
-        \DB::transaction(function () use ( &$leaf, $request, $me,  $sectionMapping) {
+        \DB::transaction(function () use ( &$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
 
+            //when SO, who is the reporting officer submits, has to submit to controller
+            $owner = $sectionMapping->section->seat_of_reporting_officer_id;
+            if( $seat_ids_of_loggedinuser->contains($owner) == true){
+                $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+            }
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
             $leaf = Leaf::create(
                 [
@@ -63,7 +85,7 @@ class LeaveApiController extends Controller
                     'creation_date' => now(),
                     'created_by_aadhaarid' => $me->employee->aadhaarid,
                     'processed' => false,
-                    'owner_seat' =>  $sectionMapping->section->seat_of_reporting_officer_id,
+                    'owner_seat' =>  $owner ,
                     'remarks' =>null,
                     'start_date_type' => $request->fromType,
                     'end_date_type'=> $request->toType,
@@ -90,7 +112,7 @@ class LeaveApiController extends Controller
                         $compensGranted->save();
                     }
                 }
-            } else {
+             else {
                 //find a non holiday date for month of $request->inlieuofdate if possible.
                 //only one date is allowed
                 $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-d');
@@ -103,7 +125,7 @@ class LeaveApiController extends Controller
                 $compensGranted->save();
 
             }
-
+            }
 
         });
 
