@@ -67,7 +67,7 @@ class LeaveApiController extends Controller
                     'remarks' =>null,
                     'start_date_type' => $request->fromType,
                     'end_date_type'=> $request->toType,
-                    'leave_count' => $request->leave_count,
+                    'leave_count' => $request->leaveCount,
                     'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
                     'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
 
