@@ -51,8 +51,8 @@ class LeaveApiController extends Controller
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        $leave_start_date = Carbon::parse($request->fromDate);
-        $leave_end_date = $request->toDate ? Carbon::parse($request->toDate) : Carbon::parse($request->fromDate);
+        $leave_start_date = Carbon::parse($request->start_date);
+        $leave_end_date = $request->end_date ? Carbon::parse($request->end_date) : Carbon::parse($request->start_date);
 /*
         $leavePeriod = CarbonPeriod::create($leave_start_date, $leave_end_date);
         foreach ($leavePeriod as $leavedate) {
@@ -123,9 +123,9 @@ class LeaveApiController extends Controller
                     'is_aebas_leave' => false,
                     'aadhaarid' => $me->employee->aadhaarid,
                     'employee_id'=> $me->employee_id,
-                    'leave_type' => $request->leaveType,
-                    'start_date' => Carbon::parse($request->fromDate)->format('Y-m-d'),
-                    'end_date'  => $request->toDate ? Carbon::parse($request->toDate)->format('Y-m-d') : Carbon::parse($request->fromDate)->format('Y-m-d'),
+                    'leave_type' => $request->leave_type,
+                    'start_date' => Carbon::parse($request->start_date)->format('Y-m-d'),
+                    'end_date'  => $request->end_date ? Carbon::parse($request->end_date)->format('Y-m-d') : Carbon::parse($request->start_date)->format('Y-m-d'),
                     'reason' => $request->reason,
                     'active_status' => 'N',
                     'last_updated' => null,
@@ -135,16 +135,16 @@ class LeaveApiController extends Controller
                     'owner_seat' =>  $owner,
                     'owner_can_approve' => $owner_can_approve,
                     'remarks' =>null,
-                    'start_date_type' => $request->fromType,
-                    'end_date_type'=> $request->toType,
-                    'leave_count' => $request->leaveCount,
+                   // 'start_date_type' => $request->fromType,
+                   // 'end_date_type'=> $request->toType,
+                    'leave_count' => $request->leave_count,
                     'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
                     'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
 
                 ]
             );
 
-            if( $request->leaveType == 'compen' || $request->leaveType == 'compen_for_extra'){
+            if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
 
                 if( $leaf->leave_type == 'compen'){
                     $inLieofDates = Collect($request->inlieuofdates)->map(function($date){
@@ -163,7 +163,7 @@ class LeaveApiController extends Controller
              else {
                 //find a non holiday date for month of $request->inlieuofdate if possible.
                 //only one date is allowed
-                $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-d');
+                $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-01');
                 $compensGranted = new CompenGranted();
                 $compensGranted->aadhaarid = $me->employee->aadhaarid;
                 $compensGranted->leave_id = $leaf->id;
@@ -190,9 +190,47 @@ class LeaveApiController extends Controller
 
     public function show(Leaf $leaf)
     {
-        abort_if(Gate::denies('leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //abort_if(Gate::denies('leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        //check if this leave is for the logged in user
+        $me = User::with('employee')->find(auth()->id());
 
-        return new LeafResource($leaf->load(['employee']));
+        if( $leaf->aadhaarid != $me->employee->aadhaarid || $leaf->owner_seat != null){
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Leave does not belong to logged in user'
+                ], 400);
+        }
+        $leaf->load(['employee']);
+        /*
+        $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
+        $inLieofDates = [];
+        $inLieofMonth = null;
+        if( $leaf->leave_type == 'compen'){
+            $inLieofDates = $compensGranted->map(function($item){
+                return $item->date_of_work;
+            });
+        } else  if( $leaf->leave_type == 'compen_for_extra'){
+            $inLieofMonth = $compensGranted->first()->date_of_work;
+        }
+
+        $data = [
+                ...$leaf->toArray(),
+                'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
+                'multipleDays' => $leaf->start_date != $leaf->end_date,
+                'inLieofDates' => $inLieofDates,
+                'inLieofMonth' => $inLieofMonth,
+
+            ];
+    
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'data' => $data,
+            ], 200);
+*/
+        return new LeafResource($leaf);
     }
 
     public function update(UpdateLeafRequest $request, Leaf $leaf)
