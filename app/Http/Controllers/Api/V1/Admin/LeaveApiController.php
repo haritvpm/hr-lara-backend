@@ -47,6 +47,7 @@ class LeaveApiController extends Controller
 
     public function store(Request $request)
     {
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
         $leave_start_date = Carbon::parse($request->fromDate);
         $leave_end_date = $request->toDate ? Carbon::parse($request->toDate) : Carbon::parse($request->fromDate);
@@ -74,7 +75,7 @@ class LeaveApiController extends Controller
                                 $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
                                 ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
                             })
-                            ->where('aadhaarid', $request->aadhaarid)
+                            ->where('aadhaarid', $me->employee->aadhaarid)
                             ->wherein('active_status', ['N', 'Y'])
                             ->first();
 
@@ -87,7 +88,6 @@ class LeaveApiController extends Controller
         }   
         //ok to proceed. 
 
-        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
         \Log::info('store leaf');
         \Log::info($request->all());
