@@ -14,6 +14,9 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use App\Services\LeaveProcessService;
+
 class LeaveApiController extends Controller
 {
     public function index()
@@ -44,6 +47,43 @@ class LeaveApiController extends Controller
 
     public function store(Request $request)
     {
+
+        $leave_start_date = Carbon::parse($request->fromDate);
+        $leave_end_date = $request->toDate ? Carbon::parse($request->toDate) : Carbon::parse($request->fromDate);
+/*
+        $leavePeriod = CarbonPeriod::create($leave_start_date, $leave_end_date);
+        foreach ($leavePeriod as $leavedate) {
+            //check if leave is applied for this leavedate
+            $alreadyApplied = Leaf::where('employee_id', $request->employee_id)
+                                ->where('start_date', '<=', $leavedate)
+                                ->where('end_date', '>=', $leavedate)
+                                ->wherein('active_status', ['N', 'Y'])
+                                ->first();
+
+            if( $alreadyApplied ){
+                return response()->json(
+                    [
+                        'status' => 'error',
+                        'message' => 'Leave already applied for this date'
+                    ], 400);
+            }                            
+            
+        }
+        */
+        $alreadyApplied = Leaf::whereBetween('start_date', [$leave_start_date, $leave_end_date])
+                            ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date])
+                            ->where('aadhaarid', $request->aadhaarid)
+                            ->wherein('active_status', ['N', 'Y'])
+                            ->first();
+        if( $alreadyApplied ){
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => "Leave already applied for this date {$alreadyApplied->id}"
+                ], 400);
+        }   
+        //ok to proceed. 
+
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
         \Log::info('store leaf');
@@ -128,9 +168,15 @@ class LeaveApiController extends Controller
                 $compensGranted->save();
 
             }
-            }
+
+            } //compen or compen_for_extra
+
+            LeaveProcessService::processLeave($leaf);
 
         });
+
+        
+
 
          return (new LeafResource($leaf))
              ->response()
@@ -160,5 +206,60 @@ class LeaveApiController extends Controller
         $leaf->delete();
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+    public function leaveApprove(Leaf $leaf)
+    {
+        //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $leaf->update(['active_status' => 'Y']);
+
+        return (new LeafResource($leaf))
+        ->response()
+        ->setStatusCode(Response::HTTP_ACCEPTED);
+    }
+    public function leaveReturn(Leaf $leaf)
+    {
+        //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $leaf->update([
+            'active_status' => 'R',
+            'owner_seat' => null,
+            'owner_can_approve' => false
+        ]);
+
+        return (new LeafResource($leaf))
+        ->response()
+        ->setStatusCode(Response::HTTP_ACCEPTED);
+    }
+    public function leaveForward(Leaf $leaf)
+    {
+        //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+         //find the owner seat which is the reporting officer of this employee's section
+         $sectionMapping = EmployeeToSection::with('section')
+         ->OnDate(now()->format('Y-m-d'))
+         ->where('employee_id', $leaf->employee_id )->first();
+         
+         if( !$sectionMapping ){
+                 \Log::info('Employee is not mapped to any section');
+ 
+             return response()->json(
+                 [
+                     'status' => 'error',
+                     'message' => 'Employee is not mapped to any section'
+                 ], 400);
+         }
+        
+        $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+
+
+        $leaf->update([
+           'owner_seat' => $owner,
+           'owner_can_approve' => true,
+        ]);
+
+        return (new LeafResource($leaf))
+        ->response()
+        ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 }

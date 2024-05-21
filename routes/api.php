@@ -156,6 +156,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 
     // Leave
+    
+    Route::post('/leaves/{id}/forward', 'EmployeeToSectionApiControllerCustom@leaveForward');
+    Route::post('/leaves/{id}/approve', 'EmployeeToSectionApiControllerCustom@leaveApprove');
+    Route::post('/leaves/{id}/return', 'EmployeeToSectionApiControllerCustom@leaveReturn');
     Route::apiResource('leaves', 'LeaveApiController');
 
     // Office Times
