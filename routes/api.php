@@ -157,9 +157,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Leave
     
-    Route::post('/leaves/{id}/forward', 'EmployeeToSectionApiControllerCustom@leaveForward');
-    Route::post('/leaves/{id}/approve', 'EmployeeToSectionApiControllerCustom@leaveApprove');
-    Route::post('/leaves/{id}/return', 'EmployeeToSectionApiControllerCustom@leaveReturn');
+    Route::post('/leaves/{id}/forward', 'LeaveApiController@leaveForward');
+    Route::post('/leaves/{id}/approve', 'LeaveApiController@leaveApprove');
+    Route::post('/leaves/{id}/return', 'LeaveApiController@leaveReturn');
     Route::apiResource('leaves', 'LeaveApiController');
 
     // Office Times
