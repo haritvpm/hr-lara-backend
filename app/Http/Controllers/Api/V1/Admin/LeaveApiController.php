@@ -212,9 +212,10 @@ class LeaveApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-    public function leaveApprove(Leaf $leaf)
+    public function leaveApprove(Request $request)
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        $leaf = Leaf::findOrFail($request->id);
 
         $leaf->update(['active_status' => 'Y']);
 
@@ -238,10 +239,10 @@ class LeaveApiController extends Controller
         ->response()
         ->setStatusCode(Response::HTTP_ACCEPTED);
     }
-    public function leaveForward(Leaf $leaf)
+    public function leaveForward(Request $request)
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        $leaf = Leaf::findOrFail($request->id);
          //find the owner seat which is the reporting officer of this employee's section
          $sectionMapping = EmployeeToSection::with('section')
          ->OnDate(now()->format('Y-m-d'))
