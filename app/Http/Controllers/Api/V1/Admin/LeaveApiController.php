@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use App\Services\LeaveProcessService;
+use App\Services\PunchingCalcService;
+use App\Models\Punching;
 
 class LeaveApiController extends Controller
 {
@@ -220,9 +222,11 @@ class LeaveApiController extends Controller
         ->response()
         ->setStatusCode(Response::HTTP_ACCEPTED);
     }
-    public function leaveReturn(Leaf $leaf)
+    public function leaveReturn(Request $request)
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        \Log::info('leaveReturn' . $request->id);
+        $leaf = Leaf::findOrFail($request->id);
 
         $leaf->update([
             'active_status' => 'R',
@@ -264,5 +268,49 @@ class LeaveApiController extends Controller
         return (new LeafResource($leaf))
         ->response()
         ->setStatusCode(Response::HTTP_ACCEPTED);
+    }
+
+    public function deleteLeave(Request $request)
+    {
+        //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        \Log::info('deleteLeave' . $request->id);
+
+
+        $leaf = Leaf::findOrFail($request->id);
+
+        \DB::transaction(function () use ( &$leaf) {
+
+            //find all punchings and delete leave_id
+            $punchings = Punching::where('leave_id', $leaf->id)
+                        ->update(['leave_id' => null]);
+            // foreach($punchings as $punching){
+            //     $punching->leave_id = null;
+            //     $punching->save();
+            // }
+            //delete all compen_granted
+            $compensGranted = CompenGranted::where('leave_id', $leaf->id)?->delete();
+            $leaf->delete();
+            
+            $leave_start_date = Carbon::parse($leaf->start_date);
+            $leave_end_date = Carbon::parse($leaf->end_date);
+
+            $leavePeriod = CarbonPeriod::create($leave_start_date, $leave_end_date);
+            $punchingCalcService = new PunchingCalcService();
+
+            foreach ($leavePeriod as $leavedate) {
+                //recalculate monthly attendance for all dates of this leave
+                $punchingCalcService->calculate($leavedate->format('Y-m-d'), [$leaf->aadhaarid]);
+            }
+
+            //recalculate monthly attendance for all dates of this leave
+            $punchingCalcService = new PunchingCalcService();
+
+            //also update hint
+
+        });
+
+
+
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
