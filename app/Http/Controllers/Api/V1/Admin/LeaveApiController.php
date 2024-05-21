@@ -70,11 +70,14 @@ class LeaveApiController extends Controller
             
         }
         */
-        $alreadyApplied = Leaf::whereBetween('start_date', [$leave_start_date, $leave_end_date])
-                            ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date])
+        $alreadyApplied = Leaf::where( function($query) use ($leave_start_date, $leave_end_date){
+                                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
+                                ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
+                            })
                             ->where('aadhaarid', $request->aadhaarid)
                             ->wherein('active_status', ['N', 'Y'])
                             ->first();
+
         if( $alreadyApplied ){
             return response()->json(
                 [
