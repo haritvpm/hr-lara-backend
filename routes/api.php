@@ -157,6 +157,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Leave
     
+    Route::patch('/leaves/{id}', 'LeaveApiController@updateLeave');
     Route::delete('/leaves/{id}', 'LeaveApiController@deleteLeave');
     Route::post('/leaves/{id}/forward', 'LeaveApiController@leaveForward');
     Route::post('/leaves/{id}/approve', 'LeaveApiController@leaveApprove');
