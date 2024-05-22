@@ -48,11 +48,11 @@ class LeaveApiController extends Controller
                 'active_status' => $leaf->active_status,
                 'proceeded' => $leaf->proceeded,
                 'created_at' => $leaf->created_at,
-
                 'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
                 'multipleDays' => $leaf->start_date != $leaf->end_date,
                 'inLieofDates' => $inLieofDates,
                 'inLieofMonth' => $inLieofMonth,
+                'employee' => $leaf->employee,
 
             ];
 
@@ -75,7 +75,7 @@ class LeaveApiController extends Controller
         $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
                 ->wherein('owner_seat', $seat_ids_of_loggedinuser)
                 ->get()->transform(function($leaf){
-                    return $this->LeafToResource($this->LeafToResource($leaf));
+                    return $this->LeafToResource($leaf);
                 });
 
 
