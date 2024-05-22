@@ -59,6 +59,36 @@ class LeaveApiController extends Controller
             ];
 
     }
+
+    private function resourceToModel($request, $me, $owner, $owner_can_approve)
+    {
+        return [
+            'is_aebas_leave' => false,
+            'aadhaarid' => $me->employee->aadhaarid,
+            'employee_id'=> $me->employee_id,
+            'leave_type' => $request->leave_type,
+            'start_date' => Carbon::parse($request->start_date)->format('Y-m-d'),
+            'end_date'  => $request->end_date ? Carbon::parse($request->end_date)->format('Y-m-d') : Carbon::parse($request->start_date)->format('Y-m-d'),
+            'reason' => $request->reason,
+            'active_status' => 'N',
+            'last_updated' => null,
+            'creation_date' => now(),
+            'created_by_aadhaarid' => $me->employee->aadhaarid,
+            'processed' => false,
+            'owner_seat' =>  $owner,
+            'owner_can_approve' => $owner_can_approve,
+            'remarks' =>null,
+            // 'start_date_type' => $request->fromType,
+            // 'end_date_type'=> $request->toType,
+            'leave_count' => $request->leave_count,
+            'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
+            'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
+
+        ];
+
+        
+    }
+
     public function index()
     {
        // abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -122,60 +152,13 @@ class LeaveApiController extends Controller
             }
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
             $leaf = Leaf::create(
-                [
-                    'is_aebas_leave' => false,
-                    'aadhaarid' => $me->employee->aadhaarid,
-                    'employee_id'=> $me->employee_id,
-                    'leave_type' => $request->leave_type,
-                    'start_date' => Carbon::parse($request->start_date)->format('Y-m-d'),
-                    'end_date'  => $request->end_date ? Carbon::parse($request->end_date)->format('Y-m-d') : Carbon::parse($request->start_date)->format('Y-m-d'),
-                    'reason' => $request->reason,
-                    'active_status' => 'N',
-                    'last_updated' => null,
-                    'creation_date' => now(),
-                    'created_by_aadhaarid' => $me->employee->aadhaarid,
-                    'processed' => false,
-                    'owner_seat' =>  $owner,
-                    'owner_can_approve' => $owner_can_approve,
-                    'remarks' =>null,
-                   // 'start_date_type' => $request->fromType,
-                   // 'end_date_type'=> $request->toType,
-                    'leave_count' => $request->leave_count,
-                    'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
-                    'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
-
-                ]
+                $this->resourceToModel($request, $me, $owner, $owner_can_approve)
             );
 
             if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
 
-                if( $leaf->leave_type == 'compen'){
-                    $inLieofDates = Collect($request->inlieuofdates)->map(function($date){
-                        return Carbon::parse($date)->format('Y-m-d');
-                    });
-                    foreach($inLieofDates as $date){
-                        $compensGranted = new CompenGranted();
-                        $compensGranted->aadhaarid = $me->employee->aadhaarid;
-                        $compensGranted->leave_id = $leaf->id;
-                        $compensGranted->date_of_work = $date;
-                        $compensGranted->is_for_extra_hours = false;
-                        $compensGranted->employee_id = $me->employee_id;
-                        $compensGranted->save();
-                    }
-                }
-             else {
-                //find a non holiday date for month of $request->inlieuofdate if possible.
-                //only one date is allowed
-                $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-01');
-                $compensGranted = new CompenGranted();
-                $compensGranted->aadhaarid = $me->employee->aadhaarid;
-                $compensGranted->leave_id = $leaf->id;
-                $compensGranted->date_of_work = $inLieofDate;
-                $compensGranted->is_for_extra_hours = true;
-                $compensGranted->employee_id = $me->employee_id;
-                $compensGranted->save();
-
-            }
+                $this->createCompenGranteds($request, $leaf, $me);
+                
 
             } //compen or compen_for_extra
 
@@ -211,11 +194,98 @@ class LeaveApiController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_ACCEPTED);
     }
-    
+    private function createCompenGranteds($request, Leaf $leaf, $me)
+    {
+        \Log::info('createCompenGranteds');
+
+        if( $leaf->leave_type == 'compen' || $leaf->leave_type == 'compen_for_extra'){
+
+            if( $leaf->leave_type == 'compen'){
+                $inLieofDates = Collect($request->inLieofDates)->map(function($date){
+                    return Carbon::parse($date)->format('Y-m-d');
+                });
+                
+                foreach($inLieofDates as $date){
+                    \Log::info('createCompenGranteds' . $date);
+
+                    $compensGranted = new CompenGranted();
+                    $compensGranted->aadhaarid = $me->employee->aadhaarid;
+                    $compensGranted->leave_id = $leaf->id;
+                    $compensGranted->date_of_work = $date;
+                    $compensGranted->is_for_extra_hours = false;
+                    $compensGranted->employee_id = $me->employee_id;
+                    $compensGranted->save();
+                }
+            }
+         else {
+            //find a non holiday date for month of $request->inlieuofdate if possible.
+            //only one date is allowed
+            $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-01');
+            $compensGranted = new CompenGranted();
+            $compensGranted->aadhaarid = $me->employee->aadhaarid;
+            $compensGranted->leave_id = $leaf->id;
+            $compensGranted->date_of_work = $inLieofDate;
+            $compensGranted->is_for_extra_hours = true;
+            $compensGranted->employee_id = $me->employee_id;
+            $compensGranted->save();
+
+        }
+
+        } //compen or compen_for_extra
+    }
     public function updateLeave(Request $request)
     {
-        $this->deleteLeave($request);
-        $this->store($request);
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
+
+        if( $alreadyApplied != null && $alreadyApplied->id != $request->id){ //not ourselves
+            return response()->json(
+                [  'status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})" ], 400);
+        }
+
+        //ok to proceed.
+        \Log::info($request->all());
+
+        //find the owner seat which is the reporting officer of this employee's section
+        $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $me->employee_id)->first();
+        if( !$sectionMapping ){
+            return response()->json(
+                [  'status' => 'error', 'message' => 'Employee is not mapped to any section'], 400);
+        }
+
+        $leaf = Leaf::findOrFail($request->id);
+
+        \DB::transaction(function () use ( &$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
+
+            //when SO, who is the reporting officer submits, has to submit to controller
+            $owner = $sectionMapping->section->seat_of_reporting_officer_id;
+            $owner_can_approve = false;
+            if( $seat_ids_of_loggedinuser->contains($owner) == true){
+                $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                $owner_can_approve = true;
+            }
+            //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
+            $leaf->update(
+                $this->resourceToModel($request, $me, $owner, $owner_can_approve)
+            );
+
+            //delete old compen_granted if it exists
+            $compensGrantedOld = CompenGranted::where('leave_id', $leaf->id)->delete();
+
+            if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
+                $this->createCompenGranteds($request, $leaf, $me);
+
+            } //compen or compen_for_extra
+
+            LeaveProcessService::processNewLeave($leaf);
+
+        });
+
+        return (new LeafResource($leaf))
+             ->response()
+             ->setStatusCode(Response::HTTP_CREATED);
+
     }
     public function update(Request $request, Leaf $leaf)
     {

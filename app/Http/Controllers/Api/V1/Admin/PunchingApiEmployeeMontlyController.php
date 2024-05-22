@@ -149,7 +149,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
 
-        $emp_leaves = Leaf::where('aadhaarid', $aadhaarid)
+        $emp_leaves = Leaf::with(['compensGranted'])->where('aadhaarid', $aadhaarid)
             ->orderBy('creation_date', 'desc')
             ->get()/*->transform(function ($item) {
 
