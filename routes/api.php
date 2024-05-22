@@ -189,4 +189,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Compen Granted
     Route::apiResource('compen-granteds', 'CompenGrantedApiController', ['except' => ['show']]);
+
+    // Employee To Flexi
+    Route::apiResource('employee-to-flexis', 'EmployeeToFlexiApiController');
 });

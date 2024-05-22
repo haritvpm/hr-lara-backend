@@ -131,14 +131,20 @@ class PunchingController extends Controller
             $table->editColumn('single_punch_type', function ($row) {
                 return $row->single_punch_type ? $row->single_punch_type : '';
             });
-            $table->editColumn('single_punch_regularised_by', function ($row) {
-                return $row->single_punch_regularised_by ? $row->single_punch_regularised_by : '';
-            });
             $table->editColumn('time_group', function ($row) {
                 return $row->time_group ? $row->time_group : '';
             });
             $table->editColumn('is_unauthorised', function ($row) {
                 return '<input type="checkbox" disabled ' . ($row->is_unauthorised ? 'checked' : null) . '>';
+            });
+            $table->editColumn('single_punch_regularised_by', function ($row) {
+                return $row->single_punch_regularised_by ? $row->single_punch_regularised_by : '';
+            });
+            $table->editColumn('duration_sec_needed', function ($row) {
+                return $row->duration_sec_needed ? $row->duration_sec_needed : '';
+            });
+            $table->editColumn('flexi_time', function ($row) {
+                return $row->flexi_time ? $row->flexi_time : '';
             });
 
             $table->rawColumns(['actions', 'placeholder', 'employee', 'punchin_trace', 'punchout_trace', 'leave', 'is_unauthorised']);

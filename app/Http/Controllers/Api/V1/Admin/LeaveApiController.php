@@ -21,6 +21,42 @@ use App\Models\Punching;
 
 class LeaveApiController extends Controller
 {
+    private function LeafToResource($leaf)
+    {
+        $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
+        $inLieofDates = [];
+        $inLieofMonth = null;
+        if( $leaf->leave_type == 'compen'){
+            $inLieofDates = $compensGranted->map(function($item){
+                return $item->date_of_work;
+            });
+        } else  if( $leaf->leave_type == 'compen_for_extra'){
+            $inLieofMonth = $compensGranted->first()->date_of_work;
+        }
+
+
+         return [
+                'id' => $leaf->id,
+                'aadhaarid' => $leaf->aadhaarid,
+                'leave_cat' => $leaf->leave_cat,
+                'leave_type' => $leaf->leave_type,
+                'start_date' => $leaf->start_date,
+                'end_date' => $leaf->end_date,
+                'time_period' => $leaf->time_period,
+                'reason' => $leaf->reason,
+                'leave_count' => $leaf->leave_count,
+                'active_status' => $leaf->active_status,
+                'proceeded' => $leaf->proceeded,
+                'created_at' => $leaf->created_at,
+
+                'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
+                'multipleDays' => $leaf->start_date != $leaf->end_date,
+                'inLieofDates' => $inLieofDates,
+                'inLieofMonth' => $inLieofMonth,
+
+            ];
+
+    }
     public function index()
     {
        // abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -36,76 +72,41 @@ class LeaveApiController extends Controller
             ], 400);
         }
 
-        $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])->wherein('owner_seat', $seat_ids_of_loggedinuser)->get();
-            
+        $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
+                ->wherein('owner_seat', $seat_ids_of_loggedinuser)
+                ->get()->transform(function($leaf){
+                    return $this->LeafToResource($this->LeafToResource($leaf));
+                });
+
 
         return response()->json(
             [
                 'status' => 'success',
                 'leaves' => LeafResource::collection($leaves)
-                   
-            ], 200); 
+
+            ], 200);
     }
 
     public function store(Request $request)
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        $leave_start_date = Carbon::parse($request->start_date);
-        $leave_end_date = $request->end_date ? Carbon::parse($request->end_date) : Carbon::parse($request->start_date);
-/*
-        $leavePeriod = CarbonPeriod::create($leave_start_date, $leave_end_date);
-        foreach ($leavePeriod as $leavedate) {
-            //check if leave is applied for this leavedate
-            $alreadyApplied = Leaf::where('employee_id', $request->employee_id)
-                                ->where('start_date', '<=', $leavedate)
-                                ->where('end_date', '>=', $leavedate)
-                                ->wherein('active_status', ['N', 'Y'])
-                                ->first();
-
-            if( $alreadyApplied ){
-                return response()->json(
-                    [
-                        'status' => 'error',
-                        'message' => 'Leave already applied for this date'
-                    ], 400);
-            }                            
-            
-        }
-        */
-        $alreadyApplied = Leaf::where( function($query) use ($leave_start_date, $leave_end_date){
-                                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
-                                ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
-                            })
-                            ->where('aadhaarid', $me->employee->aadhaarid)
-                            ->wherein('active_status', ['N', 'Y'])
-                            ->first();
+        $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
 
         if( $alreadyApplied ){
             return response()->json(
-                [
-                    'status' => 'error',
-                    'message' => "Leave already applied for this date {$alreadyApplied->id}"
-                ], 400);
-        }   
-        //ok to proceed. 
+                [  'status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})" ], 400);
+        }
 
-
-        \Log::info('store leaf');
+        //ok to proceed.
         \Log::info($request->all());
 
         //find the owner seat which is the reporting officer of this employee's section
         $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $me->employee_id)->first();
         if( !$sectionMapping ){
-                \Log::info('Employee is not mapped to any section');
-
             return response()->json(
-                [
-                    'status' => 'error',
-                    'message' => 'Employee is not mapped to any section'
-                ], 400);
+                [  'status' => 'error', 'message' => 'Employee is not mapped to any section'], 400);
         }
-        \Log::info($sectionMapping);
 
         $leaf = null;
         \DB::transaction(function () use ( &$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
@@ -176,11 +177,11 @@ class LeaveApiController extends Controller
 
             } //compen or compen_for_extra
 
-            LeaveProcessService::processLeave($leaf);
+            LeaveProcessService::processNewLeave($leaf);
 
         });
 
-        
+
 
 
          return (new LeafResource($leaf))
@@ -202,35 +203,11 @@ class LeaveApiController extends Controller
                 ], 400);
         }
         $leaf->load(['employee']);
-        /*
-        $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
-        $inLieofDates = [];
-        $inLieofMonth = null;
-        if( $leaf->leave_type == 'compen'){
-            $inLieofDates = $compensGranted->map(function($item){
-                return $item->date_of_work;
-            });
-        } else  if( $leaf->leave_type == 'compen_for_extra'){
-            $inLieofMonth = $compensGranted->first()->date_of_work;
-        }
 
-        $data = [
-                ...$leaf->toArray(),
-                'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
-                'multipleDays' => $leaf->start_date != $leaf->end_date,
-                'inLieofDates' => $inLieofDates,
-                'inLieofMonth' => $inLieofMonth,
-
-            ];
-    
-
-        return response()->json(
-            [
-                'status' => 'success',
-                'data' => $data,
-            ], 200);
-*/
-        return new LeafResource($leaf);
+        //return new LeafResource($this->LeafToResource($leaf));
+        return (new LeafResource($this->LeafToResource($leaf)))
+            ->response()
+            ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
     public function update(UpdateLeafRequest $request, Leaf $leaf)
@@ -256,6 +233,7 @@ class LeaveApiController extends Controller
         $leaf = Leaf::findOrFail($request->id);
 
         $leaf->update(['active_status' => 'Y']);
+        LeaveProcessService::processLeaveStatusChange($leaf);
 
         return (new LeafResource($leaf))
         ->response()
@@ -267,11 +245,14 @@ class LeaveApiController extends Controller
         \Log::info('leaveReturn' . $request->id);
         $leaf = Leaf::findOrFail($request->id);
 
-        $leaf->update([
-            'active_status' => 'R',
-            'owner_seat' => null,
-            'owner_can_approve' => false
-        ]);
+        \DB::transaction(function () use ( $leaf) {
+            $leaf->update([
+                'active_status' => 'R',
+                'owner_seat' => null,
+                'owner_can_approve' => false
+            ]);
+            LeaveProcessService::processLeaveStatusChange($leaf);
+        });
 
         return (new LeafResource($leaf))
         ->response()
@@ -285,17 +266,17 @@ class LeaveApiController extends Controller
          $sectionMapping = EmployeeToSection::with('section')
          ->OnDate(now()->format('Y-m-d'))
          ->where('employee_id', $leaf->employee_id )->first();
-         
+
          if( !$sectionMapping ){
                  \Log::info('Employee is not mapped to any section');
- 
+
              return response()->json(
                  [
                      'status' => 'error',
                      'message' => 'Employee is not mapped to any section'
                  ], 400);
          }
-        
+
         $owner = $sectionMapping->section->seat_of_controlling_officer_id;
 
 
@@ -317,38 +298,17 @@ class LeaveApiController extends Controller
 
         $leaf = Leaf::findOrFail($request->id);
 
-        \DB::transaction(function () use ( &$leaf) {
+        \DB::transaction(function () use ( $leaf) {
 
-            //find all punchings and delete leave_id
-            $punchings = Punching::where('leave_id', $leaf->id)
-                        ->update(['leave_id' => null]);
-            // foreach($punchings as $punching){
-            //     $punching->leave_id = null;
-            //     $punching->save();
-            // }
-            //delete all compen_granted
-            $compensGranted = CompenGranted::where('leave_id', $leaf->id)?->delete();
+            $leaf->update([
+                'active_status' => 'C',
+                'owner_seat' => null,
+                'owner_can_approve' => false
+            ]);
+
+            LeaveProcessService::processLeaveStatusChange($leaf);
             $leaf->delete();
-            
-            $leave_start_date = Carbon::parse($leaf->start_date);
-            $leave_end_date = Carbon::parse($leaf->end_date);
-
-            $leavePeriod = CarbonPeriod::create($leave_start_date, $leave_end_date);
-            $punchingCalcService = new PunchingCalcService();
-
-            foreach ($leavePeriod as $leavedate) {
-                //recalculate monthly attendance for all dates of this leave
-                $punchingCalcService->calculate($leavedate->format('Y-m-d'), [$leaf->aadhaarid]);
-            }
-
-            //recalculate monthly attendance for all dates of this leave
-            $punchingCalcService = new PunchingCalcService();
-
-            //also update hint
-
         });
-
-
 
         return response(null, Response::HTTP_NO_CONTENT);
     }

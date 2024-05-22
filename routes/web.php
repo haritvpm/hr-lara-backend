@@ -260,6 +260,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
 
 
+    // Employee To Flexi
+    Route::delete('employee-to-flexis/destroy', 'EmployeeToFlexiController@massDestroy')->name('employee-to-flexis.massDestroy');
+    Route::resource('employee-to-flexis', 'EmployeeToFlexiController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

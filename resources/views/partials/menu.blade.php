@@ -135,8 +135,8 @@
                     </li>
                 @endcan
                 @can('employee_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/employee-extras*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/employee-extras*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/employee-extras*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/employee-extras*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
@@ -547,8 +547,8 @@
                     </li>
                 @endcan
                 @can('time_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/office-times*") ? "menu-open" : "" }} {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }} {{ request()->is("admin/grace-times*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/office-times*") ? "active" : "" }} {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }} {{ request()->is("admin/grace-times*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/office-times*") ? "menu-open" : "" }} {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }} {{ request()->is("admin/grace-times*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-flexis*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/office-times*") ? "active" : "" }} {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }} {{ request()->is("admin/grace-times*") ? "active" : "" }} {{ request()->is("admin/employee-to-flexis*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon far fa-clock">
 
                             </i>
@@ -594,7 +594,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('grace_time_access')
+                            @can('employee_to_section_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.grace-times.index") }}" class="nav-link {{ request()->is("admin/grace-times") || request()->is("admin/grace-times/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -602,6 +602,18 @@
                                         </i>
                                         <p>
                                             {{ trans('cruds.graceTime.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('employee_to_section_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.employee-to-flexis.index") }}" class="nav-link {{ request()->is("admin/employee-to-flexis") || request()->is("admin/employee-to-flexis/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.employeeToFlexi.title') }}
                                         </p>
                                     </a>
                                 </li>

@@ -6,15 +6,16 @@ use Auth;
 use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\Punching;
+use Carbon\CarbonPeriod;
 use App\Models\GraceTime;
 use App\Models\OfficeTime;
 use App\Models\GovtCalendar;
 use App\Models\PunchingTrace;
+use App\Models\EmployeeToFlexi;
 use App\Models\YearlyAttendance;
 use App\Models\EmployeeToSection;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
-use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Http;
 
 class PunchingCalcService
@@ -87,6 +88,8 @@ class PunchingCalcService
 
         $calender = GovtCalendar::where('date', $date)->first();
 
+        $all_flexi_times = EmployeeToFlexi::getAllFlexiTimes($date);
+
         $data = collect([]);
 
         foreach ($aadhaar_to_empIds as $aadhaarid => $employee_id) {
@@ -124,7 +127,7 @@ class PunchingCalcService
                     $allemp_punchingtraces_grouped,
                     $emp_new_punching_data,
                   //  $allemp_punchings_existing,
-                    $time_group,
+                    $time_group, $all_flexi_times,
                     $calender
                 );
             }
@@ -144,7 +147,7 @@ class PunchingCalcService
                 'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
                 'single_punch_type',
                 'time_group',
-                'is_unauthorised', 'duration_sec_needed'
+                'is_unauthorised', 'duration_sec_needed', 'flexi_time'
 
             ]
         );
@@ -173,7 +176,7 @@ class PunchingCalcService
         $allemp_punchingtraces_grouped,
         $emp_new_punching_data,
      //   $allemp_punchings_existing,
-        $time_group,
+        $time_group, $all_flexi_times,
         $calender
     ) {
         $date_carbon = Carbon::createFromFormat('Y-m-d', $date);
@@ -224,8 +227,14 @@ class PunchingCalcService
 
         $duration_sec = 0;
 
+        $emp_flexi_time = $all_flexi_times->where('employee_id', $employee_id)
+            ->where('with_effect_from', '<=', $date)
+            ->sortByDesc('with_effect_from')
+            ->first();
+
         //get office times for this time group
-        [$flexi_15minutes,
+        [   $flexi_15minutes,
+            $flex_string_for_display,
             $normal_fn_in,
             $normal_fn_out,
             $normal_an_in,
@@ -239,33 +248,43 @@ class PunchingCalcService
             $can_take_casual_an,
             $duration_seconds_needed,
             $max_grace_seconds
-        ] = $this->getOfficeTimesForTimeGroup($date, $calender, $time_group);
+        ] = $this->getOfficeTimesForTimeGroup( $date, $calender, $time_group, $emp_flexi_time);
+
+        $emp_new_punching_data['flexi_time'] = $flex_string_for_display;
+        [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
+        $isFullDayleaveHint = $hint && $hint != 'casual_an' && $hint != 'casual_fn' && $hint != 'clear' ;
+        $isFullDayleave =  $isFullDayleaveHint;
+        //if approved leave exists, use that instead of hint
+        if($hasLeave ){
+            $isFullDayleave = $isFullLeave;
+        }
+ //if real hint set by so exists, use that instead of computer hint
+            //adjust punching times  based on computer hint or hint. so for example, only half day is calculated
+        {
+            if (($can_take_casual_fn && $hint == 'casual_fn') || ($hasLeave && $isFnLeave)) {
+
+                //$c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
+                $c_flexi_10am = $normal_an_in->clone()->addMinutes($flexi_15minutes); //2pm -15
+                $c_flexi_1030am = $normal_an_in->clone()->addMinutes($flexi_15minutes); //2pm +15
+                $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
+
+            } else
+            if (($can_take_casual_an && $hint == 'casual_an') || ($hasLeave && $isAnLeave)) {
+                $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
+                //$c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
+                $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
+            }
+        }
+        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
 
 
         //Decide if this is punchin or out
         //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
-        if (($punch_count  == 1 || $single_punch_type)) {
-            //TODO is it punch in or out ? has to be set by under
+        if (($punch_count  == 1 && $single_punch_type)) {
+
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
-            $isPunchIn = (!$single_punch_type || ($single_punch_type && $single_punch_type == 'in')) ? true : false;
-
-            if(!$single_punch_type){ //not set by controller
-                if($time_group['groupname'] != 'parttime'){
-                    $half_time = $normal_an_in->clone()->addSeconds( $normal_an_in->diffInSeconds($normal_an_out) / 2);
-                    //if punch is one hour after nooon, make this punchout instead of punchin.
-                    if($c_punch->gt($half_time) /*&& $c_punch->lt($normal_an_out->clone()->subSeconds(3600))*/){
-                        $isPunchIn = false;
-                    }
-                } else {
-                    //find half-time between $normal_fn_in and  $normal_fn_out and decide if this is punchin or out
-                    $half_time = $normal_fn_in->clone()->addSeconds($normal_fn_in->diffInSeconds($normal_fn_out) / 2);
-                    if($c_punch->gt($half_time)){
-                        $isPunchIn = false;
-                    }
-                }
-            }
-
+            $isPunchIn = ($single_punch_type && $single_punch_type !== 'out') ? true : false;
 
             if( $isPunchIn || $single_punch_type == 'in'){
                 $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
@@ -302,146 +321,72 @@ class PunchingCalcService
 
         //check if leave approved. if so,  calculate grace only if half day leave.
         //safiya on apr 2024 4, submitted half day 'other' leave for election training. so need to calculate grace.
-        [$hasLeave, $isFullLeave, $isFnLeave,$isAnLeave] = $this->checkLeaveExists($punching_existing);
         $isHoliday = $calender->govtholidaystatus || $hint == 'RH';
         $isSinglePunching =  $single_punch_type != null;
-
 
         $emp_new_punching_data['duration_sec_needed'] = $duration_seconds_needed;
 
 
-        if ($c_punch_in && $c_punch_out) {
+        $grace_total_exceeded_one_hour = 0;
 
+        [$computer_hint] = $this->setHintIfPunchMoreThanOneHourLate(
+            $c_punch_in,
+            $c_punch_out,
+            $duration_seconds_needed,
+            $c_flexi_10am,
+            $c_flexi_1030am,
+            $c_flexi_530pm,
+            $c_flexi_5pm,
+            $can_take_casual_fn,
+            $can_take_casual_an
+        );
+
+        if ($isHoliday) {
+            $computer_hint = '';
+
+        }
+        $emp_new_punching_data['computer_hint'] = $computer_hint;
+
+        if ($c_punch_in && $c_punch_out)
+        {
             $duration_sec = $c_punch_in->diffInSeconds($c_punch_out);
             $emp_new_punching_data['duration_sec'] = $duration_sec;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
+        }
 
+        if( !$isHoliday){
+            $grace_morning =  $grace_evening = 0;
 
-
-            // \Log::info( 'duration_seconds_needed:'. $duration_seconds_needed);
-
-            $isFullDay = true;
-
-            [$computer_hint, $grace_total_exceeded_one_hour] = $this->setHintIfPunchMoreThanOneHourLate(
-                $c_punch_in,
-                $c_punch_out,
-                $duration_seconds_needed,
-                $c_flexi_10am,
-                $c_flexi_1030am,
-                $c_flexi_530pm,
-                $c_flexi_5pm,
-                $can_take_casual_fn,
-                $can_take_casual_an
-            );
-
-
-            if ($isHoliday) {
-                $computer_hint = '';
-                $grace_total_exceeded_one_hour = 0;
-            }
-
-            //TODO check if casual 20 limit has reached. if so set leave
-
-            $emp_new_punching_data['computer_hint'] = $computer_hint;
-
-            if( !$hint){ //if hint exists, no need to use computer hint
-              //  $emp_new_punching_data['hint'] = $computer_hint; //set both same for now. SO can change hint
-            }
-
-            $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
-
-            //if real hint set by so exists, use that instead of computer hint
-            //adjust punching times  based on computer hint or hint. so for example, only half day is calculated
-            //if ($grace_total_exceeded_one_hour > 1800)
-            {
-                if (($can_take_casual_fn && /*$computer_hint == 'casual_fn') ||*/ $hint == 'casual_fn') ||
-                    ($hasLeave && $isFnLeave)) {
-
-                    $c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
-                    $c_flexi_1030am = $normal_an_in->clone()->addMinutes($flexi_15minutes); //2pm +15
-                    $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
-
-                    $isFullDay = false;
-                } else
-                if (($can_take_casual_an && /*$computer_hint == 'casual_an') ||*/ $hint == 'casual_an') ||
-                    ($hasLeave && $isAnLeave)) {
-                    $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
-                    //$c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
-                    //$duration_seconds_needed = 3 * 3600;
-                    $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
-                    $isFullDay = false;
-                } else if ($computer_hint == 'casual') {
-                    //punched, but not enough time worked or office ends and 3 pm/12pm situations
-
-                }
-            }
-
-            //if punches in before 10 am or punches out after 5.30, dont take that, use 10am and 5.30
-            $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
-            $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
-
-            //since $c_flexi_1030am might be changed, recalculate this
-            $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
-
-            //if like from 6 to 9 am, ''casual' will be set by setHintIfPunchMoreThanOneHourLate
-
-
-            $isFullDayleaveHint = $hint && $hint != 'casual_an' && $hint != 'casual_fn' && $hint != 'clear' ;
-            $isFullDayleave =  $isFullDayleaveHint;
-            //if approved leave exists, use that instead of hint
-            if($hasLeave ){
-                $isFullDayleave = $isFullLeave;
-            }
-
-
-
-            if (!$isHoliday && !$isFullDayleave && !$isSinglePunching) //if hint exists, no need to use computer hint for else
-            {
+            if( $c_punch_in ){
                 //calculate grace
-                $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
-
-                if ($worked_seconds_flexi < $duration_seconds_needed) { //worked less
-                    $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi) / 60) * 60; //ignore extra seconds
-                    $emp_new_punching_data['grace_sec'] =  $grace_sec;
-                    $emp_new_punching_data['grace_str'] =  (int)($grace_sec / 60);
+                if(!$isFullDayleave && $c_punch_in->gt($c_flexi_10am)){
+                    $grace_morning = $c_punch_in->diffInSeconds($c_flexi_10am);
                 }
-
-                if ($duration_sec > $duration_seconds_needed) {
-
-                    $extra_sec = $duration_sec - $duration_seconds_needed;
-
-                    $emp_new_punching_data['extra_sec'] = $extra_sec;
-                    $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
+            }
+            if( $c_punch_out ){
+                //calculate grace
+                if(!$isFullDayleave && $c_punch_out->lt($c_flexi_530pm)){
+                    $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm);
                 }
-            } else if(!$isHoliday && !$isSinglePunching) { //if holiday, let them get compen directly
-                //punched, but not enough time worked or office ends and 3 pm/12pm situations
-                //set grace as 0. but allow extra time as whole day's time
-                $extra_sec = $duration_sec;
+            }
+
+            $grace_sec = $grace_morning + $grace_evening;
+            $emp_new_punching_data['grace_sec'] = $grace_sec;
+            $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+            if($grace_sec > 3600){
+                $grace_total_exceeded_one_hour = $grace_sec - 3600;
+                $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
+            }
+
+            //extra time only if both punched in and out
+            if ( !$isSinglePunching && $c_punch_in && $c_punch_out && $duration_sec > $duration_seconds_needed) {
+                $extra_sec = $duration_sec - $duration_seconds_needed;
                 $emp_new_punching_data['extra_sec'] = $extra_sec;
                 $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
             }
-
-        }
-
-        if(/*$fetchComplete &&*/ !$isHoliday && $isSinglePunching) {
-            if($single_punch_type == 'in'){
-                if($c_punch_in->greaterThan($normal_fn_in)){
-                    $grace_sec = $c_punch_in->diffInSeconds($normal_fn_in,true);
-                    $emp_new_punching_data['grace_sec'] = $grace_sec;
-                    $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
-                }
-            } else if ($single_punch_type == 'out'){
-                if($c_punch_out->lessThan($normal_an_out)){
-                    $grace_sec = $normal_an_out->diffInSeconds($c_punch_out,true);
-                    $emp_new_punching_data['grace_sec'] = $grace_sec;
-                    $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
-                }
-            }
-
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
-        $computer_hint = $emp_new_punching_data['computer_hint'] ?? null;
         $canSetUnauthorised = $date_carbon->lt(Carbon::today()) ||
                                 ($date_carbon->isToday() && Carbon::now()->greaterThan($time_after_which_unauthorised)) ;
 
@@ -476,10 +421,14 @@ class PunchingCalcService
         //extra time
     }
 
-    private function getOfficeTimesForTimeGroup( $date, $calender, $time_group )
+    private function getOfficeTimesForTimeGroup( $date, $calender, $time_group, $emp_flexi_time )
     {
         $max_grace_seconds = 3600;
-        $flexi_15minutes = $time_group['flexi_minutes'] ?? 15;
+
+        //if this employee has no flexi time, it is normal time 10.15 to 1.15 and 2.00 to 5.15
+        //this can be -15, 0, 15
+        $flexi_15minutes = $emp_flexi_time ? $emp_flexi_time->flexi_minutes : 0;
+
         //use today's date. imagine legislation punching out next day. our flexiend is based on today
         //get employee time group. now assume normal
 
@@ -494,13 +443,16 @@ class PunchingCalcService
             $normal_an_out = $normal_fn_out;
         }
 
-        $c_flexi_10am = $normal_fn_in->clone()->subMinutes($flexi_15minutes);
+        $c_flexi_10am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
         $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
-        $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
-        $c_flexi_5pm = $normal_an_out->clone()->subMinutes($flexi_15minutes);
-        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
+        $flex_string_for_display = "{$c_flexi_10am->format('H:i')} - {$c_flexi_530pm->format('H:i')}";
+
+
+
+
 
         //office ends at noon or 3.00 pm
+        //need to get this before calculating flexi times
         $office_ends_at_300pm = $calender->office_ends_at === '3pm';
         $office_ends_at_noon = $calender->office_ends_at === 'noon';
         $can_take_casual_fn = $can_take_casual_an = true;
@@ -519,10 +471,28 @@ class PunchingCalcService
             $can_take_casual_an = $can_take_casual_fn = false;
         }
 
+        //get flexi times for this employee
+        //old dynamic flexi logix needs 10am and 10.30. new logic needs 10am and 5.30 pm only. but not removing in case in future we need it
+
+        $c_flexi_10am = $normal_fn_in->clone();
+        $c_flexi_530pm = $normal_an_out->clone();
+        $c_flexi_1030am = $normal_fn_in->clone();
+        $c_flexi_5pm = $normal_an_out->clone();
+
+        if( $flexi_15minutes != 0){
+            $c_flexi_10am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
+            $c_flexi_530pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
+            $c_flexi_1030am = $normal_fn_in->clone()->addMinutes($flexi_15minutes);
+            $c_flexi_5pm = $normal_an_out->clone()->addMinutes($flexi_15minutes);
+        }
+
+        $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
+
         $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
 
         return [
                 $flexi_15minutes,
+                $flex_string_for_display,
                 $normal_fn_in,
                 $normal_fn_out,
                 $normal_an_in,
@@ -552,7 +522,7 @@ class PunchingCalcService
                 if($leave->leave_cat == 'F'){
                     $isFullLeave = true;
                 } else if($leave->leave_cat == 'H') {
-                    if($leave->time_period == 'FN'){
+                    if( strtoupper($leave->time_period) == 'FN'){
                         $isFnLeave = true;
                     } else {
                         $isAnLeave = true;
@@ -576,64 +546,55 @@ class PunchingCalcService
         $can_take_casual_an
     ) {
 
-        //this function assumes that the employee has punched in and out
+        //this function does not assume that the employee has punched in and out
 
         $computer_hint = null;
-        $grace_total_exceeded_one_hour = 0;
 
         //check if punching is from 7 am to 10 am or from 6 pm to 11 pm. that is it should overlap with office times
-        if ($c_punch_in->greaterThan($c_flexi_5pm) || $c_punch_out->lessThan($c_flexi_1030am)) {
+
+        if (($c_punch_in && $c_punch_in->greaterThan($c_flexi_5pm)) ||
+            ($c_punch_out && $c_punch_out->lessThan($c_flexi_1030am))) {
             $computer_hint = 'casual';
-            return [$computer_hint, $grace_total_exceeded_one_hour];
+            return [$computer_hint];
         }
 
-
-        $c_start = $c_punch_in->lessThan($c_flexi_10am)  ? $c_flexi_10am : $c_punch_in;
-        $c_end = $c_punch_out->greaterThan($c_flexi_530pm)  ? $c_flexi_530pm : $c_punch_out;
-
-        $worked_seconds_flexi = $c_start->diffInSeconds($c_end);
-
-        if ($duration_seconds_needed > $worked_seconds_flexi && $worked_seconds_flexi >= 0) {
-
-            $grace_sec = (($duration_seconds_needed - $worked_seconds_flexi) / 60) * 60; //ignore extra seconds
-
-            //one hour max grace check.
-            if ($grace_sec > 3600) { //if exceeded by more than 60 minutes
-
-                //see if this punch was after 11.30 am
-
-                //todo 12 to 3 pmghjghjhgjghjghjghj
-                $morning_late = $c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600));
-                $evening_late = $c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600));
-
-                if ($morning_late && !$evening_late) {
-                    $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
-                } else if ($evening_late && !$morning_late) {
-                    $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
-                } else if ($morning_late && $evening_late) {
-                    $computer_hint =  'casual';
-                } else {
-                    //10.08 to 4.05
-                    //find which end has more has more time diff. morning or evening
-                    $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
-                    $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm);
-                    if ($morning_diff > $evening_diff)
-                        $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
-                    else
-                        $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
-                }
-
-                //used when we show icons. if this is just two or three minutes late, dont show 1/2 cl icon
-                //computer decides hint. this can be wrong.
-                //this can also be used to show how many decisions pending for an employee in a month
-                //we only count cl set by so/us. not based on hint
-
-            }
-
-            $grace_total_exceeded_one_hour = $grace_sec - 3600;
+        //one hour max grace check.
+        //if exceeded by more than 60 minutes
+        $morning_late = $evening_late = false;
+        if ($c_punch_in) {
+            $morning_late = $c_punch_in->greaterThan($c_flexi_1030am->clone()->addSeconds(3600));
+        }
+        if ($c_punch_out) {
+            $evening_late = $c_punch_out->lessThan($c_flexi_5pm->clone()->subSeconds(3600));
         }
 
-        return [$computer_hint, $grace_total_exceeded_one_hour];
+        if ($morning_late && !$evening_late) {
+            $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+        } else if ($evening_late && !$morning_late) {
+            $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+        } else if ($morning_late && $evening_late) {
+            $computer_hint =  'casual';
+        } else if ($c_punch_in && $c_punch_out && $c_punch_in->greaterThan($c_flexi_1030am) && $c_punch_out->lessThan($c_flexi_5pm)){
+            //10.08 to 4.05
+            //find which end has more has more time diff. morning or evening
+            $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
+            $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm);
+            if ($morning_diff > $evening_diff)
+                $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+            else
+                $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+        }
+
+        //used when we show icons. if this is just two or three minutes late, dont show 1/2 cl icon
+        //computer decides hint. this can be wrong.
+        //this can also be used to show how many decisions pending for an employee in a month
+        //we only count cl set by so/us. not based on hint
+
+
+
+
+
+        return [$computer_hint];
     }
 
 
