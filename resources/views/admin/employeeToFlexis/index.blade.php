@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-@can('employee_to_flexi_create')
+@can('employee_to_section_create')
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.employee-to-flexis.create') }}">
