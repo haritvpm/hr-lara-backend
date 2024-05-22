@@ -356,18 +356,28 @@ class PunchingCalcService
 
         if( !$isHoliday){
             $grace_morning =  $grace_evening = 0;
+            $extra_morning =  $extra_evening = 0;
 
-            if( $c_punch_in ){
+            if( $c_punch_in && !$isFullDayleave ){
                 //calculate grace
-                if(!$isFullDayleave && $c_punch_in->gt($c_flexi_10am)){
+                if( $c_punch_in->gt($c_flexi_10am)){
                     $grace_morning = $c_punch_in->diffInSeconds($c_flexi_10am, true);
                 }
-            }
-            if( $c_punch_out ){
-                //calculate grace
-                if(!$isFullDayleave && $c_punch_out->lt($c_flexi_530pm)){
-                    $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
+                else
+                if( $c_punch_in->lt($c_flexi_10am)){
+                    $extra_morning = $c_punch_in->diffInSeconds($c_flexi_10am, true);
                 }
+            }
+            if( $c_punch_out && !$isFullDayleave){
+                //calculate grace
+                if( $c_punch_out->lt($c_flexi_530pm)){
+                    $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
+                } 
+                else 
+                if( $c_punch_out->gt($c_flexi_530pm)){
+                    $extra_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
+                }
+
             }
 
             $grace_sec = $grace_morning + $grace_evening;
@@ -378,12 +388,11 @@ class PunchingCalcService
                 $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
             }
 
-            //extra time only if both punched in and out
-            if ( !$isSinglePunching && $c_punch_in && $c_punch_out && $duration_sec > $duration_seconds_needed) {
-                $extra_sec = $duration_sec - $duration_seconds_needed;
-                $emp_new_punching_data['extra_sec'] = $extra_sec;
-                $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
-            }
+            //extra time is only calculated if there is no leave
+            $extra_sec = $extra_morning + $extra_evening;
+            $emp_new_punching_data['extra_sec'] = $extra_sec;
+            $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
+            
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
