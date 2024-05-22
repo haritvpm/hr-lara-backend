@@ -53,6 +53,8 @@ class LeaveApiController extends Controller
                 'inLieofDates' => $inLieofDates,
                 'inLieofMonth' => $inLieofMonth,
                 'employee' => $leaf->employee,
+                'owner_seat' =>  $leaf->owner,
+                'owner_can_approve' => $leaf->owner_can_approve,
 
             ];
 

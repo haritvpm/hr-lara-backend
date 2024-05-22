@@ -583,15 +583,20 @@ class PunchingCalcService
             $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
         } else if ($morning_late && $evening_late) {
             $computer_hint =  'casual';
-        } else if ($c_punch_in && $c_punch_out && $c_punch_in->greaterThan($c_flexi_1030am) && $c_punch_out->lessThan($c_flexi_5pm)){
+        } else if ($c_punch_in && $c_punch_out && 
+            $c_punch_in->greaterThan($c_flexi_1030am) && $c_punch_out->lessThan($c_flexi_5pm)){
             //10.08 to 4.05
             //find which end has more has more time diff. morning or evening
             $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in, true);
             $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm, true);
-            if ($morning_diff > $evening_diff)
-                $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
-            else
-                $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+            $total_late = $morning_diff + $evening_diff;
+
+            if($total_late > 3600){
+                if ($morning_diff > $evening_diff)
+                    $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
+                else
+                    $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
+            }
         }
 
         //used when we show icons. if this is just two or three minutes late, dont show 1/2 cl icon
@@ -698,10 +703,11 @@ class PunchingCalcService
                 $total_cl =   ($total_half_day_fn +  $total_half_day_an) / (float)2 + $total_full_day;
                 $emp_new_monthly_attendance_data['cl_marked'] = $total_cl;
                 $total_compen =  $emp_punchings->where('hint', 'comp_leave')->count();
-                $emp_new_monthly_attendance_data['compen_marked'] = $total_compen;
+                $total_compen_ex =  $emp_punchings->where('hint', 'compen_for_extra')->count();
+                $emp_new_monthly_attendance_data['compen_marked'] = $total_compen+$total_compen_ex;
 
                 $total_cl_submitted =  $emp_punchings->sum(function ($punching) {
-                    if($punching->leave_id == null || $punching->leave->leave_type != 'CL')
+                    if($punching->leave_id == null || $punching->leave->leave_type != 'CL' || $punching->leave->leave_type != 'casual')
                         return 0;
                     if($punching->leave->leave_cat == 'F')
                         return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
