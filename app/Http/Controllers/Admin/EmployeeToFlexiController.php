@@ -17,7 +17,7 @@ class EmployeeToFlexiController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('employee_to_flexi_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = EmployeeToFlexi::with(['employee'])->select(sprintf('%s.*', (new EmployeeToFlexi)->table));
@@ -65,7 +65,7 @@ class EmployeeToFlexiController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('employee_to_flexi_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -81,7 +81,7 @@ class EmployeeToFlexiController extends Controller
 
     public function edit(EmployeeToFlexi $employeeToFlexi)
     {
-        abort_if(Gate::denies('employee_to_flexi_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -99,7 +99,7 @@ class EmployeeToFlexiController extends Controller
 
     public function show(EmployeeToFlexi $employeeToFlexi)
     {
-        abort_if(Gate::denies('employee_to_flexi_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeToFlexi->load('employee');
 
@@ -108,7 +108,7 @@ class EmployeeToFlexiController extends Controller
 
     public function destroy(EmployeeToFlexi $employeeToFlexi)
     {
-        abort_if(Gate::denies('employee_to_flexi_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeToFlexi->delete();
 
