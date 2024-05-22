@@ -349,7 +349,7 @@ class PunchingCalcService
 
         if ($c_punch_in && $c_punch_out)
         {
-            $duration_sec = $c_punch_in->diffInSeconds($c_punch_out);
+            $duration_sec = $c_punch_in->diffInSeconds($c_punch_out, true);
             $emp_new_punching_data['duration_sec'] = $duration_sec;
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
         }
@@ -360,13 +360,13 @@ class PunchingCalcService
             if( $c_punch_in ){
                 //calculate grace
                 if(!$isFullDayleave && $c_punch_in->gt($c_flexi_10am)){
-                    $grace_morning = $c_punch_in->diffInSeconds($c_flexi_10am);
+                    $grace_morning = $c_punch_in->diffInSeconds($c_flexi_10am, true);
                 }
             }
             if( $c_punch_out ){
                 //calculate grace
                 if(!$isFullDayleave && $c_punch_out->lt($c_flexi_530pm)){
-                    $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm);
+                    $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
                 }
             }
 
@@ -488,7 +488,7 @@ class PunchingCalcService
 
         $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
 
-        $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out);
+        $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_an_out, true);
 
         return [
                 $flexi_15minutes,
@@ -577,8 +577,8 @@ class PunchingCalcService
         } else if ($c_punch_in && $c_punch_out && $c_punch_in->greaterThan($c_flexi_1030am) && $c_punch_out->lessThan($c_flexi_5pm)){
             //10.08 to 4.05
             //find which end has more has more time diff. morning or evening
-            $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in);
-            $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm);
+            $morning_diff = $c_flexi_1030am->diffInSeconds($c_punch_in, true);
+            $evening_diff = $c_punch_out->diffInSeconds($c_flexi_5pm, true);
             if ($morning_diff > $evening_diff)
                 $computer_hint = $can_take_casual_fn ? 'casual_fn' : ($can_take_casual_an ? 'casual_an' : 'casual');
             else
