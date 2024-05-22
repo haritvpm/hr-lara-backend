@@ -280,7 +280,7 @@ class PunchingCalcService
 
         //Decide if this is punchin or out
         //note, there can be multiple punchings and still be single punch type as employy can punch twice within seconds
-        if (($punch_count  == 1 && $single_punch_type)) {
+        if ($punch_count  == 1 ) {
 
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
