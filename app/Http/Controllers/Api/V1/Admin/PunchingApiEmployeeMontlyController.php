@@ -12,7 +12,7 @@ use App\Models\Punching;
 use Carbon\CarbonPeriod;
 use App\Models\GovtCalendar;
 use Illuminate\Http\Request;
-use App\Models\PunchingTrace;
+use App\Models\CompenGranted;
 use App\Models\EmployeeToSeat;
 use App\Models\YearlyAttendance;
 use App\Models\EmployeeToSection;
@@ -151,16 +151,24 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $emp_leaves = Leaf::with(['compensGranted'])->where('aadhaarid', $aadhaarid)
             ->orderBy('creation_date', 'desc')
-            ->get()/*->transform(function ($item) {
+            ->get()->transform(function ($leaf) {
 
-               // $date_start = Carbon::parse($item->start_date);
-              //  $date_to = $item->end_date ? Carbon::parse($item->end_date) : null;
-             //   $diff = $date_start->diffInDays($date_to) + 1;
-
+                $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
+                $inLieofDates = [];
+                $inLieofMonth = null;
+                if( $leaf->leave_type == 'compen'){
+                    $inLieofDates = $compensGranted->map(function($item){
+                        return $item->date_of_work;
+                    });
+                } else  if( $leaf->leave_type == 'compen_for_extra'){
+                    $inLieofMonth = $compensGranted->first()->date_of_work;
+                }
                 return [
-                    ...$item->toArray(), 'day_count' => $diff,
+                    ...$leaf->toArray(),
+                    'inLieofDates' => $inLieofDates,
+                    'inLieofMonth' => $inLieofMonth,
                 ];
-            })*/;
+            });
 
         $now_str = Carbon::now()->format('Y-m-d');
         $employeeToSectionNow =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
