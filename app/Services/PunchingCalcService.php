@@ -284,7 +284,7 @@ class PunchingCalcService
 
             $punch = $punchingtraces[0];
             $c_punch = Carbon::createFromFormat('Y-m-d H:i:s', $punch['att_date'] . ' ' . $punch['att_time']);
-            $isPunchIn = ($single_punch_type && $single_punch_type !== 'out') ? true : false;
+            $isPunchIn = !$single_punch_type || ($single_punch_type && $single_punch_type !== 'out') ? true : false;
 
             if( $isPunchIn || $single_punch_type == 'in'){
                 $emp_new_punching_data['punchin_trace_id'] = $punch['id'];
