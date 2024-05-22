@@ -67,7 +67,8 @@ class EmployeeToFlexiController extends Controller
     {
         abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+//        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.employeeToFlexis.create', compact('employees'));
     }
@@ -83,7 +84,9 @@ class EmployeeToFlexiController extends Controller
     {
         abort_if(Gate::denies('employee_to_section_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        //$employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $employees = Employee::getEmployeesWithAadhaarDesig()->prepend(trans('global.pleaseSelect'), '');
+
 
         $employeeToFlexi->load('employee');
 

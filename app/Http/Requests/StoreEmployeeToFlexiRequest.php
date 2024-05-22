@@ -11,7 +11,7 @@ class StoreEmployeeToFlexiRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('employee_to_flexi_create');
+        return Gate::allows('employee_to_section_access');
     }
 
     public function rules()
