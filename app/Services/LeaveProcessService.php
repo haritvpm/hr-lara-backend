@@ -54,14 +54,12 @@ class LeaveProcessService
             $needs_leave_count_update = 0;
             if ($punching) {
 
-                $needs_leave_count_update = LeaveProcessService::updatePunchingHint($punching, $leave);
             } else {
                 $punching = new Punching();
                 $punching->aadhaarid = $leave->aadhaarid;
                 $punching->date = $date_str;
-
-                $needs_leave_count_update = LeaveProcessService::updatePunchingHint($punching, $leave);
             }
+            $needs_leave_count_update = LeaveProcessService::updatePunchingHint($punching, $leave);
 
             if ($needs_leave_count_update) {
                 $punchingCalcService->calculateMonthlyAttendance($date_str, [$leave->aadhaarid]);
@@ -89,6 +87,7 @@ class LeaveProcessService
             }
         } else {
             $punching->leave_id = $leave->id;
+            $punching->is_unauthorised = $punching->is_unauthorised ? -1 : 0; //to denote it was 1 to start with and later updated
         }
 
         //for now, just dont show pending leaves
@@ -138,11 +137,8 @@ class LeaveProcessService
 
             $punchings = Punching::where('leave_id', $leaf->id)
                 ->update(['leave_id' => null]);
-
             //delete all compen_granted
             $compensGranted = CompenGranted::where('leave_id', $leaf->id)?->delete();
-
-
         }
 
         $leave_start_date = Carbon::parse($leaf->start_date);

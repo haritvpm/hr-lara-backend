@@ -291,7 +291,8 @@ class EmployeeService
 
             Section::wherein('seat_of_controlling_officer_id', $seat_ids)
                 ->orwherein('seat_of_reporting_officer_id', $seat_ids)
-                ->orwherein('js_as_ss_employee_id', $emp_ids)->get() :
+                ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            :
 
             Section::wherein('seat_of_reporting_officer_id', $seat_ids)->get();
 
@@ -314,14 +315,14 @@ class EmployeeService
         return $employee_section_maps->count() ? $employee_section_maps : null;
     }
 
-    public function getLoggedUserSubordinateEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me)
+    public function getLoggedUserSubordinateEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me, $loadRouting = true)
     {
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
         $all_subordinate_seats = collect($seat_ids_of_loggedinuser);
         $seat_ids = $seat_ids_of_loggedinuser;
 
-        while(1){
+        while($loadRouting){
 
             $subordinate_seats = AttendanceRouting::with(['viewer_seat', 'viewable_seats'])
             ->wherein('viewer_seat_id', $seat_ids)

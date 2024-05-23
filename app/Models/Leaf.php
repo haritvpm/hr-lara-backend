@@ -74,6 +74,13 @@ class Leaf extends Model
         'deleted_at',
         'leave_count',
         'owner_can_approve',
+        'forwarded_by_seat',
+        'approver_employee_id',
+        'approver_details',
+        'approved_on',
+        'prefix',
+        'suffix',
+        'date_of_joining',
     ];
     // protected function serializeDate(DateTimeInterface $date)
     // {

@@ -47,7 +47,7 @@ class LeaveApiController extends Controller
                 'leave_count' => $leaf->leave_count,
                 'active_status' => $leaf->active_status,
                 'proceeded' => $leaf->proceeded,
-                'created_at' => $leaf->created_at,
+                'creation_date' => Carbon::parse($leaf->created_at)->format('Y-m-d'),
                 'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
                 'multipleDays' => $leaf->start_date != $leaf->end_date,
                 'inLieofDates' => $inLieofDates,
@@ -55,6 +55,12 @@ class LeaveApiController extends Controller
                 'employee' => $leaf->employee,
                 'owner_seat' =>  $leaf->owner,
                 'owner_can_approve' => $leaf->owner_can_approve,
+              //  'approver_employee_id',
+                'approver_details' => $leaf->approver_details,
+                'approved_on' => Carbon::parse($leaf->approved_on)->format('Y-m-d'),
+                'prefix' => $leaf->prefix,
+                'suffix' => $leaf->suffix,
+                'date_of_joining' => $leaf->date_of_joining,
 
             ];
 
@@ -86,7 +92,7 @@ class LeaveApiController extends Controller
 
         ];
 
-        
+
     }
 
     public function index()
@@ -106,8 +112,11 @@ class LeaveApiController extends Controller
 
         $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
                 ->wherein('owner_seat', $seat_ids_of_loggedinuser)
-                ->get()->transform(function($leaf){
-                    return $this->LeafToResource($leaf);
+                ->orwherein('forwarded_by_seat', $seat_ids_of_loggedinuser)
+                ->get()->transform(function($leaf) use ($seat_ids_of_loggedinuser){
+                    return [...$this->LeafToResource($leaf),
+                    'is_owner' => $seat_ids_of_loggedinuser->contains($leaf->owner_seat),
+                    ];
                 });
 
 
@@ -158,7 +167,7 @@ class LeaveApiController extends Controller
             if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
 
                 $this->createCompenGranteds($request, $leaf, $me);
-                
+
 
             } //compen or compen_for_extra
 
@@ -204,7 +213,7 @@ class LeaveApiController extends Controller
                 $inLieofDates = Collect($request->inLieofDates)->map(function($date){
                     return Carbon::parse($date)->format('Y-m-d');
                 });
-                
+
                 foreach($inLieofDates as $date){
                     \Log::info('createCompenGranteds' . $date);
 
@@ -291,8 +300,8 @@ class LeaveApiController extends Controller
     {
 
         //delete old leave
-       
-        
+
+
         //$leaf->update($request->all());
 
         return (new LeafResource($leaf))
@@ -308,13 +317,24 @@ class LeaveApiController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
-    
+
     public function leaveApprove(Request $request)
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $leaf = Leaf::findOrFail($request->id);
 
-        $leaf->update(['active_status' => 'Y']);
+        $approver = User::with(['employee', 'employee.designation'])->find(auth()->id());
+        \Log::info('leaveApprove' . $approver);
+        $designation = $approver->employee->designation->first()->designation->designation;
+
+        $leaf->update([
+            'active_status' => 'Y',
+            'approver_employee_id' => $approver->employee_id,
+            'approved_on' => now(),
+            'approver_details' =>  "{$approver->employee->name}, {$designation} ({$approver->employee->pen})"
+
+
+        ]);
         LeaveProcessService::processLeaveStatusChange($leaf);
 
         return (new LeafResource($leaf))
@@ -331,7 +351,12 @@ class LeaveApiController extends Controller
             $leaf->update([
                 'active_status' => 'R',
                 'owner_seat' => null,
-                'owner_can_approve' => false
+                'owner_can_approve' => false,
+                'forwarded_by_seat' => null,
+                'approver_details' => null,
+                'approved_on' => null,
+                'approver_employee_id' => null,
+
             ]);
             LeaveProcessService::processLeaveStatusChange($leaf);
         });
@@ -365,6 +390,7 @@ class LeaveApiController extends Controller
         $leaf->update([
            'owner_seat' => $owner,
            'owner_can_approve' => true,
+           'forwarded_by_seat' => $leaf->owner_seat,
         ]);
 
         return (new LeafResource($leaf))
