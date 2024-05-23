@@ -784,7 +784,7 @@ class PunchingCalcService
                 'total_grace_sec',  'total_extra_sec', 'cl_marked', 'employee_id',
                 'total_grace_exceeded300_date', 'total_grace_str', 'total_extra_str',
                 'compen_marked','cl_submitted','single_punchings', 'grace_minutes', 'start_date', 'end_date',
-                'single_punchings_regularised', 'unauthorised_count',
+                'single_punchings_regularised', 'unauthorised_count', 'compen_submitted'
             ]
         );
 
@@ -845,6 +845,13 @@ class PunchingCalcService
                 $total_compen =  $emp_monthlypunchings->sum('compen_marked');
                 $emp_new_yearly_attendance_data['compen_marked'] = $total_compen;
 
+                $total_compen_submitted =  $emp_monthlypunchings->sum('compen_submitted');
+                $emp_new_yearly_attendance_data['compen_submitted'] = $total_compen_submitted;
+                
+                $total_other_leaves =  $emp_monthlypunchings->sum('other_leaves_marked');
+                $emp_new_yearly_attendance_data['other_leaves_marked'] = $total_other_leaves;
+
+
                 $total_single_punchings =  $emp_monthlypunchings->sum('single_punchings');
                 $emp_new_yearly_attendance_data['single_punchings'] = $total_single_punchings;
 
@@ -865,7 +872,7 @@ class PunchingCalcService
                 'employee_id',
                 'cl_marked',  'cl_submitted', 'compen_marked',
                 'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted','single_punchings',
-                'single_punchings_regularised', 'unauthorised_count'
+                'single_punchings_regularised', 'unauthorised_count', 
 
             ]
         );
