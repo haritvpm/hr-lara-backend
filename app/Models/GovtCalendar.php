@@ -185,4 +185,21 @@ class GovtCalendar extends Model
         
         return $holidays;
     }
+
+    public static function getAdjacentHolidays($date_start_str, $isprefix)
+    {
+        $prefix = [];
+        $date = Carbon::parse($date_start_str);
+
+        $date = $isprefix ? $date->subDay() : $date->addDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if(!$cal || $cal->govtholidaystatus != 1){
+                break;
+            }
+            $prefix[] = $cal->date;
+            $date = $isprefix ? $date->subDay() : $date->addDay();
+        }
+        return $prefix;
+    }
 }

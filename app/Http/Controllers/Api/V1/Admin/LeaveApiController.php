@@ -494,12 +494,37 @@ class LeaveApiController extends Controller
                 
             }
         }
+
+        //todo: check if the employee has enough leaves
+
+        $prefix_holidays = [];
+        $suffix_holidays = [];
+        if ($start_date && $end_date  && in_array($request->leave_type, ['earned', 'commuted', 'halfpay',  'maternity', 'paternity', 'special_casual'])) {
+        
+           
+            if( $start_date ){
+                \Log::info('prefix_holidays');
+                $prefix_holidays = GovtCalendar::getAdjacentHolidays($start_date, true);
+            }
+            if( $end_date /*&& $start_date*/){
+                \Log::info('suffx_holidays');
+
+                $suffix_holidays = GovtCalendar::getAdjacentHolidays($end_date,false);
+            }
+
+            
+        }
+
+        
+
         //ok to proceed.
         return response()->json(
             [
                 'status' => 'success',
                 'errors' =>  $errors,
                 'warnings' => $warnings,
+                'prefix_holidays' => $prefix_holidays,
+                'suffix_holidays' => $suffix_holidays,
             ],
             200
         );
