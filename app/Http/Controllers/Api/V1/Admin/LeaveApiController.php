@@ -113,6 +113,7 @@ class LeaveApiController extends Controller
         $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
                 ->wherein('owner_seat', $seat_ids_of_loggedinuser)
                 ->orwherein('forwarded_by_seat', $seat_ids_of_loggedinuser)
+                ->orderBy('created_at', 'desc')
                 ->get()->transform(function($leaf) use ($seat_ids_of_loggedinuser){
                     return [...$this->LeafToResource($leaf),
                     'is_owner' => $seat_ids_of_loggedinuser->contains($leaf->owner_seat),
