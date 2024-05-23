@@ -53,15 +53,15 @@ class GovtCalendar extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function getDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getDateAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
     public function getSuccessAttendanceLastfetchtimeAttribute($value)
     {
@@ -173,5 +173,16 @@ class GovtCalendar extends Model
         $calender_info['attendance_trace_fetch_complete'] = $calender->attendance_trace_fetch_complete ?? false;
 
         return $calender_info;
+    }
+    public static function getHolidaysForPeriod ($date_start_str, $date_end_str)
+    {
+        $holidays = GovtCalendar::
+        where('date', '>=', $date_start_str)
+        ->where('date', '<=', $date_end_str)
+        ->where('govtholidaystatus', 1)
+        ->orderby('date')
+        ->get();
+        
+        return $holidays;
     }
 }

@@ -18,6 +18,8 @@ use Carbon\CarbonPeriod;
 use App\Services\LeaveProcessService;
 use App\Services\PunchingCalcService;
 use App\Models\Punching;
+use App\Models\GovtCalendar;
+
 
 class LeaveApiController extends Controller
 {
@@ -26,44 +28,43 @@ class LeaveApiController extends Controller
         $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
         $inLieofDates = [];
         $inLieofMonth = null;
-        if( $leaf->leave_type == 'compen'){
-            $inLieofDates = $compensGranted->map(function($item){
+        if ($leaf->leave_type == 'compen') {
+            $inLieofDates = $compensGranted->map(function ($item) {
                 return $item->date_of_work;
             });
-        } else  if( $leaf->leave_type == 'compen_for_extra'){
+        } else  if ($leaf->leave_type == 'compen_for_extra') {
             $inLieofMonth = $compensGranted->first()->date_of_work;
         }
 
 
-         return [
-                'id' => $leaf->id,
-                'aadhaarid' => $leaf->aadhaarid,
-                'leave_cat' => $leaf->leave_cat,
-                'leave_type' => $leaf->leave_type,
-                'start_date' => $leaf->start_date,
-                'end_date' => $leaf->end_date,
-                'time_period' => $leaf->time_period,
-                'reason' => $leaf->reason,
-                'leave_count' => $leaf->leave_count,
-                'active_status' => $leaf->active_status,
-                'proceeded' => $leaf->proceeded,
-                'creation_date' => Carbon::parse($leaf->created_at)->format('Y-m-d'),
-                'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
-                'multipleDays' => $leaf->start_date != $leaf->end_date,
-                'inLieofDates' => $inLieofDates,
-                'inLieofMonth' => $inLieofMonth,
-                'employee' => $leaf->employee,
-                'owner_seat' =>  $leaf->owner,
-                'owner_can_approve' => $leaf->owner_can_approve,
-              //  'approver_employee_id',
-                'approver_details' => $leaf->approver_details,
-                'approved_on' => Carbon::parse($leaf->approved_on)->format('Y-m-d'),
-                'prefix' => $leaf->prefix,
-                'suffix' => $leaf->suffix,
-                'date_of_joining' => $leaf->date_of_joining,
+        return [
+            'id' => $leaf->id,
+            'aadhaarid' => $leaf->aadhaarid,
+            'leave_cat' => $leaf->leave_cat,
+            'leave_type' => $leaf->leave_type,
+            'start_date' => $leaf->start_date,
+            'end_date' => $leaf->end_date,
+            'time_period' => $leaf->time_period,
+            'reason' => $leaf->reason,
+            'leave_count' => $leaf->leave_count,
+            'active_status' => $leaf->active_status,
+            'proceeded' => $leaf->proceeded,
+            'creation_date' => Carbon::parse($leaf->created_at)->format('Y-m-d'),
+            'fromType' => $leaf->leave_cat == 'H' ? $leaf->time_period : 'full',
+            'multipleDays' => $leaf->start_date != $leaf->end_date,
+            'inLieofDates' => $inLieofDates,
+            'inLieofMonth' => $inLieofMonth,
+            'employee' => $leaf->employee,
+            'owner_seat' =>  $leaf->owner,
+            'owner_can_approve' => $leaf->owner_can_approve,
+            //  'approver_employee_id',
+            'approver_details' => $leaf->approver_details,
+            'approved_on' => Carbon::parse($leaf->approved_on)->format('Y-m-d'),
+            'prefix' => $leaf->prefix,
+            'suffix' => $leaf->suffix,
+            'date_of_joining' => $leaf->date_of_joining,
 
-            ];
-
+        ];
     }
 
     private function resourceToModel($request, $me, $owner, $owner_can_approve)
@@ -71,7 +72,7 @@ class LeaveApiController extends Controller
         return [
             'is_aebas_leave' => false,
             'aadhaarid' => $me->employee->aadhaarid,
-            'employee_id'=> $me->employee_id,
+            'employee_id' => $me->employee_id,
             'leave_type' => $request->leave_type,
             'start_date' => Carbon::parse($request->start_date)->format('Y-m-d'),
             'end_date'  => $request->end_date ? Carbon::parse($request->end_date)->format('Y-m-d') : Carbon::parse($request->start_date)->format('Y-m-d'),
@@ -83,42 +84,43 @@ class LeaveApiController extends Controller
             'processed' => false,
             'owner_seat' =>  $owner,
             'owner_can_approve' => $owner_can_approve,
-            'remarks' =>null,
+            'remarks' => null,
             // 'start_date_type' => $request->fromType,
             // 'end_date_type'=> $request->toType,
             'leave_count' => $request->leave_count,
             'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
-            'time_period' => $request->fromType == 'an' ? 'AN' : ( $request->fromType == 'fn' ? 'FN' : null), //dummy required value
+            'time_period' => $request->fromType == 'an' ? 'AN' : ($request->fromType == 'fn' ? 'FN' : null), //dummy required value
 
         ];
-
-
     }
 
     public function index()
     {
-       // abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-       //find all leaves where owner_seat is the logged in user's seat
-       [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        //find all leaves where owner_seat is the logged in user's seat
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        if( $status == 'error'){
+        if ($status == 'error') {
             return response()->json(
-            [
-                'status' => 'error',
-                'message' => 'User has no seats mapped'
-            ], 400);
+                [
+                    'status' => 'error',
+                    'message' => 'User has no seats mapped'
+                ],
+                400
+            );
         }
 
         $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
-                ->wherein('owner_seat', $seat_ids_of_loggedinuser)
-                ->orwherein('forwarded_by_seat', $seat_ids_of_loggedinuser)
-                ->orderBy('created_at', 'desc')
-                ->get()->transform(function($leaf) use ($seat_ids_of_loggedinuser){
-                    return [...$this->LeafToResource($leaf),
+            ->wherein('owner_seat', $seat_ids_of_loggedinuser)
+            ->orwherein('forwarded_by_seat', $seat_ids_of_loggedinuser)
+            ->orderBy('created_at', 'desc')
+            ->get()->transform(function ($leaf) use ($seat_ids_of_loggedinuser) {
+                return [
+                    ...$this->LeafToResource($leaf),
                     'is_owner' => $seat_ids_of_loggedinuser->contains($leaf->owner_seat),
-                    ];
-                });
+                ];
+            });
 
 
         return response()->json(
@@ -126,7 +128,9 @@ class LeaveApiController extends Controller
                 'status' => 'success',
                 'leaves' => LeafResource::collection($leaves)
 
-            ], 200);
+            ],
+            200
+        );
     }
 
     public function store(Request $request)
@@ -135,9 +139,11 @@ class LeaveApiController extends Controller
 
         $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
 
-        if( $alreadyApplied ){
+        if ($alreadyApplied) {
             return response()->json(
-                [  'status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})" ], 400);
+                ['status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})"],
+                400
+            );
         }
 
         //ok to proceed.
@@ -145,18 +151,20 @@ class LeaveApiController extends Controller
 
         //find the owner seat which is the reporting officer of this employee's section
         $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $me->employee_id)->first();
-        if( !$sectionMapping ){
+        if (!$sectionMapping) {
             return response()->json(
-                [  'status' => 'error', 'message' => 'Employee is not mapped to any section'], 400);
+                ['status' => 'error', 'message' => 'Employee is not mapped to any section'],
+                400
+            );
         }
 
         $leaf = null;
-        \DB::transaction(function () use ( &$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
+        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
 
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
             $owner_can_approve = false;
-            if( $seat_ids_of_loggedinuser->contains($owner) == true){
+            if ($seat_ids_of_loggedinuser->contains($owner) == true) {
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
                 $owner_can_approve = true;
             }
@@ -165,23 +173,20 @@ class LeaveApiController extends Controller
                 $this->resourceToModel($request, $me, $owner, $owner_can_approve)
             );
 
-            if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
+            if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
 
                 $this->createCompenGranteds($request, $leaf, $me);
-
-
             } //compen or compen_for_extra
 
             LeaveProcessService::processNewLeave($leaf);
-
         });
 
 
 
 
-         return (new LeafResource($leaf))
-             ->response()
-             ->setStatusCode(Response::HTTP_CREATED);
+        return (new LeafResource($leaf))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function show(Leaf $leaf)
@@ -190,12 +195,14 @@ class LeaveApiController extends Controller
         //check if this leave is for the logged in user
         $me = User::with('employee')->find(auth()->id());
 
-        if( $leaf->aadhaarid != $me->employee->aadhaarid || $leaf->owner_seat != null){
+        if ($leaf->aadhaarid != $me->employee->aadhaarid || $leaf->owner_seat != null) {
             return response()->json(
                 [
                     'status' => 'error',
                     'message' => 'Leave does not belong to logged in user'
-                ], 400);
+                ],
+                400
+            );
         }
         $leaf->load(['employee']);
 
@@ -208,14 +215,14 @@ class LeaveApiController extends Controller
     {
         \Log::info('createCompenGranteds');
 
-        if( $leaf->leave_type == 'compen' || $leaf->leave_type == 'compen_for_extra'){
+        if ($leaf->leave_type == 'compen' || $leaf->leave_type == 'compen_for_extra') {
 
-            if( $leaf->leave_type == 'compen'){
-                $inLieofDates = Collect($request->inLieofDates)->map(function($date){
+            if ($leaf->leave_type == 'compen') {
+                $inLieofDates = Collect($request->inLieofDates)->map(function ($date) {
                     return Carbon::parse($date)->format('Y-m-d');
                 });
 
-                foreach($inLieofDates as $date){
+                foreach ($inLieofDates as $date) {
                     \Log::info('createCompenGranteds' . $date);
 
                     $compensGranted = new CompenGranted();
@@ -226,21 +233,18 @@ class LeaveApiController extends Controller
                     $compensGranted->employee_id = $me->employee_id;
                     $compensGranted->save();
                 }
+            } else {
+                //find a non holiday date for month of $request->inlieuofdate if possible.
+                //only one date is allowed
+                $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-01');
+                $compensGranted = new CompenGranted();
+                $compensGranted->aadhaarid = $me->employee->aadhaarid;
+                $compensGranted->leave_id = $leaf->id;
+                $compensGranted->date_of_work = $inLieofDate;
+                $compensGranted->is_for_extra_hours = true;
+                $compensGranted->employee_id = $me->employee_id;
+                $compensGranted->save();
             }
-         else {
-            //find a non holiday date for month of $request->inlieuofdate if possible.
-            //only one date is allowed
-            $inLieofDate = Carbon::parse($request->inLieofMonth)->format('Y-m-01');
-            $compensGranted = new CompenGranted();
-            $compensGranted->aadhaarid = $me->employee->aadhaarid;
-            $compensGranted->leave_id = $leaf->id;
-            $compensGranted->date_of_work = $inLieofDate;
-            $compensGranted->is_for_extra_hours = true;
-            $compensGranted->employee_id = $me->employee_id;
-            $compensGranted->save();
-
-        }
-
         } //compen or compen_for_extra
     }
     public function updateLeave(Request $request)
@@ -249,9 +253,11 @@ class LeaveApiController extends Controller
 
         $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
 
-        if( $alreadyApplied != null && $alreadyApplied->id != $request->id){ //not ourselves
+        if ($alreadyApplied != null && $alreadyApplied->id != $request->id) { //not ourselves
             return response()->json(
-                [  'status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})" ], 400);
+                ['status' => 'error',  'message' => "Leave already applied for this date. (#{$alreadyApplied->id})"],
+                400
+            );
         }
 
         //ok to proceed.
@@ -259,19 +265,21 @@ class LeaveApiController extends Controller
 
         //find the owner seat which is the reporting officer of this employee's section
         $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $me->employee_id)->first();
-        if( !$sectionMapping ){
+        if (!$sectionMapping) {
             return response()->json(
-                [  'status' => 'error', 'message' => 'Employee is not mapped to any section'], 400);
+                ['status' => 'error', 'message' => 'Employee is not mapped to any section'],
+                400
+            );
         }
 
         $leaf = Leaf::findOrFail($request->id);
 
-        \DB::transaction(function () use ( &$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
+        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
 
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
             $owner_can_approve = false;
-            if( $seat_ids_of_loggedinuser->contains($owner) == true){
+            if ($seat_ids_of_loggedinuser->contains($owner) == true) {
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
                 $owner_can_approve = true;
             }
@@ -283,19 +291,16 @@ class LeaveApiController extends Controller
             //delete old compen_granted if it exists
             $compensGrantedOld = CompenGranted::where('leave_id', $leaf->id)->delete();
 
-            if( $request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra'){
+            if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
                 $this->createCompenGranteds($request, $leaf, $me);
-
             } //compen or compen_for_extra
 
             LeaveProcessService::processNewLeave($leaf);
-
         });
 
         return (new LeafResource($leaf))
-             ->response()
-             ->setStatusCode(Response::HTTP_CREATED);
-
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
     public function update(Request $request, Leaf $leaf)
     {
@@ -339,8 +344,8 @@ class LeaveApiController extends Controller
         LeaveProcessService::processLeaveStatusChange($leaf);
 
         return (new LeafResource($leaf))
-        ->response()
-        ->setStatusCode(Response::HTTP_ACCEPTED);
+            ->response()
+            ->setStatusCode(Response::HTTP_ACCEPTED);
     }
     public function leaveReturn(Request $request)
     {
@@ -348,7 +353,7 @@ class LeaveApiController extends Controller
         \Log::info('leaveReturn' . $request->id);
         $leaf = Leaf::findOrFail($request->id);
 
-        \DB::transaction(function () use ( $leaf) {
+        \DB::transaction(function () use ($leaf) {
             $leaf->update([
                 'active_status' => 'R',
                 'owner_seat' => null,
@@ -363,40 +368,42 @@ class LeaveApiController extends Controller
         });
 
         return (new LeafResource($leaf))
-        ->response()
-        ->setStatusCode(Response::HTTP_ACCEPTED);
+            ->response()
+            ->setStatusCode(Response::HTTP_ACCEPTED);
     }
     public function leaveForward(Request $request)
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $leaf = Leaf::findOrFail($request->id);
-         //find the owner seat which is the reporting officer of this employee's section
-         $sectionMapping = EmployeeToSection::with('section')
-         ->OnDate(now()->format('Y-m-d'))
-         ->where('employee_id', $leaf->employee_id )->first();
+        //find the owner seat which is the reporting officer of this employee's section
+        $sectionMapping = EmployeeToSection::with('section')
+            ->OnDate(now()->format('Y-m-d'))
+            ->where('employee_id', $leaf->employee_id)->first();
 
-         if( !$sectionMapping ){
-                 \Log::info('Employee is not mapped to any section');
+        if (!$sectionMapping) {
+            \Log::info('Employee is not mapped to any section');
 
-             return response()->json(
-                 [
-                     'status' => 'error',
-                     'message' => 'Employee is not mapped to any section'
-                 ], 400);
-         }
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Employee is not mapped to any section'
+                ],
+                400
+            );
+        }
 
         $owner = $sectionMapping->section->seat_of_controlling_officer_id;
 
 
         $leaf->update([
-           'owner_seat' => $owner,
-           'owner_can_approve' => true,
-           'forwarded_by_seat' => $leaf->owner_seat,
+            'owner_seat' => $owner,
+            'owner_can_approve' => true,
+            'forwarded_by_seat' => $leaf->owner_seat,
         ]);
 
         return (new LeafResource($leaf))
-        ->response()
-        ->setStatusCode(Response::HTTP_ACCEPTED);
+            ->response()
+            ->setStatusCode(Response::HTTP_ACCEPTED);
     }
 
     public function deleteLeave(Request $request)
@@ -407,7 +414,7 @@ class LeaveApiController extends Controller
 
         $leaf = Leaf::findOrFail($request->id);
 
-        \DB::transaction(function () use ( $leaf) {
+        \DB::transaction(function () use ($leaf) {
 
             $leaf->update([
                 'active_status' => 'C',
@@ -420,5 +427,81 @@ class LeaveApiController extends Controller
         });
 
         return response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function precheckLeave(Request $request)
+    {
+        \Log::info($request->all());
+
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        if( !$request->start_date || !$request->leave_type)
+        {
+            return response()->json(
+                [
+                    'errors' =>  [],
+                    'warnings' => [],
+                ],
+                200
+            );
+        }
+
+        $start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+        $end_date = $request->end_date ? Carbon::parse($request->end_date)->format('Y-m-d') : Carbon::parse($request->start_date)->format('Y-m-d');
+
+        $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($start_date, $end_date, $me->employee->aadhaarid);
+        $errors = [];
+        $warnings = [];
+
+        if ($alreadyApplied) {
+            $errors[] = "Leave already applied for this date. (#{$alreadyApplied->id})";
+        }
+        //check if any holidays in between the period
+        //$period = CarbonPeriod::create($request->start_date, $request->end_date);
+
+        $holidays = GovtCalendar::getHolidaysForPeriod($start_date, $end_date)?->pluck('date');
+
+        if ($holidays && $holidays->count()) {
+            //if it is casual, then it is an error
+            $str = "Period has holidays {$holidays->implode(', ')}  ";
+            if (
+                $request->leave_type == 'casual' ||
+                $request->leave_type == 'compen' ||
+                $request->leave_type == 'compen_for_extra'
+            ) {
+                $errors[] = $str;
+            } else {
+                $warnings[] = $str;
+            }
+        }
+
+        //find punchings between the period where punching count > 1 and warn
+
+        if ( $start_date && 
+             $request->leave_type != 'casual' ||
+            ($request->leave_type == 'casual' && $request->fromType == 'full' )
+        ) {
+
+            $punchings_in_period = Punching::whereBetween('date', [$start_date, $end_date])
+                ->where('aadhaarid', $me->employee->aadhaarid)
+                ->where('punching_count', '>=', 1)
+                ->pluck('date');
+
+            if ($punchings_in_period && $punchings_in_period->count()) {
+
+                //if leave is casual, then it can be half day. so ignore it
+                $warnings[] = "Punching found on: {$punchings_in_period->implode(', ')}";
+                
+            }
+        }
+        //ok to proceed.
+        return response()->json(
+            [
+                'status' => 'success',
+                'errors' =>  $errors,
+                'warnings' => $warnings,
+            ],
+            200
+        );
     }
 }

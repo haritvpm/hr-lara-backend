@@ -133,7 +133,7 @@ class PunchingApiSectionMontlyController extends Controller
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
 
-            $punchings_of_employee = Punching::with('leave')->where('aadhaarid', $aadhaarid)->whereBetween('date', [$start_date, $end_date])->get();
+           // $punchings_of_employee = Punching::with('leave')->where('aadhaarid', $aadhaarid)->whereBetween('date', [$start_date, $end_date])->get();
 
             $period = CarbonPeriod::create(Carbon::parse($start_date), Carbon::parse($end_date));
             $i=1;
@@ -155,8 +155,8 @@ class PunchingApiSectionMontlyController extends Controller
                 $dayinfo['is_today'] = $d->isToday();
                 $dayinfo['date'] = $d_str;
 
-                //$punching = Punching::with('leave')->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
-                $punching = $punchings_of_employee->where('date', $d_str)->first();
+                $punching = Punching::with('leave')->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+                //$punching = $punchings_of_employee->where('date', $d_str)->first();
                 //$punching = $punchings_of_employees->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {
                     //copy all properties of $punching to $dayinfo
