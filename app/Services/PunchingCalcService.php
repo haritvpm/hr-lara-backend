@@ -680,6 +680,7 @@ class PunchingCalcService
                 'total_grace_exceeded300_date' => null,
                 'single_punchings' => 0,
                 'cl_submitted' => 0,
+                'compen_submitted' => 0,
                 'grace_minutes' => 300,
                 'start_date' => $start_date->format('Y-m-d'),
                 'end_date' => $end_date->format('Y-m-d'),
@@ -707,15 +708,24 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['compen_marked'] = $total_compen+$total_compen_ex;
 
                 $total_cl_submitted =  $emp_punchings->sum(function ($punching) {
-                    if($punching->leave_id == null || $punching->leave->leave_type != 'CL' || $punching->leave->leave_type != 'casual')
+                    if($punching->leave_id == null || ($punching->leave->leave_type != 'CL' && $punching->leave->leave_type != 'casual'))
                         return 0;
                     if($punching->leave->leave_cat == 'F')
-                        return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
+                        return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? $punching->leave->leave_count : 0 ;
 
                     return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 0.5 : 0 ;
 
                 });
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
+
+                $total_compen_submitted =  $emp_punchings->sum(function ($punching) {
+                    if($punching->leave_id == null || 
+                    ($punching->leave->leave_type != 'compen' && $punching->leave->leave_type != 'compen_for_extra'))
+                        return 0;
+                    return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? $punching->leave->leave_count : 0 ;
+
+                });
+                $emp_new_monthly_attendance_data['compen_submitted'] = $total_compen_submitted;
 
                 $total_unauthorised =  $emp_punchings->where('is_unauthorised', 1)->count();
                 $emp_new_monthly_attendance_data['unauthorised_count'] = $total_unauthorised;
