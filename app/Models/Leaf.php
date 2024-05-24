@@ -138,6 +138,33 @@ class Leaf extends Model
         return $co_year;
         
     }
+
+    public static function getEmployeeLeaves( $aadhaarid)
+    {
+        $emp_leaves = Leaf::with(['compensGranted'])->where('aadhaarid', $aadhaarid)
+        ->orderBy('creation_date', 'desc')
+        ->get()->transform(function ($leaf) {
+
+            $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
+            $inLieofDates = [];
+            $inLieofMonth = null;
+            if( $leaf->leave_type == 'compen'){
+                $inLieofDates = $compensGranted->map(function($item){
+                    return $item->date_of_work;
+                });
+            } else  if( $leaf->leave_type == 'compen_for_extra'){
+                $inLieofMonth = $compensGranted->first()->date_of_work;
+            }
+            return [
+                ...$leaf->toArray(),
+                'inLieofDates' => $inLieofDates,
+                'inLieofMonth' => $inLieofMonth,
+            ];
+        });
+
+        return $emp_leaves;
+    }
+
     
     // public function getStartDateAttribute($value)
     // {

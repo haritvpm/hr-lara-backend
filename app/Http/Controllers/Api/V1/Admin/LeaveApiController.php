@@ -556,4 +556,15 @@ class LeaveApiController extends Controller
             200
         );
     }
+
+    public function getEmployeeLeaves($aadhaarid)
+    {
+
+       $emp_leaves = Leaf::getEmployeeLeaves($aadhaarid);
+
+       return response()->json(
+            $emp_leaves,
+            200
+        );
+    }
 }

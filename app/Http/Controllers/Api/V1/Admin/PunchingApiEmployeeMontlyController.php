@@ -149,26 +149,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $employee['designation_now'] = $employee->designation->first()->designation->designation;
 
-        $emp_leaves = Leaf::with(['compensGranted'])->where('aadhaarid', $aadhaarid)
-            ->orderBy('creation_date', 'desc')
-            ->get()->transform(function ($leaf) {
-
-                $compensGranted = CompenGranted::where('leave_id', $leaf->id)->get();
-                $inLieofDates = [];
-                $inLieofMonth = null;
-                if( $leaf->leave_type == 'compen'){
-                    $inLieofDates = $compensGranted->map(function($item){
-                        return $item->date_of_work;
-                    });
-                } else  if( $leaf->leave_type == 'compen_for_extra'){
-                    $inLieofMonth = $compensGranted->first()->date_of_work;
-                }
-                return [
-                    ...$leaf->toArray(),
-                    'inLieofDates' => $inLieofDates,
-                    'inLieofMonth' => $inLieofMonth,
-                ];
-            });
+      //  $emp_leaves = Leaf::getEmployeeLeaves($aadhaarid);
 
         $now_str = Carbon::now()->format('Y-m-d');
         $employeeToSectionNow =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
@@ -188,7 +169,7 @@ class PunchingApiEmployeeMontlyController extends Controller
             'data_monthly' => $data_monthly,
             'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
-            'emp_leaves' =>  $emp_leaves,
+          //  'emp_leaves' =>  $emp_leaves,
             'logged_in_user_is_controller' => $logged_in_user_is_controller,
         ], 200);
     }
