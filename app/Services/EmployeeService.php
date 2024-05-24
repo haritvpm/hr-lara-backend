@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Models\AttendanceRouting;
-use App\Models\Designation;
-use App\Models\Employee;
-use App\Models\EmployeeToDesignation;
-use App\Models\EmployeeToSeat;
-use App\Models\EmployeeToSection;
 use App\Models\Section;
+use App\Models\Employee;
+use App\Models\Designation;
+use App\Models\EmployeeToSeat;
+use App\Models\EmployeeToFlexi;
+use App\Models\AttendanceRouting;
+use App\Models\EmployeeToSection;
+use App\Models\EmployeeToDesignation;
 
 class EmployeeService
 {
@@ -422,11 +423,18 @@ class EmployeeService
 
         $data = collect($employee_section_maps);
 
-        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser, $date_from) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee->employee_employee_to_designations)
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
+
+                //  flexi_times: number;
+//   flexi_minutes: number;
+//   flexi_time_last_updated: string;
+            $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($date_from, $employeeToSection->employee_id);
+            $emp_flexi_time_upcoming = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employeeToSection->employee_id);
+
 
             // \Log::info($employeeToSection);
             return [
@@ -447,6 +455,11 @@ class EmployeeService
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
                 'seniority' => $employeeToSection->employee?->seniority?->sortindex,
+                'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
+                'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,
+                'flexi_minutes_upcoming' => $emp_flexi_time_upcoming?->flexi_minutes ?? null,
+                'flexi_time_wef_upcoming' => $emp_flexi_time_upcoming?->with_effect_from ?? null,
+
             ];
         });
 

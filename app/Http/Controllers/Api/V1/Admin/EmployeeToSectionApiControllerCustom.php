@@ -12,6 +12,7 @@ use App\Models\Section;
 use App\Models\EmployeeToSection;
 use App\Models\AttendanceBook;
 use App\Models\Employee;
+use App\Models\EmployeeToFlexi;
 use Carbon\Carbon;
 
 class EmployeeToSectionApiControllerCustom extends Controller
@@ -66,6 +67,52 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         return response()->json(['status' => $status], 200);
     }
+    public function editSetting(Request $request)
+    {
+        $employee_id = $request->id;
+        \Log::info($employee_id);
+
+        //get current flexi time
+        $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime( Carbon::today()->format('Y-m-d') , $employee_id);
+
+       // $empFlexi = EmployeeToFlexi::where('employee_id', $employee_id)->first();
+
+        //check last updated date
+        if($current_flexi){
+            $last_updated = Carbon::parse($current_flexi->with_effect_from);
+            $today = Carbon::today();
+            if($last_updated->diffInDays($today, true) < 20){
+                return response()->json(['status' => 'failed', 'message' => 'You cannot update flexi time now'], 400);
+            }
+        }
+
+        $flexi_minutes = $request->flexi_minutes;
+        \Log::info($request->wef);
+        $with_effect_from =  Carbon::parse($request->wef);
+        if( $with_effect_from->isToday() || $with_effect_from->isPast()){
+            return response()->json(['status' => 'failed', 'message' => 'You cannot set flexi time for today/past date ' . $with_effect_from->format('Y-m-d')], 400);
+        }
+
+        //we should check if the employee has any flexi time set for the future
+        $upcoming_flexi = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
+        if($upcoming_flexi){
+            $upcoming_flexi->update ([
+                'employee_id' => $employee_id,
+                'flexi_minutes' => $flexi_minutes,
+                'with_effect_from' => $with_effect_from->format('Y-m-d'),
+            ]);
+        } else {
+            EmployeeToFlexi::create([
+                'employee_id' => $employee_id,
+                'flexi_minutes' => $flexi_minutes,
+                'with_effect_from' => $with_effect_from->format('Y-m-d'),
+            ]);
+        }
+
+        return response()->json(['status' => 'success'], 200);
+
+    }
+
 
     public function getUnpostedEmployees(Request $request)
     {

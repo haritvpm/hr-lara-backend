@@ -55,6 +55,11 @@ class EmployeeToFlexi extends Model
         $flexi = EmployeeToFlexi::where('employee_id', $employee_id)->whereDate('with_effect_from', '<=', $date)->orderBy('with_effect_from', 'desc')->first();
         return $flexi;
     }
+    public static function getEmployeeUpcomingFlexiTime($employee_id)
+    {
+        $flexis = EmployeeToFlexi::where('employee_id', $employee_id)->whereDate('with_effect_from', '>=', Carbon::tomorrow()->format('Y-m-d') )->orderBy('with_effect_from', 'desc')->first();
+        return $flexis;
+    }
     public static function getAllFlexiTimes($date)
     {
         $flexi = EmployeeToFlexi::whereDate('with_effect_from', '<=', $date)->orderBy('with_effect_from', 'desc')->get();

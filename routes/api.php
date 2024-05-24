@@ -149,6 +149,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
     Route::get('/my-sectionemployees/unposted-employees', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployees');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
+    Route::patch('/my-sectionemployees/setting/{id}', 'EmployeeToSectionApiControllerCustom@editSetting');
 
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['store', 'destroy']]);
 
@@ -156,7 +157,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 
     // Leave
-    
+
     Route::post('/precheck-leave', 'LeaveApiController@precheckLeave');
     Route::patch('/leaves/{id}', 'LeaveApiController@updateLeave');
     Route::delete('/leaves/{id}', 'LeaveApiController@deleteLeave');
