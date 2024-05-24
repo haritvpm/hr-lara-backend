@@ -184,10 +184,12 @@ class LeaveApiController extends Controller
         $leaf = null;
         \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
 
+            $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
+
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
-            $owner_can_approve = false;
-            if ($seat_ids_of_loggedinuser->contains($owner) == true) {
+            $owner_can_approve = !$isCasualOrCompen; //SO can approve earned, commuted, etc
+            if ( $isCasualOrCompen && $seat_ids_of_loggedinuser->contains($owner) == true) {
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
                 $owner_can_approve = true;
             }
@@ -299,10 +301,12 @@ class LeaveApiController extends Controller
 
         \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
 
+            $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
+
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
-            $owner_can_approve = false;
-            if ($seat_ids_of_loggedinuser->contains($owner) == true) {
+            $owner_can_approve = !$isCasualOrCompen; //SO can approve earned, commuted, etc
+            if ($isCasualOrCompen && $seat_ids_of_loggedinuser->contains($owner) == true) {
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
                 $owner_can_approve = true;
             }
