@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Gate;
+use DateTime;
+use Carbon\Carbon;
+use App\Models\Leaf;
+use App\Models\User;
+use App\Models\Punching;
+use Carbon\CarbonPeriod;
+use App\Models\GovtCalendar;
+use Illuminate\Http\Request;
+use App\Models\CompenGranted;
+use App\Models\EmployeeToSection;
 use App\Http\Controllers\Controller;
+use App\Services\LeaveProcessService;
+use App\Services\PunchingCalcService;
 use App\Http\Requests\StoreLeafRequest;
 use App\Http\Requests\UpdateLeafRequest;
 use App\Http\Resources\Admin\LeafResource;
-use App\Models\EmployeeToSection;
-use App\Models\User;
-use App\Models\Leaf;
-use App\Models\CompenGranted;
-use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use App\Services\LeaveProcessService;
-use App\Services\PunchingCalcService;
-use App\Models\Punching;
-use App\Models\GovtCalendar;
 
 
 class LeaveApiController extends Controller
@@ -504,7 +505,7 @@ class LeaveApiController extends Controller
 
         //find punchings between the period where punching count > 1 and warn
 
-        if ( $start_date && 
+        if ( $start_date &&
              $request->leave_type != 'casual' ||
             ($request->leave_type == 'casual' && $request->fromType == 'full' )
         ) {
@@ -518,7 +519,7 @@ class LeaveApiController extends Controller
 
                 //if leave is casual, then it can be half day. so ignore it
                 $warnings[] = "Punching found on: {$punchings_in_period->implode(', ')}";
-                
+
             }
         }
 
@@ -527,8 +528,8 @@ class LeaveApiController extends Controller
         $prefix_holidays = [];
         $suffix_holidays = [];
         if ($start_date && $end_date  && in_array($request->leave_type, ['earned', 'commuted', 'halfpay',  'maternity', 'paternity', 'special_casual'])) {
-        
-           
+
+
             if( $start_date ){
                 \Log::info('prefix_holidays');
                 $prefix_holidays = GovtCalendar::getAdjacentHolidays($start_date, true);
@@ -539,10 +540,10 @@ class LeaveApiController extends Controller
                 $suffix_holidays = GovtCalendar::getAdjacentHolidays($end_date,false);
             }
 
-            
+
         }
 
-        
+
 
         //ok to proceed.
         return response()->json(
@@ -567,4 +568,117 @@ class LeaveApiController extends Controller
             200
         );
     }
+
+    // Function to find continuous sequences of adjacent dates
+    function findAndRemoveAdjacentDates(&$dates) {
+        $adjacentSequences = [];
+        $currentSequence = [];
+
+        for ($i = 0; $i < count($dates); $i++) {
+            if (empty($currentSequence)) {
+                $currentSequence[] = $dates[$i];
+            } else {
+                $lastDate = new DateTime(end($currentSequence));
+                $currentDate = new DateTime($dates[$i]);
+                $interval = $lastDate->diff($currentDate);
+
+                if ($interval->days == 1) {
+                    $currentSequence[] = $dates[$i];
+                } else {
+                    if (count($currentSequence) > 1) {
+                        $adjacentSequences[] = $currentSequence;
+                    }
+                    $currentSequence = [$dates[$i]];
+                }
+            }
+        }
+
+        if (count($currentSequence) > 1) {
+            $adjacentSequences[] = $currentSequence;
+        }
+
+        // Remove found dates from the original array
+        $dates = array_diff($dates, array_merge(...$adjacentSequences));
+        $dates = array_values($dates); // Re-index the array
+
+        return $adjacentSequences;
+    }
+
+    public function getEmployeePendingLeaves($aadhaarid)
+    {
+        // leave_type: string;
+        // leave_cat: string;
+        // time_period: string | null;
+       $punchings = Punching::where('aadhaarid', $aadhaarid)
+       ->where('leave_id', null)
+       ->where( 'date', '>=', '2024-05-01')
+       ->where( fn ($query) => $query->where('punching_count',  0)->orWhere('is_unauthorised',  1)->orWhere('hint', '!=', null))
+       ->orderBy('date', 'desc')
+       ->get();
+       $dates = $punchings->pluck('date')->toArray();
+
+       $date_2_punchings = $punchings->mapWithKeys(function ($punching) {
+           return [$punching->date => [
+               'date' => $punching->date,
+               'punching_count' => $punching->punching_count,
+               'unauthorised' => $punching->unauthorised,
+               'hint' => $punching->hint ? $punching->hint : '',
+           ]];
+       });
+
+       $data = [];
+
+       // Get the adjacent sequences and update the original array
+       $adjacentSequences = $this->findAndRemoveAdjacentDates($dates);
+       // Print the results
+        foreach ($adjacentSequences as $sequence) {
+            sort($sequence);
+           //check if this sequence has same hint and punching count
+            $hint = $date_2_punchings[$sequence[0]]['hint'];
+            $punching_count = $date_2_punchings[$sequence[0]]['punching_count'];
+
+            $same = true;
+            foreach ($sequence as $p) {
+                if ($date_2_punchings[$p]['hint'] != $hint || $date_2_punchings[$p]['punching_count'] != $punching_count) {
+                    $same = false;
+                    break;
+                }
+            }
+
+            if ($same) {
+                $data[] = [
+                    'date' =>  implode(', ', $sequence),
+                    'hint' => $hint,
+                    'punching_count' => $punching_count,
+                    'unauthorised' => $date_2_punchings[$sequence[0]]['unauthorised'],
+                ];
+            } else {
+                foreach ($sequence as $p) {
+                    $data[] = [
+                        'date' => $p,
+                        'hint' => $date_2_punchings[$p]['hint'],
+                        'punching_count' => $date_2_punchings[$p]['punching_count'],
+                        'unauthorised' => $date_2_punchings[$p]['unauthorised'],
+                    ];
+                }
+            }
+        }
+        // Add the remaining dates
+        foreach ($dates as $date) {
+            $data[] = [
+                'date' => $date,
+                'hint' => $date_2_punchings[$date]['hint'],
+                'punching_count' => $date_2_punchings[$date]['punching_count'],
+                'unauthorised' => $date_2_punchings[$date]['unauthorised'],
+            ];
+        }
+
+
+       return response()->json(
+            $data,
+            200
+        );
+    }
+
+
 }
