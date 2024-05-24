@@ -146,6 +146,29 @@ class LeaveApiController extends Controller
             );
         }
 
+        //check casual leave max check
+        if ($request->leave_type == 'casual') {
+            //note, frontend prevents leave date after this year end
+            $cl_submitted = Leaf::getEmployeeCasualLeaves($me->employee->aadhaarid, $request->start_date);
+            if($request->leave_count + $cl_submitted > 20){
+                return response()->json(
+                    ['status' => 'error',  'message' => "Casual leave count cannot be more than 20 for a year"],
+                    400
+                );
+            }
+        } //
+        if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
+            //note, frontend prevents leave date after this year end
+            $compen_submitted = Leaf::getEmployeeCompenLeaves($me->employee->aadhaarid, $request->start_date);
+            if($request->leave_count + $compen_submitted > 15){
+                return response()->json(
+                    ['status' => 'error',  'message' => "Compen count cannot be more than 15 for a year"],
+                    400
+                );
+            }
+        }
+
+
         //ok to proceed.
         \Log::info($request->all());
 

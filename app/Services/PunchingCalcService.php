@@ -271,11 +271,12 @@ class PunchingCalcService
             } else
             if (($can_take_casual_an && $hint == 'casual_an') || ($hasLeave && $isAnLeave)) {
                 $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
-                //$c_flexi_5pm = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '13:00:00'); //1.15 - 15
+                $c_flexi_5pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
                 $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
             }
         }
         $time_after_which_unauthorised = $c_flexi_1030am->clone()->addSeconds($max_grace_seconds);
+        $time_before_which_unauthorised = $c_flexi_5pm->clone()->subSeconds($max_grace_seconds);
 
 
         //Decide if this is punchin or out
@@ -408,6 +409,9 @@ class PunchingCalcService
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['is_unauthorised'] = true;
 
+                }
+                if( $c_punch_out && $c_punch_out->lessThan($time_before_which_unauthorised)){
+                  // just ignore now  $emp_new_punching_data['is_unauthorised'] = true;
                 }
             }
             else
@@ -711,7 +715,7 @@ class PunchingCalcService
                     if($punching->leave_id == null || ($punching->leave->leave_type != 'CL' && $punching->leave->leave_type != 'casual'))
                         return 0;
                     if($punching->leave->leave_cat == 'F')
-                        return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? $punching->leave->leave_count : 0 ;
+                        return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ; //since it is not leave which is common for many punchs, we dont count leave_count
 
                     return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 0.5 : 0 ;
 
@@ -722,7 +726,7 @@ class PunchingCalcService
                     if($punching->leave_id == null || 
                     ($punching->leave->leave_type != 'compen' && $punching->leave->leave_type != 'compen_for_extra'))
                         return 0;
-                    return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? $punching->leave->leave_count : 0 ;
+                    return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
 
                 });
                 $emp_new_monthly_attendance_data['compen_submitted'] = $total_compen_submitted;

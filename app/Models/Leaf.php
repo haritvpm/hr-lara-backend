@@ -96,6 +96,49 @@ class Leaf extends Model
         return $this->hasMany(CompenGranted::class, 'leave_id');
     }
 
+    public static function getEmployeeCasualLeaves($aadhaarid, $start_date)
+    {
+
+  
+        $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
+        
+        $cls_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
+                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
+                    ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
+            })
+            ->where('aadhaarid', $aadhaarid)
+            ->where( 'leave_type', 'casual' )
+            ->wherein('active_status', ['N', 'Y'])
+            ->sum('leave_count');
+
+        return $cls_year;
+        
+    }
+    public static function getEmployeeCompenLeaves($aadhaarid, $start_date)
+    {
+
+        //$employee = Employee::where('aadhaarid', $aadhaarid)->first();
+        // 
+        $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
+        
+        $co_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
+                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
+                    ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
+            })
+            ->where('aadhaarid', $aadhaarid)
+            ->where( function ($query) use ($leave_start_date, $leave_end_date) {
+                $query->where('leave_type', 'compen')
+                    ->orWhere('leave_type', 'compen_for_extra');
+            })
+            ->wherein('active_status', ['N', 'Y'])
+            ->sum('leave_count');
+
+        return $co_year;
+        
+    }
+    
     // public function getStartDateAttribute($value)
     // {
     //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
