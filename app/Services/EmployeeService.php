@@ -457,7 +457,7 @@ class EmployeeService
                 'seniority' => $employeeToSection->employee?->seniority?->sortindex,
                 'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
                 'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,
-                'flexi_minutes_upcoming' => $emp_flexi_time_upcoming?->flexi_minutes ?? null,
+                'flexi_minutes_upcoming' => $emp_flexi_time_upcoming?->flexi_minutes ?? 0,
                 'flexi_time_wef_upcoming' => $emp_flexi_time_upcoming?->with_effect_from ?? null,
 
             ];
