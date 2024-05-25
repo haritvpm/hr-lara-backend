@@ -24,6 +24,7 @@ use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
 use Symfony\Component\HttpFoundation\Response;
+use Auth;
 
 class PunchingApiEmployeeMontlyController extends Controller
 {
@@ -65,8 +66,13 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        if ($status != 'success') {
-            return response()->json(['status' => $status], 400);
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+
+        } else {
+
+            if ($status != 'success') {
+                return response()->json(['status' => $status, 'message' => 'No seats mapped'], 400);
+            }
         }
 
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
