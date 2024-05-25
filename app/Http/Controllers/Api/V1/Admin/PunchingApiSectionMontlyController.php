@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use Gate;
+use Auth;
 use Carbon\Carbon;
 use App\Models\Seat;
 use App\Models\User;
@@ -41,32 +41,47 @@ class PunchingApiSectionMontlyController extends Controller
 
         //get current logged in user's charges
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-        if ($status != 'success' || count($seat_ids_of_loggedinuser) == 0) {
 
-            return response()->json([
-                'status' => $status,
-                'month' => $date->format('F Y'),
-                'calender_info' => $calender_info,
-                'monthlypunchings' => [],
-            ], 200);
-        }
         $sec_seat_id = Seat::where('slug', 'secretary')->first()?->id ?? -1;
-        $loadRouting = !$seat_ids_of_loggedinuser->contains($sec_seat_id); //hack
+        $loadRouting = $seat_ids_of_loggedinuser ? !$seat_ids_of_loggedinuser->contains($sec_seat_id) : false; //hack
+        $empService = new EmployeeService();
+        $employee_section_maps = null;
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($start_date,$end_date,null);
+        }
+        else {
 
-        //todo. make this a period
-        $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $start_date,
-            $end_date,
-            $seat_ids_of_loggedinuser,
-            $me,
-            $loadRouting
-        );
+            if ($status != 'success' || count($seat_ids_of_loggedinuser) == 0) {
+
+                return response()->json([
+                    'status' => $status,
+                    'month' => $date->format('F Y'),
+                    'calender_info' => $calender_info,
+                    'monthlypunchings' => [],
+                ], 200);
+            }
+
+            //todo. make this a period
+            $employee_section_maps =  $empService->getLoggedUserSubordinateEmployees(
+                $start_date,
+                $end_date,
+                $seat_ids_of_loggedinuser,
+                $me,
+                $loadRouting
+            );
+        }
+
+        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser);
+
+
+
         // \Log::info('employees_in_view: ' . $employees_in_view);
 
 
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
-                'status' => 'No employees in view', 'month' => $date->format('F Y'),
+                'status' => 'No employees in view',
+                'month' => $date->format('F Y'),
                 'calender_info' => $calender_info,
                 'monthlypunchings' => [],
             ], 200);

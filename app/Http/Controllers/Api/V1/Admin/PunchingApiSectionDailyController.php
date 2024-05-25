@@ -26,18 +26,20 @@ class PunchingApiSectionDailyController extends Controller
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now()->startOfDay(); //today
         $date_str = $date->format('Y-m-d');
 
+        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
         //get current logged in user's charges
         $employees_in_view = null;
+        $empService = new EmployeeService();
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
             // the user can view all section attendance
-            $isSecretary = Auth::user()->hasRole('secretary');
-            $employee_section_maps = (new EmployeeService())->getEmployeeSectionMappingForSections($date_str,$date_str,null);
-            $employees_in_view = (new EmployeeService())->employeeSectionMapsToResource($employee_section_maps, $isSecretary);
+            //$isSecretary = Auth::user()->hasRole('secretary');
+            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($date_str,$date_str,null);
+
         }
         else {
             // the user can only view his/her section attendance
 
-            [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
             if ($status != 'success') {
                 return response()->json([
@@ -45,13 +47,15 @@ class PunchingApiSectionDailyController extends Controller
             }
 
             //call employeeservice get loggedusersubordinate
-            $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
+            $employee_section_maps = $empService->getLoggedUserSubordinateEmployees(
                 $date_str,
                 $date_str,
                 $seat_ids_of_loggedinuser,
                 $me
             );
         }
+
+        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser);
 
         if(!$employees_in_view){
             return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);
