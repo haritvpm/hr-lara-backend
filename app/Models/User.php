@@ -91,6 +91,32 @@ class User extends Authenticatable implements JWTSubject
         $this->notify(new ResetPassword($token));
     }
 
+    public function canDo($permission)
+    {
+        \Log::info('canDo' . $permission);
+
+
+        $e =  $this->roles()->whereHas('permissions', function ($query) use ($permission) {
+            $query->where('title', $permission);
+        })->exists();
+
+        \Log::info('canDo' . $permission . ' ' . $e);
+        return $e;
+    }
+    public function canDoAny($permission)
+    {
+       $e =$this->roles()->whereHas('permissions', function ($query) use ($permission) {
+            $query->whereIn('title', $permission);
+        })->exists();
+
+        \Log::info('canDoAny' . implode($permission) . ' ' . $e);
+        return $e;
+    }
+    public function hasRole($role)
+    {
+        return $this->roles()->where('title', $role)->exists();
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class);

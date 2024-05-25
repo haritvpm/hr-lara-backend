@@ -99,10 +99,10 @@ class Leaf extends Model
     public static function getEmployeeCasualLeaves($aadhaarid, $start_date)
     {
 
-  
+
         $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
-        
+
         $cls_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
                 $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
                     ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
@@ -112,17 +112,20 @@ class Leaf extends Model
             ->wherein('active_status', ['N', 'Y'])
             ->sum('leave_count');
 
-        return $cls_year;
-        
+        //also get startwith leave
+        $cls_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_cl ?? 0;
+
+        return $cls_year + $cls_startwith;
+
     }
     public static function getEmployeeCompenLeaves($aadhaarid, $start_date)
     {
 
         //$employee = Employee::where('aadhaarid', $aadhaarid)->first();
-        // 
+        //
         $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
-        
+
         $co_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
                 $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
                     ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
@@ -135,8 +138,10 @@ class Leaf extends Model
             ->wherein('active_status', ['N', 'Y'])
             ->sum('leave_count');
 
-        return $co_year;
-        
+       $co_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_compen ?? 0;
+
+        return $co_year + $co_startwith;
+
     }
 
     public static function getEmployeeLeaves( $aadhaarid)
@@ -165,7 +170,7 @@ class Leaf extends Model
         return $emp_leaves;
     }
 
-    
+
     // public function getStartDateAttribute($value)
     // {
     //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;

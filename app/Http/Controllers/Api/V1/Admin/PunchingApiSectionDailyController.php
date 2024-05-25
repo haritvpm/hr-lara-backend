@@ -12,30 +12,46 @@ use App\Models\YearlyAttendance;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
 use App\Http\Controllers\Controller;
-
+use Auth;
 class PunchingApiSectionDailyController extends Controller
 {
     public function getpunchings(Request $request)
     {
 
+        //jwt does not set these permissions??
+        if(!Auth::user()->canDoAny(['section_access', 'can_view_all_section_attendance'])){
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now()->startOfDay(); //today
         $date_str = $date->format('Y-m-d');
 
         //get current logged in user's charges
-
-        [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-
-        if ($status != 'success') {
-            return response()->json(['status' => $status], 400);
+        $employees_in_view = null;
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+            // the user can view all section attendance
+            $isSecretary = Auth::user()->hasRole('secretary');
+            $employee_section_maps = (new EmployeeService())->getEmployeeSectionMappingForSections($date_str,$date_str,null);
+            $employees_in_view = (new EmployeeService())->employeeSectionMapsToResource($employee_section_maps, $isSecretary);
         }
+        else {
+            // the user can only view his/her section attendance
 
-        //call employeeservice get loggedusersubordinate
-        $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $date_str,
-            $date_str,
-            $seat_ids_of_loggedinuser,
-            $me
-        );
+            [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+            if ($status != 'success') {
+                return response()->json([
+                    'status' => $status, 'message' => 'User not mapped to any seats'], 400);
+            }
+
+            //call employeeservice get loggedusersubordinate
+            $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
+                $date_str,
+                $date_str,
+                $seat_ids_of_loggedinuser,
+                $me
+            );
+        }
 
         if(!$employees_in_view){
             return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);

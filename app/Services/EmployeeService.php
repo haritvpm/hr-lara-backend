@@ -301,19 +301,25 @@ class EmployeeService
             return null;
         }
         // \Log::info(' sections_under_charge ' . $sections_under_charge);
+        return $this->getEmployeeSectionMappingForSections($date_from, $date_to, $sections_under_charge->pluck('id'));
 
+    }
+
+    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids )
+    {
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
-            ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
-            ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
+        ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
+        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
-                $q->DesignationDuring($date_to)->with(['designation']);
-            }])
-            ->wherein('section_id', $sections_under_charge->pluck('id'))
-            ->get();
+            $q->DesignationDuring($date_to)->with(['designation']);
+        }])
+        ->when($section_ids, function ($query, $section_ids) {
+            return $query->wherein('section_id', $section_ids);
+        })
+        ->get();
 
-        //  \Log::info('in getEmployeeSectionMappingForEmployees 3');
+    return $employee_section_maps->count() ? $employee_section_maps : null;
 
-        return $employee_section_maps->count() ? $employee_section_maps : null;
     }
 
     public function getLoggedUserSubordinateEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me, $loadRouting = true)
@@ -345,41 +351,26 @@ class EmployeeService
 
         // $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
+        return $this->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser);
+
+    }
+
+    public function employeeSectionMapsToResource($employee_section_maps, $logged_in_user_is_HigherOfficer, $seat_ids_of_loggedinuser = null)
+    {
         if (! $employee_section_maps) {
             return null;
         }
 
         $data = collect($employee_section_maps);
 
-        // while (count($emp_ids = $employee_section_maps->pluck('employee.id'))) {
-        //     //  \Log::info('emp_ids --' . $emp_ids );
 
-        //     $seat_ids = EmployeeToSeat::wherein('employee_id', $emp_ids)
-        //         ->wherenotin('seat_id', $seat_ids_already_fetched)
-        //         ->get()->pluck('seat_id');
-
-        //     //  \Log::info('emp_ids 1' . $seat_ids );
-
-        //     if (! $seat_ids || count($seat_ids) == 0) {
-        //         break;
-        //     }
-
-        //     $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-        //         $emp_ids, $date_from, $date_to, $seat_ids);
-
-        //     if (! $employee_section_maps) {
-        //         break;
-        //     }
-
-        //     $seat_ids_already_fetched = $seat_ids_already_fetched->concat($seat_ids);
-        //     $data = $data->concat($employee_section_maps);
-        // }
-
-        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser, $logged_in_user_is_HigherOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee->employee_employee_to_designations)
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
+
+            $logged_in_user_is_controller = $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_controlling_officer_id) ?? false;
 
             // \Log::info($employeeToSection);
             return [
@@ -394,9 +385,9 @@ class EmployeeService
                 'section_name' => $employeeToSection->section->name,
                 'works_nights_during_session' => $employeeToSection->section->works_nights_during_session,
                 'seat_of_controlling_officer_id' => $employeeToSection->section->seat_of_controlling_officer_id,
-                'logged_in_user_is_controller' => $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),
-                'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
-
+                'logged_in_user_is_controller' => $logged_in_user_is_controller,
+                'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_reporting_officer_id) ?? false,
+                'logged_in_user_is_HigherOfficer' => $logged_in_user_is_HigherOfficer,
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
@@ -409,6 +400,7 @@ class EmployeeService
 
         return $data;
     }
+
 
     public function getLoggedInUserSectionEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me)
     {
