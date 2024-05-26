@@ -136,8 +136,9 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
 
     // Punching
+    Route::post('/search-punchings', 'PunchingApiSearchController@search');
 
-
+    
     Route::get('/emp-punchings-yearly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeYearlyPunchingsMontwise');
     Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeMonthlyPunchings');
     Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');

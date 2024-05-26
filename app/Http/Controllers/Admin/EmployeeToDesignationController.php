@@ -14,6 +14,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Carbon\Carbon;
 
 class EmployeeToDesignationController extends Controller
 {
@@ -98,6 +99,11 @@ class EmployeeToDesignationController extends Controller
             return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();
         }
 
+        //if end date is given, then check if it is greater than start date, if not then return back with error message
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+            return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
+        }
+
 
         $employeeToDesignation = EmployeeToDesignation::create($request->all());
 
@@ -126,6 +132,12 @@ class EmployeeToDesignationController extends Controller
         if ($desigExisting && $desigExisting->id != $employeeToDesignation->id) {
             return back()->withErrors(['error' => 'Employee period overlaps with another desig'])->withInput();
         }
+
+         //check if end date is before start date
+         if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+            return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
+        }
+
 
         $employeeToDesignation->update($request->all());
 
