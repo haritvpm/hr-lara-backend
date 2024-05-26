@@ -33,7 +33,8 @@ class PunchingApiSearchController extends Controller
                 return $query->where('punching_count',1)
                 ->where('date', '<', Carbon::today()->toDateString())
                 ->where( 'leave_id',null)
-                ->wherein('hint', '<>', ['casual_fn', 'casual_an'] );
+                ->where ( fn($q) => $q->where('hint',null)->orWhere('hint', '<>' ,'casual_fn' )->orWhere('hint', '<>' ,'casual_an' ));
+
             })
             ->when($request->unauthorized, function ($query) use ($request) {
                 return $query->where('is_unauthorised',  1) ->where( 'leave_id',null)
@@ -42,10 +43,25 @@ class PunchingApiSearchController extends Controller
             ->when($request->one_hour_exceeded, function ($query) use ($request) {
                 return $query->where('grace_total_exceeded_one_hour', '>', 1);
             })
-            ->get();
+
+            ->get()->groupBy('aadhaarid')->sortByDesc( function($punchings) {
+                return $punchings->count();
+            });
+
+            $data = [];
+            foreach ($punchings as $key => $value) {
+
+                $data[] = [
+                    'aadhaarid' => $key . ' - ' . $value[0]->employee->name /*. ' - ' . $value[0]->designation*/,
+                    'children' => $value
+                ];
+
+            }
+
+
 
             return response()->json(
-                $punchings, 200);
+                $data, 200);
 
     }
 }
