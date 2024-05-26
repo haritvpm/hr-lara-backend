@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Gate;
+use Carbon\Carbon;
+use App\Models\Section;
+use App\Models\Employee;
+use Illuminate\Http\Request;
+use App\Models\AttendanceBook;
+use App\Models\EmployeeToSection;
 use App\Http\Controllers\Controller;
+use Yajra\DataTables\Facades\DataTables;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Traits\CsvImportTrait;
-use App\Http\Requests\MassDestroyEmployeeToSectionRequest;
 use App\Http\Requests\StoreEmployeeToSectionRequest;
 use App\Http\Requests\UpdateEmployeeToSectionRequest;
-use App\Models\AttendanceBook;
-use App\Models\Employee;
-use App\Models\EmployeeToSection;
-use App\Models\Section;
-use Gate;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Yajra\DataTables\Facades\DataTables;
+use App\Http\Requests\MassDestroyEmployeeToSectionRequest;
 
 class EmployeeToSectionController extends Controller
 {
@@ -88,7 +89,7 @@ class EmployeeToSectionController extends Controller
     {
 
         //check if employee is already assigned to some other section, with start date and no end date, if yes then return back with error message
-       
+
 
         $prevSectionNotEnded = EmployeeToSection::where('employee_id', $request->employee_id)
             ->wherenull('end_date')->first();
@@ -103,7 +104,13 @@ class EmployeeToSectionController extends Controller
             //\Session::flash('message-danger', 'Employee period overlaps with another posting');
             return back()->withErrors(['error'=> 'Employee period overlaps with another posting'])->withInput();
         }
-        
+
+        //check if end date is before start date
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+            return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
+        }
+
+
         $employeeToSection = EmployeeToSection::create($request->all());
 
         return redirect()->route('admin.employee-to-sections.index');
@@ -133,6 +140,11 @@ class EmployeeToSectionController extends Controller
         if ($employeeToSectionExisting && $employeeToSectionExisting->id != $employeeToSection->id) {
             //\Session::flash('message-danger', 'Employee period overlaps with another posting');
             return back()->withErrors(['error'=> 'Employee period overlaps with another posting'])->withInput();
+        }
+
+        //check if end date is before start date
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+            return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
         }
 
 

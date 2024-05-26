@@ -126,6 +126,7 @@ class PunchingApiSectionDailyController extends Controller
 
             $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];
             $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_section_officer'];
+            $item['logged_in_user_is_superior_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_superior_officer'];
 
             $item['attendance_book_id'] = $employees_in_view_mapped[$aadhaarid]['attendance_book_id'];
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];

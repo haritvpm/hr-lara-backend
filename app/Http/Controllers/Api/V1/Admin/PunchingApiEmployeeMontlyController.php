@@ -212,12 +212,33 @@ class PunchingApiEmployeeMontlyController extends Controller
         //get this section's controller and reporting officer
         $loggedInUserIsController = $seat_ids_of_loggedinuser->contains($section->seat_of_controlling_officer_id);
         $loggedInUserIsSectionOfficer = $seat_ids_of_loggedinuser->contains($section->seat_of_reporting_officer_id);
+        $loggedInUserIsSuperiorOfficer = AttendanceRouting::recurseFindIfSuperiorOfficer(
+                                            $seat_ids_of_loggedinuser, $section->seat_of_controlling_officer_id);
 
-        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer) {
-            return response()->json(['status' => 'Not authorized'], 400);
+        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer && !$loggedInUserIsSuperiorOfficer) {
+            return response()->json(['status' => 'Not authorized'], 403);
         }
 
+        $missingDateTime = $request->missingDateTime ?? null;
+        if ($missingDateTime) {
+            $c_missingDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $missingDateTime);
 
+            //make sure this is after punchin if this is punchout
+            if($single_punch_type == 'out' || $single_punch_type == 'in'){
+
+                $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $request->date)->first();
+                if ($single_punch_type == 'in') {
+                    if ($punching && Carbon::parse($punching->in_datetime)->gte($c_missingDateTime)) {
+                        return response()->json(['message' => 'Punchout time should be after punchin time'], 400);
+                    }
+                } else if ($single_punch_type == 'out') {
+
+                    if ($punching && Carbon::parse($punching->out_datetime)->lte($c_missingDateTime)) {
+                        return response()->json(['message' => 'Punchin time should be before punchout time'], 400);
+                    }
+                }
+            }
+        }
         //since this might be first time, insert if not exists
         $punching = Punching::updateOrCreate(
             ['aadhaarid' => $aadhaarid, 'date' => $request->date],
@@ -227,7 +248,8 @@ class PunchingApiEmployeeMontlyController extends Controller
                 'finalized_by_controller' => $loggedInUserIsController,
                 'single_punch_type' => $single_punch_type,
                 'single_punch_regularised_by' => $regulariseSinglePunch ? $me->employee->aadhaarid : null,
-
+                'controller_set_punch_in' => $single_punch_type == 'out' ? $missingDateTime : null,
+                'controller_set_punch_out' => $single_punch_type == 'in' ? $missingDateTime : null,
             ]
         );
 

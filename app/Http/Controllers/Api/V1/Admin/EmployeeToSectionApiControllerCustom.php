@@ -62,6 +62,13 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $employeetosection = EmployeeToSection::find($employeetosection_id);
 
         $end_date = $request->end_date;
+
+        //check if end_date is before start_date
+        if(Carbon::parse($end_date)->lt(Carbon::parse($employeetosection->start_date))){
+            return response()->json(['status' => 'failed', 'message' => 'End date cannot be before start date'], 400);
+        }
+
+
         $date_str = Carbon::parse($end_date)->format('Y-m-d');
         $status = $employeetosection->update(['end_date' => $date_str]);
 
@@ -134,6 +141,15 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $attendance_book_id = $request->attendance_book_id;
         $start_date =  substr($request->start_date,0,10); //this is in UTC format. remove trailing part
 \Log::Info( $start_date);
+
+
+        //check if start date overlaps with any other posting of this employee
+        $employee_already_posted = EmployeeToSection::where('employee_id', $employee_id)->onDate($start_date)->first();
+        if($employee_already_posted){
+            return response()->json(['status' => 'failed', 'message' => 'Employee already posted to a section during this period'], 400);
+        }
+
+
         $employeetosection = EmployeeToSection::create([
             'employee_id' => $employee_id,
             'section_id' => $section_id,

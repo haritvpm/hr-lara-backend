@@ -34,7 +34,11 @@ class PermissionsController extends Controller
 
     public function store(StorePermissionRequest $request)
     {
-        $permission = Permission::create($request->all());
+        $permission = Permission::create(
+            [
+                'title' => strtolower($request->title),
+            ]
+        );
 
         return redirect()->route('admin.permissions.index');
     }
@@ -48,7 +52,11 @@ class PermissionsController extends Controller
 
     public function update(UpdatePermissionRequest $request, Permission $permission)
     {
-        $permission->update($request->all());
+        $permission->update(
+            [
+                'title' => strtolower($request->title),
+            ]
+        );
 
         return redirect()->route('admin.permissions.index');
     }
