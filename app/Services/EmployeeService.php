@@ -355,7 +355,7 @@ class EmployeeService
 
     }
 
-    public function employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser)
+    public function employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser, $userIsSuperiorOfficer)
     {
         if (! $employee_section_maps) {
             return null;
@@ -364,7 +364,7 @@ class EmployeeService
         $data = collect($employee_section_maps);
 
 
-        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser) {
+        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee->employee_employee_to_designations)
@@ -387,7 +387,7 @@ class EmployeeService
                 'seat_of_controlling_officer_id' => $employeeToSection->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,
                 'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_reporting_officer_id) ?? false,
-               // 'logged_in_user_is_HigherOfficer' => $logged_in_user_is_HigherOfficer,
+                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer,
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,

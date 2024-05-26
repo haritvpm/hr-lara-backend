@@ -28,17 +28,21 @@ class PunchingApiSectionDailyController extends Controller
 
         [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
+        $isSecretary = Auth::user()->hasRole('secretary');
+        $userIsSuperiorOfficer = $isSecretary;
+
         //get current logged in user's charges
         $employees_in_view = null;
         $empService = new EmployeeService();
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
             // the user can view all section attendance
-            //$isSecretary = Auth::user()->hasRole('secretary');
+
             $employee_section_maps = $empService->getEmployeeSectionMappingForSections($date_str,$date_str,null);
 
         }
         else {
             // the user can only view his/her section attendance
+            $userIsSuperiorOfficer = true;
 
 
             if ($status != 'success') {
@@ -55,7 +59,7 @@ class PunchingApiSectionDailyController extends Controller
             );
         }
 
-        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser);
+        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
         if(!$employees_in_view){
             return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);

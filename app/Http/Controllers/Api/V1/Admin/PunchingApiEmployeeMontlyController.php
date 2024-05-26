@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Auth;
 use Gate;
 use Carbon\Carbon;
 use App\Models\Leaf;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use App\Models\CompenGranted;
 use App\Models\EmployeeToSeat;
 use App\Models\YearlyAttendance;
+use App\Models\AttendanceRouting;
 use App\Models\EmployeeToSection;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
@@ -24,7 +26,6 @@ use App\Http\Requests\StorePunchingRequest;
 use App\Http\Requests\UpdatePunchingRequest;
 use App\Http\Resources\Admin\PunchingResource;
 use Symfony\Component\HttpFoundation\Response;
-use Auth;
 
 class PunchingApiEmployeeMontlyController extends Controller
 {
@@ -65,6 +66,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
 
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        $isSecretary = Auth::user()->hasRole('secretary');
 
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
 
@@ -115,8 +117,16 @@ class PunchingApiEmployeeMontlyController extends Controller
             // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
+
+                $soIstheEmployee = $aadhaarid == $me?->employee->aadhaarid; //SO is also mapped to the section as employee
+
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
+
+                $dayinfo['logged_in_user_is_superior_officer'] =   $isSecretary ||
+                    $dayinfo['logged_in_user_is_controller'] ||
+                    ($dayinfo['logged_in_user_is_section_officer'] && !$soIstheEmployee) ||
+                    AttendanceRouting::recurseFindIfSuperiorOfficer($seat_ids_of_loggedinuser, $employeeToSection->section->seat_of_controlling_officer_id);
             }
             // if this is self, no need to check for section
             $dayinfo['in_section'] = $employeeToSection != null || $me->employee->aadhaarid == $aadhaarid;

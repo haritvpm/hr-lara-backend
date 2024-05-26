@@ -42,8 +42,12 @@ class PunchingApiSectionMontlyController extends Controller
         //get current logged in user's charges
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        $sec_seat_id = Seat::where('slug', 'secretary')->first()?->id ?? -1;
-        $loadRouting = $seat_ids_of_loggedinuser ? !$seat_ids_of_loggedinuser->contains($sec_seat_id) : false; //hack
+        $isSecretary = Auth::user()->hasRole('secretary');
+
+        //$sec_seat_id = Seat::where('slug', 'secretary')->first()?->id ?? -1;
+        $loadRouting = !$isSecretary; //hack
+        $userIsSuperiorOfficer = $isSecretary;
+
         $empService = new EmployeeService();
         $employee_section_maps = null;
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
@@ -60,6 +64,7 @@ class PunchingApiSectionMontlyController extends Controller
                     'monthlypunchings' => [],
                 ], 200);
             }
+            $userIsSuperiorOfficer = true;
 
             //todo. make this a period
             $employee_section_maps =  $empService->getLoggedUserSubordinateEmployees(
@@ -70,8 +75,7 @@ class PunchingApiSectionMontlyController extends Controller
                 $loadRouting
             );
         }
-
-        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser);
+        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
 
 
