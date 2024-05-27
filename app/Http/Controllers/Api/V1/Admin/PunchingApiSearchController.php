@@ -46,7 +46,10 @@ class PunchingApiSearchController extends Controller
                 return $query->where('grace_total_exceeded_one_hour', '>', 1)
                 ->where ( fn($q) => $q->where('hint',null)
                 ->orWhere( fn($q) => $q->where('hint', '<>' ,'casual_fn' )->Where('hint', '<>' ,'casual_an' ))
-        );
+                );
+            })
+            ->when($request->category && $request->category != 'all', function ($query) use ($request) {
+                return $query->where('time_group', $request->category);
             })
             ->orderBy( 'date', 'desc')
             ->get()->groupBy('aadhaarid')->sortByDesc( function($punchings) {
