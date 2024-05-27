@@ -91,7 +91,7 @@
                 @if($errors->has('punching'))
                     <span class="text-danger">{{ $errors->first('punching') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.punching_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.govtCalendar.fields.punching_helper') }}. (0 = No Punching. 1 = Default)</span>
             </div>
             <div class="form-group">
                 <label for="session_id">{{ trans('cruds.govtCalendar.fields.session') }}</label>

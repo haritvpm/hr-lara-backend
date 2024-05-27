@@ -19,6 +19,11 @@ class GovtCalendar extends Model
         '3pm'  => '3 p.m.',
     ];
 
+    public const PUNCHING_SELECT = [
+        0 => 'No Punching',
+        1  => 'Has Punching',
+    ];
+
     protected $dates = [
         'date',
         'success_attendance_lastfetchtime',
@@ -123,6 +128,7 @@ class GovtCalendar extends Model
             $calender->attendance_today_trace_rows_fetched = 0;
             //$calender->success_attendance_fetched = 0;
             $calender->success_attendance_rows_fetched = 0;
+            $calender->punching = 1;
             $calender->save();
         }
         return  $calender;

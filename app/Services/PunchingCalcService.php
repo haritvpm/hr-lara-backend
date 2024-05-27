@@ -345,7 +345,7 @@ class PunchingCalcService
             $can_take_casual_an
         );
 
-        if ($isHoliday) {
+        if ($isHoliday || $calender?->punching == 0) {
             $computer_hint = '';
 
         }
@@ -358,7 +358,7 @@ class PunchingCalcService
             $emp_new_punching_data['duration_str'] = floor($duration_sec / 3600) . gmdate(":i:s", $duration_sec % 3600);
         }
 
-        if( !$isHoliday){
+        if( !$isHoliday && $calender?->punching !== 0 ){
             $grace_morning =  $grace_evening = 0;
             $extra_morning =  $extra_evening = 0;
 
@@ -406,7 +406,7 @@ class PunchingCalcService
         $canSetUnauthorised = $canSetUnauthorised && !$isHoliday && !$hasLeave ;
         $canSetUnauthorised = $canSetUnauthorised && (!$hint || $hint == 'clear');
 
-        if( $canSetUnauthorised ){
+        if( $canSetUnauthorised  && $calender?->punching !== 0  ){
             if ($punch_count >= 1) {
 
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
