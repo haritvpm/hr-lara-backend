@@ -610,9 +610,11 @@ class LeaveApiController extends Controller
         // leave_type: string;
         // leave_cat: string;
         // time_period: string | null;
+      $today = Carbon::today()->format('Y-m-d');
        $punchings = Punching::where('aadhaarid', $aadhaarid)
        ->where('leave_id', null)
        ->where( 'date', '>=', '2024-05-01')
+       ->where( 'date', '<', $today)
        ->where( fn ($query) => $query->where('punching_count',  0)->orWhere('is_unauthorised',  1)->orWhere('hint', '!=', null))
        ->orderBy('date', 'desc')
        ->get();
