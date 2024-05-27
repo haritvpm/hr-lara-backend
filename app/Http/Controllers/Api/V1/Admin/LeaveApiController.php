@@ -571,6 +571,7 @@ class LeaveApiController extends Controller
 
     // Function to find continuous sequences of adjacent dates
     function findAndRemoveAdjacentDates(&$dates) {
+
         $adjacentSequences = [];
         $currentSequence = [];
 
@@ -616,6 +617,21 @@ class LeaveApiController extends Controller
        ->orderBy('date', 'desc')
        ->get();
        $dates = $punchings->pluck('date')->toArray();
+
+       //remove holidays from these dates
+       if($dates && count($dates) > 0){
+        $holidays = GovtCalendar::where('govtholidaystatus', 1)
+                    ->wherein('date', $dates)->pluck('date')->toArray();
+        
+        \Log::info($holidays);
+        $dates = array_diff($dates, $holidays);
+        $dates = array_values($dates); // Re-index the array
+         $punchings = $punchings->filter(function ($punching) use ($holidays) {
+             return !in_array($punching->date, $holidays);
+         });
+       }
+
+
 
        $date_2_punchings = $punchings->mapWithKeys(function ($punching) {
            return [$punching->date => [
