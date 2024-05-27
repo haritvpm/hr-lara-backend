@@ -48,7 +48,7 @@ class PunchingApiSearchController extends Controller
                 ->orWhere( fn($q) => $q->where('hint', '<>' ,'casual_fn' )->Where('hint', '<>' ,'casual_an' ))
         );
             })
-
+            ->orderBy( 'date', 'desc')
             ->get()->groupBy('aadhaarid')->sortByDesc( function($punchings) {
                 return $punchings->count();
             });
