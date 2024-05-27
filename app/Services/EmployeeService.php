@@ -213,14 +213,14 @@ class EmployeeService
 
         return $employee_section_maps;
     }
-
-    public function getEmployeeSectionMappingsAndDesignationsOnDate($date_str, $emp_ids)
+/*
+    public static function getEmployeeSectionMappingsAndDesignationsOnDate($date_str, $emp_ids)
     {
         $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
             ->with(['employee', 'section'])
             ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_str) {
 
-                $q->DesignationDuring($date_str)->with(['designation']);
+                $q->DesignationDuring($date_str)->with(['designation', 'designation.default_time_group']);
             }])
             ->wherein('employee_id', $emp_ids)
             ->get();
@@ -233,14 +233,39 @@ class EmployeeService
 
             $time_group_id = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group_id : null;
 
+            $time_group = count($x->employee?->employee_employee_to_designations) ? $x->employee->employee_employee_to_designations[0]->designation->default_time_group?->groupname : null;
+
             return [
-                $item['employee']['aadhaarid'] => [
+                $item['aadhaarid'] => [
                     'name' => $x->employee?->name,
                     'designation' => $desig,
                     'section' => $x->section->name,
                     'section_id' => $x->section->id,
                     'shift' => $x->employee?->is_shift,
                     'time_group_id' => $time_group_id,
+                    'time_group' => $time_group,
+                ],
+            ];
+        });
+
+        return $employee_section_maps;
+    }
+   */
+    public static function getEmployeeSectionMappingsOnDate($date_str, $emp_ids)
+    {
+        $employee_section_maps = EmployeeToSection::onDate($date_str)
+            ->with(['employee', 'section'])
+            ->wherein('employee_id', $emp_ids)
+            ->get();
+        // dd($employee_section_maps);
+        $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
+
+            $x = json_decode(json_encode($item));
+
+            return [
+                $item['aadhaarid'] => [
+                    'section' => $x->section->name,
+                    'section_id' => $x->section->id,
                 ],
             ];
         });

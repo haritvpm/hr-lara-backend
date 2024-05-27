@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Admin\PunchingTraceResource;
+use App\Models\EmployeeToSection;
 use App\Models\PunchingTrace;
 use Gate;
 use Illuminate\Http\Request;
@@ -51,14 +52,14 @@ class PunchingApiSearchController extends Controller
             $data = [];
             foreach ($punchings as $key => $value) {
 
+              //  $section = EmployeeToSection::onDate($end_date)->where('aadhaarid', $key)->first();
+
                 $data[] = [
                     'aadhaarid' => $key . ' - ' . $value[0]->employee->name /*. ' - ' . $value[0]->designation*/,
                     'children' => $value
                 ];
 
             }
-
-
 
             return response()->json(
                 $data, 200);

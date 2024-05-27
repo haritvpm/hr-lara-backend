@@ -84,6 +84,9 @@ class PunchingCalcService
         $time_groups  = OfficeTime::getOfficeTimes($date);
         //dd($time_groups);
         $employee_section_maps =  EmployeeService::getDesignationOfEmployeesOnDate($date,  $emp_ids);
+        //$employee_section_maps =  EmployeeService::getEmployeeSectionMappingsAndDesignationsOnDate($date,  $emp_ids);
+        $employee_section_maps2 =  EmployeeService::getEmployeeSectionMappingsOnDate($date,  $emp_ids);
+
         //for each empl, calculate
 
         $calender = GovtCalendar::where('date', $date)->first();
@@ -102,7 +105,7 @@ class PunchingCalcService
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
-                // $emp_new_punching_data['section'] = $employee_section_maps[$aadhaarid]['section'];
+                $emp_new_punching_data['section'] = $employee_section_maps2->has($aadhaarid) ? $employee_section_maps2[$aadhaarid]['section'] : null;
                 $emp_new_punching_data['name'] = $employee_section_maps[$aadhaarid]['name'];
                 $time_group_name = $employee_section_maps[$aadhaarid]['time_group'] ?? 'default';
                 $emp_new_punching_data['time_group'] =  $time_group_name;
@@ -373,8 +376,8 @@ class PunchingCalcService
                 //calculate grace
                 if( $c_punch_out->lt($c_flexi_530pm)){
                     $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
-                } 
-                else 
+                }
+                else
                 if( $c_punch_out->gt($c_flexi_530pm)){
                     $extra_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
                 }
@@ -393,7 +396,7 @@ class PunchingCalcService
             $extra_sec = $extra_morning + $extra_evening;
             $emp_new_punching_data['extra_sec'] = $extra_sec;
             $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
-            
+
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
@@ -587,7 +590,7 @@ class PunchingCalcService
             $computer_hint = $can_take_casual_an ? 'casual_an' : ($can_take_casual_fn ? 'casual_fn' : 'casual');
         } else if ($morning_late && $evening_late) {
             $computer_hint =  'casual';
-        } else if ($c_punch_in && $c_punch_out && 
+        } else if ($c_punch_in && $c_punch_out &&
             $c_punch_in->greaterThan($c_flexi_1030am) && $c_punch_out->lessThan($c_flexi_5pm)){
             //10.08 to 4.05
             //find which end has more has more time diff. morning or evening
@@ -723,7 +726,7 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
                 $total_compen_submitted =  $emp_punchings->sum(function ($punching) {
-                    if($punching->leave_id == null || 
+                    if($punching->leave_id == null ||
                     ($punching->leave->leave_type != 'compen' && $punching->leave->leave_type != 'compen_for_extra'))
                         return 0;
                     return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
@@ -851,7 +854,7 @@ class PunchingCalcService
 
                 $total_compen_submitted =  $emp_monthlypunchings->sum('compen_submitted');
                 $emp_new_yearly_attendance_data['compen_submitted'] = $total_compen_submitted;
-                
+
                 $total_other_leaves =  $emp_monthlypunchings->sum('other_leaves_marked');
                 $emp_new_yearly_attendance_data['other_leaves_marked'] = $total_other_leaves;
 
@@ -876,7 +879,7 @@ class PunchingCalcService
                 'employee_id',
                 'cl_marked',  'cl_submitted', 'compen_marked',
                 'compen_submitted', 'other_leaves_marked', 'other_leaves_submitted','single_punchings',
-                'single_punchings_regularised', 'unauthorised_count', 
+                'single_punchings_regularised', 'unauthorised_count',
 
             ]
         );
