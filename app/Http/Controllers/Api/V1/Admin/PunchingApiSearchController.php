@@ -34,15 +34,19 @@ class PunchingApiSearchController extends Controller
                 return $query->where('punching_count',1)
                 ->where('date', '<', Carbon::today()->toDateString())
                 ->where( 'leave_id',null)
-                ->where ( fn($q) => $q->where('hint',null)->orWhere('hint', '<>' ,'casual_fn' )->orWhere('hint', '<>' ,'casual_an' ));
-
+                ->where ( fn($q) => $q->where('hint',null)
+                        ->orWhere( fn($q) => $q->where('hint', '<>' ,'casual_fn' )->Where('hint', '<>' ,'casual_an' ))
+                );
             })
             ->when($request->unauthorized, function ($query) use ($request) {
                 return $query->where('is_unauthorised',  1) ->where( 'leave_id',null)
                 ->where( 'hint',null);
             })
             ->when($request->one_hour_exceeded, function ($query) use ($request) {
-                return $query->where('grace_total_exceeded_one_hour', '>', 1);
+                return $query->where('grace_total_exceeded_one_hour', '>', 1)
+                ->where ( fn($q) => $q->where('hint',null)
+                ->orWhere( fn($q) => $q->where('hint', '<>' ,'casual_fn' )->Where('hint', '<>' ,'casual_an' ))
+        );
             })
 
             ->get()->groupBy('aadhaarid')->sortByDesc( function($punchings) {
@@ -50,14 +54,18 @@ class PunchingApiSearchController extends Controller
             });
 
             $data = [];
+            $i = 1;
             foreach ($punchings as $key => $value) {
 
               //  $section = EmployeeToSection::onDate($end_date)->where('aadhaarid', $key)->first();
 
                 $data[] = [
-                    'aadhaarid' => $key . ' - ' . $value[0]->employee->name /*. ' - ' . $value[0]->designation*/,
-                    'children' => $value
+                    'aadhaarid' => $key . ' - ' . $value[0]->employee->name . ', ' . $value[0]->designation . ' (' . $value->count() . ')',
+                    'children' => $value,
+                    'index' => $i,
                 ];
+
+                $i++;
 
             }
 
