@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Models\Punching;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use App\Models\GovtCalendar;
 
 class PunchingApiSearchController extends Controller
 {
@@ -27,8 +28,16 @@ class PunchingApiSearchController extends Controller
         $start_date = Carbon::parse($request->range['start'])->format('Y-m-d');
         $end_date = Carbon::parse($request->range['end'])->format('Y-m-d');
 
+        $holidays = GovtCalendar::where('govtholidaystatus', 1)
+            ->where('date', '>=', $start_date)
+            ->where('date', '<=', $end_date)
+            ->pluck('date')->toArray();
+
+
         $punchings = Punching::where('date', '>=', $start_date)
             ->where('date', '<=', $end_date)
+            ->whereNotIn('date', $holidays)
+            //->wherenotnull('section')
             ->orderBy('date', 'desc')
             ->when($request->single_punches, function ($query) use ($request) {
                 return $query->where('punching_count',1)
