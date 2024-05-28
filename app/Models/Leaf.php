@@ -100,7 +100,8 @@ class Leaf extends Model
     {
 
 
-        $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        $c_start_date = Carbon::parse($start_date)->startOfYear();
+        $leave_start_date = $c_start_date->format('Y-m-d');
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
 
         $cls_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
@@ -113,7 +114,7 @@ class Leaf extends Model
             ->sum('leave_count');
 
         //also get startwith leave
-        $cls_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_cl ?? 0;
+        $cls_startwith = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first()?->start_with_cl ?? 0;
 
         return $cls_year + $cls_startwith;
 

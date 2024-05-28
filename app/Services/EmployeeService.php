@@ -309,7 +309,7 @@ class EmployeeService
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to, $seat_ids, $all_subordinates = true)
+    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to, $seat_ids, $employee_ids, $all_subordinates = true)
     {
         // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
@@ -322,26 +322,47 @@ class EmployeeService
 
             Section::wherein('seat_of_reporting_officer_id', $seat_ids)->get();
 
-        if ($sections_under_charge == null) {
+        if ($sections_under_charge == null && $employee_ids == null && $seat_ids == null) {
             return null;
         }
-        // \Log::info(' sections_under_charge ' . $sections_under_charge);
-        return $this->getEmployeeSectionMappingForSections($date_from, $date_to, $sections_under_charge->pluck('id'));
+        //\Log::info(' sections_under_charge ' . $sections_under_charge);
+       // \Log::info(' employee_ids ' . $employee_ids);
+        return $this->getEmployeeSectionMappingForSections($date_from, $date_to, $sections_under_charge->pluck('id'), $seat_ids,  $employee_ids);
 
     }
 
-    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids )
+    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids, $seat_ids,  $employee_ids)
     {
+        $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:://duringPeriod($date_from, $date_to)->
+            wherein('seat_id', $seat_ids)
+            ->get()->pluck('employee_id') : null;
+
+        if (!$emp_ids_of_seats && !$section_ids && !$employee_ids){
+            return null;
+        }
+
+        $employee_ids_combined = array_merge($emp_ids_of_seats->toArray(), $employee_ids->toArray());
+       //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
+
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
         ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
         ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
             $q->DesignationDuring($date_to)->with(['designation']);
         }])
-        ->when($section_ids, function ($query, $section_ids) {
-            return $query->wherein('section_id', $section_ids);
-        })
+        // ->when($section_ids, function ($query, $section_ids) {
+        //     return $query->wherein('section_id', $section_ids);
+        // })
+        // ->when($emp_ids_of_seats && $emp_ids_of_seats->count(), function ($query, $emp_ids_of_seats) {
+        //     return $query->wherein('employee_id', $emp_ids_of_seats);
+        // })
+        ->wherein('section_id', $section_ids)
+        ->orwherein('employee_id', $employee_ids_combined)
         ->get();
+
+    foreach($employee_section_maps as $emp){
+        $emp->setAttribute('employeeLoadedDirectly', in_array($emp->employee_id, $employee_ids_combined));
+    }
 
     return $employee_section_maps->count() ? $employee_section_maps : null;
 
@@ -354,11 +375,22 @@ class EmployeeService
         $all_subordinate_seats = collect($seat_ids_of_loggedinuser);
         $seat_ids = $seat_ids_of_loggedinuser;
 
-        while($loadRouting){
+        $employee_ids = null;
 
-            $subordinate_seats = AttendanceRouting::with(['viewer_seat', 'viewable_seats'])
+        while(1){
+
+
+            $routing = AttendanceRouting::with(['viewer_seat', 'viewable_seats'])
             ->wherein('viewer_seat_id', $seat_ids)
-            ->get()->pluck('viewable_seats')->flatten()->pluck('id');
+            ->get();
+
+            $subordinate_seats = $routing->pluck('viewable_seats')->flatten()->pluck('id');
+
+            if(!$employee_ids){
+                $employee_ids = $routing->pluck('viewable_js_as_ss_employees')->flatten()->pluck('id'); //lets not recurse
+            }/*else{
+                $employee_ids = $employee_ids->merge($routing->pluck('viewable_seats')->flatten()->pluck('employee_id'));
+            }*/
 
             if($subordinate_seats->count() == 0){
                 break;
@@ -366,13 +398,16 @@ class EmployeeService
             \Log::info('subordinate_seats ' . $subordinate_seats );
             $seat_ids = $subordinate_seats;
             $all_subordinate_seats = $all_subordinate_seats->concat($subordinate_seats);
+
+            if(!$loadRouting) break; //mmonthlyview prevent all hundreds of assistants/oas to be loaded for secretary which will be loaded in daily view
         }
 
-        \Log::info('all_subordinate_seats ' . $all_subordinate_seats );
+       // \Log::info('all_subordinate_seats ' . $all_subordinate_seats );
+      //  \Log::info('employee_ids ' . $employee_ids );
 
 
         $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $date_from, $date_to, $all_subordinate_seats);
+            [$me->employee_id], $date_from, $date_to, $all_subordinate_seats, $employee_ids);
 
         // $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
@@ -395,9 +430,11 @@ class EmployeeService
             $employee_to_designation = count($results->employee->employee_employee_to_designations)
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
 
-            $logged_in_user_is_controller = $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_controlling_officer_id) ?? false;
+            $logged_in_user_is_controller = $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
 
             // \Log::info($employeeToSection);
+            //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
+            //as that does not mean that the employee is a subordinate of the logged in user
             return [
                 'employee_id' => $employeeToSection->employee_id,
                 'name' => $employeeToSection->employee->name,
@@ -412,7 +449,7 @@ class EmployeeService
                 'seat_of_controlling_officer_id' => $employeeToSection->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,
                 'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_reporting_officer_id) ?? false,
-                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer,
+                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer && (!$employeeToSection?->employeeLoadedDirectly ?? false),
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
@@ -432,7 +469,7 @@ class EmployeeService
 
         //only get my sections' employees. not for which I am controller of
         $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, true);
+            [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, null, true);
 
         if (! $employee_section_maps) {
             return null;

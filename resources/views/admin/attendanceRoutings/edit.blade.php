@@ -10,7 +10,7 @@
         <form method="POST" action="{{ route("admin.attendance-routings.update", [$attendanceRouting->id]) }}" enctype="multipart/form-data">
             @method('PUT')
             @csrf
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="viewer_js_as_ss_employee_id">{{ trans('cruds.attendanceRouting.fields.viewer_js_as_ss_employee') }}</label>
                 <select class="form-control select2 {{ $errors->has('viewer_js_as_ss_employee') ? 'is-invalid' : '' }}" name="viewer_js_as_ss_employee_id" id="viewer_js_as_ss_employee_id">
                     @foreach($viewer_js_as_ss_employees as $id => $entry)
@@ -21,7 +21,7 @@
                     <span class="text-danger">{{ $errors->first('viewer_js_as_ss_employee') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.attendanceRouting.fields.viewer_js_as_ss_employee_helper') }}</span>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="viewer_seat_id">{{ trans('cruds.attendanceRouting.fields.viewer_seat') }}</label>
                 <select class="form-control select2 {{ $errors->has('viewer_seat') ? 'is-invalid' : '' }}" name="viewer_seat_id" id="viewer_seat_id">

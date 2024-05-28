@@ -51,7 +51,7 @@ class PunchingApiSectionMontlyController extends Controller
         $empService = new EmployeeService();
         $employee_section_maps = null;
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
-            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($start_date,$end_date,null);
+            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($start_date,$end_date,null,null,null);
         }
         else {
 
