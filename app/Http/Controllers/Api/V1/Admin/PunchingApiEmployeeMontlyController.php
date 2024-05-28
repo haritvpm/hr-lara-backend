@@ -141,8 +141,8 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ];
 
                 $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse($total_grace_exceeded300_date) : null;
-                \Log::info('total_grace_exceeded300_date: ' . $total_grace_exceeded300_date->format('Y-m-d'));
-                \Log::info('total_grace_exceeded300_datedate: ' . $date->format('Y-m-d'));
+                //\Log::info('total_grace_exceeded300_date: ' . $total_grace_exceeded300_date->format('Y-m-d'));
+                //\Log::info('total_grace_exceeded300_datedate: ' . $date->format('Y-m-d'));
 
                 if ($total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = true;

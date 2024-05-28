@@ -209,8 +209,8 @@ class Leaf extends Model
 
     public static function CheckContinuousCasualLeaves($aadhaarid, $start_date, $end_date)
     {
-        //[$left,$right] = 
-        $c_endDate = $end_date ? Carbon::parse($end_date) : Carbon::parse($start_date);
+       
+       
         $c_startDate = Carbon::parse($start_date);
 
         //find continuous leaves before startdate
@@ -228,13 +228,46 @@ class Leaf extends Model
 
             $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
                 ->whereDate('start_date', '<=' , $prev_date->format('Y-m-d'))
-                ->whereDate('end_date', '>=' , $prev_date->format('Y-m-d'))
+                ->whereDate('end_date', '<=' , $prev_date->format('Y-m-d'))
                 ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
                 ->wherein('active_status', ['N', 'Y'])
                 ->first();
-
+            if( $hasleaveforThisDay){
+                $left++;
+            } else {
+                break;
+            }
             
         }
 
+        $c_endDate = $end_date ? Carbon::parse($end_date) : Carbon::parse($start_date);
+        $right = 0;
+        for( $i = 1; $i <= 20; $i++){
+            $next_date = $c_endDate->clone()->addDays($i);
+
+            $calender = GovtCalendar::where('date', $prev_date->format('Y-m-d'))->first();
+            if( !$calender){
+                break;
+            }
+            if( $calender && $calender->govtholidaystatus == 1){
+                continue;
+            }
+
+            $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
+                ->whereDate('start_date', '>=' , $next_date->format('Y-m-d'))
+                ->whereDate('end_date', '>=' , $next_date->format('Y-m-d'))
+                ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
+                ->wherein('active_status', ['N', 'Y'])
+                ->first();
+            if( $hasleaveforThisDay){
+                $left++;
+            } else {
+                break;
+            }
+            
+        }
+
+
+         return [$left,$right] ;
     }
 }
