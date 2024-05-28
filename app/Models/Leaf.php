@@ -206,4 +206,35 @@ class Leaf extends Model
     // {
     //     $this->attributes['in_lieu_of'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
     // }
+
+    public static function CheckContinuousCasualLeaves($aadhaarid, $start_date, $end_date)
+    {
+        //[$left,$right] = 
+        $c_endDate = $end_date ? Carbon::parse($end_date) : Carbon::parse($start_date);
+        $c_startDate = Carbon::parse($start_date);
+
+        //find continuous leaves before startdate
+        $left = 0;
+        for( $i = 1; $i <= 20; $i++){
+            $prev_date = $c_startDate->clone()->subDays($i);
+
+            $calender = GovtCalendar::where('date', $prev_date->format('Y-m-d'))->first();
+            if( !$calender){
+                break;
+            }
+            if( $calender && $calender->govtholidaystatus == 1){
+                continue;
+            }
+
+            $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
+                ->whereDate('start_date', '<=' , $prev_date->format('Y-m-d'))
+                ->whereDate('end_date', '>=' , $prev_date->format('Y-m-d'))
+                ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
+                ->wherein('active_status', ['N', 'Y'])
+                ->first();
+
+            
+        }
+
+    }
 }

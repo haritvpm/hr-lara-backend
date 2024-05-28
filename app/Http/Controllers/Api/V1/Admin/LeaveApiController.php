@@ -181,11 +181,17 @@ class LeaveApiController extends Controller
                 400
             );
         }
+        $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
+
+        //if this is casual or compen, then make sure no continuous 15 leaves are there
+        if ($isCasualOrCompen) {
+            [$left,$right] = Leaf::CheckContinuousCasualLeaves($me->employee->aadhaarid, $request->start_date, $request->end_date);
+        }
+
 
         $leaf = null;
-        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping) {
+        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping, $isCasualOrCompen) {
 
-            $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
 
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;

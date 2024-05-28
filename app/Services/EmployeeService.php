@@ -333,16 +333,18 @@ class EmployeeService
 
     public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids, $seat_ids,  $employee_ids)
     {
-        $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:://duringPeriod($date_from, $date_to)->
+      /*  $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:://duringPeriod($date_from, $date_to)->
             wherein('seat_id', $seat_ids)
-            ->get()->pluck('employee_id') : null;
+            ->get()->pluck('employee_id') : null;*/
 
-        if (!$emp_ids_of_seats && !$section_ids && !$employee_ids){
+        if (/*!$emp_ids_of_seats &&*/ !$section_ids && !$employee_ids){
             return null;
         }
-
+/*
         $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
                                                          $employee_ids->toArray()) :  $emp_ids_of_seats->toArray();
+                                                         */
+        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : null;                                                        
        //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
@@ -361,8 +363,11 @@ class EmployeeService
         ->orwherein('employee_id', $employee_ids_combined)
         ->get();
 
-    foreach($employee_section_maps as $emp){
-        $emp->setAttribute('employeeLoadedDirectly', in_array($emp->employee_id, $employee_ids_combined));
+    if($employee_ids_combined){
+    
+        foreach($employee_section_maps as $emp){
+            $emp->setAttribute('employeeLoadedDirectly', in_array($emp->employee_id, $employee_ids_combined));
+        }
     }
 
     return $employee_section_maps->count() ? $employee_section_maps : null;
