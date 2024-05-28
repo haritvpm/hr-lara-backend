@@ -344,7 +344,7 @@ class EmployeeService
         $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
                                                          $employee_ids->toArray()) :  $emp_ids_of_seats->toArray();
                                                          */
-        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : null;                                                        
+        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];                                                        
        //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
@@ -370,7 +370,7 @@ class EmployeeService
         }
     }
 
-    return $employee_section_maps->count() ? $employee_section_maps : null;
+    return $employee_section_maps && $employee_section_maps->count() ? $employee_section_maps : null;
 
     }
 

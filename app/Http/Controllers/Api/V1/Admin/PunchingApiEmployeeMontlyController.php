@@ -101,7 +101,7 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
 
-            \Log::info('date: ' . $d_str);
+            \Log::info('foreach date: ' . $d_str);
 
             //  \Log::info('employeeToSection: ' . $employeeToSection);
 
@@ -141,6 +141,9 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ];
 
                 $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse($total_grace_exceeded300_date) : null;
+                \Log::info('total_grace_exceeded300_date: ' . $total_grace_exceeded300_date->format('Y-m-d'));
+                \Log::info('total_grace_exceeded300_datedate: ' . $date->format('Y-m-d'));
+
                 if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
                 } else {
@@ -192,7 +195,7 @@ class PunchingApiEmployeeMontlyController extends Controller
     public function saveEmployeeHint(Request $request)
     {
         \Log::info('saveEmployeeHint: ' . $request);
-        \Log::info('date: ' . $request->date);
+        //\Log::info('date: ' . $request->date);
 
         $aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
