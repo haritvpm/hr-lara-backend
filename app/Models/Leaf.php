@@ -270,4 +270,30 @@ class Leaf extends Model
 
          return [$left,$right] ;
     }
+
+    public static function verifyDatesAndLeaveTypes( $aadhaarid,  $dates, 
+                        $allowedleaveTypes, $disallowedleaveTypes)
+    {
+     
+        //$disallowed = [];
+        foreach( $dates as $date){
+            $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
+                ->whereDate('start_date', '<=' , $date)
+                ->whereDate('end_date', '>=' , $date)
+                ->when($allowedleaveTypes, function ($query, $allowedleaveTypes) {
+                    return $query->whereNotIn('leave_type', $allowedleaveTypes);
+                })
+                ->when($disallowedleaveTypes, function ($query, $disallowedleaveTypes) {
+                    return $query->whereIn('leave_type', $disallowedleaveTypes);
+                })
+                ->wherein('active_status', ['N', 'Y'])
+                ->first();
+
+            if( $hasleaveforThisDay){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

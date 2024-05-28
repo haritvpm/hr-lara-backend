@@ -137,6 +137,9 @@ class LeaveApiController extends Controller
     private function leaveStoreOrUpdate(Request $request, $isUpdate)
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        
+        $c_startDate = Carbon::parse($request->start_date);
+        $c_endDate = $request->end_date ? Carbon::parse($request->end_date) : Carbon::parse($request->start_date);
 
         $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
 
@@ -182,7 +185,11 @@ class LeaveApiController extends Controller
             );
         }
         $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
-
+        
+        //casual and earned should not be adjacent
+        //get prev and after dates which are not holidays and check
+        [$leftWorking, $rightWorking] = GovtCalendar::getAdjacentWorkingDates($c_startDate->format('Y-m-d') , $request->end_date->format('Y-m-d'));
+       
         //if this is casual or compen, then make sure no continuous 15 leaves are there
         if ($isCasualOrCompen) {
             [$left,$right] = Leaf::CheckContinuousCasualLeaves($me->employee->aadhaarid, $request->start_date, $request->end_date);
@@ -192,8 +199,30 @@ class LeaveApiController extends Controller
                     400
                 );
             }
+
+            //make sure no adjacent earned and halfpay
+           $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $me->employee->aadhaarid,  [$leftWorking, $rightWorking], 
+                        ['casual', 'compen', 'compen_for_extra'], null); //thes are the allowed leaves
+            if( $hasNotAllowedLeaves){
+                return response()->json(
+                    ['status' => 'error',  'message' => "Cannot have casual/compen leaves adjacent to earned/halfpay"],
+                    400
+                );
+            }
+
+        } else {
+            //make sure no adjacent casual and compen
+            $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $me->employee->aadhaarid,  [$leftWorking, $rightWorking], 
+                        null, ['casual', 'compen', 'compen_for_extra']); //thes are the allowed leaves
+            if( $hasNotAllowedLeaves){
+                return response()->json(
+                    ['status' => 'error',  'message' => "Cannot have earned/halfpay leaves adjacent to casual/compen"],
+                    400
+                );
+            }
         }
 
+        
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 
         \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping, $isCasualOrCompen) {

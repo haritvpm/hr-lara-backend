@@ -208,4 +208,33 @@ class GovtCalendar extends Model
         }
         return $prefix;
     }
+
+    public static function getAdjacentWorkingDates($start_date, $end_date)
+    {
+        $leftWorking = null;
+        $date = Carbon::parse($start_date)->subDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if($cal->govtholidaystatus !== 1){
+              $leftWorking = $cal->date;
+              break;
+            }
+            $date = $date->subDay();
+        }
+
+        $rightWorking = null;
+        $date = Carbon::parse($end_date)->addDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if($cal->govtholidaystatus !== 1){
+              $rightWorking = $cal->date;
+              break;
+            }
+            $date = $date->addDay();
+        }
+
+        return [$leftWorking, $rightWorking];
+
+    }
+
 }
