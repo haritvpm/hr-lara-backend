@@ -35,7 +35,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $aadhaarid = $request->aadhaarid;
         $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
-        //  \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
+        \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
         $date = Carbon::createFromFormat('Y-m-d', $date_str);
 
 
@@ -144,7 +144,7 @@ class PunchingApiEmployeeMontlyController extends Controller
                 \Log::info('total_grace_exceeded300_date: ' . $total_grace_exceeded300_date->format('Y-m-d'));
                 \Log::info('total_grace_exceeded300_datedate: ' . $date->format('Y-m-d'));
 
-                if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
+                if ($total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
                 } else {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
