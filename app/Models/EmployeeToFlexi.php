@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeToFlexi extends Model
 {
-    use SoftDeletes, HasFactory;
+    use HasFactory;
 
     public $table = 'employee_to_flexis';
 

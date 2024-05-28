@@ -341,14 +341,15 @@ class EmployeeService
             return null;
         }
 
-        $employee_ids_combined = array_merge($emp_ids_of_seats->toArray(), $employee_ids->toArray());
+        $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
+                                                         $employee_ids->toArray()) :  $emp_ids_of_seats->toArray();
        //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
         ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
         ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
-            $q->DesignationDuring($date_to)->with(['designation']);
+            $q->DesignationDuring($date_to)->with(['designation', 'designation.default_time_group']);
         }])
         // ->when($section_ids, function ($query, $section_ids) {
         //     return $query->wherein('section_id', $section_ids);
@@ -507,7 +508,8 @@ class EmployeeService
                 'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id),
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index,
-                'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
+                //'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
+                'time_group' => $employee_to_designation?->designation?->default_time_group?->groupname ?? 'default',
                 'seniority' => $employeeToSection->employee?->seniority?->sortindex,
                 'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
                 'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,

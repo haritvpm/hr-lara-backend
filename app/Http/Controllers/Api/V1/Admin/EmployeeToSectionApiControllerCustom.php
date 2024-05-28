@@ -13,6 +13,7 @@ use App\Models\EmployeeToSection;
 use App\Models\AttendanceBook;
 use App\Models\Employee;
 use App\Models\EmployeeToFlexi;
+use App\Models\OfficeTime;
 use Carbon\Carbon;
 
 class EmployeeToSectionApiControllerCustom extends Controller
@@ -49,10 +50,13 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         $attendancebooks = AttendanceBook::wherein('section_id',  $sections->pluck('id'))->get();
 
+        $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
+
         return response()->json([
             'employees_under_my_section' => $employees_under_my_section,
             'sections' => $sections,
             'attendancebooks' =>  $attendancebooks,
+            'officeTimes' => $officeTimes,
         ], 200);
     }
     public function endPosting(Request $request)
