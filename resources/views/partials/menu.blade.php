@@ -119,7 +119,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('setting_access')
+                            @can('govt_calendar_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.settings.index") }}" class="nav-link {{ request()->is("admin/settings") || request()->is("admin/settings/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">

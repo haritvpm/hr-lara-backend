@@ -233,6 +233,12 @@ class Leaf extends Model
                 ->wherein('active_status', ['N', 'Y'])
                 ->first();
             if( $hasleaveforThisDay){
+
+                //make sure this is no casual_fn which means allowed
+                if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->leave_count === 0.5){
+                   break;
+                }
+
                 $left++;
             } else {
                 break;
@@ -260,7 +266,11 @@ class Leaf extends Model
                 ->wherein('active_status', ['N', 'Y'])
                 ->first();
             if( $hasleaveforThisDay){
-                $left++;
+                if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->leave_count == 0.5 ){
+                    break;
+                 }
+
+                $right++;
             } else {
                 break;
             }
@@ -275,6 +285,8 @@ class Leaf extends Model
                         $allowedleaveTypes, $disallowedleaveTypes)
     {
      
+        [$leftWorking, $rightWorking] =  $dates;
+        
         //$disallowed = [];
         foreach( $dates as $date){
             $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
@@ -290,7 +302,21 @@ class Leaf extends Model
                 ->first();
 
             if( $hasleaveforThisDay){
-                return true;
+
+                if($date == $leftWorking){
+                    if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->time_period === 'AN'){
+                        return true;
+                    }
+                }
+                else
+                if($date == $rightWorking){
+                    if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->time_period === 'FN'){
+                        return true;
+                    }
+                }
+                else {
+                    return true;
+                }
             }
         }
         return false;

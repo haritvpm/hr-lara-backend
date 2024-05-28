@@ -188,7 +188,7 @@ class LeaveApiController extends Controller
         
         //casual and earned should not be adjacent
         //get prev and after dates which are not holidays and check
-        [$leftWorking, $rightWorking] = GovtCalendar::getAdjacentWorkingDates($c_startDate->format('Y-m-d') , $request->end_date->format('Y-m-d'));
+        [$leftWorking, $rightWorking] = GovtCalendar::getAdjacentWorkingDates($c_startDate->format('Y-m-d') , $c_endDate->format('Y-m-d'));
        
         //if this is casual or compen, then make sure no continuous 15 leaves are there
         if ($isCasualOrCompen) {
