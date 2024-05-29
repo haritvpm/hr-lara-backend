@@ -209,8 +209,8 @@ class Leaf extends Model
 
     public static function CheckContinuousCasualLeaves($aadhaarid, $start_date, $end_date)
     {
-       
-       
+
+
         $c_startDate = Carbon::parse($start_date);
 
         //find continuous leaves before startdate
@@ -218,11 +218,9 @@ class Leaf extends Model
         for( $i = 1; $i <= 20; $i++){
             $prev_date = $c_startDate->clone()->subDays($i);
 
-            $calender = GovtCalendar::where('date', $prev_date->format('Y-m-d'))->first();
-            if( !$calender){
-                break;
-            }
-            if( $calender && $calender->govtholidaystatus == 1){
+            $isHoliday = GovtCalendar::isHolidayForEmployee($prev_date->format('Y-m-d'), $aadhaarid);
+
+            if( $isHoliday){
                 continue;
             }
 
@@ -232,6 +230,7 @@ class Leaf extends Model
                 ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
                 ->wherein('active_status', ['N', 'Y'])
                 ->first();
+
             if( $hasleaveforThisDay){
 
                 //make sure this is no casual_fn which means allowed
@@ -243,7 +242,7 @@ class Leaf extends Model
             } else {
                 break;
             }
-            
+
         }
 
         $c_endDate = $end_date ? Carbon::parse($end_date) : Carbon::parse($start_date);
@@ -274,19 +273,19 @@ class Leaf extends Model
             } else {
                 break;
             }
-            
+
         }
 
 
          return [$left,$right] ;
     }
 
-    public static function verifyDatesAndLeaveTypes( $aadhaarid,  $dates, 
+    public static function verifyDatesAndLeaveTypes( $aadhaarid,  $dates,
                         $allowedleaveTypes, $disallowedleaveTypes)
     {
-     
+
         [$leftWorking, $rightWorking] =  $dates;
-        
+
         //$disallowed = [];
         foreach( $dates as $date){
             $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)

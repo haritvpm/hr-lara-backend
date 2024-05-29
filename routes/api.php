@@ -198,4 +198,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Employee To Flexi
     Route::apiResource('employee-to-flexis', 'EmployeeToFlexiApiController');
+
+    // Leave Group
+    Route::apiResource('leave-groups', 'LeaveGroupApiController');
+
+    // Flexi Application
+    Route::apiResource('flexi-applications', 'FlexiApplicationApiController');
 });

@@ -188,8 +188,29 @@ class GovtCalendar extends Model
         ->where('govtholidaystatus', 1)
         ->orderby('date')
         ->get();
-        
+
         return $holidays;
+    }
+
+    public static function isHolidayForEmployee($date_str, $aadhaarid)
+    {
+        $calender = GovtCalendar::where('date', $date_str)->first();
+
+        if($calender->govtholidaystatus == 1){
+           return true;
+        }
+
+        if( $calender->restrictedholidaystatus == 1){
+            //if so punching for this date has for this employee, marked as RH
+            $punching = Punching::where('aadhaarid', $aadhaarid)
+                ->whereDate('date', $date_str)
+                ->first();
+            //consider as holiday
+            if( $punching && ($punching->hint == 'restricted' || $punching->hint == 'RH')){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function getAdjacentHolidays($date_start_str, $isprefix)

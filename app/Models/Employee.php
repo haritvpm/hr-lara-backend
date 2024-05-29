@@ -42,6 +42,7 @@ class Employee extends Model
         'status',
         'is_shift',
         'grace_group_id',
+        'leave_group_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -119,5 +120,9 @@ class Employee extends Model
      public function employeeCompenGranteds()
     {
         return $this->hasMany(CompenGranted::class, 'employee_id', 'id');
+    }
+     public function leave_group()
+    {
+        return $this->belongsTo(LeaveGroup::class, 'leave_group_id');
     }
 }

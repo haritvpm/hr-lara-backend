@@ -137,11 +137,12 @@ class LeaveApiController extends Controller
     private function leaveStoreOrUpdate(Request $request, $isUpdate)
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-        
+
         $c_startDate = Carbon::parse($request->start_date);
         $c_endDate = $request->end_date ? Carbon::parse($request->end_date) : Carbon::parse($request->start_date);
+        $aadhaarid = $me->employee->aadhaarid;
 
-        $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $me->employee->aadhaarid);
+        $alreadyApplied =  LeaveProcessService::leaveAlreadyExistsForPeriod($request->start_date, $request->end_date, $aadhaarid);
 
         if ($alreadyApplied) {
             return response()->json(
@@ -153,7 +154,7 @@ class LeaveApiController extends Controller
         //check casual leave max check
         if ($request->leave_type == 'casual') {
             //note, frontend prevents leave date after this year end
-            $cl_submitted = Leaf::getEmployeeCasualLeaves($me->employee->aadhaarid, $request->start_date);
+            $cl_submitted = Leaf::getEmployeeCasualLeaves($aadhaarid, $request->start_date);
             if($request->leave_count + $cl_submitted > 20){
                 return response()->json(
                     ['status' => 'error',  'message' => "Casual leave count cannot be more than 20 for a year"],
@@ -163,7 +164,7 @@ class LeaveApiController extends Controller
         } //
         if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
             //note, frontend prevents leave date after this year end
-            $compen_submitted = Leaf::getEmployeeCompenLeaves($me->employee->aadhaarid, $request->start_date);
+            $compen_submitted = Leaf::getEmployeeCompenLeaves($aadhaarid, $request->start_date);
             if($request->leave_count + $compen_submitted > 15){
                 return response()->json(
                     ['status' => 'error',  'message' => "Compen count cannot be more than 15 for a year"],
@@ -185,14 +186,14 @@ class LeaveApiController extends Controller
             );
         }
         $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
-        
+
         //casual and earned should not be adjacent
         //get prev and after dates which are not holidays and check
         [$leftWorking, $rightWorking] = GovtCalendar::getAdjacentWorkingDates($c_startDate->format('Y-m-d') , $c_endDate->format('Y-m-d'));
-       
+
         //if this is casual or compen, then make sure no continuous 15 leaves are there
         if ($isCasualOrCompen) {
-            [$left,$right] = Leaf::CheckContinuousCasualLeaves($me->employee->aadhaarid, $request->start_date, $request->end_date);
+            [$left,$right] = Leaf::CheckContinuousCasualLeaves($aadhaarid, $request->start_date, $request->end_date);
             if( $left+$right + $request->leave_count > 15){
                 return response()->json(
                     ['status' => 'error',  'message' => "Cannot have more than 15 continuous casual/compen leaves"],
@@ -201,28 +202,28 @@ class LeaveApiController extends Controller
             }
 
             //make sure no adjacent earned and halfpay
-           $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $me->employee->aadhaarid,  [$leftWorking, $rightWorking], 
+           $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $aadhaarid,  [$leftWorking, $rightWorking],
                         ['casual', 'compen', 'compen_for_extra'], null); //thes are the allowed leaves
             if( $hasNotAllowedLeaves){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Cannot have casual/compen leaves adjacent to earned/halfpay"],
+                    ['status' => 'error',  'message' => "Cannot have casual/compen leaves adjacent to EL/HP..."],
                     400
                 );
             }
 
         } else {
             //make sure no adjacent casual and compen
-            $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $me->employee->aadhaarid,  [$leftWorking, $rightWorking], 
+            $hasNotAllowedLeaves = Leaf::verifyDatesAndLeaveTypes( $aadhaarid,  [$leftWorking, $rightWorking],
                         null, ['casual', 'compen', 'compen_for_extra']); //thes are the allowed leaves
             if( $hasNotAllowedLeaves){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Cannot have earned/halfpay leaves adjacent to casual/compen"],
+                    ['status' => 'error',  'message' => "Cannot have EL/HP... leaves adjacent to CL/Co"],
                     400
                 );
             }
         }
 
-        
+
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 
         \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping, $isCasualOrCompen) {
@@ -264,8 +265,8 @@ class LeaveApiController extends Controller
 
     public function store(Request $request)
     {
-        return $this->leaveStoreOrUpdate($request, false);       
-       
+        return $this->leaveStoreOrUpdate($request, false);
+
     }
 
     public function show(Leaf $leaf)
@@ -328,15 +329,15 @@ class LeaveApiController extends Controller
     }
     public function updateLeave(Request $request)
     {
-       return $this->leaveStoreOrUpdate($request, true); 
+       return $this->leaveStoreOrUpdate($request, true);
     }
     public function update(Request $request, Leaf $leaf)
     {
 
            return (new LeafResource($leaf))
             ->response()
-            ->setStatusCode(Response::HTTP_ACCEPTED);     
- 
+            ->setStatusCode(Response::HTTP_ACCEPTED);
+
     }
 
     public function destroy(Leaf $leaf)
@@ -488,14 +489,14 @@ class LeaveApiController extends Controller
         if ($holidays && $holidays->count()) {
             //if it is casual, then it is an error
             $str = "Period has holidays {$holidays->implode(', ')}  ";
-            if (
+          /*   if (
                 $request->leave_type == 'casual' ||
                 $request->leave_type == 'compen' ||
                 $request->leave_type == 'compen_for_extra'
             ) {
-                $errors[] = $str;
-            } else {
-                if( $holidays->contains( $start_date) || $holidays->contains( $end_date) ) 
+                $warnings[] = $str;
+            } else */ {
+                if( $holidays->contains( $start_date) || $holidays->contains( $end_date) )
                 {
                     $errors[] = $str; //date starts or ends with holidays
                 } else {
@@ -616,7 +617,11 @@ class LeaveApiController extends Controller
        ->where('leave_id', null)
        ->where( 'date', '>=', '2024-05-01')
        ->where( 'date', '<', $today)
-       ->where( fn ($query) => $query->where('punching_count',  0)->orWhere('is_unauthorised',  1)->orWhere('hint', '!=', null))
+       ->Where('hint', '!=', 'clear')
+       ->where( fn ($query) => $query->where('punching_count',  0)
+            //->orWhere('is_unauthorised',  1)
+            ->orWhere('hint', '!=', null)
+        )
        ->orderBy('date', 'desc')
        ->get();
        $dates = $punchings->pluck('date')->toArray();
@@ -625,7 +630,7 @@ class LeaveApiController extends Controller
        if($dates && count($dates) > 0){
         $holidays = GovtCalendar::where('govtholidaystatus', 1)
                     ->wherein('date', $dates)->pluck('date')->toArray();
-        
+
         \Log::info($holidays);
         $dates = array_diff($dates, $holidays);
         $dates = array_values($dates); // Re-index the array

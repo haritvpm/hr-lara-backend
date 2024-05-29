@@ -263,6 +263,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Employee To Flexi
     Route::delete('employee-to-flexis/destroy', 'EmployeeToFlexiController@massDestroy')->name('employee-to-flexis.massDestroy');
     Route::resource('employee-to-flexis', 'EmployeeToFlexiController');
+
+    // Leave Group
+    Route::delete('leave-groups/destroy', 'LeaveGroupController@massDestroy')->name('leave-groups.massDestroy');
+    Route::resource('leave-groups', 'LeaveGroupController');
+
+    // Flexi Application
+    Route::delete('flexi-applications/destroy', 'FlexiApplicationController@massDestroy')->name('flexi-applications.massDestroy');
+    Route::resource('flexi-applications', 'FlexiApplicationController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password
