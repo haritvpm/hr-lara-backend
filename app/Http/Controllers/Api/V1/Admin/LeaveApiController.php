@@ -160,12 +160,13 @@ class LeaveApiController extends Controller
         //check casual leave max check
         if ($request->leave_type == 'casual') {
             //note, frontend prevents leave date after this year end
-            \Log::info('before getEmployeeCasualLeaves');
-            \Log::info($leaeGroup->allowed_casual_per_year);
+           // \Log::info('before getEmployeeCasualLeaves');
+           // \Log::info($leaeGroup->allowed_casual_per_year);
             $cl_submitted = Leaf::getEmployeeCasualLeaves($aadhaarid, $request->start_date);
-            \Log::info($cl_submitted);
-            $tot = (float)$request->leave_count + (float)$cl_submitted;
-            //if($request->leave_count + $cl_submitted >  $leaeGroup->allowed_casual_per_year )
+           // \Log::info($cl_submitted);
+            //$tot = $request->leave_count + $cl_submitted;
+            //\Log::info($tot);
+            if($request->leave_count + $cl_submitted >  $leaeGroup->allowed_casual_per_year )
             {
                 return response()->json(
                     ['status' => 'error',  'message' => "Casual leave count cannot be more than {$leaeGroup->allowed_casual_per_year} per year"],
@@ -182,6 +183,29 @@ class LeaveApiController extends Controller
                     400
                 );
             }
+        }
+        //contract has max leaves allowed per year
+        if ($request->leave_type == 'earned' || $request->leave_type == 'halfpay') {
+
+            if( $request->leave_type == 'earned' &&  $leaeGroup->allowed_earned_per_year > 0){
+                $el_submitted = Leaf::getEmployeeLeavesForYear($aadhaarid, $request->start_date,  ['earned', 'EL']);
+                if($request->leave_count + $el_submitted > $leaeGroup->allowed_earned_per_year ){
+                    return response()->json(
+                        ['status' => 'error',  'message' => "Earned leave count cannot be more than {$leaeGroup->allowed_earned_per_year} for a year"],
+                        400
+                    );
+                }
+            }
+            else if( $request->leave_type == 'halfpay' &&  $leaeGroup->allowed_halfpay_per_year > 0){
+                $hp_submitted = Leaf::getEmployeeLeavesForYear($aadhaarid, $request->start_date,  ['halfpay', 'HP']);
+                if($request->leave_count + $hp_submitted > $leaeGroup->allowed_halfpay_per_year ){
+                    return response()->json(
+                        ['status' => 'error',  'message' => "Halfpay leave count cannot be more than {$leaeGroup->allowed_halfpay_per_year} for a year"],
+                        400
+                    );
+                }
+            }
+
         }
 
 

@@ -112,9 +112,14 @@ class Leaf extends Model
             ->where( 'leave_type', 'casual' )
             ->wherein('active_status', ['N', 'Y'])
             ->sum('leave_count');
+            count halfs=day and 'CL'
 */
         //also get startwith leave
-        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first();
+        \Log::info($aadhaarid);
+
+        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid);
+        \Log::info('yearly');
+        \Log::info($yearly);
         if( !$yearly){
             return 0;
         }
@@ -129,9 +134,9 @@ class Leaf extends Model
 
         //$employee = Employee::where('aadhaarid', $aadhaarid)->first();
         $c_start_date = Carbon::parse($start_date)->startOfYear();
-        
+
         /*$leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
-        
+
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
 
         $co_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
@@ -150,7 +155,7 @@ class Leaf extends Model
 
         return $co_year + $co_startwith;
         */
-        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first();
+        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid);
         if( !$yearly){
             return 0;
         }
@@ -158,6 +163,23 @@ class Leaf extends Model
         $co_startwith = $yearly?->start_with_compen ?? 0;
 
         return $co_year + $co_startwith;
+    }
+
+    public static function getEmployeeLeavesForYear($aadhaarid, $start_date, $leaveTypes)
+    {
+        $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
+
+        $el_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
+                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
+                    ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
+            })
+            ->where('aadhaarid', $aadhaarid)
+            ->wherein('leave_type', $leaveTypes)
+            ->wherein('active_status', ['N', 'Y'])
+            ->sum('leave_count');
+        //$el_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_el ?? 0;
+        return $el_year;
     }
 
     public static function getEmployeeLeaves( $aadhaarid)
