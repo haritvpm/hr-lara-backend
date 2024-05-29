@@ -19,6 +19,7 @@ use App\Services\PunchingCalcService;
 use App\Http\Requests\StoreLeafRequest;
 use App\Http\Requests\UpdateLeafRequest;
 use App\Http\Resources\Admin\LeafResource;
+use App\Models\LeaveGroup;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -138,6 +139,12 @@ class LeaveApiController extends Controller
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
+
+        $leave_goup_name = $me->leave_group?->groupname ?? 'default';
+        $leave_goup_name = strtolower($leave_goup_name);
+        $leaeGroup = LeaveGroup::where('groupname', $leave_goup_name)->first();
+
+
         $c_startDate = Carbon::parse($request->start_date);
         $c_endDate = $request->end_date ? Carbon::parse($request->end_date) : Carbon::parse($request->start_date);
         $aadhaarid = $me->employee->aadhaarid;
@@ -155,9 +162,9 @@ class LeaveApiController extends Controller
         if ($request->leave_type == 'casual') {
             //note, frontend prevents leave date after this year end
             $cl_submitted = Leaf::getEmployeeCasualLeaves($aadhaarid, $request->start_date);
-            if($request->leave_count + $cl_submitted > 20){
+            if($request->leave_count + $cl_submitted >  $leaeGroup->allowed_casual_per_year ){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Casual leave count cannot be more than 20 for a year"],
+                    ['status' => 'error',  'message' => "Casual leave count cannot be more than {$leaeGroup->allowed_casual_per_year} per year"],
                     400
                 );
             }
@@ -165,9 +172,9 @@ class LeaveApiController extends Controller
         if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
             //note, frontend prevents leave date after this year end
             $compen_submitted = Leaf::getEmployeeCompenLeaves($aadhaarid, $request->start_date);
-            if($request->leave_count + $compen_submitted > 15){
+            if($request->leave_count + $compen_submitted > $leaeGroup->allowed_compen_per_year ){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Compen count cannot be more than 15 for a year"],
+                    ['status' => 'error',  'message' => "Compen count cannot be more than {$leaeGroup->allowed_compen_per_year} for a year"],
                     400
                 );
             }
@@ -194,9 +201,9 @@ class LeaveApiController extends Controller
         //if this is casual or compen, then make sure no continuous 15 leaves are there
         if ($isCasualOrCompen) {
             [$left,$right] = Leaf::CheckContinuousCasualLeaves($aadhaarid, $request->start_date, $request->end_date);
-            if( $left+$right + $request->leave_count > 15){
+            if( $left+$right + $request->leave_count > $leaeGroup->allowed_continuous_casual_and_compen ){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Cannot have more than 15 continuous casual/compen leaves"],
+                    ['status' => 'error',  'message' => "Cannot have more than {$leaeGroup->allowed_continuous_casual_and_compen} continuous casual/compen leaves"],
                     400
                 );
             }

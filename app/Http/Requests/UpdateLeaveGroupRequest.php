@@ -11,7 +11,7 @@ class UpdateLeaveGroupRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('leave_group_edit');
+        return Gate::allows('leaf_access');
     }
 
     public function rules()

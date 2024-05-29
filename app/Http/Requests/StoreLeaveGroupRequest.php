@@ -11,7 +11,7 @@ class StoreLeaveGroupRequest extends FormRequest
 {
     public function authorize()
     {
-        return Gate::allows('leave_group_create');
+        return Gate::allows('leaf_access');
     }
 
     public function rules()

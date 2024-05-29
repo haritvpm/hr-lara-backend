@@ -15,7 +15,7 @@ class LeaveGroupController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('leave_group_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $leaveGroups = LeaveGroup::all();
 
@@ -24,7 +24,7 @@ class LeaveGroupController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('leave_group_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.leaveGroups.create');
     }
@@ -38,7 +38,7 @@ class LeaveGroupController extends Controller
 
     public function edit(LeaveGroup $leaveGroup)
     {
-        abort_if(Gate::denies('leave_group_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.leaveGroups.edit', compact('leaveGroup'));
     }
@@ -52,14 +52,14 @@ class LeaveGroupController extends Controller
 
     public function show(LeaveGroup $leaveGroup)
     {
-        abort_if(Gate::denies('leave_group_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.leaveGroups.show', compact('leaveGroup'));
     }
 
     public function destroy(LeaveGroup $leaveGroup)
     {
-        abort_if(Gate::denies('leave_group_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $leaveGroup->delete();
 

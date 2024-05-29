@@ -235,6 +235,9 @@ class Leaf extends Model
 
                 //make sure this is no casual_fn which means allowed
                 if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->leave_count === 0.5){
+                   if($hasleaveforThisDay->time_period === 'FN'){ //was present in evening
+                    $left += 0.5;
+                   }
                    break;
                 }
 
@@ -266,6 +269,9 @@ class Leaf extends Model
                 ->first();
             if( $hasleaveforThisDay){
                 if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->leave_count == 0.5 ){
+                    if($hasleaveforThisDay->time_period === 'AN'){ //was present in morning. so add 0.5
+                        $right += 0.5;
+                    }
                     break;
                  }
 
