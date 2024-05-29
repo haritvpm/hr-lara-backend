@@ -8,7 +8,7 @@
 
     <form action="{{url('admin/govt-calendars/fetchmonth')}}" method="post" id="filter" class="form-inline">
       @csrf
-      <button type="submit" class="btn btn-primary">CreateDates</button>
+      <button type="submit" class="btn btn-primary">Create Current Year Dates</button>
 
       </form>
 

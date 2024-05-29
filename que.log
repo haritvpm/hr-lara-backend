@@ -19,3 +19,4 @@
   2024-05-28 15:38:27 App\Jobs\ProcessLeavesJob ...................... RUNNING
   2024-05-28 16:09:59 App\Jobs\ProcessLeavesJob ................. 31m 32s DONE
   2024-05-29 12:38:27 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-05-29 13:19:05 App\Jobs\ProcessLeavesJob ................. 40m 38s DONE
