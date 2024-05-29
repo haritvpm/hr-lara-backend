@@ -130,9 +130,9 @@ class LeaveFetchService
 
                 //upsert updates updated_at field of all records. so we cannot use that to find updated records
 
-              /*  Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ],
+                Leaf::upsert($datatoinsert, ['aadhaarid', 'creation_date' ],
                 [ 'start_date','end_date',  'leave_type', 'reason', 'active_status',
-                 'leave_cat', 'time_period',  'last_updated']);*/
+                 'leave_cat', 'time_period',  'last_updated']);
 
                 $insertedcount += count($jsonData);
                 //  });

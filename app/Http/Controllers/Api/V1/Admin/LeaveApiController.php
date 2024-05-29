@@ -140,7 +140,7 @@ class LeaveApiController extends Controller
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
 
-        $leave_goup_name = $me->leave_group?->groupname ?? 'default';
+        $leave_goup_name = $me->employee->leave_group?->groupname ?? 'default';
         $leave_goup_name = strtolower($leave_goup_name);
         $leaeGroup = LeaveGroup::where('groupname', $leave_goup_name)->first();
 

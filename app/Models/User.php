@@ -130,7 +130,7 @@ class User extends Authenticatable implements JWTSubject
     public static function getLoggedInUserSeats()
     {
          //get current logged in user's charges
-         $me = User::with('employee', 'leave_group')->find(auth()->id());
+         $me = User::with('employee', 'employee.leave_group')->find(auth()->id());
 
          if ($me->employee_id == null) {
             $status = 'No linked employee';
