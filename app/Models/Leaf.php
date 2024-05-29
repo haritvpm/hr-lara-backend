@@ -101,7 +101,7 @@ class Leaf extends Model
 
 
         $c_start_date = Carbon::parse($start_date)->startOfYear();
-        $leave_start_date = $c_start_date->format('Y-m-d');
+/*        $leave_start_date = $c_start_date->format('Y-m-d');
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
 
         $cls_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
@@ -112,19 +112,26 @@ class Leaf extends Model
             ->where( 'leave_type', 'casual' )
             ->wherein('active_status', ['N', 'Y'])
             ->sum('leave_count');
-
+*/
         //also get startwith leave
-        $cls_startwith = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first()?->start_with_cl ?? 0;
+        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first();
+        if( !$yearly){
+            return 0;
+        }
+        $cls_year = $yearly?->cl_submitted ?? 0;
+        $cls_startwith = $yearly?->start_with_cl ?? 0;
 
-        return $cls_year + $cls_startwith;
+        return (float)$cls_year + (float)$cls_startwith;
 
     }
     public static function getEmployeeCompenLeaves($aadhaarid, $start_date)
     {
 
         //$employee = Employee::where('aadhaarid', $aadhaarid)->first();
-        //
-        $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        $c_start_date = Carbon::parse($start_date)->startOfYear();
+        
+        /*$leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
+        
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
 
         $co_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
@@ -142,7 +149,15 @@ class Leaf extends Model
        $co_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_compen ?? 0;
 
         return $co_year + $co_startwith;
+        */
+        $yearly = YearlyAttendance::forEmployeeInYear($c_start_date, $aadhaarid)->first();
+        if( !$yearly){
+            return 0;
+        }
+        $co_year = $yearly?->compen_submitted ?? 0;
+        $co_startwith = $yearly?->start_with_compen ?? 0;
 
+        return $co_year + $co_startwith;
     }
 
     public static function getEmployeeLeaves( $aadhaarid)

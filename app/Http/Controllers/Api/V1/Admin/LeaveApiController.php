@@ -160,8 +160,13 @@ class LeaveApiController extends Controller
         //check casual leave max check
         if ($request->leave_type == 'casual') {
             //note, frontend prevents leave date after this year end
+            \Log::info('before getEmployeeCasualLeaves');
+            \Log::info($leaeGroup->allowed_casual_per_year);
             $cl_submitted = Leaf::getEmployeeCasualLeaves($aadhaarid, $request->start_date);
-            if($request->leave_count + $cl_submitted >  $leaeGroup->allowed_casual_per_year ){
+            \Log::info($cl_submitted);
+            $tot = (float)$request->leave_count + (float)$cl_submitted;
+            //if($request->leave_count + $cl_submitted >  $leaeGroup->allowed_casual_per_year )
+            {
                 return response()->json(
                     ['status' => 'error',  'message' => "Casual leave count cannot be more than {$leaeGroup->allowed_casual_per_year} per year"],
                     400
