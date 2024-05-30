@@ -28,9 +28,17 @@ class AuthController extends Controller
 
         $token = Auth::guard('api')->attempt($credentials);
         if (! $token) {
+
+            //see if username exists
+            $user = User::where('username', $request->username)->first();
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthorized login',
+                'message' =>   $user ? 'Invalid password' : 'User not found',
+                "errors"=>
+                     !$user ? ["username" => ["invalid username"]]  :  ["password"=> ["invalid password"]],
+
+
             ], 401);
         }
 

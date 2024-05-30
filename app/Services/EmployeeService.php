@@ -10,6 +10,7 @@ use App\Models\EmployeeToFlexi;
 use App\Models\AttendanceRouting;
 use App\Models\EmployeeToSection;
 use App\Models\EmployeeToDesignation;
+use Carbon\Carbon;
 
 class EmployeeService
 {
@@ -156,11 +157,30 @@ class EmployeeService
 
         foreach ($aebas_employees as $key => $emp) {
 
-            if (! Employee::where('aadhaarid', $emp['emp_id'])->first()) {
-                $id = Employee::create([
-                    'aadhaarid' => $emp['emp_id'],
+            $aadhaarid = preg_replace('/\s+/', '', trim($emp['emp_id'])) ;
+            $emp = Employee::where('aadhaarid', $aadhaarid)->first();
+
+            if($aadhaarid !== $emp['emp_id']){
+
+                \Log::info('aebas emp_id has spaces' . $emp['emp_id'] . ' aadhaarid ' . $aadhaarid);
+
+                if(!$emp){
+                    $emp = Employee::where('aadhaarid', $emp['emp_id'])->first();
+                }
+            }
+
+
+            $gender = $emp['gender'];
+            $email = $emp['email'];
+
+            if ( !$emp ) {
+                //employee does not exist. create it
+
+                $emp = Employee::create([
+                    'aadhaarid' => $aadhaarid,
                     'name' => $emp['emp_name'],
-                ])->id;
+                    'srismt' =>  $gender == 'M' ? 'Sri' : 'Smt',
+                ]);
 
                 //designation does not exist. create it
                 $designation_id = null;
@@ -170,16 +190,36 @@ class EmployeeService
                     $designation_id = $aebas_desig_to_ourId[$emp['designation']];
                 }
 
+                //has other unique fields which will cause errors on db save if not set
+                // if($emp['email']){
+                //     $emp->employeeExtra()->create([
+                //         'email' => $emp['email'],
+                //     ]);
+                // }
+
                 EmployeeToDesignation::create(
                     [
 
-                        'employee_id' => $id,
+                        'employee_id' => $emp->id,
                         'designation_id' => $designation_id,
-                        'start_date' => '2024-01-01',
+                        'start_date' => Carbon::parse($emp['creation_date'])->format('Y-m-d'),
 
                     ]
                 );
+            } else {
+
+                $emp->update([
+                    'srismt' =>  $gender == 'M' ? 'Sri' : 'Smt',
+                ]);
+
+                // if($email){
+                //     $emp->employeeExtra()->updateOrCreate([
+                //         'email' => $email,
+                //     ]);
+                // }
             }
+
+
         }
 
         return $aebas_employees;
@@ -344,7 +384,7 @@ class EmployeeService
         $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
                                                          $employee_ids->toArray()) :  $emp_ids_of_seats->toArray();
                                                          */
-        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];                                                        
+        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
        //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
         $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
@@ -364,7 +404,7 @@ class EmployeeService
         ->get();
 
     if($employee_ids_combined){
-    
+
         foreach($employee_section_maps as $emp){
             $emp->setAttribute('employeeLoadedDirectly', in_array($emp->employee_id, $employee_ids_combined));
         }
