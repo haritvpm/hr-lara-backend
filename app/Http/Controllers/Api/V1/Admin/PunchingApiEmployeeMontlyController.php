@@ -101,7 +101,7 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
 
-            \Log::info('foreach date: ' . $d_str);
+           // \Log::info('foreach date: ' . $d_str);
 
             //  \Log::info('employeeToSection: ' . $employeeToSection);
 

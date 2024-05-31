@@ -269,6 +269,7 @@ class AuthController extends Controller
             'email' => $user?->employee?->employeeExtra?->email ?? null,
             'avatar' => '',
             'aadhaarid' => $user?->employee?->aadhaarid ?? null,
+            'pen' => $user?->employee?->pen ?? null,
             'srismt' => $user?->employee?->srismt ?? null,
             'name_mal' => $user?->employee?->name_mal ?? null,
             'name' => $user?->employee?->name ?? null,
@@ -276,6 +277,10 @@ class AuthController extends Controller
             'pan' => $user?->employee?->employeeExtra?->pan ?? null,
             'klaid' => $user?->employee?->employeeExtra?->klaid ?? null,
             'dateOfJoinInKLA' => $user?->employee?->employeeExtra?->date_of_joining_kla ?? null,
+            'electionid' => $user?->employee?->employeeExtra?->electionid ?? null,
+            'dob' => $user?->employee?->employeeExtra?->dob ?? null,
+            'dateOfEntryInService' => $user?->employee?->employeeExtra?->date_of_entry_in_service ?? null,
+            'dateOfCommencementOfContinousService' => $user?->employee?->employeeExtra?->date_of_commencement_of_continous_service ?? null,
         ]);
     }
 
@@ -283,7 +288,10 @@ class AuthController extends Controller
     {
         $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
 
+        $dob = $request->dob ? Carbon::parse($request->dob)->format('Y-m-d') : null;
         $dateOfJoinInKLA = $request->dateOfJoinInKLA ? Carbon::parse($request->dateOfJoinInKLA)->format('Y-m-d') : null;
+        $dateOfEntryInService = $request->date_of_entry_in_service ? Carbon::parse($request->dateOfEntryInService)->format('Y-m-d') : null;
+        $dateOfCommencementOfContinousService = $request->dateOfCommencementOfContinousService ? Carbon::parse($request->dateOfCommencementOfContinousService)->format('Y-m-d') : null;
 
         \Log::info('in save profile', $request->all());
         $validator = Validator::make($request->all(), [
@@ -311,6 +319,10 @@ class AuthController extends Controller
             'date_of_joining_kla' => $dateOfJoinInKLA,
             'pan' => $request->pan,
             'klaid' => $request->klaid,
+            'electionid' => $request->electionid ?? null,
+            'dob' => $dob,
+            'date_of_entry_in_service' => $dateOfEntryInService,
+            'date_of_commencement_of_continous_service' => $dateOfCommencementOfContinousService,
 
         ];
         if($user->employee->employeeExtra){
