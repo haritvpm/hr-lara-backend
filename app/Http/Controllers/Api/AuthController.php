@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Role;
 use App\Models\Seat;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -69,19 +71,83 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            //  'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
+        $validator = Validator::make($request->all(), [
+            'pen' => 'required|string|max:255|min:6',
+            'aadhaarid' => 'required|string|max:255|min:8',
+            'username' => 'required|string|min:6|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
+        if ($validator->fails()) {
+            $response['response'] = $validator->messages();
+
+            return response()->json([
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $request->merge(['username' => trim($request->username)]);
+        $request->merge(['pen' => strtoupper(trim($request->pen))]);
+        $request->merge(['aadhaarid' => trim($request->aadhaarid)]);
+
+        //check if employee exists
+
+        $employee = Employee::where('aadhaarid', $request->aadhaarid)->first();
+        if (! $employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee with AttendanceId not found',
+                "errors"=>
+                     ["aadhaarid" => ["invalid AttendanceId"]],
+
+            ], 422);
+        }
+        //make sure username does not exist
+
+        $user = User::where('username', $request->username)->first();
+        if ($user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already exists',
+                "errors"=>
+                     ["username" => ["username already exists"]],
+
+            ], 422);
+        }
+
+        //make sure user with this employee id does not exist
+        $user = User::where('employee_id', $employee->id)->first();
+        if ($user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already exists with this employee id',
+                "errors"=>
+                     ["username" => ["Username {$user->username} exists for this employee "]],
+
+            ], 422);
+        }
+
         $user = User::create([
-            // 'name' => $request->name,
-            'username' => $request->name,
+            'username' => $request->username,
             'password' => Hash::make($request->password),
+            'employee_id' => $employee->id,
         ]);
 
-        $token = Auth::login($user);
+        $employee->update(['pen' => $request->pen]);
+
+        //$employee->save();
+
+        //assign 'employee' role to this user
+        $role = Role::where('title', 'employee')->first();
+        $user->roles()->attach($role->id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+        ]);
+
+      /*  $token = Auth::login($user);
 
         return response()->json([
             'status' => 'success',
@@ -91,7 +157,7 @@ class AuthController extends Controller
             'refresh_token' => $token,
             'type' => 'bearer',
 
-        ]);
+        ]);*/
     }
 
     public function logout()

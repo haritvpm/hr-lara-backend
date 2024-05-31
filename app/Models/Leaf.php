@@ -170,16 +170,27 @@ class Leaf extends Model
         $leave_start_date = Carbon::parse($start_date)->startOfYear()->format('Y-m-d');
         $leave_end_date = Carbon::parse($start_date)->endOfYear()->format('Y-m-d');
 
-        $el_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
-                $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
-                    ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
-            })
-            ->where('aadhaarid', $aadhaarid)
-            ->wherein('leave_type', $leaveTypes)
-            ->wherein('active_status', ['N', 'Y'])
-            ->sum('leave_count');
-        //$el_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_el ?? 0;
-        return $el_year;
+        // $el_year = Leaf::where(function ($query) use ($leave_start_date, $leave_end_date) {
+        //         $query->whereBetween('start_date', [$leave_start_date, $leave_end_date])
+        //             ->orWhereBetween('end_date', [$leave_start_date, $leave_end_date]);
+        //     })
+        //     ->where('aadhaarid', $aadhaarid)
+        //     ->wherein('leave_type', $leaveTypes)
+        //     ->wherein('active_status', ['N', 'Y'])
+        //     ->sum('leave_count');
+        // //$el_startwith = YearlyAttendance::forEmployeeInYear($leave_start_date, $aadhaarid)->first()?->start_with_el ?? 0;
+        // return $el_year;
+
+        $leaves = Punching::with('leave')->where('aadhaarid', $aadhaarid)
+            ->whereDate('date', '>=', $leave_start_date)
+            ->whereDate('date', '<=', $leave_end_date)
+            ->whereHas('leave', function ($query) use ($leaveTypes) {
+                $query->whereIn('leave_type', $leaveTypes)
+                ->wherein('active_status', ['N', 'Y']);
+            })->count();
+
+        return $leaves;
+
     }
 
     public static function getEmployeeLeaves( $aadhaarid)

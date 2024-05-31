@@ -8,7 +8,7 @@ Route::group([
 ], function ($router) {
     Route::post('login', [AuthController::class,'login']);
     Route::get('me', [AuthController::class,'me']);
-  //  Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('resetpassword', [AuthController::class, 'resetpassword']);
@@ -138,7 +138,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     // Punching
     Route::post('/search-punchings', 'PunchingApiSearchController@search');
 
-    
+
     Route::get('/emp-punchings-yearly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeYearlyPunchingsMontwise');
     Route::get('/emp-punchings-monthly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeMonthlyPunchings');
     Route::get('/punchings-monthly/{date?}', 'PunchingApiSectionMontlyController@getmonthlypunchings');
