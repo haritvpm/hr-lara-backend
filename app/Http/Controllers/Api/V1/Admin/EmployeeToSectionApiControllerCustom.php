@@ -138,9 +138,44 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         return response()->json($employees, 200);
     }
+
+
+    public function getUnpostedEmployeesAjax(Request $request)
+    {
+        $name = $request->name;
+//\Log::info($name);
+        $employees = Employee::with(['designation','employeeSectionMapping'])
+                    ->where( function($query) use ($name) {
+                        $query->where('name', 'like', '%'.$name.'%')
+                        ->orwhere('pen', 'like', '%'.$name.'%')
+                        ->orwhere('aadhaarid', 'like', '%'.$name.'%');
+                    })
+                    ->where(fn ($query) => $query->where('status', 'active')->orWherenull('status'))
+                    ->where( function($query) {
+                        $query->whereHas('employeeSectionMapping', function($query)  {
+                            $query->wherenotnull('end_date');
+                        })
+                        ->orwhereDoesntHave('employeeSectionMapping');
+                    })
+                    ->get();
+
+        $employees = $employees->transform( function($employee)  {
+            \Log::info($employee);
+            $desig = $employee?->designation?->first()?->designation->designation;
+            $employee['last_posting_end_date'] = $employee->employee_section_mapping?->end_date ?? '';
+            $employee['name'] = "{$employee->aadhaarid} - {$employee->name} ({$desig})";
+            $employee['id'] = $employee->id;
+
+            return $employee;
+        });
+
+        return response()->json($employees, 200);
+    }
     public function saveUserSectionEmployee(Request $request)
     {
-        $employee_id = $request->employee_id;
+        //$employee_id = $request->employee_id;
+        \Log::info($request->employee);
+        $employee_id = $request->employee['id'];
         $section_id = $request->section_id;
         $attendance_book_id = $request->attendance_book_id;
         $start_date =  substr($request->start_date,0,10); //this is in UTC format. remove trailing part

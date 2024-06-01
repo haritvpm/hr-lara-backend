@@ -125,4 +125,8 @@ class Employee extends Model
     {
         return $this->belongsTo(LeaveGroup::class, 'leave_group_id');
     }
+    public function employeeSectionMapping()
+    {
+        return $this->hasMany(EmployeeToSection::class, 'employee_id', 'id');
+    }
 }

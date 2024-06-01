@@ -149,6 +149,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::post('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@saveUserSectionEmployee');
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
     Route::get('/my-sectionemployees/unposted-employees', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployees');
+    Route::get('/my-sectionemployees/unposted-employees-ajax', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployeesAjax');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
     Route::patch('/my-sectionemployees/setting/{id}', 'EmployeeToSectionApiControllerCustom@editSetting');
 

@@ -38,7 +38,7 @@ class AuthController extends Controller
                 'status' => 'error',
                 'message' =>   $user ? 'Invalid password' : 'User not found',
                 "errors"=>
-                     !$user ? ["username" => ["invalid username"]]  :  ["password"=> ["invalid password"]],
+                     !$user ? ["username" => ["User not found"]]  :  ["password"=> ["Invalid password"]],
 
 
             ], 401);
@@ -222,7 +222,7 @@ class AuthController extends Controller
         return response()->json([
             'id' => $user->id,
             'username' => $user->username,
-            // 'email' => $user->email,
+             'name' => $user->employee?->name ?? null,
             // 'avatar' => '',
             'roles' => $allroles->pluck('title')->unique(),
             'permissions' => $permList->unique(),
