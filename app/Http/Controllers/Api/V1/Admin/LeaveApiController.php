@@ -20,6 +20,7 @@ use App\Http\Requests\StoreLeafRequest;
 use App\Http\Requests\UpdateLeafRequest;
 use App\Http\Resources\Admin\LeafResource;
 use App\Models\LeaveGroup;
+use App\Models\Section;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -435,7 +436,9 @@ class LeaveApiController extends Controller
     {
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $leaf = Leaf::findOrFail($request->id);
-        //find the owner seat which is the reporting officer of this employee's section
+        //find the owner seat which is the reporting officer of this employee's section.
+        //not employeetosection, as the employee may have been transferrred
+        /*
         $sectionMapping = EmployeeToSection::with('section')
             ->OnDate(now()->format('Y-m-d'))
             ->where('employee_id', $leaf->employee_id)->first();
@@ -450,13 +453,26 @@ class LeaveApiController extends Controller
                 ],
                 400
             );
+        }*/
+
+        $section = Section::where('seat_of_reporting_officer_id', $leaf->owner_seat)->first();
+        if (!$section || ($section && !$section->seat_of_controlling_officer_id)) {
+            \Log::info('Section/CO of employee not found');
+
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => 'Section/CO of employee not found'
+                ],
+                400
+            );
         }
 
-        $owner = $sectionMapping->section->seat_of_controlling_officer_id;
 
+        $newowner = $section->seat_of_controlling_officer_id;
 
         $leaf->update([
-            'owner_seat' => $owner,
+            'owner_seat' => $newowner,
             'owner_can_approve' => true,
             'forwarded_by_seat' => $leaf->owner_seat,
         ]);
