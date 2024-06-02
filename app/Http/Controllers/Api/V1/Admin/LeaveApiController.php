@@ -668,7 +668,7 @@ class LeaveApiController extends Controller
        ->where('leave_id', null)
        ->where( 'date', '>=', '2024-05-01')
        ->where( 'date', '<', $today)
-       ->Where('hint', '!=', 'clear')
+       ->Wherenotin('hint', ['clear', 'tour'])
        ->where( fn ($query) => $query->where('punching_count',  0)
             //->orWhere('is_unauthorised',  1)
             ->orWhere('hint', '!=', null)
