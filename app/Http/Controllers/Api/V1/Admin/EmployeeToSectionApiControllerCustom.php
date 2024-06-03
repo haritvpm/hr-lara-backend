@@ -142,6 +142,9 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
     public function getUnpostedEmployeesAjax(Request $request)
     {
+        //note, there can be multiple mappings
+        $employees_already_posted = EmployeeToSection::where('end_date', null)->pluck('employee_id')->unique();
+
         $name = $request->name;
 //\Log::info($name);
         $employees = Employee::with(['designation','employeeSectionMapping'])
@@ -150,6 +153,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
                         ->orwhere('pen', 'like', '%'.$name.'%')
                         ->orwhere('aadhaarid', 'like', '%'.$name.'%');
                     })
+                    ->whereNotIn('id', $employees_already_posted)
                     ->where(fn ($query) => $query->where('status', 'active')->orWherenull('status'))
                     ->where( function($query) {
                         $query->whereHas('employeeSectionMapping', function($query)  {
