@@ -267,9 +267,21 @@ class LeaveApiController extends Controller
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
             $owner_can_approve = !$isCasualOrCompen; //SO can approve earned, commuted, etc
-            if ($isCasualOrCompen && $seat_ids_of_loggedinuser->contains($owner) == true) {
+            $isSOLoggedIn = $seat_ids_of_loggedinuser->contains($owner);
+
+            if ($isSOLoggedIn) {
                 $owner = $sectionMapping->section->seat_of_controlling_officer_id;
                 $owner_can_approve = true;
+            }
+            else
+            if (!$isCasualOrCompen) {
+                $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                $owner_can_approve = true;
+            }
+            else
+            if ($isCasualOrCompen) {
+                //$owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                //$owner_can_approve = true;
             }
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
 
