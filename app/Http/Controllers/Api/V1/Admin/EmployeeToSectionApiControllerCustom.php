@@ -147,7 +147,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         $name = $request->name;
 //\Log::info($name);
-        $employees = Employee::with(['designation','employeeSectionMapping'])
+        $employees = Employee::with(['designation'])
                     ->where( function($query) use ($name) {
                         $query->where('name', 'like', '%'.$name.'%')
                         ->orwhere('pen', 'like', '%'.$name.'%')
@@ -155,21 +155,26 @@ class EmployeeToSectionApiControllerCustom extends Controller
                     })
                     ->whereNotIn('id', $employees_already_posted)
                     ->where(fn ($query) => $query->where('status', 'active')->orWherenull('status'))
-                    ->where( function($query) {
-                        $query->whereHas('employeeSectionMapping', function($query)  {
-                            $query->wherenotnull('end_date');
-                        })
-                        ->orwhereDoesntHave('employeeSectionMapping');
-                    })
+                    ->orderby('name')
                     ->get();
+        $employees_last_posting = EmployeeToSection::wherein('employee_id', $employees->pluck('id'))->orderby('end_date','desc')->get()->groupby('employee_id');
 
-        $employees = $employees->transform( function($employee)  {
+        /*$employees = $employees->transform( function($employee)  {
             \Log::info($employee);
             $desig = $employee?->designation?->first()?->designation->designation;
             $employee['last_posting_end_date'] = $employee->employee_section_mapping?->end_date ?? '';
             $employee['name'] = "{$employee->aadhaarid} - {$employee->name} ({$desig})";
             $employee['id'] = $employee->id;
 
+            return $employee;
+        });
+        */
+        $employees->transform( function($employee) use ($employees_last_posting) {
+            $last_posting = $employees_last_posting->get($employee['id'])?->first() ?? null;
+            $desig = $employee?->designation?->first()?->designation->designation;
+            $employee['last_posting_end_date'] = $last_posting?->end_date ?? '';
+            $employee['name'] = "{$employee->aadhaarid} - {$employee->name} ({$desig})";
+            $employee['id'] = $employee->id;
             return $employee;
         });
 
