@@ -27,9 +27,9 @@ class EmployeeToFlexiController extends Controller
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-                $viewGate      = 'employee_to_flexi_show';
-                $editGate      = 'employee_to_flexi_edit';
-                $deleteGate    = 'employee_to_flexi_delete';
+                $viewGate      = 'employee_to_section_access';
+                $editGate      = 'employee_to_section_access';
+                $deleteGate    = 'employee_to_section_access';
                 $crudRoutePart = 'employee-to-flexis';
 
                 return view('partials.datatablesActions', compact(

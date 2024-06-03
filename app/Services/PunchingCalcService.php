@@ -344,8 +344,13 @@ class PunchingCalcService
             $can_take_casual_fn,
             $can_take_casual_an
         );
+        if($aadhaarid == '17028956'){ 
+           \Log::info('computer_hint ' . $computer_hint);
+           \Log::info( $calender);
 
-        if ($isHoliday || $calender?->punching == 0) {
+        }
+
+        if ($isHoliday || $calender?->punching === 0) {
             $computer_hint = '';
 
         }
