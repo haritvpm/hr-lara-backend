@@ -31,7 +31,7 @@ class ExemptionControllerCustom extends Controller
      //   abort_if(Gate::denies('exemption_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         //$employees = Employee::pluck('name', 'id');
-        $employees = Employee::getEmployeesWithAadhaarDesig();
+        $employees = Employee::getEmployeesWithAadhaarDesig(null,null,true,true);
         $sessions = AssemblySession::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
        // $owners = Seat::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');

@@ -78,7 +78,7 @@ class Employee extends Model
 
          return $employees;
     }
-    public static function getEmployeesWithAadhaarDesig( $activeOnly=null, $whereidnotin = null, $plain=true)
+    public static function getEmployeesWithAadhaarDesig( $activeOnly=null, $whereidnotin = null, $plain=true, $includepen=false)
     {
         $employees = Employee::with('designation')
             ->when($whereidnotin, function ($query) use ($whereidnotin) {
@@ -91,10 +91,14 @@ class Employee extends Model
             ->get();
 
             if($plain){
-                $employees = $employees->mapWithKeys(function ($employee) {
+                $employees = $employees->mapWithKeys(function ($employee) use ($includepen){
                 $desig = $employee?->designation?->first()?->designation->designation;
                // dd($employee->designation);
+                if($includepen){
+                    return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid . ($desig ? ' - ' . $desig : '') . ($employee->pen ? ' - ' . $employee->pen : '')];
+                }
                 return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid . ($desig ? ' - ' . $desig : '')];
+
                 });
             } else {
                 $employees = $employees->map(function ($employee) {
