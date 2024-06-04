@@ -456,17 +456,24 @@ class PunchingCalcService
         //also if this employee is not exempted for 11thsession, then no flexi
         //as we have not implemented flexi in OT softwre
         if($emp_flexi_time){
-            $exempted = Exemption::with('session')
-                ->where('employee_id', $emp_flexi_time->employee_id)
-                ->whereHas('session', function($q){
-                    $q->where('name', '15.11');
-                })
-                ->where('approval_status',1)
-                ->first();
-            
-            if( !$exempted ) {
-                \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
-                $flexi_15minutes = 0;
+            $session_start = Carbon::createFromDate(2024, 06, 01, 'Asia/Kolkata');
+            $session_end = Carbon::createFromDate(2024, 07, 15, 'Asia/Kolkata');
+            $this_date = Carbon::createFromFormat( 'Y-m-d', $date);
+
+            if( $this_date->gte( $session_start  ) &&  $this_date->lte( $session_end ))
+            {
+                $exempted = Exemption::with('session')
+                    ->where('employee_id', $emp_flexi_time->employee_id)
+                    ->whereHas('session', function($q){
+                        $q->where('name', '15.11');
+                    })
+                    ->where('approval_status',1)
+                    ->first();
+                
+                if( !$exempted ) {
+                    \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
+                    $flexi_15minutes = 0;
+                }
             }
         }
             

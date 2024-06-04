@@ -679,7 +679,7 @@ class LeaveApiController extends Controller
       $today = Carbon::today()->format('Y-m-d');
        $punchings = Punching::where('aadhaarid', $aadhaarid)
        ->where('leave_id', null)
-       ->where( 'date', '>=', '2024-05-01')
+       ->where( 'date', '>=', '2024-01-01')
        ->where( 'date', '<', $today)
        ->Wherenotin('hint', ['clear', 'tour'])
        ->where( fn ($query) => $query->where('punching_count',  0)
