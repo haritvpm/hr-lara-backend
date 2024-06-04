@@ -387,18 +387,25 @@ class EmployeeService
         $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
        //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
-        $employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
+        /*$employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
         ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
         ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
 
             $q->DesignationDuring($date_to)->with(['designation', 'designation.default_time_group']);
         }])
-        // ->when($section_ids, function ($query, $section_ids) {
-        //     return $query->wherein('section_id', $section_ids);
-        // })
-        // ->when($emp_ids_of_seats && $emp_ids_of_seats->count(), function ($query, $emp_ids_of_seats) {
-        //     return $query->wherein('employee_id', $emp_ids_of_seats);
-        // })
+    
+        ->wherein('section_id', $section_ids)
+        ->orwherein('employee_id', $employee_ids_combined)
+        ->get();*/
+        //allow jayasree mam to see old nasar sir attendance
+        $today = Carbon::today()->format('Y-m-d');
+        $employee_section_maps = EmployeeToSection::onDate($today)
+        ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
+        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($today) {
+
+            $q->DesignationDuring($today)->with(['designation', 'designation.default_time_group']);
+        }])
+    
         ->wherein('section_id', $section_ids)
         ->orwherein('employee_id', $employee_ids_combined)
         ->get();

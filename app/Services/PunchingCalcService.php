@@ -14,6 +14,7 @@ use App\Models\PunchingTrace;
 use App\Models\EmployeeToFlexi;
 use App\Models\YearlyAttendance;
 use App\Models\EmployeeToSection;
+use App\Models\Exemption;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Http;
@@ -449,6 +450,22 @@ class PunchingCalcService
         //if this employee has no flexi time, it is normal time 10.15 to 1.15 and 2.00 to 5.15
         //this can be -15, 0, 15
         $flexi_15minutes = $emp_flexi_time ? $emp_flexi_time->flexi_minutes : 0;
+
+        //also if this employee is not exempted for 11thsession, then no flexi
+        //as we have not implemented flexi in OT softwre
+        $exempted = Exemption::with('session')
+            ->where('employee_id', $emp_flexi_time->employee_id)
+            ->whereHas('session', function($q){
+                $q->where('name', '15.11');
+            })
+            ->where('approval_status',1)
+            ->first();
+        
+        if( !$exempted ) {
+            \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
+            $flexi_15minutes = 0;
+        }
+            
 
         //use today's date. imagine legislation punching out next day. our flexiend is based on today
         //get employee time group. now assume normal

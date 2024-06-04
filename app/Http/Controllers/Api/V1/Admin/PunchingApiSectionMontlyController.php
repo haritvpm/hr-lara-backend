@@ -165,7 +165,7 @@ class PunchingApiSectionMontlyController extends Controller
 
                 $dayinfo = [];
 
-                $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
+                $dayinfo['in_section'] = /*$emp_start_date->lessThanOrEqualTo($d) &&*/ $emp_end_date->greaterThanOrEqualTo($d);
                 $dayinfo['punching_count'] = 0; //this will be overwritten when punching is got below
 
                 $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
