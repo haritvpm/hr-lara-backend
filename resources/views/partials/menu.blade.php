@@ -248,7 +248,7 @@
                         <ul class="nav nav-treeview">
                             @can('exemption_access')
                                 <li class="nav-item">
-                                    <a href="{{ route("admin.exemptions.index") }}" class="nav-link {{ request()->is("admin/exemptions") || request()->is("admin/exemptions/*") ? "active" : "" }}">
+                                    <a href="{{ route("admin.exemptions.exemptedIndex") }}" class="nav-link {{ request()->is("admin/exemptions") || request()->is("admin/exemptions/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-user-minus">
 
                                         </i>

@@ -25,6 +25,7 @@ class ExemptionController extends Controller
         return view('admin.exemptions.index', compact('exemptions'));
     }
 
+
     public function create()
     {
         abort_if(Gate::denies('exemption_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
@@ -38,13 +39,13 @@ class ExemptionController extends Controller
         return view('admin.exemptions.create', compact('employees', 'owners', 'sessions'));
     }
 
+
     public function store(StoreExemptionRequest $request)
     {
         $exemption = Exemption::create($request->all());
 
         return redirect()->route('admin.exemptions.index');
     }
-
     public function edit(Exemption $exemption)
     {
         abort_if(Gate::denies('exemption_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');

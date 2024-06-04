@@ -87,6 +87,7 @@ class Employee extends Model
             ->when($activeOnly, function ($query) {
                 return $query->where(fn ($query) => $query->where('status', 'active')->orWherenull('status'));
             })
+            ->orderBy('name')
             ->get();
 
             if($plain){

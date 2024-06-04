@@ -101,6 +101,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('punching-devices', 'PunchingDeviceController');
 
     // Exemption
+    Route::get('exemptions/showadd', 'ExemptionControllerCustom@showadd')->name('exemptions.showadd');
+    Route::post('exemptions/storeexemption', 'ExemptionControllerCustom@storeexemption')->name('exemptions.storeexemption');
+    Route::get('exemptions/exemptedIndex', 'ExemptionControllerCustom@exemptedIndex')->name('exemptions.exemptedIndex');
     Route::delete('exemptions/destroy', 'ExemptionController@massDestroy')->name('exemptions.massDestroy');
     Route::resource('exemptions', 'ExemptionController');
 
