@@ -87,7 +87,7 @@ class PunchingCalcService
         $employee_section_maps =  EmployeeService::getDesignationOfEmployeesOnDate($date,  $emp_ids);
         //$employee_section_maps =  EmployeeService::getEmployeeSectionMappingsAndDesignationsOnDate($date,  $emp_ids);
         $employee_section_maps2 =  EmployeeService::getEmployeeSectionMappingsOnDate($date,  $emp_ids);
-
+        //\Log::info('employee_section_maps2' . $employee_section_maps2);
         //for each empl, calculate
 
         $calender = GovtCalendar::where('date', $date)->first();
@@ -107,6 +107,8 @@ class PunchingCalcService
             if ($employee_section_maps->has($aadhaarid)) {
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
                 $emp_new_punching_data['section'] = $employee_section_maps2->has($aadhaarid) ? $employee_section_maps2[$aadhaarid]['section'] : null;
+                //\Log::info('section' . $emp_new_punching_data['section']);
+
                 $emp_new_punching_data['name'] = $employee_section_maps[$aadhaarid]['name'];
                 $time_group_name = $employee_section_maps[$aadhaarid]['time_group'] ?? 'default';
                 $emp_new_punching_data['time_group'] =  $time_group_name;
@@ -345,11 +347,11 @@ class PunchingCalcService
             $can_take_casual_fn,
             $can_take_casual_an
         );
-        if($aadhaarid == '17028956'){ 
-           \Log::info('computer_hint ' . $computer_hint);
-           \Log::info( $calender);
+        // if($aadhaarid == '17028956'){ 
+        //    \Log::info('computer_hint ' . $computer_hint);
+        //    \Log::info( $calender);
 
-        }
+        // }
 
         if ($isHoliday || $calender?->punching === 0) {
             $computer_hint = '';
@@ -453,17 +455,19 @@ class PunchingCalcService
 
         //also if this employee is not exempted for 11thsession, then no flexi
         //as we have not implemented flexi in OT softwre
-        $exempted = Exemption::with('session')
-            ->where('employee_id', $emp_flexi_time->employee_id)
-            ->whereHas('session', function($q){
-                $q->where('name', '15.11');
-            })
-            ->where('approval_status',1)
-            ->first();
-        
-        if( !$exempted ) {
-            \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
-            $flexi_15minutes = 0;
+        if($emp_flexi_time){
+            $exempted = Exemption::with('session')
+                ->where('employee_id', $emp_flexi_time->employee_id)
+                ->whereHas('session', function($q){
+                    $q->where('name', '15.11');
+                })
+                ->where('approval_status',1)
+                ->first();
+            
+            if( !$exempted ) {
+                \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
+                $flexi_15minutes = 0;
+            }
         }
             
 
@@ -737,7 +741,10 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['compen_marked'] = $total_compen+$total_compen_ex;
 
                 $total_cl_submitted =  $emp_punchings->sum(function ($punching) {
-                    if($punching->leave_id == null || ($punching->leave->leave_type != 'CL' && $punching->leave->leave_type != 'casual'))
+                    if($punching->leave_id == null || (!$punching->leave))
+                        return 0;
+
+                    if($punching->leave->leave_type != 'CL' && $punching->leave->leave_type != 'casual')
                         return 0;
                     if($punching->leave->leave_cat == 'F')
                         return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ; //since it is not leave which is common for many punchs, we dont count leave_count
@@ -748,8 +755,10 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['cl_submitted'] = $total_cl_submitted;
 
                 $total_compen_submitted =  $emp_punchings->sum(function ($punching) {
-                    if($punching->leave_id == null ||
-                    ($punching->leave->leave_type != 'compen' && $punching->leave->leave_type != 'compen_for_extra'))
+                    if($punching->leave_id == null || (!$punching->leave))
+                        return 0;
+
+                    if($punching->leave->leave_type != 'compen' && $punching->leave->leave_type != 'compen_for_extra')
                         return 0;
                     return $punching->leave?->active_status == 'N' || $punching->leave->active_status == 'Y' ? 1 : 0 ;
 

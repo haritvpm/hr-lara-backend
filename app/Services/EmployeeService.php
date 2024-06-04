@@ -297,13 +297,13 @@ class EmployeeService
             ->with(['employee', 'section'])
             ->wherein('employee_id', $emp_ids)
             ->get();
-        // dd($employee_section_maps);
+        //dd($employee_section_maps);
         $employee_section_maps = $employee_section_maps->mapWithKeys(function ($item, $key) {
 
             $x = json_decode(json_encode($item));
 
             return [
-                $item['aadhaarid'] => [
+                $x->employee->aadhaarid => [
                     'section' => $x->section->name,
                     'section_id' => $x->section->id,
                 ],
@@ -401,9 +401,9 @@ class EmployeeService
         $today = Carbon::today()->format('Y-m-d');
         $employee_section_maps = EmployeeToSection::onDate($today)
         ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
-        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($today) {
+        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_from) {
 
-            $q->DesignationDuring($today)->with(['designation', 'designation.default_time_group']);
+            $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
         }])
     
         ->wherein('section_id', $section_ids)

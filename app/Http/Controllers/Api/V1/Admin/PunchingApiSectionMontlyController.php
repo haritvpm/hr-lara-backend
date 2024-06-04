@@ -190,12 +190,14 @@ class PunchingApiSectionMontlyController extends Controller
                     } else {
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
                     }
+                    $dayinfo['section'] =  $punching->section ? $punching->section : $employee['section_name'];
                 } else {
                     //no punching found
                     //set name, designation,
                     $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid];
+                    $dayinfo['section'] =   $employee['section_name'];;
                 }
-                $dayinfo['section'] = $employee['section_name'];;
+                
 
                 //sometimes, if there is only leave in punching, name, desig etc will be overwritten
                 if($dayinfo['name']==null){
