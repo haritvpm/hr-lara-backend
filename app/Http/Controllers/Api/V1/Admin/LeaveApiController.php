@@ -230,9 +230,10 @@ class LeaveApiController extends Controller
         //if this is casual or compen, then make sure no continuous 15 leaves are there
         if ($isCasualOrCompen) {
             [$left,$right] = Leaf::CheckContinuousCasualLeaves($aadhaarid, $request->start_date, $request->end_date);
+           // \Log::info("message: {$left}, {$right}, {$request->leave_count}");
             if( $left+$right + $request->leave_count > $leaeGroup->allowed_continuous_casual_and_compen ){
                 return response()->json(
-                    ['status' => 'error',  'message' => "Cannot have more than {$leaeGroup->allowed_continuous_casual_and_compen} continuous casual/compen leaves"],
+                    ['status' => 'error',  'message' => "Cannot have more than {$leaeGroup->allowed_continuous_casual_and_compen} continuous casual/compen leaves "],
                     400
                 );
             }
@@ -266,7 +267,7 @@ class LeaveApiController extends Controller
 
             //when SO, who is the reporting officer submits, has to submit to controller
             $owner = $sectionMapping->section->seat_of_reporting_officer_id;
-            $owner_can_approve = !$isCasualOrCompen; //SO can approve earned, commuted, etc
+            $owner_can_approve = !$isCasualOrCompen || $owner == $sectionMapping->section->seat_of_controlling_officer_id; //SO can approve earned, commuted, etc
             $isSOLoggedIn = $seat_ids_of_loggedinuser->contains($owner);
 
             if ($isSOLoggedIn) {

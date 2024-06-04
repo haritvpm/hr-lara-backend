@@ -48,14 +48,17 @@
                         <th>
                             Calc Count
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.govtCalendar.fields.is_sitting_day') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.govtCalendar.fields.session') }}
                         </th>
                         <th>
                             {{ trans('cruds.govtCalendar.fields.office_ends_at') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.govtCalendar.fields.day_type') }}
                         </th>
                         <th>
                             &nbsp;
@@ -106,15 +109,19 @@
                             </td>
                             <td>
                                 {{ $govtCalendar->calc_count ?? '' }}
-                            <td>
+                            <!-- <td>
                                 <span style="display:none">{{ $govtCalendar->is_sitting_day ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}>
+                                <input type="checkbox" disabled="disabled" {{ $govtCalendar->is_sitting_day ? 'checked' : '' }}> -->
                             </td>
                             <td>
                                 {{ $govtCalendar->session->name ?? '' }}
                             </td>
                             <td>
                                 {{ App\Models\GovtCalendar::OFFICE_ENDS_AT_SELECT[$govtCalendar->office_ends_at] ?? '' }}
+                            </td>
+
+                            <td>
+                                {{ App\Models\GovtCalendar::DAY_TYPE_SELECT[$govtCalendar->day_type] ?? '' }}
                             </td>
                             <td>
                                 @can('govt_calendar_show')

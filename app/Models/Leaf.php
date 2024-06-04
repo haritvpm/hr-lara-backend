@@ -265,7 +265,7 @@ class Leaf extends Model
         $left = 0;
         for( $i = 1; $i <= 20; $i++){
             $prev_date = $c_startDate->clone()->subDays($i);
-
+\Log::info($prev_date->format('Y-m-d'));
             $isHoliday = GovtCalendar::isHolidayForEmployee($prev_date->format('Y-m-d'), $aadhaarid);
 
             if( $isHoliday){
@@ -274,13 +274,14 @@ class Leaf extends Model
 
             $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
                 ->whereDate('start_date', '<=' , $prev_date->format('Y-m-d'))
-                ->whereDate('end_date', '<=' , $prev_date->format('Y-m-d'))
+                ->whereDate('end_date', '>=' , $prev_date->format('Y-m-d'))
                 ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
                 ->wherein('active_status', ['N', 'Y'])
                 ->first();
 
             if( $hasleaveforThisDay){
 
+                \Log::info($hasleaveforThisDay->id);
                 //make sure this is no casual_fn which means allowed
                 if( $hasleaveforThisDay->leave_type == 'casual' && $hasleaveforThisDay->leave_count === 0.5){
                    if($hasleaveforThisDay->time_period === 'FN'){ //was present in evening
@@ -296,6 +297,8 @@ class Leaf extends Model
 
         }
 
+        \Log::info('left' . $left);
+
         $c_endDate = $end_date ? Carbon::parse($end_date) : Carbon::parse($start_date);
         $right = 0;
         for( $i = 1; $i <= 20; $i++){
@@ -310,7 +313,7 @@ class Leaf extends Model
             }
 
             $hasleaveforThisDay = Leaf::where('aadhaarid', $aadhaarid)
-                ->whereDate('start_date', '>=' , $next_date->format('Y-m-d'))
+                ->whereDate('start_date', '<=' , $next_date->format('Y-m-d'))
                 ->whereDate('end_date', '>=' , $next_date->format('Y-m-d'))
                 ->wherein('leave_type', ['casual', 'compen', 'compen_for_extra'])
                 ->wherein('active_status', ['N', 'Y'])

@@ -18,6 +18,15 @@ class GovtCalendar extends Model
         'noon' => 'noon',
         '3pm'  => '3 p.m.',
     ];
+    
+    
+    public const DAY_TYPE_SELECT = [
+        'sitting'     => 'SittingDay',
+        'intervening' => 'InterveningDay',
+        'prior'       => 'PriorDay',
+    ];
+    
+    
 
     public const PUNCHING_SELECT = [
         0 => 'No Punching',
@@ -42,12 +51,13 @@ class GovtCalendar extends Model
         'success_attendance_rows_fetched',
         'attendancetodaytrace_lastfetchtime',
         'attendance_today_trace_rows_fetched',
-        'is_sitting_day',
+      //  'is_sitting_day', unused. use day_type
         'punching',
         'session_id',
         'office_ends_at',
         'attendance_trace_fetch_complete',
         'calc_count',
+        'day_type',
         'created_at',
         'updated_at',
         'deleted_at',
