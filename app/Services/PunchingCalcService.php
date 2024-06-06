@@ -471,8 +471,8 @@ class PunchingCalcService
                     ->first();
                 
                 if( !$exempted ) {
-                    \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
-                    $flexi_15minutes = 0;
+                   \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
+                   // $flexi_15minutes = 0; commented as we only check total hours in OT now
                 }
             }
         }
@@ -485,7 +485,7 @@ class PunchingCalcService
         $normal_fn_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['fn_to']); //1.15
 
         $normal_an_in = $normal_an_out = null;
-        if ($time_group['groupname'] != 'parttime') {
+        if (!str_contains($time_group['groupname'], 'parttime')) {
             $normal_an_in = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_from']); //2.00pm
             $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' .  $time_group['an_to']); //5.15pm
         } else {
@@ -505,7 +505,7 @@ class PunchingCalcService
         $office_ends_at_300pm = $calender->office_ends_at === '3pm';
         $office_ends_at_noon = $calender->office_ends_at === 'noon';
         $can_take_casual_fn = $can_take_casual_an = true;
-        if ($time_group['groupname'] != 'parttime') { //theirs end at 11 am
+        if (!str_contains($time_group['groupname'] , 'parttime')) { //theirs end at 11 am
             if ($office_ends_at_300pm) {
                 $normal_an_out = Carbon::createFromFormat('Y-m-d H:i:s', $date . ' ' . '15:00:00'); //
                 //  $max_grace_seconds = 1800; // ?
