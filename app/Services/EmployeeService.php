@@ -158,14 +158,14 @@ class EmployeeService
         foreach ($aebas_employees as $key => $emp) {
 
             $aadhaarid = preg_replace('/\s+/', '', trim($emp['emp_id'])) ;
-            $emp = Employee::where('aadhaarid', $aadhaarid)->first();
+            $empployee = Employee::where('aadhaarid', $aadhaarid)->first();
 
             if($aadhaarid !== $emp['emp_id']){
 
                 \Log::info('aebas emp_id has spaces' . $emp['emp_id'] . ' aadhaarid ' . $aadhaarid);
 
-                if(!$emp){
-                    $emp = Employee::where('aadhaarid', $emp['emp_id'])->first();
+                if(!$empployee){
+                    $empployee = Employee::where('aadhaarid', $emp['emp_id'])->first();
                 }
             }
 
@@ -173,10 +173,10 @@ class EmployeeService
             $gender = $emp['gender'];
             $email = $emp['email'];
 
-            if ( !$emp ) {
+            if ( !$empployee ) {
                 //employee does not exist. create it
 
-                $emp = Employee::create([
+                $empployee = Employee::create([
                     'aadhaarid' => $aadhaarid,
                     'name' => $emp['emp_name'],
                     'srismt' =>  $gender == 'M' ? 'Sri' : 'Smt',
@@ -208,7 +208,7 @@ class EmployeeService
                 );
             } else {
 
-                $emp->update([
+                $empployee->update([
                     'srismt' =>  $gender == 'M' ? 'Sri' : 'Smt',
                 ]);
 
