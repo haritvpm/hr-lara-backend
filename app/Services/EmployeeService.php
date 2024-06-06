@@ -171,7 +171,7 @@ class EmployeeService
 
 
             $gender = $emp['gender'];
-            $email = $emp['email'];
+            $email = $emp['emp_mail'];
 
             if ( !$empployee ) {
                 //employee does not exist. create it
@@ -200,7 +200,7 @@ class EmployeeService
                 EmployeeToDesignation::create(
                     [
 
-                        'employee_id' => $emp->id,
+                        'employee_id' => $empployee->id,
                         'designation_id' => $designation_id,
                         'start_date' => Carbon::parse($emp['creation_date'])->format('Y-m-d'),
 
