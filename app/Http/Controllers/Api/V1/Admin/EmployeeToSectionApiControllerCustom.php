@@ -18,6 +18,51 @@ use Carbon\Carbon;
 
 class EmployeeToSectionApiControllerCustom extends Controller
 {
+    //get current logged in user's flexi settings so he can request for changes
+    public function getUserSettings()
+    {
+        $user = User::find(auth()->user()->id);
+        $employee_id = $user->employee_id;
+       // $employee = Employee::find($employee_id);
+       $today = Carbon::today()->format('Y-m-d');
+
+        $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
+        $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($today, $employee_id);
+        $emp_flexi_time_upcoming = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
+        
+
+        $employee_section_map = EmployeeToSection::onDate($today)
+        ->with(['employee'])
+        //->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
+        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($today) {
+
+            $q->DesignationDuring($today)->with(['designation', 'designation.default_time_group']);
+        }])
+        ->where('employee_id', $employee_id)
+        ->first()->transform( function($emp) use ($emp_flexi_time, $emp_flexi_time_upcoming){
+            
+            $time_group = $emp?->designation?->default_time_group?->groupname ?? 'default';
+            //$emp_office_time = OfficeTime::where('groupname', $time_group)->first();
+
+
+            return [
+                'time_group' => $emp?->designation?->default_time_group?->groupname ?? 'default',
+                //'seniority' => $emp->employee?->seniority?->sortindex,
+                'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
+                'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,
+                'flexi_minutes_upcoming' => $emp_flexi_time_upcoming?->flexi_minutes ?? 0,
+                'flexi_time_wef_upcoming' => $emp_flexi_time_upcoming?->with_effect_from ?? null,
+            ];
+        });
+
+        //also get reporting officer seat, controller, and all seat above this user in routing
+
+        return response()->json([
+            'employee_setting' => $employee_section_map,
+            'officeTimes' => $officeTimes,
+        ], 200);
+    }
+    //get employees mapped to sections that this logged in user is a reporting officer of
     public function getUserSectionEmployees()
     {
         //get employees mapped to sections that this logged in user is a reporting officer of
