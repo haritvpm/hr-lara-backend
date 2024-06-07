@@ -29,7 +29,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
         $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($today, $employee_id);
         $emp_flexi_time_upcoming = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
-        
+
 
         $employee_section_map = EmployeeToSection::onDate($today)
         ->with(['employee'])
@@ -39,26 +39,29 @@ class EmployeeToSectionApiControllerCustom extends Controller
             $q->DesignationDuring($today)->with(['designation', 'designation.default_time_group']);
         }])
         ->where('employee_id', $employee_id)
-        ->first()->transform( function($emp) use ($emp_flexi_time, $emp_flexi_time_upcoming){
-            
-            $time_group = $emp?->designation?->default_time_group?->groupname ?? 'default';
+        ->first();
+
+
+
+        $time_group = $employee_section_map?->designation?->default_time_group?->groupname ?? 'default';
             //$emp_office_time = OfficeTime::where('groupname', $time_group)->first();
 
+        $data =
 
-            return [
-                'time_group' => $emp?->designation?->default_time_group?->groupname ?? 'default',
+             [
+                'time_group' => $employee_section_map?->designation?->default_time_group?->groupname ?? 'default',
                 //'seniority' => $emp->employee?->seniority?->sortindex,
                 'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
                 'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,
                 'flexi_minutes_upcoming' => $emp_flexi_time_upcoming?->flexi_minutes ?? 0,
                 'flexi_time_wef_upcoming' => $emp_flexi_time_upcoming?->with_effect_from ?? null,
             ];
-        });
+
 
         //also get reporting officer seat, controller, and all seat above this user in routing
 
         return response()->json([
-            'employee_setting' => $employee_section_map,
+            'employee_setting' => $data,
             'officeTimes' => $officeTimes,
         ], 200);
     }
