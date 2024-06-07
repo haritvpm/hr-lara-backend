@@ -106,7 +106,7 @@ class EmployeeToSectionController extends Controller
         }
 
         //check if end date is before start date
-        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->gt(Carbon::parse($request->end_date))){
             return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
         }
 
@@ -143,7 +143,7 @@ class EmployeeToSectionController extends Controller
         }
 
         //check if end date is before start date
-        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->gt(Carbon::parse($request->end_date))){
             return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
         }
 

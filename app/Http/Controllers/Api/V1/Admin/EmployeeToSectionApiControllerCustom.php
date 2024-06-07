@@ -69,7 +69,9 @@ class EmployeeToSectionApiControllerCustom extends Controller
         //now find officer just above controller. 
         $routing = AttendanceRouting::recurseGetSuperiorOfficers($controller, $forwardable_seats);
         \Log::info('routes');
-        \Log::info( array_unique($forwardable_seats));
+        $forwardable_seats = array_unique($forwardable_seats);
+        $forwardable_seats = array_values($forwardable_seats);
+        \Log::info( );
                 
 
         return response()->json([

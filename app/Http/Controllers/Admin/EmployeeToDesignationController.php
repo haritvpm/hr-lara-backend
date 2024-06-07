@@ -100,7 +100,7 @@ class EmployeeToDesignationController extends Controller
         }
 
         //if end date is given, then check if it is greater than start date, if not then return back with error message
-        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+        if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->gt(Carbon::parse($request->end_date))){
             return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
         }
 
@@ -134,7 +134,7 @@ class EmployeeToDesignationController extends Controller
         }
 
          //check if end date is before start date
-         if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->lt(Carbon::parse($request->end_date))){
+         if($request->end_date && $request->start_date && Carbon::parse($request->start_date)->gt(Carbon::parse($request->end_date))){
             return back()->withErrors(['error'=> 'End date should be after start date'])->withInput();
         }
 
