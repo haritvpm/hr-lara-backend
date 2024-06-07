@@ -72,4 +72,23 @@ class AttendanceRouting extends Model
         }
 
     }
+    public static function recurseGetSuperiorOfficers( $seatIdOfEmployeeController, &$seats)
+    {
+        //$seatIdOfController is superior officer. no doubt about it.
+        //so find parent attendance routing if any.
+        $seniorOfficer = AttendanceRouting::with('viewable_seats')->whereHas('viewable_seats', function($q) use ($seatIdOfEmployeeController){
+            $q->where('id', $seatIdOfEmployeeController);
+        })->first();
+
+       
+        if($seniorOfficer)
+        {
+            array_push($seats, $seniorOfficer->viewer_seat_id);
+            return AttendanceRouting::recurseGetSuperiorOfficers($seniorOfficer->viewer_seat_id, $seats);
+        }
+        else
+        {
+            return $seats;
+        }
+    }
 }

@@ -11,6 +11,7 @@ use App\Services\EmployeeService;
 use App\Models\Section;
 use App\Models\EmployeeToSection;
 use App\Models\AttendanceBook;
+use App\Models\AttendanceRouting;
 use App\Models\Employee;
 use App\Models\EmployeeToFlexi;
 use App\Models\OfficeTime;
@@ -24,7 +25,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $user = User::find(auth()->user()->id);
         $employee_id = $user->employee_id;
        // $employee = Employee::find($employee_id);
-       $today = Carbon::today()->format('Y-m-d');
+        $today = Carbon::today()->format('Y-m-d');
 
         $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
         $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($today, $employee_id);
@@ -59,8 +60,20 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
 
         //also get reporting officer seat, controller, and all seat above this user in routing
+        $forwardable_seats = [];
+        $reporting_officer = $employee_section_map?->section?->seat_of_reporting_officer_id;
+        $controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
+        $forwardable_seats[] = $reporting_officer;
+        $forwardable_seats[] = $controller;
+
+        //now find officer just above controller. 
+        $routing = AttendanceRouting::recurseGetSuperiorOfficers($controller, $forwardable_seats);
+        \Log::info('routes');
+        \Log::info( array_unique($forwardable_seats));
+                
 
         return response()->json([
+            'forwardable_seats' => array_unique($forwardable_seats),
             'employee_setting' => $data,
             'officeTimes' => $officeTimes,
         ], 200);

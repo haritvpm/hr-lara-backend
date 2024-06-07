@@ -377,8 +377,15 @@ class EmployeeService
             wherein('seat_id', $seat_ids)
             ->get()->pluck('employee_id') : null;*/
 
+        if (!$seat_ids && !$section_ids && !$employee_ids){
+            
+            //view all for secretary
+            $section_ids = Section::all()->pluck('id');
+        }
+        else  
         if (/*!$emp_ids_of_seats &&*/ !$section_ids && !$employee_ids){
             return null;
+
         }
 /*
         $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
