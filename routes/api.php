@@ -152,7 +152,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::get('/my-sectionemployees/unposted-employees-ajax', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployeesAjax');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
     Route::patch('/my-sectionemployees/setting/{id}', 'EmployeeToSectionApiControllerCustom@editSetting');
+    
     Route::get('/user-flexi-setting', 'EmployeeToSectionApiControllerCustom@getUserSettings');
+    Route::get('/my-flexi-applications', 'EmployeeToSectionApiControllerCustom@getUserFlexiApplications');
+    Route::post('/my-flexi-applications', 'EmployeeToSectionApiControllerCustom@storeUserFlexiApplication');
     
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['store', 'destroy']]);
 

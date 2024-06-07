@@ -14,7 +14,9 @@ use App\Models\AttendanceBook;
 use App\Models\AttendanceRouting;
 use App\Models\Employee;
 use App\Models\EmployeeToFlexi;
+use App\Models\FlexiApplication;
 use App\Models\OfficeTime;
+use Attribute;
 use Carbon\Carbon;
 
 class EmployeeToSectionApiControllerCustom extends Controller
@@ -60,25 +62,34 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
 
         //also get reporting officer seat, controller, and all seat above this user in routing
-        $forwardable_seats = [];
-        $reporting_officer = $employee_section_map?->section?->seat_of_reporting_officer_id;
         $controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
-        $forwardable_seats[] = $reporting_officer;
-        $forwardable_seats[] = $controller;
+             
+        $seats = AttendanceRouting::getForwardableSeats($controller, null);
 
-        //now find officer just above controller. 
-        $routing = AttendanceRouting::recurseGetSuperiorOfficers($controller, $forwardable_seats);
-        \Log::info('routes');
-        $forwardable_seats = array_unique($forwardable_seats);
-        $forwardable_seats = array_values($forwardable_seats);
-        \Log::info( );
-                
+        $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
 
         return response()->json([
-            'forwardable_seats' => array_unique($forwardable_seats),
+            'forwardable_seats' => $seats,
             'employee_setting' => $data,
             'officeTimes' => $officeTimes,
+            'prev_flexi_applications'  => $prev_flexi_applications,
         ], 200);
+    }
+
+    public function getUserFlexiApplications()
+    {
+        $user = User::find(auth()->user()->id);
+        $employee_id = $user->employee_id;
+        $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
+        return response()->json([
+            'flexi_applications'  => $prev_flexi_applications,
+        ], 200);
+
+    }
+    public function storeUserFlexiApplication( Request $request)
+    {
+        \Log::info($request->all());
+
     }
     //get employees mapped to sections that this logged in user is a reporting officer of
     public function getUserSectionEmployees()

@@ -91,4 +91,41 @@ class AttendanceRouting extends Model
             return $seats;
         }
     }
+    public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO)
+    {
+        //also get reporting officer seat, controller, and all seat above this user in routing
+        $forwardable_seats = [];
+        //$reporting_officer = $employee_section_map?->section?->seat_of_reporting_officer_id;
+        //$controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
+      //  $forwardable_seats[] = $reporting_officer;
+        $forwardable_seats[] = $seatIdOfEmployeeController;
+
+        if($seatIdOfSO)
+        {
+            $forwardable_seats[] = $seatIdOfSO;
+        }
+
+        //now find officer just above controller. 
+        $routing = AttendanceRouting::recurseGetSuperiorOfficers($seatIdOfEmployeeController, $forwardable_seats);
+        \Log::info('routes');
+        $forwardable_seats = array_unique($forwardable_seats);
+        $forwardable_seats = array_values($forwardable_seats);
+        \Log::info($forwardable_seats );
+        
+        $seats = EmployeeToSeat::with(['seat', 'employee'])
+        ->wherein('seat_id', $forwardable_seats)
+        ->get()->transform( function($seat) {
+            return [
+                'seat_id' => $seat->id,
+                'seat_name' => $seat->seat->title,
+                'employee_name' => $seat->employee->name,
+                'employee_id' => $seat->employee->id,
+                'level' => $seat->seat->level,
+            ];
+        })->sortBy('level')->values();
+
+        return $seats;
+
+       
+    }
 }
