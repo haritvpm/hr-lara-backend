@@ -88,7 +88,24 @@ class EmployeeToSectionApiControllerCustom extends Controller
     }
     public function storeUserFlexiApplication( Request $request)
     {
-        \Log::info($request->all());
+       // \Log::info($request->all());
+        $user = User::find(auth()->user()->id);
+        $employee_id = $user->employee_id;
+        $flexi_minutes = $request->flexi_minutes;
+        $with_effect_from = $request->wef;
+        $owner_seat = $request->forwardto;
+
+        $flexi_application = FlexiApplication::create([
+            'aadhaarid' => $user->employee->aadhaarid,
+            'employee_id' => $employee_id,
+            'flexi_minutes' => $flexi_minutes,
+            'with_effect_from' => $with_effect_from,
+            'owner_seat' => $owner_seat,
+            
+
+        ]);
+
+        return response()->json(['status' => 'success'], 200);
 
     }
     //get employees mapped to sections that this logged in user is a reporting officer of
