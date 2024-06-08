@@ -83,7 +83,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         $user = User::find(auth()->user()->id);
         $employee_id = $user->employee_id;
-        $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get()
+        $prev_flexi_applications = FlexiApplication::with('owner_seat')->where('employee_id', $employee_id)->orderby('created_at', 'desc')->get()
        /* ->transform( function($application) use ($today, $employee_id){
             $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($today, $employee_id);
             $application['owner_seat_name'] = $application->owner_seat?->name ?? '';
@@ -221,49 +221,8 @@ class EmployeeToSectionApiControllerCustom extends Controller
     public function editSetting(Request $request)
     {
         $employee_id = $request->id;
-        \Log::info($employee_id);
-
-        //get current flexi time
-        $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime( Carbon::today()->format('Y-m-d') , $employee_id);
-
-       // $empFlexi = EmployeeToFlexi::where('employee_id', $employee_id)->first();
-
-        //check last updated date
-        if($current_flexi){
-            $last_updated = Carbon::parse($current_flexi->with_effect_from);
-            $today = Carbon::today();
-            if($last_updated->diffInDays($today, true) < 20){
-                return response()->json(['status' => 'failed', 'message' => 'You cannot update flexi time now'], 400);
-            }
-        }
-
-        $flexi_minutes = $request->flexi_minutes;
-        \Log::info($request->wef);
-        $with_effect_from =  Carbon::parse($request->wef);
-        if( $with_effect_from->isToday() || $with_effect_from->isPast()){
-            return response()->json(['status' => 'failed', 'message' => 'You cannot set flexi time for today/past date ' . $with_effect_from->format('Y-m-d')], 400);
-        }
-
-        //we should check if the employee has any flexi time set for the future
-        $upcoming_flexi = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
-        if($upcoming_flexi){
-            $upcoming_flexi->update ([
-                'employee_id' => $employee_id,
-                'flexi_minutes' => $flexi_minutes,
-                'with_effect_from' => $with_effect_from->format('Y-m-d'),
-            ]);
-        } else {
-            EmployeeToFlexi::create([
-                'employee_id' => $employee_id,
-                'flexi_minutes' => $flexi_minutes,
-                'with_effect_from' => $with_effect_from->format('Y-m-d'),
-            ]);
-        }
-
-        return response()->json(['status' => 'success'], 200);
-
+        return EmployeeService::createOrUpdateFlexi($employee_id, $request->flexi_minutes, $request->wef);
     }
-
 
     public function getUnpostedEmployees(Request $request)
     {

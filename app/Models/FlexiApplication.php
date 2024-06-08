@@ -45,24 +45,28 @@ class FlexiApplication extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
-
-    public function getWithEffectFromAttribute($value)
+    public function owner_seat()
     {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+        return $this->belongsTo(Seat::class, 'owner_seat');
     }
 
-    public function setWithEffectFromAttribute($value)
-    {
-        $this->attributes['with_effect_from'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function getWithEffectFromAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function getApprovedOnAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function setWithEffectFromAttribute($value)
+    // {
+    //     $this->attributes['with_effect_from'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
-    public function setApprovedOnAttribute($value)
-    {
-        $this->attributes['approved_on'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function getApprovedOnAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
+
+    // public function setApprovedOnAttribute($value)
+    // {
+    //     $this->attributes['approved_on'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 }

@@ -378,11 +378,11 @@ class EmployeeService
             ->get()->pluck('employee_id') : null;*/
 
         if (!$seat_ids && !$section_ids && !$employee_ids){
-            
+
             //view all for secretary
             $section_ids = Section::all()->pluck('id');
         }
-        else  
+        else
         if (/*!$emp_ids_of_seats &&*/ !$section_ids && !$employee_ids){
             return null;
 
@@ -400,7 +400,7 @@ class EmployeeService
 
             $q->DesignationDuring($date_to)->with(['designation', 'designation.default_time_group']);
         }])
-    
+
         ->wherein('section_id', $section_ids)
         ->orwherein('employee_id', $employee_ids_combined)
         ->get();*/
@@ -412,7 +412,7 @@ class EmployeeService
 
             $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
         }])
-    
+
         ->wherein('section_id', $section_ids)
         ->orwherein('employee_id', $employee_ids_combined)
         ->get();
@@ -598,5 +598,53 @@ class EmployeeService
         }
 
         return [$employeeToSection->section, 'success', 200];
+    }
+
+    public static function createOrUpdateFlexi( $employee_id, $flexi_minutes, $wef)
+    {
+        \Log::info($employee_id);
+
+        //get current flexi time
+        $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime( Carbon::today()->format('Y-m-d') , $employee_id);
+
+       // $empFlexi = EmployeeToFlexi::where('employee_id', $employee_id)->first();
+
+        //check last updated date
+        if($current_flexi){
+            $last_updated = Carbon::parse($current_flexi->with_effect_from);
+            $today = Carbon::today();
+            if($last_updated->diffInDays($today, true) < 20){
+                return response()->json(['status' => 'failed', 'message' => 'You cannot update flexi time now'], 400);
+            }
+            //see if there is any change in flexi time
+            if($current_flexi->flexi_minutes == $flexi_minutes){
+                return response()->json(['status' => 'failed', 'message' => 'No change in flexi time'], 400);
+            }
+        }
+
+        \Log::info($wef);
+        $with_effect_from =  Carbon::parse($wef);
+        if( $with_effect_from->isToday() || $with_effect_from->isPast()){
+            return response()->json(['status' => 'failed', 'message' => 'You cannot set flexi time for today/past date ' . $with_effect_from->format('Y-m-d')], 400);
+        }
+
+        //we should check if the employee has any flexi time set for the future
+        $upcoming_flexi = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
+        if($upcoming_flexi){
+            $upcoming_flexi->update ([
+                'employee_id' => $employee_id,
+                'flexi_minutes' => $flexi_minutes,
+                'with_effect_from' => $with_effect_from->format('Y-m-d'),
+            ]);
+        } else {
+            EmployeeToFlexi::create([
+                'employee_id' => $employee_id,
+                'flexi_minutes' => $flexi_minutes,
+                'with_effect_from' => $with_effect_from->format('Y-m-d'),
+            ]);
+        }
+
+        return response()->json(['status' => 'success'], 200);
+
     }
 }

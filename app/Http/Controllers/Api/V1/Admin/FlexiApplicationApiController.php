@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFlexiApplicationRequest;
 use App\Http\Requests\UpdateFlexiApplicationRequest;
 use App\Http\Resources\Admin\FlexiApplicationResource;
+use App\Models\Employee;
 use App\Models\User;
 use App\Models\FlexiApplication;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\EmployeeService;
 
 class FlexiApplicationApiController extends Controller
 {
@@ -41,13 +43,46 @@ class FlexiApplicationApiController extends Controller
 
     }
 
-    public function store(StoreFlexiApplicationRequest $request)
+    public function store(Request $request)
     {
-        $flexiApplication = FlexiApplication::create($request->all());
+        \Log::info($request->all());
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        return (new FlexiApplicationResource($flexiApplication))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        $id = $request->id;
+        //do this in a transaction, so user cannot delete it while we are approving it
+
+        \DB::transaction( function() use ($id, $seat_ids_of_loggedinuser, $me){
+            $flexi_application = FlexiApplication::with('employee')->find($id);
+
+            if(!$flexi_application){
+                return response()->json(['status' => 'failed', 'message' => 'Application not found'], 400);
+            }
+            if( $seat_ids_of_loggedinuser->contains($flexi_application->owner_seat) == false){
+                return response()->json(['status' => 'failed', 'message' => 'Application not with user'], 400);
+            }
+            //also make sure it has not been approved during delete
+            if($flexi_application->approved_on){
+                return response()->json(['status' => 'failed', 'message' => 'Application already approved'], 400);
+            }
+
+            $flexi_application->update([
+                'approved_on' => now(),
+                'approved_by' => $me->employee->aadhaarid . ',' . $me->employee->name,
+
+            ]);
+
+            //also update the flexi minutes of the employee
+
+            return EmployeeService::createOrUpdateFlexi(
+                $flexi_application->employee->id,
+                $flexi_application->flexi_minutes,
+                $flexi_application->with_effect_from);
+
+
+
+        });
+
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function show(FlexiApplication $flexiApplication)
