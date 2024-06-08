@@ -26,6 +26,8 @@ class FlexiApplication extends Model
         'aadhaarid',
         'flexi_minutes',
         'with_effect_from',
+        'time_option_str',
+        'time_option_current_str',
         'owner_seat',
         'approved_by',
         'approved_on',

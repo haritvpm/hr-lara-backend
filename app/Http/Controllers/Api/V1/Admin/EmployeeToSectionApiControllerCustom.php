@@ -63,7 +63,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         //also get reporting officer seat, controller, and all seat above this user in routing
         $controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
-             
+
         $seats = AttendanceRouting::getForwardableSeats($controller, null);
 
         $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
@@ -78,9 +78,24 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
     public function getUserFlexiApplications()
     {
+        $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
+        $today = Carbon::today()->format('Y-m-d');
+
         $user = User::find(auth()->user()->id);
         $employee_id = $user->employee_id;
-        $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
+        $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get()
+       /* ->transform( function($application) use ($today, $employee_id){
+            $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($today, $employee_id);
+            $application['owner_seat_name'] = $application->owner_seat?->name ?? '';
+
+            $application['time_group' ] = $employee_section_map?->designation?->default_time_group?->groupname ?? 'default';
+            //'seniority' => $emp->employee?->seniority?->sortindex,
+            $application['flexi_minutes_current' ] =$emp_flexi_time?->flexi_minutes ?? 0;
+            $application['flexi_time_wef_current'] = $emp_flexi_time?->with_effect_from ?? null;
+            return $application;
+        })*/;
+
+
         return response()->json([
             'flexi_applications'  => $prev_flexi_applications,
         ], 200);
@@ -95,26 +110,60 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $with_effect_from = $request->wef;
         $owner_seat = $request->forwardto;
 
+         //check if there are any pending applications
+        //if there are, then user cannot apply for another one
+        $pending_applications = FlexiApplication::where('employee_id', $employee_id)->where('approved_on', null)->count();
+        if($pending_applications > 0){
+            return response()->json(['status' => 'failed', 'message' => 'You have a pending application. Await its approval or Delete it'], 400);
+        }
+
+
         $flexi_application = FlexiApplication::create([
             'aadhaarid' => $user->employee->aadhaarid,
             'employee_id' => $employee_id,
             'flexi_minutes' => $flexi_minutes,
             'with_effect_from' => $with_effect_from,
             'owner_seat' => $owner_seat,
-            
-
+            'time_option_str' => $request->time_option_str,
+            'time_option_current_str' => $request->time_option_current_str,
         ]);
 
         return response()->json(['status' => 'success'], 200);
 
     }
+
+
+    public function deleteUserFlexiApplication( Request $request)
+    {
+        $id = $request->id;
+
+
+        //do this in a transaction, so approver cannot approve it while we are deleting it
+
+        \DB::transaction( function() use ($id){
+            $flexi_application = FlexiApplication::find($id);
+
+            if(!$flexi_application){
+                return response()->json(['status' => 'failed', 'message' => 'Application not found'], 400);
+            }
+            //also make sure it has not been approved during delete
+            if($flexi_application->approved_on){
+                return response()->json(['status' => 'failed', 'message' => 'Application already approved'], 400);
+            }
+
+            $flexi_application->delete();
+        });
+
+        return response()->json(['status' => 'success'], 200);
+    }
+
     //get employees mapped to sections that this logged in user is a reporting officer of
     public function getUserSectionEmployees()
     {
         //get employees mapped to sections that this logged in user is a reporting officer of
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        if ($status != 'success') {
+        if ($status !== 'success') {
             return response()->json(['status' => $status], 400);
         }
 

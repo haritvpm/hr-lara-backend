@@ -80,7 +80,7 @@ class AttendanceRouting extends Model
             $q->where('id', $seatIdOfEmployeeController);
         })->first();
 
-       
+
         if($seniorOfficer)
         {
             array_push($seats, $seniorOfficer->viewer_seat_id);
@@ -105,18 +105,18 @@ class AttendanceRouting extends Model
             $forwardable_seats[] = $seatIdOfSO;
         }
 
-        //now find officer just above controller. 
+        //now find officer just above controller.
         $routing = AttendanceRouting::recurseGetSuperiorOfficers($seatIdOfEmployeeController, $forwardable_seats);
         \Log::info('routes');
         $forwardable_seats = array_unique($forwardable_seats);
         $forwardable_seats = array_values($forwardable_seats);
         \Log::info($forwardable_seats );
-        
+
         $seats = EmployeeToSeat::with(['seat', 'employee'])
         ->wherein('seat_id', $forwardable_seats)
         ->get()->transform( function($seat) {
             return [
-                'seat_id' => $seat->id,
+                'seat_id' => $seat->seat->id,
                 'seat_name' => $seat->seat->title,
                 'employee_name' => $seat->employee->name,
                 'employee_id' => $seat->employee->id,
@@ -126,6 +126,6 @@ class AttendanceRouting extends Model
 
         return $seats;
 
-       
+
     }
 }

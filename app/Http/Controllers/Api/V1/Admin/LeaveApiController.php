@@ -104,7 +104,7 @@ class LeaveApiController extends Controller
         //find all leaves where owner_seat is the logged in user's seat
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        if ($status == 'error') {
+        if ($status !== 'success') {
             return response()->json(
                 [
                     'status' => 'error',
@@ -684,7 +684,7 @@ class LeaveApiController extends Controller
        //->Wherenotin('hint', ['clear', 'tour'])
        ->where( fn ($query) => $query->where('punching_count',  0)
             //->orWhere('is_unauthorised',  1)
-            ->orWhere( fn ($query) => 
+            ->orWhere( fn ($query) =>
                 $query->where('hint', '<>', 'clear')
                 ->where('hint', '<>', 'tour')
                 ->wherenotnull('hint')
