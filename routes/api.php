@@ -210,4 +210,10 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Flexi Application
     Route::apiResource('flexi-applications', 'FlexiApplicationApiController');
+
+    // Duty Posting Item
+    Route::apiResource('duty-posting-items', 'DutyPostingItemApiController');
+
+    // Duty Posting Form
+    Route::apiResource('duty-posting-forms', 'DutyPostingFormApiController');
 });

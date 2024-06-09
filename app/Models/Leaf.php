@@ -95,6 +95,10 @@ class Leaf extends Model
     {
         return $this->hasMany(CompenGranted::class, 'leave_id');
     }
+     public function leaveform()
+    {
+        return $this->hasOne(LeaveFormDetail::class, 'leave_id');
+    }
 
     public static function getEmployeeCasualLeaves($aadhaarid, $start_date)
     {

@@ -66,6 +66,7 @@ class LeaveApiController extends Controller
            // 'prefix' => $leaf->prefix,
            // 'suffix' => $leaf->suffix,
            // 'date_of_joining' => $leaf->date_of_joining,
+           'leaveform' => $leaf->leaveform,
 
         ];
     }
@@ -114,7 +115,7 @@ class LeaveApiController extends Controller
             );
         }
 
-        $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation'])
+        $leaves = Leaf::with(['employee', 'compensGranted', 'employee.designation', 'leaveform'])
             ->wherein('owner_seat', $seat_ids_of_loggedinuser)
             ->orwherein('forwarded_by_seat', $seat_ids_of_loggedinuser)
             ->orderBy('created_at', 'desc')
@@ -304,6 +305,16 @@ class LeaveApiController extends Controller
                 $this->createCompenGranteds($request, $leaf, $me);
             } //compen or compen_for_extra
 
+            if(!$isCasualOrCompen){
+                $leaf->leaveform()->delete();
+                $leaf->leaveform()->create([
+                    'leave_id' => $leaf->id,
+                    'prefix' => $request->prefix,
+                    'suffix' => $request->suffix,
+                    'date_of_joining' => $request->date_of_joining,
+                ]);
+            }
+
             LeaveProcessService::processNewLeave($leaf);
         });
 
@@ -333,7 +344,7 @@ class LeaveApiController extends Controller
                 400
             );
         }
-        $leaf->load(['employee']);
+        $leaf->load(['employee', 'compensGranted', 'employee.designation', 'leaveform']);
 
         //return new LeafResource($this->LeafToResource($leaf));
         return (new LeafResource($this->LeafToResource($leaf)))
@@ -512,6 +523,8 @@ class LeaveApiController extends Controller
             ]);
 
             LeaveProcessService::processLeaveStatusChange($leaf);
+            CompenGranted::where('leave_id', $leaf->id)->delete();
+            $leaf->leaveform()?->delete();
             $leaf->delete();
         });
 
