@@ -8,6 +8,7 @@ use App\Models\Seat;
 use App\Models\User;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -281,6 +282,7 @@ class AuthController extends Controller
             'dob' => $user?->employee?->employeeExtra?->dob ?? null,
             'dateOfEntryInService' => $user?->employee?->employeeExtra?->date_of_entry_in_service ?? null,
             'dateOfCommencementOfContinousService' => $user?->employee?->employeeExtra?->date_of_commencement_of_continous_service ?? null,
+            'address' => $user?->employee?->employeeExtra?->address ?? null,
         ]);
     }
 
@@ -295,9 +297,12 @@ class AuthController extends Controller
 
         \Log::info('in save profile', $request->all());
         $validator = Validator::make($request->all(), [
-           // 'email' => 'email'|'unique:employee_extras,email,' . $user->employee?->employeeExtra?->id,
-            'mobile' => 'required|numeric|digits:10',
-            'dateOfJoinInKLA' => 'date',
+
+            'email' =>  [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'pan' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'klaid' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'electionid' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'mobile' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
         ]);
 
         if ($validator->fails()) {
@@ -323,6 +328,7 @@ class AuthController extends Controller
             'dob' => $dob,
             'date_of_entry_in_service' => $dateOfEntryInService,
             'date_of_commencement_of_continous_service' => $dateOfCommencementOfContinousService,
+            'address'   => $request->address,
 
         ];
         if($user->employee->employeeExtra){
