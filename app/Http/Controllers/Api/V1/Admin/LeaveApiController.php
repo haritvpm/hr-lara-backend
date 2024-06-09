@@ -309,13 +309,15 @@ class LeaveApiController extends Controller
             else {
                 $leaf->leaveform()->delete();
 
+                //delete old compen_granted if it exists
+                $compensGrantedOld = CompenGranted::where('leave_id', $leaf->id)->delete();
+
                 $leaf->update(
                     $this->resourceToModel($request, $me, $owner, $owner_can_approve)
                 );
             }
 
-            //delete old compen_granted if it exists
-            $compensGrantedOld = CompenGranted::where('leave_id', $leaf->id)->delete();
+
 
             if ($request->leave_type == 'compen' || $request->leave_type == 'compen_for_extra') {
                 $this->createCompenGranteds($request, $leaf, $me);
