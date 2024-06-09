@@ -29,7 +29,7 @@ class LeaveFormDetail extends Model
         'pay',
         'scaleofpay',
         'doe',
-       // 'date_of_confirmation',
+        'docc',
         'confirmation_info',
         'address',
         'hra',

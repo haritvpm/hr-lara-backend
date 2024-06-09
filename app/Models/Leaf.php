@@ -199,7 +199,7 @@ class Leaf extends Model
 
     public static function getEmployeeLeaves( $aadhaarid)
     {
-        $emp_leaves = Leaf::with(['compensGranted'])->where('aadhaarid', $aadhaarid)
+        $emp_leaves = Leaf::with(['compensGranted', 'leaveform'])->where('aadhaarid', $aadhaarid)
         ->orderBy('creation_date', 'desc')
         ->get()->transform(function ($leaf) {
 
