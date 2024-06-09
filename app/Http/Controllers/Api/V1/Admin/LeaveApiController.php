@@ -307,6 +307,8 @@ class LeaveApiController extends Controller
                 );
             }
             else {
+                $leaf->leaveform()->delete();
+
                 $leaf->update(
                     $this->resourceToModel($request, $me, $owner, $owner_can_approve)
                 );
@@ -320,7 +322,6 @@ class LeaveApiController extends Controller
             } //compen or compen_for_extra
 
             if(!$isCasualOrCompen){
-                $leaf->leaveform()->delete();
                 $leaf->leaveform()->create([
                     'leave_id' => $leaf->id,
                     'prefix' => $request->prefix,
