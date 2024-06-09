@@ -37,10 +37,7 @@ class StoreLeaveFormDetailRequest extends FormRequest
                 'date_format:' . config('panel.date_format'),
                 'nullable',
             ],
-            'date_of_confirmation' => [
-                'date_format:' . config('panel.date_format'),
-                'nullable',
-            ],
+
             'address' => [
                 'string',
                 'nullable',

@@ -67,6 +67,19 @@ class LeaveApiController extends Controller
            // 'suffix' => $leaf->suffix,
            // 'date_of_joining' => $leaf->date_of_joining,
            'leaveform' => $leaf->leaveform,
+           'dob' => $leaf->leaveform?->dob,
+           'post' => $leaf->leaveform?->post,
+           'dept' => $leaf->leaveform?->dept,
+           'pay' => $leaf->leaveform?->pay ,
+           'scaleofpay' => $leaf->leaveform?->scaleofpay,
+           'doe' => $leaf->leaveform?->doe,
+           'confirmation_info'   => $leaf->leaveform?->confirmation_info,
+           'address' => $leaf->leaveform?->address,
+           'hra' => $leaf->leaveform?->hra,
+          // 'nature',
+           'prefix' => $leaf->leaveform?->prefix,
+           'suffix' => $leaf->leaveform?->suffix,
+           'last_leave_info' => $leaf->leaveform?->dor,
 
         ];
     }
@@ -94,6 +107,7 @@ class LeaveApiController extends Controller
             'leave_count' => $request->leave_count,
             'leave_cat' => ($request->fromType == 'an' ||  $request->fromType == 'fn') ? 'H' : 'F', //dummy required value
             'time_period' => $request->fromType == 'an' ? 'AN' : ($request->fromType == 'fn' ? 'FN' : null), //dummy required value
+
 
         ];
     }
@@ -312,6 +326,20 @@ class LeaveApiController extends Controller
                     'prefix' => $request->prefix,
                     'suffix' => $request->suffix,
                     'date_of_joining' => $request->date_of_joining,
+                     'dob' => Carbon::parse($request->dob)->format('Y-m-d'),
+                     'post' => $request->post,
+                     'dept' => $request->dept,
+                     'pay' => $request->pay,
+                     'scaleofpay' => $request->scaleofpay,
+                     'doe' => Carbon::parse($request->doe)->format('Y-m-d'),
+                     'confirmation_info'   => $request->confirmation_info,
+                     'address' => $request->address,
+                     'hra' => $request->hra,
+                    // 'nature',
+                    // 'prefix',
+                    // 'suffix',
+                     'last_leave_info' => $request->dor,
+
                 ]);
             }
 

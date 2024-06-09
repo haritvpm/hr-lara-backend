@@ -15,7 +15,7 @@ class CreateLeaveFormDetailsTable extends Migration
             $table->string('dept')->nullable();
             $table->string('pay')->nullable();
             $table->date('doe')->nullable();
-            $table->date('date_of_confirmation')->nullable();
+           // $table->date('date_of_confirmation')->nullable();
             $table->string('address')->nullable();
             $table->string('hra')->nullable();
             $table->string('nature')->nullable();
