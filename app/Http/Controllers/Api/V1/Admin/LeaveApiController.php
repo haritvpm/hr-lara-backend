@@ -63,9 +63,9 @@ class LeaveApiController extends Controller
             //  'approver_employee_id',
             'approver_details' => $leaf->approver_details,
             'approved_on' => Carbon::parse($leaf->approved_on)->format('Y-m-d'),
-            'prefix' => $leaf->prefix,
-            'suffix' => $leaf->suffix,
-            'date_of_joining' => $leaf->date_of_joining,
+           // 'prefix' => $leaf->prefix,
+           // 'suffix' => $leaf->suffix,
+           // 'date_of_joining' => $leaf->date_of_joining,
 
         ];
     }

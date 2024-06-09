@@ -78,9 +78,9 @@ class Leaf extends Model
         'approver_employee_id',
         'approver_details',
         'approved_on',
-        'prefix',
-        'suffix',
-        'date_of_joining',
+       // 'prefix',
+       // 'suffix',
+       // 'date_of_joining',
     ];
     // protected function serializeDate(DateTimeInterface $date)
     // {
