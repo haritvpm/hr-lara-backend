@@ -292,7 +292,7 @@ class AuthController extends Controller
 
         $dob = $request->dob ? Carbon::parse($request->dob)->format('Y-m-d') : null;
         $dateOfJoinInKLA = $request->dateOfJoinInKLA ? Carbon::parse($request->dateOfJoinInKLA)->format('Y-m-d') : null;
-        $dateOfEntryInService = $request->date_of_entry_in_service ? Carbon::parse($request->dateOfEntryInService)->format('Y-m-d') : null;
+        $dateOfEntryInService = $request->dateOfEntryInService ? Carbon::parse($request->dateOfEntryInService)->format('Y-m-d') : null;
         $dateOfCommencementOfContinousService = $request->dateOfCommencementOfContinousService ? Carbon::parse($request->dateOfCommencementOfContinousService)->format('Y-m-d') : null;
 
         \Log::info('in save profile', $request->all());
