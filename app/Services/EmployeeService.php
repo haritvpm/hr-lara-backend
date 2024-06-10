@@ -349,30 +349,54 @@ class EmployeeService
     /*
     For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
     */
-    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids, $date_from, $date_to, $seat_ids, $employee_ids, $all_subordinates = true)
+
+    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids,  $seat_ids_of_loggedinuser, $date_from, $date_to, $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown, $employee_ids, $all_subordinates = true)
     {
         // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
 
-        $sections_under_charge = $all_subordinates ?
 
-            Section::wherein('seat_of_controlling_officer_id', $seat_ids)
-                ->orwherein('seat_of_reporting_officer_id', $seat_ids)
+        $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
+
+        $sections_controlled_by_me = $all_subordinates ?
+
+            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
+                ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
                 ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
             :
 
-            Section::wherein('seat_of_reporting_officer_id', $seat_ids)->get();
+            Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
 
-        if ($sections_under_charge == null && $employee_ids == null && $seat_ids == null) {
+        $sections_waydown = $all_subordinates ?
+
+            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_waydown)
+                ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_waydown)
+                ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            :
+
+            Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
+
+
+
+        if ($$sections_controlled_by_me == null &&  $sections_waydown ==null && $employee_ids == null && $seat_ids == null) {
             return null;
         }
         //\Log::info(' sections_under_charge ' . $sections_under_charge);
        // \Log::info(' employee_ids ' . $employee_ids);
-        return $this->getEmployeeSectionMappingForSections($date_from, $date_to, $sections_under_charge->pluck('id'), $seat_ids,  $employee_ids);
+        return $this->getEmployeeSectionMappingForSections(
+            $date_from, $date_to, $sections_under_charge->pluck('id'),
+            $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown,
+            $sections_controlled_by_me, $sections_waydown,
+            $employee_ids);
 
     }
 
-    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids, $seat_ids,  $employee_ids)
+    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids,
+    $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown,
+    $sections_controlled_by_me, $sections_waydown,
+     $employee_ids)
     {
+       // $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
+
       /*  $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:://duringPeriod($date_from, $date_to)->
             wherein('seat_id', $seat_ids)
             ->get()->pluck('employee_id') : null;*/
@@ -432,13 +456,14 @@ class EmployeeService
     {
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
-        $all_subordinate_seats = collect($seat_ids_of_loggedinuser);
+        $subordinate_seats_controlled_by_me = collect();
+        $subordinate_seats_waydown = collect();
         $seat_ids = $seat_ids_of_loggedinuser;
-
         $employee_ids = null;
 
+        $recursion = 0;
         while(1){
-
+            $recursion++;
 
             $routing = AttendanceRouting::with(['viewer_seat', 'viewable_seats'])
             ->wherein('viewer_seat_id', $seat_ids)
@@ -449,7 +474,7 @@ class EmployeeService
             if(!$employee_ids){
                 $employee_ids = $routing->pluck('viewable_js_as_ss_employees')->flatten()->pluck('id'); //lets not recurse
             }/*else{
-                $employee_ids = $employee_ids->merge($routing->pluck('viewable_seats')->flatten()->pluck('employee_id'));
+                $employee_ids = $employee_ids->merge($routing->pluck('viewable_js_as_ss_employees')->flatten()->pluck('id'));
             }*/
 
             if($subordinate_seats->count() == 0){
@@ -457,7 +482,13 @@ class EmployeeService
             }
             \Log::info('subordinate_seats ' . $subordinate_seats );
             $seat_ids = $subordinate_seats;
-            $all_subordinate_seats = $all_subordinate_seats->concat($subordinate_seats);
+           // $all_subordinate_seats = $all_subordinate_seats->concat($subordinate_seats);
+
+            if($recursion === 1){
+                $subordinate_seats_controlled_by_me = $subordinate_seats;
+            }else{
+                $subordinate_seats_waydown = $subordinate_seats_waydown->concat($subordinate_seats);
+            }
 
             if(!$loadRouting) break; //mmonthlyview prevent all hundreds of assistants/oas to be loaded for secretary which will be loaded in daily view
         }
@@ -466,12 +497,12 @@ class EmployeeService
       //  \Log::info('employee_ids ' . $employee_ids );
 
 
-        $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $date_from, $date_to, $all_subordinate_seats, $employee_ids);
+        $employees = $this->getEmployeeSectionMappingInPeriodFromSeats(
+            [$me->employee_id], $seat_ids_of_loggedinuser, $date_from, $date_to, $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown, $employee_ids);
 
         // $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
-        return $employee_section_maps ;
+        return $employees ;
 
     }
 
