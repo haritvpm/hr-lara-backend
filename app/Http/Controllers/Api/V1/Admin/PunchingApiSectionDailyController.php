@@ -37,9 +37,8 @@ class PunchingApiSectionDailyController extends Controller
         $employees = null;
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
             // the user can view all section attendance
-
-            $employees = $empService->getEmployeeSectionMappingForSections($seat_ids_of_loggedinuser,
-            $date_str,$date_str,null,null,null,null,null,null);
+            $employees = $empService->getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+                $seat_ids_of_loggedinuser, $date_str,$date_str,null,null,null,null,null,null);
 
         }
         else {

@@ -480,14 +480,21 @@ class EmployeeService
         $sections_waydown,
         $employee_ids
     ) {
-        $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
 
-        $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
+        $seat_ids = collect($subordinate_seats_controlled_by_me);
+        if( $subordinate_seats_waydown){
+            $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
+        }
+        
+
+        $emp_ids_of_seats = $seat_ids->count()  ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
             wherein('seat_id', $seat_ids)
-            ->get()->pluck('employee_id') : null;
+            ->get()->pluck('employee_id') 
+            : EmployeeToSeat::pluck('employee_id'); //get all emps for secretary
+        
+       //\Log::info(' section_ids ' .  $section_ids->implode(','));
 
-        if (!$seat_ids && !$section_ids && !$employee_ids) {
-
+        if ($seat_ids->count()==0 && !$section_ids && !$employee_ids) {
             //view all for secretary
             $section_ids = Section::all()->pluck('id');
         } else
@@ -495,14 +502,14 @@ class EmployeeService
             return null;
         }
 
-        $employee_ids_combined = $employee_ids ? array_merge(
-            $emp_ids_of_seats->toArray(),
-            $employee_ids->toArray()
-        ) :  $emp_ids_of_seats->toArray();
+        $employee_ids_combined = $employee_ids ? 
+            array_merge( $emp_ids_of_seats->toArray(),  $employee_ids->toArray()) 
+            :  $emp_ids_of_seats->toArray();
 
         //$employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
 
         \Log::info(' employee_ids_combined ' . implode(',', $employee_ids_combined));
+        
 
 
         //allow jayasree mam to see old nasar sir attendance
