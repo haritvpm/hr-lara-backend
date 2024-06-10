@@ -51,7 +51,8 @@ class PunchingApiSectionMontlyController extends Controller
         $empService = new EmployeeService();
         $employee_section_maps = null;
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
-            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($start_date,$end_date,null,null,null);
+            $employee_section_maps = $empService->getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+                $seat_ids_of_loggedinuser, $start_date,$end_date,null,null,null,null,null,null);
         }
         else {
 
@@ -75,7 +76,7 @@ class PunchingApiSectionMontlyController extends Controller
                 $loadRouting
             );
         }
-        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
+        $employees_in_view = $empService->employeeToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
 
 
@@ -105,8 +106,11 @@ class PunchingApiSectionMontlyController extends Controller
 
             $item =  $employee;
             $aadhaarid = $employee['aadhaarid'];
-            $sections[] = $employee['section_name'];
-            $section_ids[] = $employee['section_id'];
+            if($employee['section_name']){
+                $sections[] = $employee['section_name'];
+                $section_ids[] = $employee['section_id'];
+            }
+
             //mapped after fetching. so no need to check if it exists
             $item['start_date'] = $start_date;
             $item['e'] = $end_date;

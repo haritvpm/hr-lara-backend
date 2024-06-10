@@ -34,10 +34,12 @@ class PunchingApiSectionDailyController extends Controller
         //get current logged in user's charges
         $employees_in_view = null;
         $empService = new EmployeeService();
+        $employees = null;
         if (Auth::user()->canDo('can_view_all_section_attendance')) {
             // the user can view all section attendance
 
-            $employee_section_maps = $empService->getEmployeeSectionMappingForSections($date_str,$date_str,null,null,null);
+            $employees = $empService->getEmployeeSectionMappingForSections($seat_ids_of_loggedinuser,
+            $date_str,$date_str,null,null,null,null,null,null);
 
         }
         else {
@@ -51,7 +53,7 @@ class PunchingApiSectionDailyController extends Controller
             }
 
             //call employeeservice get loggedusersubordinate
-            $employee_section_maps = $empService->getLoggedUserSubordinateEmployees(
+            $employees = $empService->getLoggedUserSubordinateEmployees(
                 $date_str,
                 $date_str,
                 $seat_ids_of_loggedinuser,
@@ -59,7 +61,8 @@ class PunchingApiSectionDailyController extends Controller
             );
         }
 
-        $employees_in_view = $empService->employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
+        $employees_in_view = $empService->employeeToResource(
+            $employees, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
         if(!$employees_in_view){
             return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);
@@ -91,8 +94,10 @@ class PunchingApiSectionDailyController extends Controller
             $item['name'] = $employee['name'];
             $item['aadhaarid'] = $employee['aadhaarid'];
 
-            $sections[] = $employee['section_name'];
-            $section_ids[] = $employee['section_id'];
+            if($employee['section_name']){
+                $sections[] = $employee['section_name'];
+                $section_ids[] = $employee['section_id'];
+            }
 
             if ($data_monthly && $data_monthly->has($aadhaarid)) {
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];

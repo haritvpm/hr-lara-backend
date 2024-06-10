@@ -24,9 +24,11 @@ class EmployeeToSectionApiControllerCustom extends Controller
     //get current logged in user's flexi settings so he can request for changes
     public function getUserSettings()
     {
-        $user = User::find(auth()->user()->id);
-        $employee_id = $user->employee_id;
+       
        // $employee = Employee::find($employee_id);
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        $employee_id = $me->employee_id;
+
         $today = Carbon::today()->format('Y-m-d');
 
         $officeTimes = OfficeTime::orderBy( 'with_effect_from', 'desc')->get();
@@ -63,8 +65,9 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
         //also get reporting officer seat, controller, and all seat above this user in routing
         $controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
+       
 
-        $seats = AttendanceRouting::getForwardableSeats($controller, null);
+        $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser);
 
         $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
 
@@ -107,7 +110,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $user = User::find(auth()->user()->id);
         $employee_id = $user->employee_id;
         $flexi_minutes = $request->flexi_minutes;
-        $with_effect_from = $request->wef;
+        $with_effect_from = Carbon::parse($request->wef)->format('Y-m-d');
         $owner_seat = $request->forwardto;
 
          //check if there are any pending applications

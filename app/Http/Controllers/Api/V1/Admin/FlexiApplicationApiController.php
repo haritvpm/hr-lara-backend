@@ -13,6 +13,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\EmployeeService;
+use Carbon\Carbon;
 
 class FlexiApplicationApiController extends Controller
 {
@@ -51,6 +52,9 @@ class FlexiApplicationApiController extends Controller
         $id = $request->id;
         //do this in a transaction, so user cannot delete it while we are approving it
 
+        //if under has not appproved the application before the witheffect date, make witheffect date the next day of approval
+      
+
         \DB::transaction( function() use ($id, $seat_ids_of_loggedinuser, $me){
             $flexi_application = FlexiApplication::with('employee')->find($id);
 
@@ -65,6 +69,16 @@ class FlexiApplicationApiController extends Controller
                 return response()->json(['status' => 'failed', 'message' => 'Application already approved'], 400);
             }
 
+            $c_wef = Carbon::parse($flexi_application->with_effect_from);
+            $c_now = Carbon::today();
+
+            if($c_wef->lte($c_now)){
+                //employee expected date has passed, so we need to update the with effect date to the next day
+                //$c_wef = $c_now->addDay();
+                
+            }
+
+
             $flexi_application->update([
                 'approved_on' => now(),
                 'approved_by' => $me->employee->aadhaarid . ',' . $me->employee->name,
@@ -76,7 +90,9 @@ class FlexiApplicationApiController extends Controller
             return EmployeeService::createOrUpdateFlexi(
                 $flexi_application->employee->id,
                 $flexi_application->flexi_minutes,
-                $flexi_application->with_effect_from);
+                $c_wef->format('Y-m-d')
+                
+                );
 
 
 

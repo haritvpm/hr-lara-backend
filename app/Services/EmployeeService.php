@@ -157,14 +157,14 @@ class EmployeeService
 
         foreach ($aebas_employees as $key => $emp) {
 
-            $aadhaarid = preg_replace('/\s+/', '', trim($emp['emp_id'])) ;
+            $aadhaarid = preg_replace('/\s+/', '', trim($emp['emp_id']));
             $empployee = Employee::where('aadhaarid', $aadhaarid)->first();
 
-            if($aadhaarid !== $emp['emp_id']){
+            if ($aadhaarid !== $emp['emp_id']) {
 
                 \Log::info('aebas emp_id has spaces' . $emp['emp_id'] . ' aadhaarid ' . $aadhaarid);
 
-                if(!$empployee){
+                if (!$empployee) {
                     $empployee = Employee::where('aadhaarid', $emp['emp_id'])->first();
                 }
             }
@@ -173,7 +173,7 @@ class EmployeeService
             $gender = $emp['gender'];
             $email = $emp['emp_mail'];
 
-            if ( !$empployee ) {
+            if (!$empployee) {
                 //employee does not exist. create it
 
                 $empployee = Employee::create([
@@ -184,7 +184,7 @@ class EmployeeService
 
                 //designation does not exist. create it
                 $designation_id = null;
-                if (! array_key_exists($emp['designation'], $aebas_desig_to_ourId)) {
+                if (!array_key_exists($emp['designation'], $aebas_desig_to_ourId)) {
                     $designation_id = Designation::updateOrCreate(['designation' => $emp['designation']])->id;
                 } else {
                     $designation_id = $aebas_desig_to_ourId[$emp['designation']];
@@ -218,8 +218,6 @@ class EmployeeService
                 //     ]);
                 // }
             }
-
-
         }
 
         return $aebas_employees;
@@ -253,7 +251,7 @@ class EmployeeService
 
         return $employee_section_maps;
     }
-/*
+    /*
     public static function getEmployeeSectionMappingsAndDesignationsOnDate($date_str, $emp_ids)
     {
         $employee_section_maps = EmployeeToSection::duringPeriod($date_str, $date_str)
@@ -346,89 +344,54 @@ class EmployeeService
         return $employee_section_maps;
     }
 
-    /*
-    For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
-    */
+    public function getEmployeeSectionMappingInPeriodFromSeats(
+        $emp_ids,
+        $seat_ids_of_loggedinuser,
+        $date_from,
+        $date_to,
+        $all_subordinates = true
+    ) {
 
-    public function getEmployeeSectionMappingInPeriodFromSeats($emp_ids,  $seat_ids_of_loggedinuser, $date_from, $date_to, $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown, $employee_ids, $all_subordinates = true)
-    {
-        // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
+        $seat_ids = $seat_ids_of_loggedinuser;
 
+        $sections_under_charge = $all_subordinates ?
 
-        $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
-
-        $sections_controlled_by_me = $all_subordinates ?
-
-            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
-                ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
-                ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
-            :
-
-            Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
-
-        $sections_waydown = $all_subordinates ?
-
-            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_waydown)
-                ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_waydown)
-                ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            Section::wherein('seat_of_controlling_officer_id', $seat_ids)
+            ->orwherein('seat_of_reporting_officer_id', $seat_ids)
+            ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
             :
 
             Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
 
 
 
-        if ($$sections_controlled_by_me == null &&  $sections_waydown ==null && $employee_ids == null && $seat_ids == null) {
+
+        if ($sections_under_charge->count() == 0 &&  $emp_ids == null && $seat_ids == null) {
             return null;
         }
-        //\Log::info(' sections_under_charge ' . $sections_under_charge);
-       // \Log::info(' employee_ids ' . $employee_ids);
-        return $this->getEmployeeSectionMappingForSections(
-            $date_from, $date_to, $sections_under_charge->pluck('id'),
-            $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown,
-            $sections_controlled_by_me, $sections_waydown,
-            $employee_ids);
 
+        //\Log::info(' sections_under_charge ' . $sections_under_charge);
+        // \Log::info(' employee_ids ' . $employee_ids);
+        return $this->getEmployeesSectionMappingFromSeatsAndSections(
+            $seat_ids_of_loggedinuser,
+            $date_from,
+            $date_to,
+            $sections_under_charge->pluck('id'),
+        );
     }
 
-    public function  getEmployeeSectionMappingForSections($date_from, $date_to, $section_ids,
-    $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown,
-    $sections_controlled_by_me, $sections_waydown,
-     $employee_ids)
-    {
-       // $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
 
-      /*  $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:://duringPeriod($date_from, $date_to)->
-            wherein('seat_id', $seat_ids)
-            ->get()->pluck('employee_id') : null;*/
-
-        if (!$seat_ids && !$section_ids && !$employee_ids){
-
-            //view all for secretary
-            $section_ids = Section::all()->pluck('id');
-        }
-        else
-        if (/*!$emp_ids_of_seats &&*/ !$section_ids && !$employee_ids){
+    public function  getEmployeesSectionMappingFromSeatsAndSections(
+        $seat_ids_of_loggedinuser,
+        $date_from,
+        $date_to,
+        $section_ids,
+    ) {
+               
+        if (!$section_ids) {
             return null;
-
         }
-/*
-        $employee_ids_combined = $employee_ids ? array_merge($emp_ids_of_seats->toArray(),
-                                                         $employee_ids->toArray()) :  $emp_ids_of_seats->toArray();
-                                                         */
-        $employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
-       //\Log::info(' employee_ids_combined ' . implode(',',$employee_ids_combined));
 
-        /*$employee_section_maps = EmployeeToSection::duringPeriod($date_from, $date_to)
-        ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
-        ->with(['employee.employeeEmployeeToDesignations' => function ($q) use ($date_to) {
-
-            $q->DesignationDuring($date_to)->with(['designation', 'designation.default_time_group']);
-        }])
-
-        ->wherein('section_id', $section_ids)
-        ->orwherein('employee_id', $employee_ids_combined)
-        ->get();*/
-        //allow jayasree mam to see old nasar sir attendance
         $today = Carbon::today()->format('Y-m-d');
         $employee_section_maps = EmployeeToSection::onDate($today)
         ->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
@@ -438,113 +401,238 @@ class EmployeeService
         }])
 
         ->wherein('section_id', $section_ids)
-        ->orwherein('employee_id', $employee_ids_combined)
         ->get();
 
-    if($employee_ids_combined){
+      return $employee_section_maps && $employee_section_maps->count() ? $employee_section_maps : null;
 
-        foreach($employee_section_maps as $emp){
-            $emp->setAttribute('employeeLoadedDirectly', in_array($emp->employee_id, $employee_ids_combined));
-        }
+
     }
 
-    return $employee_section_maps && $employee_section_maps->count() ? $employee_section_maps : null;
 
+    /*
+    For a list of employee ids, finds the seats and get sections related to that seat and then employees mppaed to that sections
+    */
+
+    public function getEmployeesToShow(
+        $emp_ids,
+        $seat_ids_of_loggedinuser,
+        $date_from,
+        $date_to,
+        $subordinate_seats_controlled_by_me,
+        $subordinate_seats_waydown,
+        $employee_ids,
+        $all_subordinates = true
+    ) {
+        // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
+
+
+        $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
+
+        $sections_controlled_by_me = $all_subordinates ?
+
+            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
+            ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
+            ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            :
+
+            Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
+
+        $sections_waydown = $all_subordinates ?
+
+            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_waydown)
+            ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_waydown)
+            ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            :
+
+            Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
+
+
+
+        if ($sections_controlled_by_me == null &&  $sections_waydown == null && $employee_ids == null && $seat_ids == null) {
+            return null;
+        }
+
+
+        $sections_under_charge = $sections_controlled_by_me->concat($sections_waydown)->unique();
+        //\Log::info(' sections_under_charge ' . $sections_under_charge);
+        // \Log::info(' employee_ids ' . $employee_ids);
+        return $this->getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+            $seat_ids_of_loggedinuser,
+            $date_from,
+            $date_to,
+            $sections_under_charge->pluck('id'),
+            $subordinate_seats_controlled_by_me,
+            $subordinate_seats_waydown,
+            $sections_controlled_by_me,
+            $sections_waydown,
+            $employee_ids
+        );
+    }
+
+    public function  getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+        $seat_ids_of_loggedinuser,
+        $date_from,
+        $date_to,
+        $section_ids,
+        $subordinate_seats_controlled_by_me,
+        $subordinate_seats_waydown,
+        $sections_controlled_by_me,
+        $sections_waydown,
+        $employee_ids
+    ) {
+        $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
+
+        $emp_ids_of_seats = $seat_ids ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
+            wherein('seat_id', $seat_ids)
+            ->get()->pluck('employee_id') : null;
+
+        if (!$seat_ids && !$section_ids && !$employee_ids) {
+
+            //view all for secretary
+            $section_ids = Section::all()->pluck('id');
+        } else
+        if (!$emp_ids_of_seats && !$section_ids && !$employee_ids) {
+            return null;
+        }
+
+        $employee_ids_combined = $employee_ids ? array_merge(
+            $emp_ids_of_seats->toArray(),
+            $employee_ids->toArray()
+        ) :  $emp_ids_of_seats->toArray();
+
+        //$employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
+
+        \Log::info(' employee_ids_combined ' . implode(',', $employee_ids_combined));
+
+
+        //allow jayasree mam to see old nasar sir attendance
+        $today = Carbon::today()->format('Y-m-d');
+        $employees = Employee::with(['employeeSectionMapping' => function ($q) use ($today) {
+            $q->onDate($today);
+        }])
+            ->with(['employeeSectionMapping.attendance_book', 'employeeSectionMapping.section', 'seniority'])
+            ->with(['employeeEmployeeToDesignations' => function ($q) use ($date_from) {
+
+                $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
+            }])
+            ->wherehas('employeeSectionMapping', function ($q) use ($section_ids) {
+                $q->wherein('section_id', $section_ids);
+            })
+            ->orwherein('id', $employee_ids_combined)
+            ->get();
+
+        if ($employee_ids_combined) {
+
+            foreach ($employees as $emp) {
+                $emp->setAttribute('employeeLoadedDirectly', in_array($emp->id, $employee_ids_combined));
+            }
+        }
+
+        return $employees && $employees->count() ? $employees : null;
     }
 
     public function getLoggedUserSubordinateEmployees($date_from, $date_to, $seat_ids_of_loggedinuser, $me, $loadRouting = true)
     {
 
         // \Log::info('seat_ids_of_loggedinuser ' . $seat_ids_of_loggedinuser );
-        $subordinate_seats_controlled_by_me = collect();
+        $subordinate_seats_controlled_by_me = collect($seat_ids_of_loggedinuser);
         $subordinate_seats_waydown = collect();
         $seat_ids = $seat_ids_of_loggedinuser;
         $employee_ids = null;
 
         $recursion = 0;
-        while(1){
+        while (1) {
             $recursion++;
 
             $routing = AttendanceRouting::with(['viewer_seat', 'viewable_seats'])
-            ->wherein('viewer_seat_id', $seat_ids)
-            ->get();
+                ->wherein('viewer_seat_id', $seat_ids)
+                ->get();
 
             $subordinate_seats = $routing->pluck('viewable_seats')->flatten()->pluck('id');
 
-            if(!$employee_ids){
+            if (!$employee_ids) {
                 $employee_ids = $routing->pluck('viewable_js_as_ss_employees')->flatten()->pluck('id'); //lets not recurse
             }/*else{
                 $employee_ids = $employee_ids->merge($routing->pluck('viewable_js_as_ss_employees')->flatten()->pluck('id'));
             }*/
 
-            if($subordinate_seats->count() == 0){
+            if ($subordinate_seats->count() == 0) {
                 break;
             }
-            \Log::info('subordinate_seats ' . $subordinate_seats );
+            \Log::info('subordinate_seats ' . $subordinate_seats);
             $seat_ids = $subordinate_seats;
-           // $all_subordinate_seats = $all_subordinate_seats->concat($subordinate_seats);
+            //$seat_ids = $seat_ids->concat($subordinate_seats);
 
-            if($recursion === 1){
+            if ($recursion === 1) {
                 $subordinate_seats_controlled_by_me = $subordinate_seats;
-            }else{
+            } else {
                 $subordinate_seats_waydown = $subordinate_seats_waydown->concat($subordinate_seats);
             }
 
-            if(!$loadRouting) break; //mmonthlyview prevent all hundreds of assistants/oas to be loaded for secretary which will be loaded in daily view
+            if (!$loadRouting) break; //mmonthlyview prevent all hundreds of assistants/oas to be loaded for secretary which will be loaded in daily view
         }
 
-       // \Log::info('all_subordinate_seats ' . $all_subordinate_seats );
-      //  \Log::info('employee_ids ' . $employee_ids );
+         \Log::info('all_subordinate_seats ' . $subordinate_seats_controlled_by_me );
+        //  \Log::info('employee_ids ' . $employee_ids );
 
 
-        $employees = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $seat_ids_of_loggedinuser, $date_from, $date_to, $subordinate_seats_controlled_by_me,  $subordinate_seats_waydown, $employee_ids);
+        $employees = $this->getEmployeesToShow(
+            [$me->employee_id],
+            $seat_ids_of_loggedinuser,
+            $date_from,
+            $date_to,
+            $subordinate_seats_controlled_by_me,
+            $subordinate_seats_waydown,
+            $employee_ids
+        );
 
         // $seat_ids_already_fetched = collect($seat_ids_of_loggedinuser);
 
-        return $employees ;
-
+        return $employees;
     }
 
-    public function employeeSectionMapsToResource($employee_section_maps, $seat_ids_of_loggedinuser, $userIsSuperiorOfficer)
+    public function employeeToResource($employees, $seat_ids_of_loggedinuser, $userIsSuperiorOfficer)
     {
-        if (! $employee_section_maps) {
+        if (!$employees) {
             return null;
         }
 
-        $data = collect($employee_section_maps);
+        $data = collect($employees);
 
 
-        $data = $data->unique('employee_id')->map(function ($employeeToSection, $key) use ($seat_ids_of_loggedinuser, $userIsSuperiorOfficer) {
+        $data = $data->unique('id')->map(function ($employee, $key) use ($seat_ids_of_loggedinuser, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
-            $results = json_decode(json_encode($employeeToSection)); //somehow cant get above line to work
-            $employee_to_designation = count($results->employee->employee_employee_to_designations)
-                ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
+            $results = json_decode(json_encode($employee)); //somehow cant get above line to work
+            $employee_to_designation = count($results->employee_employee_to_designations)
+                ? $results->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
 
+            //\Log::info($employee);
+
+            $employeeToSection = count($results->employee_section_mapping) ? $results->employee_section_mapping[0] : null;
             $logged_in_user_is_controller = $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
 
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
             //as that does not mean that the employee is a subordinate of the logged in user
             return [
-                'employee_id' => $employeeToSection->employee_id,
-                'name' => $employeeToSection->employee->name,
-                'start_date' => $employeeToSection->start_date,
-                'end_date' => $employeeToSection->end_date,
-                'aadhaarid' => $employeeToSection->employee->aadhaarid,
-                'attendance_book_id' => $employeeToSection->attendance_book_id,
-                'attendance_book' => $employeeToSection->attendance_book,
-                'section_id' => $employeeToSection->section_id,
-                'section_name' => $employeeToSection->section->name,
-                'works_nights_during_session' => $employeeToSection->section->works_nights_during_session,
-                'seat_of_controlling_officer_id' => $employeeToSection->section->seat_of_controlling_officer_id,
+                'employee_id' => $employee->id,
+                'name' => $employee->name,
+                'start_date' => $employeeToSection?->start_date,
+                'end_date' => $employeeToSection?->end_date,
+                'aadhaarid' => $employee->aadhaarid,
+                'attendance_book_id' => $employeeToSection?->attendance_book_id,
+                'attendance_book' => $employeeToSection?->attendance_book,
+                'section_id' => $employeeToSection?->section_id,
+                'section_name' => $employeeToSection?->section->name,
+                'works_nights_during_session' => $employeeToSection?->section->works_nights_during_session,
+                'seat_of_controlling_officer_id' => $employeeToSection?->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,
-                'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection->section->seat_of_reporting_officer_id) ?? false,
-                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer && (!$employeeToSection?->employeeLoadedDirectly ?? false),
+                'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_reporting_officer_id) ?? false,
+                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer && (!$employee?->employeeLoadedDirectly ?? false),
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
-                'seniority' => $employeeToSection->employee?->seniority?->sortindex ?? 1000000,
+                'seniority' => $employee?->seniority?->sortindex ?? 1000000,
             ];
         })
             ->sortBy('designation_sortindex')
@@ -560,9 +648,14 @@ class EmployeeService
 
         //only get my sections' employees. not for which I am controller of
         $employee_section_maps = $this->getEmployeeSectionMappingInPeriodFromSeats(
-            [$me->employee_id], $date_from, $date_to, $seat_ids_of_loggedinuser, null, true);
+            [$me->employee_id],
+            $seat_ids_of_loggedinuser,
+            $date_from,
+            $date_to,
+            true
+        );
 
-        if (! $employee_section_maps) {
+        if (!$employee_section_maps) {
             return null;
         }
 
@@ -574,9 +667,9 @@ class EmployeeService
             $employee_to_designation = count($results->employee->employee_employee_to_designations)
                 ? $results->employee->employee_employee_to_designations[0] : null; //take the first item of array. there cant be two designations on a given day
 
-                //  flexi_times: number;
-//   flexi_minutes: number;
-//   flexi_time_last_updated: string;
+            //  flexi_times: number;
+            //   flexi_minutes: number;
+            //   flexi_time_last_updated: string;
             $emp_flexi_time = EmployeeToFlexi::getEmployeeFlexiTime($date_from, $employeeToSection->employee_id);
             $emp_flexi_time_upcoming = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employeeToSection->employee_id);
 
@@ -615,7 +708,7 @@ class EmployeeService
     public static function getSectionOfEmployeeOnDate($aadhaarid, $date)
     {
         $employee = Employee::where('aadhaarid', $aadhaarid)->first();
-        if (! $employee) {
+        if (!$employee) {
             return [null, 'Employee not found', 400];
         }
 
@@ -624,45 +717,45 @@ class EmployeeService
             ->with('section')
             ->first();
 
-        if (! $employeeToSection) {
+        if (!$employeeToSection) {
             return [null, 'Employee not found  in any section', 400];
         }
 
         return [$employeeToSection->section, 'success', 200];
     }
 
-    public static function createOrUpdateFlexi( $employee_id, $flexi_minutes, $wef)
+    public static function createOrUpdateFlexi($employee_id, $flexi_minutes, $wef)
     {
         \Log::info($employee_id);
 
         //get current flexi time
-        $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime( Carbon::today()->format('Y-m-d') , $employee_id);
+        $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime(Carbon::today()->format('Y-m-d'), $employee_id);
 
-       // $empFlexi = EmployeeToFlexi::where('employee_id', $employee_id)->first();
+        // $empFlexi = EmployeeToFlexi::where('employee_id', $employee_id)->first();
 
         //check last updated date
-        if($current_flexi){
+        if ($current_flexi) {
             $last_updated = Carbon::parse($current_flexi->with_effect_from);
             $today = Carbon::today();
-            if($last_updated->diffInDays($today, true) < 20){
+            if ($last_updated->diffInDays($today, true) < 20) {
                 return response()->json(['status' => 'failed', 'message' => 'You cannot update flexi time now'], 400);
             }
             //see if there is any change in flexi time
-            if($current_flexi->flexi_minutes == $flexi_minutes){
+            if ($current_flexi->flexi_minutes == $flexi_minutes) {
                 return response()->json(['status' => 'failed', 'message' => 'No change in flexi time'], 400);
             }
         }
 
         \Log::info($wef);
         $with_effect_from =  Carbon::parse($wef);
-        if( $with_effect_from->isToday() || $with_effect_from->isPast()){
+        if ($with_effect_from->isToday() || $with_effect_from->isPast()) {
             return response()->json(['status' => 'failed', 'message' => 'You cannot set flexi time for today/past date ' . $with_effect_from->format('Y-m-d')], 400);
         }
 
         //we should check if the employee has any flexi time set for the future
         $upcoming_flexi = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
-        if($upcoming_flexi){
-            $upcoming_flexi->update ([
+        if ($upcoming_flexi) {
+            $upcoming_flexi->update([
                 'employee_id' => $employee_id,
                 'flexi_minutes' => $flexi_minutes,
                 'with_effect_from' => $with_effect_from->format('Y-m-d'),
@@ -676,6 +769,5 @@ class EmployeeService
         }
 
         return response()->json(['status' => 'success'], 200);
-
     }
 }
