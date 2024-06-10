@@ -74,7 +74,7 @@ class EmployeeToSection extends Model
 
     public function scopeOnDate($query, $date)
     {
-        return $query->where(function ($query) use ($date) {
+        return $query->with(['section'])->where(function ($query) use ($date) {
             $query->where('start_date', '<=', $date)
                 ->where(function ($query) use ($date) {
                     $query->where('end_date', '>=', $date)
@@ -84,7 +84,7 @@ class EmployeeToSection extends Model
     }
     public function scopeDuringPeriod($query, $date_from, $date_to)
     {
-        return $query->where(function ($query) use ($date_from, $date_to) {
+        return $query->with('section')->where(function ($query) use ($date_from, $date_to) {
             $query->where('start_date', '<=', $date_to)
                 ->where(function ($query) use ($date_from, $date_to) {
                     $query->where('end_date', '>=', $date_from)
@@ -92,6 +92,17 @@ class EmployeeToSection extends Model
                 });
         });
     }
+    // public function scopeSectionNow($query)
+    // {
+    //     $date = Carbon::now()->toDateString();
+    //     return $query->with('section')->where(function ($query) use ($date) {
+    //         $query->where('start_date', '<=', $date)
+    //             ->where(function ($query) use ($date) {
+    //                 $query->where('end_date', '>=', $date)
+    //                     ->orwherenull('end_date');
+    //             });
+    //     });
+    // }
 
     // public static function getSectionsForEmployeeOnEachDayDuringPeriodMappedEachDayInPeriodToASection($employeeId, $from, $to)
     // {
