@@ -94,24 +94,25 @@ class AttendanceRouting extends Model
     }
     public static function getSeatsUnderMyDirectControl( $seat_ids_of_loggedinuser)
     {
-    
+
         $seats = AttendanceRouting::with(['viewable_seats', 'viewer_seat'])
         ->whereHas('viewer_seat', function($q) use ($seat_ids_of_loggedinuser){
             $q->wherein('id', $seat_ids_of_loggedinuser);
         })->get();
         \Log::info('seats');
-        $seats = $seats->pluck('viewable_seats.seat_id');
         \Log::info($seats);
-34343
+        $seats = $seats->pluck('viewable_seats')->flatten()->pluck('id');
+        \Log::info($seats);
+
         return $seats;
-        
+
     }
     public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser)
     {
         //also get reporting officer seat, controller, and all seat above this user in routing
         $forwardable_seats = [];
         $baseSeatId = $seatIdOfEmployeeController;
-        if(!$seatIdOfEmployeeController && $seat_ids_of_loggedinuser) 
+        if(!$seatIdOfEmployeeController && $seat_ids_of_loggedinuser)
             $baseSeatId = $seat_ids_of_loggedinuser;
         else if($seatIdOfEmployeeController)
             $forwardable_seats[] = $seatIdOfEmployeeController;
@@ -129,7 +130,7 @@ class AttendanceRouting extends Model
         \Log::info($forwardable_seats );
 
         if(count($forwardable_seats) ==0){
-            //suppose I am SO. I am not in routing. 
+            //suppose I am SO. I am not in routing.
             //So find my section's controller
             $controllers = Section::
                 wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
@@ -140,7 +141,7 @@ class AttendanceRouting extends Model
                // \Log::info($controllers );
 
            // $forwardable_seats = array_merge($forwardable_seats, $controllers->toArray());
-            
+
         }
         \Log::info('forwardable_seats');
         \Log::info($forwardable_seats );

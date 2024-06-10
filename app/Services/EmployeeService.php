@@ -387,7 +387,7 @@ class EmployeeService
         $date_to,
         $section_ids,
     ) {
-               
+
         if (!$section_ids) {
             return null;
         }
@@ -485,13 +485,13 @@ class EmployeeService
         if( $subordinate_seats_waydown){
             $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
         }
-        
+
 
         $emp_ids_of_seats = $seat_ids->count()  ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
             wherein('seat_id', $seat_ids)
-            ->get()->pluck('employee_id') 
+            ->get()->pluck('employee_id')
             : EmployeeToSeat::pluck('employee_id'); //get all emps for secretary
-        
+
        //\Log::info(' section_ids ' .  $section_ids->implode(','));
 
         if ($seat_ids->count()==0 && !$section_ids && !$employee_ids) {
@@ -502,14 +502,14 @@ class EmployeeService
             return null;
         }
 
-        $employee_ids_combined = $employee_ids ? 
-            array_merge( $emp_ids_of_seats->toArray(),  $employee_ids->toArray()) 
+        $employee_ids_combined = $employee_ids ?
+            array_merge( $emp_ids_of_seats->toArray(),  $employee_ids->toArray())
             :  $emp_ids_of_seats->toArray();
 
         //$employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
 
         \Log::info(' employee_ids_combined ' . implode(',', $employee_ids_combined));
-        
+
 
 
         //allow jayasree mam to see old nasar sir attendance
@@ -522,8 +522,10 @@ class EmployeeService
 
                 $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
             }])
-            ->wherehas('employeeSectionMapping', function ($q) use ($section_ids) {
-                $q->wherein('section_id', $section_ids);
+            ->wherehas('employeeSectionMapping', function ($q) use ($section_ids, $date_from) {
+                $q->wherein('section_id', $section_ids)
+                ->OnDate($date_from);
+
             })
             ->orwherein('id', $employee_ids_combined)
             ->get();
@@ -609,7 +611,7 @@ class EmployeeService
         $mycontrolledseats = AttendanceRouting::getSeatsUnderMyDirectControl($seat_ids_of_loggedinuser);
         $employeetoSeatmapping = EmployeeToSeat::with(['employee','seat'])->get()->mapWithKeys(function ($item) {
             return [$item->employee->id => $item->seat->id];
-        }); 
+        });
         \Log::info('$mycontrolledseats');
         \Log::info($mycontrolledseats);
 
@@ -622,14 +624,14 @@ class EmployeeService
             //\Log::info($employee);
 
             $employeeToSection = count($results->employee_section_mapping) ? $results->employee_section_mapping[0] : null;
-            $logged_in_user_is_controller = 
+            $logged_in_user_is_controller =
                 $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
-            
+
             if(!$logged_in_user_is_controller && $employeetoSeatmapping->has($employee->id) ){
                $logged_in_user_is_controller = $mycontrolledseats->contains($employeetoSeatmapping[$employee->id]);
                if($logged_in_user_is_controller) \Log::info('found ' . $employee->name);
             }
-                        
+
 
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
