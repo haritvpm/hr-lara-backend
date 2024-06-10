@@ -606,8 +606,14 @@ class EmployeeService
 
         $data = collect($employees);
 
+        $mycontrolledseats = AttendanceRouting::getSeatsUnderMyDirectControl($seat_ids_of_loggedinuser);
+        $employeetoSeatmapping = EmployeeToSeat::with(['employee','seat'])->get()->mapWithKeys(function ($item) {
+            return [$item->employee->id => $item->seat->id];
+        }); 
+        \Log::info('$mycontrolledseats');
+        \Log::info($mycontrolledseats);
 
-        $data = $data->unique('id')->map(function ($employee, $key) use ($seat_ids_of_loggedinuser, $userIsSuperiorOfficer) {
+        $data = $data->unique('id')->map(function ($employee, $key) use ($seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employee)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee_employee_to_designations)
@@ -616,7 +622,14 @@ class EmployeeService
             //\Log::info($employee);
 
             $employeeToSection = count($results->employee_section_mapping) ? $results->employee_section_mapping[0] : null;
-            $logged_in_user_is_controller = $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
+            $logged_in_user_is_controller = 
+                $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
+            
+            if(!$logged_in_user_is_controller && $employeetoSeatmapping->has($employee->id) ){
+               $logged_in_user_is_controller = $mycontrolledseats->contains($employeetoSeatmapping[$employee->id]);
+               if($logged_in_user_is_controller) \Log::info('found ' . $employee->name);
+            }
+                        
 
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such

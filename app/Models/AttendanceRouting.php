@@ -92,6 +92,20 @@ class AttendanceRouting extends Model
             return $seats;
         }
     }
+    public static function getSeatsUnderMyDirectControl( $seat_ids_of_loggedinuser)
+    {
+    
+        $seats = AttendanceRouting::with(['viewable_seats', 'viewer_seat'])
+        ->whereHas('viewer_seat', function($q) use ($seat_ids_of_loggedinuser){
+            $q->wherein('id', $seat_ids_of_loggedinuser);
+        })->get();
+        \Log::info('seats');
+        $seats = $seats->pluck('viewable_seats.seat_id');
+        \Log::info($seats);
+34343
+        return $seats;
+        
+    }
     public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser)
     {
         //also get reporting officer seat, controller, and all seat above this user in routing
