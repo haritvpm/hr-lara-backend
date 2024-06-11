@@ -19,6 +19,7 @@ use App\Services\PunchingCalcService;
 use App\Http\Requests\StoreLeafRequest;
 use App\Http\Requests\UpdateLeafRequest;
 use App\Http\Resources\Admin\LeafResource;
+use App\Models\AttendanceRouting;
 use App\Models\LeaveGroup;
 use App\Models\Section;
 use Symfony\Component\HttpFoundation\Response;
@@ -229,14 +230,7 @@ class LeaveApiController extends Controller
         //ok to proceed.
         \Log::info($request->all());
 
-        //find the owner seat which is the reporting officer of this employee's section
-        $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $me->employee_id)->first();
-        if (!$sectionMapping) {
-            return response()->json(
-                ['status' => 'error', 'message' => 'Employee is not mapped to any section'],
-                400
-            );
-        }
+
         $isCasualOrCompen = in_array($request->leave_type, ['casual', 'compen', 'compen_for_extra']);
 
         //casual and earned should not be adjacent
@@ -276,30 +270,42 @@ class LeaveApiController extends Controller
             }
         }
 
+        [$sectionOfficerSeat,$controllerSeat] = AttendanceRouting::getLeaveForwardableSeat($me->employee_id, $seat_ids_of_loggedinuser);
+        if( !$sectionOfficerSeat && !$controllerSeat){
+            return response()->json(
+                ['status' => 'error',  'message' => "Section officer or controller not found"],
+                400
+            );
+        }
+        \Log::info('sectionOfficerSeat');
+        \Log::info($sectionOfficerSeat);
+        \Log::info('controllerSeat');
+        \Log::info($controllerSeat);
+        \Log::info($seat_ids_of_loggedinuser);
+        // return response()->json(
+        //     ['status' => 'error',  'message' => "testtetefggdgdfgfdgfdgdfg"],
+        //     400
+        // );
 
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 
-        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionMapping, $isCasualOrCompen) {
+        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionOfficerSeat,$controllerSeat, $isCasualOrCompen) {
 
             //when SO, who is the reporting officer submits, has to submit to controller
-            $owner = $sectionMapping->section->seat_of_reporting_officer_id;
-            $owner_can_approve = !$isCasualOrCompen || $owner == $sectionMapping->section->seat_of_controlling_officer_id; //SO can approve earned, commuted, etc
+            $owner = $sectionOfficerSeat;
+            $owner_can_approve = !$isCasualOrCompen || $sectionOfficerSeat == $controllerSeat; //SO can approve earned, commuted, etc
             $isSOLoggedIn = $seat_ids_of_loggedinuser->contains($owner);
 
             if ($isSOLoggedIn) {
-                $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                $owner = $controllerSeat;
                 $owner_can_approve = true;
             }
             else
             if (!$isCasualOrCompen) {
-                $owner = $sectionMapping->section->seat_of_controlling_officer_id;
+                $owner = $controllerSeat;
                 $owner_can_approve = true;
             }
-            else
-            if ($isCasualOrCompen) {
-                //$owner = $sectionMapping->section->seat_of_controlling_officer_id;
-                //$owner_can_approve = true;
-            }
+
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
 
             if( !$leaf ) {
@@ -494,23 +500,8 @@ class LeaveApiController extends Controller
         //abort_if(Gate::denies('leaf_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $leaf = Leaf::findOrFail($request->id);
         //find the owner seat which is the reporting officer of this employee's section.
-        //not employeetosection, as the employee may have been transferrred
-        /*
-        $sectionMapping = EmployeeToSection::with('section')
-            ->OnDate(now()->format('Y-m-d'))
-            ->where('employee_id', $leaf->employee_id)->first();
+        //importnant: Not employeetosection, as the employee may have been transferrred
 
-        if (!$sectionMapping) {
-            \Log::info('Employee is not mapped to any section');
-
-            return response()->json(
-                [
-                    'status' => 'error',
-                    'message' => 'Employee is not mapped to any section'
-                ],
-                400
-            );
-        }*/
 
         $section = Section::where('seat_of_reporting_officer_id', $leaf->owner_seat)->first();
         if (!$section || ($section && !$section->seat_of_controlling_officer_id)) {
@@ -566,7 +557,7 @@ class LeaveApiController extends Controller
 
     public function precheckLeave(Request $request)
     {
-        \Log::info($request->all());
+        //\Log::info($request->all());
 
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
@@ -643,11 +634,11 @@ class LeaveApiController extends Controller
 
 
             if( $start_date ){
-                \Log::info('prefix_holidays');
+                //\Log::info('prefix_holidays');
                 $prefix_holidays = GovtCalendar::getAdjacentHolidays($start_date, true);
             }
             if( $end_date /*&& $start_date*/){
-                \Log::info('suffx_holidays');
+                //\Log::info('suffx_holidays');
 
                 $suffix_holidays = GovtCalendar::getAdjacentHolidays($end_date,false);
             }

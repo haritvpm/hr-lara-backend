@@ -24,7 +24,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
     //get current logged in user's flexi settings so he can request for changes
     public function getUserSettings()
     {
-       
+
        // $employee = Employee::find($employee_id);
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
         $employee_id = $me->employee_id;
@@ -64,8 +64,8 @@ class EmployeeToSectionApiControllerCustom extends Controller
 
 
         //also get reporting officer seat, controller, and all seat above this user in routing
-        $controller = $employee_section_map?->section?->seat_of_controlling_officer_id;
-       
+        $controller = $employee_section_map?->section?->seat_of_controlling_officer_id ;
+
 
         $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser);
 

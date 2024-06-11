@@ -72,20 +72,22 @@ class AttendanceRouting extends Model
         }
 
     }
-    public static function recurseGetSuperiorOfficers( $seatIdOfEmployeeController, &$seats)
+    public static function recurseGetSuperiorOfficers( $baseSeatIds, &$seats)
     {
         //$seatIdOfController is superior officer. no doubt about it.
         //so find parent attendance routing if any.
-        $seniorOfficer = AttendanceRouting::with('viewable_seats')
-        ->whereHas('viewable_seats', function($q) use ($seatIdOfEmployeeController){
-            $q->where('id', $seatIdOfEmployeeController);
-        })->first();
-
-
-        if($seniorOfficer)
+        $seniorOfficerseats = AttendanceRouting::with('viewable_seats')
+        ->whereHas('viewable_seats', function($q) use ($baseSeatIds){
+            $q->wherein('id', $baseSeatIds);
+        })->get();
+        $seniorOfficerseats = $seniorOfficerseats->pluck('viewer_seat_id')->flatten()->toArray();
+\Log::info("seniorOfficerseats");
+\Log::info($seniorOfficerseats);
+        if(count($seniorOfficerseats))
         {
-            array_push($seats, $seniorOfficer->viewer_seat_id);
-            return AttendanceRouting::recurseGetSuperiorOfficers($seniorOfficer->viewer_seat_id, $seats);
+           // $seniorOfficerseats = $seats->pluck('viewer_seats')->flatten()->pluck('id');
+            array_push($seats,...$seniorOfficerseats);
+            return AttendanceRouting::recurseGetSuperiorOfficers($seniorOfficerseats, $seats);
         }
         else
         {
@@ -111,9 +113,13 @@ class AttendanceRouting extends Model
     {
         //also get reporting officer seat, controller, and all seat above this user in routing
         $forwardable_seats = [];
-        $baseSeatId = $seatIdOfEmployeeController;
+        $baseSeatIds = [];
+
+        if($seatIdOfEmployeeController)
+            $baseSeatIds[] = $seatIdOfEmployeeController;
+        else
         if(!$seatIdOfEmployeeController && $seat_ids_of_loggedinuser)
-            $baseSeatId = $seat_ids_of_loggedinuser;
+            $baseSeatIds = $seat_ids_of_loggedinuser;
         else if($seatIdOfEmployeeController)
             $forwardable_seats[] = $seatIdOfEmployeeController;
 
@@ -121,13 +127,15 @@ class AttendanceRouting extends Model
         {
             $forwardable_seats[] = $seatIdOfSO;
         }
+        \Log::info('$baseSeatIds' );
+        \Log::info($baseSeatIds );
 
         //now find officer just above controller.
-        $routing = AttendanceRouting::recurseGetSuperiorOfficers($baseSeatId, $forwardable_seats);
+        $routing = AttendanceRouting::recurseGetSuperiorOfficers($baseSeatIds, $forwardable_seats);
         \Log::info('routes');
-        $forwardable_seats = array_unique($forwardable_seats);
+        $forwardable_seats = array_unique($forwardable_seats, SORT_REGULAR);
         $forwardable_seats = array_values($forwardable_seats);
-        \Log::info($forwardable_seats );
+       // \Log::info($forwardable_seats );
 
         if(count($forwardable_seats) ==0){
             //suppose I am SO. I am not in routing.
@@ -136,11 +144,9 @@ class AttendanceRouting extends Model
                 wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
                 ->where('seat_of_controlling_officer_id', '<>', 'seat_of_reporting_officer_id'  )
                 ->pluck('seat_of_controlling_officer_id');
-               // \Log::info('$seat_ids_of_loggedinuser' );
-               // \Log::info($seat_ids_of_loggedinuser );
-               // \Log::info($controllers );
 
-           // $forwardable_seats = array_merge($forwardable_seats, $controllers->toArray());
+
+            $forwardable_seats = array_merge($forwardable_seats, $controllers->toArray());
 
         }
         \Log::info('forwardable_seats');
@@ -159,6 +165,52 @@ class AttendanceRouting extends Model
         })->sortBy('level')->values();
 
         return $seats;
+
+
+    }
+
+    public static function getLeaveForwardableSeat( $employee_id, $seat_ids_of_loggedinuser )
+    {
+         //find the owner seat which is the reporting officer of this employee's section
+        $sectionOfficerSeat = $controllerSeat = null;
+
+        $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $employee_id)->first();
+        if ($sectionMapping) {
+            $sectionOfficerSeat = $sectionMapping->section->seat_of_reporting_officer_id;
+            $controllerSeat = $sectionMapping->section->seat_of_controlling_officer_id;
+            return [
+                $sectionOfficerSeat,$controllerSeat
+            ];
+
+        }
+        //employee might be like section officer who has no routing but is in section
+
+        $section = Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->first();
+        if($section)
+        {
+            $sectionOfficerSeat = $section->seat_of_reporting_officer_id;
+            $controllerSeat = $section->seat_of_controlling_officer_id;
+            return [
+                $sectionOfficerSeat,$controllerSeat
+            ];
+        }
+
+        //employee might be like undersec who is not in any section. So find his seat.
+
+        $seniorOfficer = AttendanceRouting::with('viewable_seats')
+        ->whereHas('viewable_seats', function($q) use ($seat_ids_of_loggedinuser){
+            $q->wherein('id', $seat_ids_of_loggedinuser);
+        })->first();
+        $seniorOfficerseat = $seniorOfficer?->pluck('viewer_seat_id')->first();
+
+        if($seniorOfficerseat)
+        {
+            $sectionOfficerSeat =  $controllerSeat = $seniorOfficerseat;
+        }
+
+        return [
+            $sectionOfficerSeat,$controllerSeat
+        ];
 
 
     }

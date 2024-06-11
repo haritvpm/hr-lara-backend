@@ -12,6 +12,7 @@ use App\Models\OfficeTime;
 use App\Models\GovtCalendar;
 use App\Models\PunchingTrace;
 use App\Models\EmployeeToFlexi;
+use App\Models\EmployeeToSeat;
 use App\Models\YearlyAttendance;
 use App\Models\EmployeeToSection;
 use App\Models\Exemption;
@@ -68,6 +69,8 @@ class PunchingCalcService
             $aadhaar_ids  = $all_punchingtraces->pluck('aadhaarid');
             //also get all emloyee to section mappings and get those employees
             $all_section_emp_ids = EmployeeToSection::duringPeriod( $date,$date )->pluck('employee_id');
+            $all_seat_emp_ids = EmployeeToSeat::pluck('employee_id');
+            $all_section_emp_ids = $all_section_emp_ids->merge($all_seat_emp_ids)->unique();
             $aadhaar_ids_of_section_emps = Employee::wherein('id', $all_section_emp_ids)->pluck('aadhaarid');
             $aadhaar_ids = $aadhaar_ids->merge($aadhaar_ids_of_section_emps)->unique();
         }
@@ -347,7 +350,7 @@ class PunchingCalcService
             $can_take_casual_fn,
             $can_take_casual_an
         );
-        // if($aadhaarid == '17028956'){ 
+        // if($aadhaarid == '17028956'){
         //    \Log::info('computer_hint ' . $computer_hint);
         //    \Log::info( $calender);
 
@@ -469,14 +472,14 @@ class PunchingCalcService
                     })
                     ->where('approval_status',1)
                     ->first();
-                
+
                 if( !$exempted ) {
                    \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
                    // $flexi_15minutes = 0; commented as we only check total hours in OT now
                 }
             }
         }
-            
+
 
         //use today's date. imagine legislation punching out next day. our flexiend is based on today
         //get employee time group. now assume normal

@@ -452,6 +452,10 @@ class EmployeeService
             return null;
         }
 
+        $section_officers_controlled_by_me = $sections_controlled_by_me->pluck('seat_of_reporting_officer_id');
+        $subordinate_seats_controlled_by_me =  $subordinate_seats_controlled_by_me->concat($section_officers_controlled_by_me)->unique();
+        $section_officers_waydown = $sections_waydown->pluck('seat_of_reporting_officer_id');
+        $subordinate_seats_waydown = $subordinate_seats_waydown->concat($section_officers_waydown)->unique();
 
         $sections_under_charge = $sections_controlled_by_me->concat($sections_waydown)->unique();
         //\Log::info(' sections_under_charge ' . $sections_under_charge);
@@ -486,10 +490,17 @@ class EmployeeService
             $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
         }
 
+        $emp_ids_of_subordinate_seats_controlled_by_me =  EmployeeToSeat::wherein('seat_id', $subordinate_seats_controlled_by_me)
+                                                            ->pluck('employee_id');
 
-        $emp_ids_of_seats = $seat_ids->count()  ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
-            wherein('seat_id', $seat_ids)
-            ->get()->pluck('employee_id')
+        $emp_ids_of_subordinate_seats_waydown =  EmployeeToSeat::wherein('seat_id', $subordinate_seats_waydown)
+                                                            ->pluck('employee_id');
+
+        // $emp_ids_of_seats = $seat_ids->count()  ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
+        //     wherein('seat_id', $seat_ids)
+        //     ->get()->pluck('employee_id')
+        //     : EmployeeToSeat::pluck('employee_id'); //get all emps for secretary
+        $emp_ids_of_seats = $seat_ids->count()  ? $emp_ids_of_subordinate_seats_controlled_by_me->concat($emp_ids_of_subordinate_seats_waydown)
             : EmployeeToSeat::pluck('employee_id'); //get all emps for secretary
 
        //\Log::info(' section_ids ' .  $section_ids->implode(','));
@@ -530,12 +541,13 @@ class EmployeeService
             ->orwherein('id', $employee_ids_combined)
             ->get();
 
-        if ($employee_ids_combined) {
 
             foreach ($employees as $emp) {
-                $emp->setAttribute('employeeLoadedDirectly', in_array($emp->id, $employee_ids_combined));
+               $emp->setAttribute('employeeLoadedDirectly', in_array($emp->id, $employee_ids->toArray()));
+               $emp->setAttribute('subordinate_seat_controlled_by_me', in_array($emp->id, $emp_ids_of_subordinate_seats_controlled_by_me->toArray()));
+               $emp->setAttribute('subordinate_seat_waydown', in_array($emp->id, $emp_ids_of_subordinate_seats_waydown->toArray()));
             }
-        }
+
 
         return $employees && $employees->count() ? $employees : null;
     }
@@ -615,7 +627,8 @@ class EmployeeService
         \Log::info('$mycontrolledseats');
         \Log::info($mycontrolledseats);
 
-        $data = $data->unique('id')->map(function ($employee, $key) use ($seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
+        $my_emp_id = auth()->user()->employee_id;
+        $data = $data->unique('id')->map(function ($employee, $key) use ($my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employee)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee_employee_to_designations)
@@ -629,10 +642,16 @@ class EmployeeService
 
             if(!$logged_in_user_is_controller && $employeetoSeatmapping->has($employee->id) ){
                $logged_in_user_is_controller = $mycontrolledseats->contains($employeetoSeatmapping[$employee->id]);
-               if($logged_in_user_is_controller) \Log::info('found ' . $employee->name);
+              // if($logged_in_user_is_controller) \Log::info('found ' . $employee->name);
             }
-
-
+            //since we also load ourselves, we need to check if we are controller of our own seat
+            $this_is_me = $employee->id == $my_emp_id;
+            if(!$logged_in_user_is_controller && !$this_is_me){
+                $logged_in_user_is_controller = $employee?->subordinate_seat_controlled_by_me ?? false;
+            }
+            if($userIsSuperiorOfficer && $this_is_me){
+                $userIsSuperiorOfficer = false;
+            }
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
             //as that does not mean that the employee is a subordinate of the logged in user
