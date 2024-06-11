@@ -423,15 +423,17 @@ class EmployeeService
         $employee_ids,
         $all_subordinates = true
     ) {
-        // \Log::info('getEmployeeSectionMappingForEmployees seat_ids ' . $seat_ids);
+        // \Log::info('subordinate_seats_waydown ');
+      //   \Log::info($subordinate_seats_waydown);
 
 
         $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
 
         $sections_controlled_by_me = $all_subordinates ?
 
-            Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
-            ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
+            Section::wherein('seat_of_controlling_officer_id', $seat_ids_of_loggedinuser)
+
+            ->orwherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
             ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
             :
 
@@ -440,6 +442,8 @@ class EmployeeService
         $sections_waydown = $all_subordinates ?
 
             Section::wherein('seat_of_controlling_officer_id', $subordinate_seats_waydown)
+            ->orwherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
+            ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
             ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_waydown)
             ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
             :
@@ -490,11 +494,10 @@ class EmployeeService
             $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
         }
 
-        $emp_ids_of_subordinate_seats_controlled_by_me =  EmployeeToSeat::wherein('seat_id', $subordinate_seats_controlled_by_me)
-                                                            ->pluck('employee_id');
+        $emp_ids_of_subordinate_seats_controlled_by_me =  $subordinate_seats_controlled_by_me ? EmployeeToSeat::wherein('seat_id', $subordinate_seats_controlled_by_me)->pluck('employee_id') : collect();
 
-        $emp_ids_of_subordinate_seats_waydown =  EmployeeToSeat::wherein('seat_id', $subordinate_seats_waydown)
-                                                            ->pluck('employee_id');
+        $emp_ids_of_subordinate_seats_waydown =  $subordinate_seats_waydown ? EmployeeToSeat::wherein('seat_id', $subordinate_seats_waydown)
+                                                            ->pluck('employee_id') : collect();
 
         // $emp_ids_of_seats = $seat_ids->count()  ? EmployeeToSeat:: //duringPeriod($date_from, $date_to)->
         //     wherein('seat_id', $seat_ids)
@@ -543,9 +546,11 @@ class EmployeeService
 
 
             foreach ($employees as $emp) {
-               $emp->setAttribute('employeeLoadedDirectly', in_array($emp->id, $employee_ids->toArray()));
-               $emp->setAttribute('subordinate_seat_controlled_by_me', in_array($emp->id, $emp_ids_of_subordinate_seats_controlled_by_me->toArray()));
-               $emp->setAttribute('subordinate_seat_waydown', in_array($emp->id, $emp_ids_of_subordinate_seats_waydown->toArray()));
+               if($employee_ids){
+                 $emp->setAttribute('employeeLoadedDirectly', in_array($emp->id, $employee_ids->toArray()));
+               }
+               $emp->setAttribute('subordinate_seat_controlled_by_me', $emp_ids_of_subordinate_seats_controlled_by_me->contains($emp->id));
+               $emp->setAttribute('subordinate_seat_waydown', $emp_ids_of_subordinate_seats_waydown->contains($emp->id));
             }
 
 
