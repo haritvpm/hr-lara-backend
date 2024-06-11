@@ -490,10 +490,13 @@ class EmployeeService
     ) {
 
         $seat_ids = collect($subordinate_seats_controlled_by_me);
+       
+        //$seat_ids = collect($subordinate_seats_controlled_by_me);
         if( $subordinate_seats_waydown){
             $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
         }
 
+        $my_emp_id = auth()->user()->employee_id;
         $emp_ids_of_subordinate_seats_controlled_by_me =  $subordinate_seats_controlled_by_me ? EmployeeToSeat::wherein('seat_id', $subordinate_seats_controlled_by_me)->pluck('employee_id') : collect();
 
         $emp_ids_of_subordinate_seats_waydown =  $subordinate_seats_waydown ? EmployeeToSeat::wherein('seat_id', $subordinate_seats_waydown)
@@ -510,7 +513,13 @@ class EmployeeService
 
         if ($seat_ids->count()==0 && !$section_ids && !$employee_ids) {
             //view all for secretary
-            $section_ids = Section::all()->pluck('id');
+            //$all_sections = Section::all();
+            //$section_ids = $all_sections->pluck('id');
+            $sections_controlled_by_me = Section::wherein('seat_of_controlling_officer_id', $seat_ids_of_loggedinuser)
+                ->get();
+            $sections_waydown = Section::wherenotin('seat_of_controlling_officer_id', $seat_ids_of_loggedinuser)->get();
+            $section_ids = $sections_controlled_by_me->pluck('id')->concat($sections_waydown->pluck('id'))->unique();
+
         } else
         if (!$emp_ids_of_seats && !$section_ids && !$employee_ids) {
             return null;
@@ -519,12 +528,17 @@ class EmployeeService
         $employee_ids_combined = $employee_ids ?
             array_merge( $emp_ids_of_seats->toArray(),  $employee_ids->toArray())
             :  $emp_ids_of_seats->toArray();
+        if($my_emp_id){
+            $employee_ids_combined[] = $my_emp_id;
+        }
 
         //$employee_ids_combined = $employee_ids ? $employee_ids->toArray() : [];
 
         \Log::info(' employee_ids_combined ' . implode(',', $employee_ids_combined));
 
 
+        //$all_reporting_officers = $sections_controlled_by_me->pluck('seat_of_reporting_officer_id')
+        //            ->concat($sections_waydown->pluck('seat_of_reporting_officer_id'))->unique();
 
         //allow jayasree mam to see old nasar sir attendance
         $today = Carbon::today()->format('Y-m-d');
@@ -536,6 +550,7 @@ class EmployeeService
 
                 $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
             }])
+            ->with(['employeeToSeatmapping'])
             ->wherehas('employeeSectionMapping', function ($q) use ($section_ids, $date_from) {
                 $q->wherein('section_id', $section_ids)
                 ->OnDate($date_from);
@@ -551,6 +566,38 @@ class EmployeeService
                }
                $emp->setAttribute('subordinate_seat_controlled_by_me', $emp_ids_of_subordinate_seats_controlled_by_me->contains($emp->id));
                $emp->setAttribute('subordinate_seat_waydown', $emp_ids_of_subordinate_seats_waydown->contains($emp->id));
+               //if( $emp['employee_to_seatmapping'] )
+               //section officers are not added to a section. so they will EmployeeToSectionMapping
+               //in order to show their section, we need to find their seat and then find the section
+               {
+                   $emp_json = json_decode(json_encode($emp));
+                   $emp_seats = $emp_json?->employee_to_seatmapping;
+                   $emp_seat = null;
+                   if(count($emp_seats)){
+                       $emp_seat = $emp_seats[0]->seat_id;
+                   }
+                 
+                   if($emp_seat){
+                   \Log::info('found emp_seat');
+                   \Log::info($emp_seat);
+
+                    $section = null;
+                    if($sections_controlled_by_me)
+                        $section = $sections_controlled_by_me->where('seat_of_reporting_officer_id', $emp_seat)->first();
+                    if(!$section && $sections_waydown){
+                        $section = $sections_waydown->where('seat_of_reporting_officer_id', $emp_seat)->first();
+                    }
+
+                    if( $section){
+                           \Log::info('found section');
+                           \Log::info($section);
+
+
+                        $emp->setAttribute('section_id', $section->id);
+                        $emp->setAttribute('section_name', $section->name);
+                    }
+                   }
+               }
             }
 
 
@@ -668,8 +715,8 @@ class EmployeeService
                 'aadhaarid' => $employee->aadhaarid,
                 'attendance_book_id' => $employeeToSection?->attendance_book_id,
                 'attendance_book' => $employeeToSection?->attendance_book,
-                'section_id' => $employeeToSection?->section_id,
-                'section_name' => $employeeToSection?->section->name,
+                'section_id' => $employeeToSection?->section_id || $employee['section_id'],
+                'section_name' => $employeeToSection?->section->name ?? $employee['section_name'],
                 'works_nights_during_session' => $employeeToSection?->section->works_nights_during_session,
                 'seat_of_controlling_officer_id' => $employeeToSection?->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,

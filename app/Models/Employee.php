@@ -134,6 +134,10 @@ class Employee extends Model
     {
         return $this->hasMany(EmployeeToSection::class, 'employee_id', 'id');
     }
+    public function employeeToSeatmapping()
+    {
+        return $this->hasMany(EmployeeToSeat::class, 'employee_id', 'id');
+    }
     public function employeeToFlexi()
     {
         return $this->hasMany(EmployeeToFlexi::class, 'employee_id', 'id');
