@@ -115,13 +115,15 @@ class AttendanceRouting extends Model
         $forwardable_seats = [];
         $baseSeatIds = [];
 
-        if($seatIdOfEmployeeController)
+        if($seatIdOfEmployeeController){
             $baseSeatIds[] = $seatIdOfEmployeeController;
+            $forwardable_seats[] = $seatIdOfEmployeeController;
+        }
         else
         if(!$seatIdOfEmployeeController && $seat_ids_of_loggedinuser)
             $baseSeatIds = $seat_ids_of_loggedinuser;
-        else if($seatIdOfEmployeeController)
-            $forwardable_seats[] = $seatIdOfEmployeeController;
+        
+           
 
         if($seatIdOfSO)
         {
