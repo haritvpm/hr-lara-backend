@@ -282,10 +282,10 @@ class LeaveApiController extends Controller
         \Log::info('controllerSeat');
         \Log::info($controllerSeat);
         \Log::info($seat_ids_of_loggedinuser);
-        // return response()->json(
-        //     ['status' => 'error',  'message' => "testtetefggdgdfgfdgfdgdfg"],
-        //     400
-        // );
+        return response()->json(
+            ['status' => 'error',  'message' => "testtetefggdgdfgfdgfdgdfg"],
+            400
+        );
 
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 

@@ -178,6 +178,7 @@ class AttendanceRouting extends Model
 
         $sectionMapping = EmployeeToSection::with('section')->OnDate(now()->format('Y-m-d'))->where('employee_id', $employee_id)->first();
         if ($sectionMapping) {
+            //\Log::info('sectionMapping');
             $sectionOfficerSeat = $sectionMapping->section->seat_of_reporting_officer_id;
             $controllerSeat = $sectionMapping->section->seat_of_controlling_officer_id;
             return [
@@ -187,9 +188,12 @@ class AttendanceRouting extends Model
         }
         //employee might be like section officer who has no routing but is in section
 
-        $section = Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->first();
+        $section = Section::where('type', 'NORMAL')
+        ->wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->first();
         if($section)
         {
+            //\Log::info('section');
+
             $sectionOfficerSeat = $section->seat_of_reporting_officer_id;
             $controllerSeat = $section->seat_of_controlling_officer_id;
             return [
@@ -203,7 +207,10 @@ class AttendanceRouting extends Model
         ->whereHas('viewable_seats', function($q) use ($seat_ids_of_loggedinuser){
             $q->wherein('id', $seat_ids_of_loggedinuser);
         })->first();
-        $seniorOfficerseat = $seniorOfficer?->pluck('viewer_seat_id')->first();
+       // \Log::info('seniorOfficer');
+        //\Log::info($seniorOfficer);
+       // $seniorOfficerseat = $seniorOfficer?->pluck('viewer_seat_id')->first();
+        $seniorOfficerseat = $seniorOfficer?->viewer_seat_id;
 
         if($seniorOfficerseat)
         {
