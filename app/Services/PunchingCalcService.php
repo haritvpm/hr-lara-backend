@@ -405,9 +405,11 @@ class PunchingCalcService
 
             //extra time is only calculated if there is no leave
             $extra_sec = $extra_morning + $extra_evening;
+            if($calender->session_id){ //no extra time during session
+                $extra_sec = 0;
+            }
             $emp_new_punching_data['extra_sec'] = $extra_sec;
             $emp_new_punching_data['extra_str'] = (int)($extra_sec / 60);
-
         }
 
         //even i punched, can be unauthorised if punched after 11.30 am
@@ -458,13 +460,10 @@ class PunchingCalcService
 
         //also if this employee is not exempted for 11thsession, then no flexi
         //as we have not implemented flexi in OT softwre
-        if($emp_flexi_time){
-            $session_start = Carbon::createFromDate(2024, 06, 01, 'Asia/Kolkata');
-            $session_end = Carbon::createFromDate(2024, 07, 15, 'Asia/Kolkata');
-            $this_date = Carbon::createFromFormat( 'Y-m-d', $date);
-
-            if( $this_date->gte( $session_start  ) &&  $this_date->lte( $session_end ))
+        /*if($emp_flexi_time){
+            //$this_date = Carbon::createFromFormat( 'Y-m-d', $date);
             {
+
                 $exempted = Exemption::with('session')
                     ->where('employee_id', $emp_flexi_time->employee_id)
                     ->whereHas('session', function($q){
@@ -477,7 +476,13 @@ class PunchingCalcService
                    \Log::info( 'Not exempted $employee_id:' . $emp_flexi_time->employee_id);
                    // $flexi_15minutes = 0; commented as we only check total hours in OT now
                 }
+
+
             }
+        }*/
+        //no flexi for all during session period
+        if($calender->session_id){
+            $flexi_15minutes = 0;
         }
 
 
