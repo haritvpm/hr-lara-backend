@@ -490,7 +490,7 @@ class EmployeeService
     ) {
 
         $seat_ids = collect($subordinate_seats_controlled_by_me);
-       
+
         //$seat_ids = collect($subordinate_seats_controlled_by_me);
         if( $subordinate_seats_waydown){
             $seat_ids = $seat_ids->concat($subordinate_seats_waydown)->unique();
@@ -542,7 +542,7 @@ class EmployeeService
 
         //allow jayasree mam to see old nasar sir attendance
         $today = Carbon::today()->format('Y-m-d');
-        $employees = Employee::with(['employeeSectionMapping' => function ($q) use ($today) {
+        $employees = Employee::with(['employeeSectionMapping' => function ($q) use ($today, $date_from) {
             $q->onDate($today);
         }])
             ->with(['employeeSectionMapping.attendance_book', 'employeeSectionMapping.section', 'seniority'])
@@ -551,7 +551,7 @@ class EmployeeService
                 $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
             }])
             ->with(['employeeToSeatmapping'])
-            ->wherehas('employeeSectionMapping', function ($q) use ($section_ids, $date_from) {
+            ->wherehas('employeeSectionMapping', function ($q) use ($section_ids, $date_from, $today) {
                 $q->wherein('section_id', $section_ids)
                 ->OnDate($date_from);
 
@@ -576,7 +576,7 @@ class EmployeeService
                    if(count($emp_seats)){
                        $emp_seat = $emp_seats[0]->seat_id;
                    }
-                 
+
                    if($emp_seat){
                    \Log::info('found emp_seat');
                    \Log::info($emp_seat);
@@ -688,7 +688,7 @@ class EmployeeService
 
             //\Log::info($employee);
 
-            $employeeToSection = count($results->employee_section_mapping) ? $results->employee_section_mapping[0] : null;
+            $employeeToSection = count($results->employee_section_mapping) ? collect($results->employee_section_mapping)->sortByDesc('start_date')->first() : null;
             $logged_in_user_is_controller =
                 $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_controlling_officer_id) ?? false;
 

@@ -79,7 +79,7 @@ class EmployeeToSection extends Model
                 ->where(function ($query) use ($date) {
                     $query->where('end_date', '>=', $date)
                         ->orwherenull('end_date');
-                });
+                })->orderBy('start_date', 'asc');
         });
     }
     public function scopeDuringPeriod($query, $date_from, $date_to)
