@@ -567,6 +567,8 @@ class LeaveApiController extends Controller
                 [
                     'errors' =>  [],
                     'warnings' => [],
+                    'allholidays' => []
+
                 ],
                 200
             );
@@ -656,6 +658,7 @@ class LeaveApiController extends Controller
                 'warnings' => $warnings,
                 'prefix_holidays' => $prefix_holidays,
                 'suffix_holidays' => $suffix_holidays,
+                'allholidays' => $holidays
             ],
             200
         );
