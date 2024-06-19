@@ -203,6 +203,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $isSinglePunch= $request?->isSinglePunch ?? false;
         $single_punch_type =  $isSinglePunch ? $request?->single_punch_type : null;
         $regulariseSinglePunch = $request?->regulariseSinglePunch ?? false;
+       
 
         //check if logged in user is controller for this employee
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
@@ -242,6 +243,11 @@ class PunchingApiEmployeeMontlyController extends Controller
                 }
             }
         }
+        
+        if($regulariseSinglePunch ){
+            $hint = 'clear'; //remove unauthorized hint
+        }
+
         //since this might be first time, insert if not exists
         $punching = Punching::updateOrCreate(
             ['aadhaarid' => $aadhaarid, 'date' => $request->date],
