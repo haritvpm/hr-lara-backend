@@ -481,8 +481,9 @@ class PunchingCalcService
             }
         }*/
         //no flexi for all during session period
-        if($calender->session_id){
-            $flexi_15minutes = 0;
+        //if($calender->session_id)
+        {
+          //  $flexi_15minutes = 0;
         }
 
 
