@@ -203,12 +203,21 @@ class AttendanceRouting extends Model
 
         //employee might be like undersec who is not in any section. So find his seat.
 
-        $seniorOfficer = AttendanceRouting::with('viewable_seats')
+        //sorting by level will give the lowestr most officer
+        //example JS has SS and secretary in routing (secretary to see JS's attendance)
+        //so return SS's seat
+        $seniorOfficer = AttendanceRouting::with(['viewable_seats','viewer_seat'])
         ->whereHas('viewable_seats', function($q) use ($seat_ids_of_loggedinuser){
             $q->wherein('id', $seat_ids_of_loggedinuser);
-        })->first();
-       // \Log::info('seniorOfficer');
-        //\Log::info($seniorOfficer);
+        })
+        ->get()
+        ->sortBy(function($route, $key) {
+            return $route->viewer_seat->level;
+          })
+        ->first();
+
+        \Log::info('seniorOfficer');
+        \Log::info($seniorOfficer);
        // $seniorOfficerseat = $seniorOfficer?->pluck('viewer_seat_id')->first();
         $seniorOfficerseat = $seniorOfficer?->viewer_seat_id;
 
