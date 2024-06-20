@@ -38,6 +38,25 @@ class EmployeeService
 
     //     return [$isPartime, $isFulltime,  $isWatchnward,  $isNormal];
     // }
+    private function createDesigMapping($emp,  $aebas_desig_to_ourId, $empployee)
+    {
+        $designation_id = null;
+        if (!array_key_exists($emp['designation'], $aebas_desig_to_ourId)) {
+            $designation_id = Designation::updateOrCreate(['designation' => $emp['designation']])->id;
+        } else {
+            $designation_id = $aebas_desig_to_ourId[$emp['designation']];
+        }
+
+        EmployeeToDesignation::create(
+            [
+
+                'employee_id' => $empployee->id,
+                'designation_id' => $designation_id,
+                'start_date' => Carbon::parse($emp['creation_date'])->format('Y-m-d'),
+
+            ]
+        );
+    }
 
     public function syncEmployeeDataFromAebas()
     {
@@ -183,40 +202,31 @@ class EmployeeService
                 ]);
 
                 //designation does not exist. create it
-                $designation_id = null;
-                if (!array_key_exists($emp['designation'], $aebas_desig_to_ourId)) {
-                    $designation_id = Designation::updateOrCreate(['designation' => $emp['designation']])->id;
-                } else {
-                    $designation_id = $aebas_desig_to_ourId[$emp['designation']];
-                }
-
-                //has other unique fields which will cause errors on db save if not set
-                // if($emp['email']){
-                //     $emp->employeeExtra()->create([
-                //         'email' => $emp['email'],
-                //     ]);
-                // }
-
-                EmployeeToDesignation::create(
-                    [
-
-                        'employee_id' => $empployee->id,
-                        'designation_id' => $designation_id,
-                        'start_date' => Carbon::parse($emp['creation_date'])->format('Y-m-d'),
-
-                    ]
-                );
+                $this->createDesigMapping($emp,  $aebas_desig_to_ourId, $empployee);
+                
             } else {
 
                 $empployee->update([
                     'srismt' =>  $gender == 'M' ? 'Sri' : 'Smt',
                 ]);
 
+                // if('88295424' == $aadhaarid){
+                //     \Log::info('88295424 found');
+                //     \Log::info($empployee);
+                // }
+
                 // if($email){
                 //     $emp->employeeExtra()->updateOrCreate([
                 //         'email' => $email,
                 //     ]);
                 // }
+                //check if employee has designation mapping
+                $emptodesig = EmployeeToDesignation::where('employee_id', $empployee->id)->first();
+                if (!$emptodesig) {
+                    \Log::info('designation not found for ' . $empployee->name);
+                    $this->createDesigMapping($emp,  $aebas_desig_to_ourId, $empployee);
+                }
+
             }
         }
 

@@ -702,7 +702,7 @@ class PunchingCalcService
             $emps = Employee::with('grace_group')
             ->with(['employeeEmployeeToDesignations' => function ($q) use ($start_date) {
 
-                $q->DesignationDuring($start_date)->with(['designation', 'designation.default_time_group']);
+                $q->DesignationDuring($start_date->format('Y-m-d'))->with(['designation', 'designation.default_time_group']);
             }])
             ->wherein('aadhaarid', $aadhaar_ids)->get();
             $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
@@ -814,8 +814,20 @@ class PunchingCalcService
 
                 //get designation of this employee, and get his timegroupname
                 //if parttime, get default from timegroupname
-                $designation = $emp->employeeEmployeeToDesignations?->first()->designation;
-                //\Log::info($designation);
+                // $employee  = Employee::with('grace_group')
+                // ->with(['employeeEmployeeToDesignations' => function ($q) use ($start_date) {
+        
+                //     $q->DesignationDuring($start_date->format('Y-m-d'))->with(['designation', 'designation.default_time_group']);
+                // }])
+                // ->where('aadhaarid', $aadhaarid)->first();
+
+
+                if(!$emp->employeeEmployeeToDesignations()?->first()){
+                    \Log::info('No designation for aadhaarid:' . $aadhaarid);
+                    \Log::info($emp);
+                }
+                $designation = $emp->employeeEmployeeToDesignations()?->first()->designation;
+                \Log::info($designation);
                 //\Log::info($employee->employeeEmployeeToDesignations?->first()->designation);
                 $default_designation_time_group_name = $designation?->default_time_group?->groupname ?? 'default';
 
