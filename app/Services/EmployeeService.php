@@ -578,8 +578,8 @@ class EmployeeService
                    }
 
                    if($emp_seat){
-                   \Log::info('found emp_seat');
-                   \Log::info($emp_seat);
+                   //\Log::info('found emp_seat');
+                   //\Log::info($emp_seat);
 
                     $section = null;
                     if($sections_controlled_by_me)
@@ -589,8 +589,8 @@ class EmployeeService
                     }
 
                     if( $section){
-                           \Log::info('found section');
-                           \Log::info($section);
+                           //\Log::info('found section');
+                           //\Log::info($section);
 
 
                         $emp->setAttribute('section_id', $section->id);

@@ -36,6 +36,8 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $emp_flexi_time_upcoming = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
 
 
+        //Section Officer and above does not have section mapping
+        //so get the default time group from designation
         $employee_section_map = EmployeeToSection::onDate($today)
         ->with(['employee'])
         //->with(['employee', 'attendance_book', 'section', 'employee.seniority'])
@@ -46,15 +48,29 @@ class EmployeeToSectionApiControllerCustom extends Controller
         ->where('employee_id', $employee_id)
         ->first();
 
+        $employee  = Employee::with('grace_group')
+        ->with(['employeeEmployeeToDesignations' => function ($q) use ($today) {
 
+            $q->DesignationDuring($today)->with(['designation', 'designation.default_time_group']);
+        }])
+        ->where('id', $employee_id)->first();
+        //\Log::info('employee');
+        $designation = $employee->employeeEmployeeToDesignations?->first()->designation;
+        //\Log::info($designation);
+        //\Log::info($employee->employeeEmployeeToDesignations?->first()->designation);
+        $default_time_group_name = $designation?->default_time_group?->groupname ?? 'default';
+        //\Log::info('default_time_group');
+       // \Log::info($default_time_group_name);
 
-        $time_group = $employee_section_map?->designation?->default_time_group?->groupname ?? 'default';
+       // $time_group = $default_time_group_name;
             //$emp_office_time = OfficeTime::where('groupname', $time_group)->first();
-
+        \Log::info('time group');
+        //\Log::info($employee_section_map);
+        
         $data =
 
              [
-                'time_group' => $employee_section_map?->designation?->default_time_group?->groupname ?? 'default',
+                'time_group' => $default_time_group_name,
                 //'seniority' => $emp->employee?->seniority?->sortindex,
                 'flexi_minutes_current' => $emp_flexi_time?->flexi_minutes ?? 0,
                 'flexi_time_wef_current' => $emp_flexi_time?->with_effect_from ?? null,

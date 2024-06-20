@@ -696,8 +696,15 @@ class PunchingCalcService
         }
         // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
         //if( $aadhaar_to_empIds == null)
+
+        
         {
-            $emps = Employee::with('grace_group')->wherein('aadhaarid', $aadhaar_ids)->get();
+            $emps = Employee::with('grace_group')
+            ->with(['employeeEmployeeToDesignations' => function ($q) use ($start_date) {
+
+                $q->DesignationDuring($start_date)->with(['designation', 'designation.default_time_group']);
+            }])
+            ->wherein('aadhaarid', $aadhaar_ids)->get();
             $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
         }
 
@@ -805,7 +812,14 @@ class PunchingCalcService
                 $total_grace_till_this_date = 0;
                 $emp = $emps->where('aadhaarid', $aadhaarid)->first();
 
-                $emp_grace_group_title = $emp?->grace_group?->title ?? 'default';
+                //get designation of this employee, and get his timegroupname
+                //if parttime, get default from timegroupname
+                $designation = $emp->employeeEmployeeToDesignations?->first()->designation;
+                //\Log::info($designation);
+                //\Log::info($employee->employeeEmployeeToDesignations?->first()->designation);
+                $default_designation_time_group_name = $designation?->default_time_group?->groupname ?? 'default';
+
+                $emp_grace_group_title = $emp?->grace_group?->title ?? $default_designation_time_group_name;
                 $grace_group = $grace_groups->where('title', $emp_grace_group_title)->first();
 
                 $grace_mins = $grace_group->minutes ?? 300;

@@ -16,7 +16,7 @@ class FlexiApplicationController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('flexi_application_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $flexiApplications = FlexiApplication::with(['employee'])->get();
 
@@ -25,7 +25,7 @@ class FlexiApplicationController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('flexi_application_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -41,7 +41,7 @@ class FlexiApplicationController extends Controller
 
     public function edit(FlexiApplication $flexiApplication)
     {
-        abort_if(Gate::denies('flexi_application_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -59,7 +59,7 @@ class FlexiApplicationController extends Controller
 
     public function show(FlexiApplication $flexiApplication)
     {
-        abort_if(Gate::denies('flexi_application_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $flexiApplication->load('employee');
 
@@ -68,7 +68,7 @@ class FlexiApplicationController extends Controller
 
     public function destroy(FlexiApplication $flexiApplication)
     {
-        abort_if(Gate::denies('flexi_application_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $flexiApplication->delete();
 
