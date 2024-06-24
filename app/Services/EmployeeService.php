@@ -556,9 +556,9 @@ class EmployeeService
             $q->onDate($today);
         }])
             ->with(['employeeSectionMapping.attendance_book', 'employeeSectionMapping.section', 'seniority'])
-            ->with(['employeeEmployeeToDesignations' => function ($q) use ($date_from) {
+            ->with(['employeeEmployeeToDesignations' => function ($q) use ($date_from, $today) {
 
-                $q->DesignationDuring($date_from)->with(['designation', 'designation.default_time_group']);
+                $q->DesignationNow()->with(['designation', 'designation.default_time_group']);
             }])
             ->with(['employeeToSeatmapping'])
             ->wherehas('employeeSectionMapping', function ($q) use ($section_ids, $date_from, $today) {
@@ -736,6 +736,7 @@ class EmployeeService
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
                 'seniority' => $employee?->seniority?->sortindex ?? 1000000,
+                'created_at' => $employee->created_at,
             ];
         })
             ->sortBy('designation_sortindex')
