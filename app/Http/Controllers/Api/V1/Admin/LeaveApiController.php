@@ -21,6 +21,7 @@ use App\Http\Requests\UpdateLeafRequest;
 use App\Http\Resources\Admin\LeafResource;
 use App\Models\AttendanceRouting;
 use App\Models\LeaveGroup;
+use App\Models\Seat;
 use App\Models\Section;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -153,6 +154,65 @@ class LeaveApiController extends Controller
         );
     }
 
+    private function getLeaveForwardableSeatForLeave( $isCasualOrCompen, $employee_id, $seat_ids_of_loggedinuser )
+    {
+        
+        $owner = null;
+        $owner_can_approve = false;
+
+        [$sectionOfficerSeat,$controllerSeat] = AttendanceRouting::getLeaveForwardableSeat($employee_id, $seat_ids_of_loggedinuser);
+        if( !$sectionOfficerSeat && !$controllerSeat){
+            return [null, false];
+        }
+
+        //when SO, who is the reporting officer submits, has to submit to controller
+        $owner = $sectionOfficerSeat;
+        $owner_can_approve = !$isCasualOrCompen || $sectionOfficerSeat == $controllerSeat; //SO can approve earned, commuted, etc
+        $isSOLoggedIn = $seat_ids_of_loggedinuser->contains($owner);
+
+        if ($isSOLoggedIn) {
+            $owner = $controllerSeat;
+            $owner_can_approve = true;
+        }
+        else
+        if (!$isCasualOrCompen) {
+            $owner = $controllerSeat;
+            $owner_can_approve = true;
+        }
+
+        return [$owner, $owner_can_approve];
+
+    }
+    public function getLeaveForwardableSeats(Request $request)
+    {
+        [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+
+        if ($status !== 'success') {
+            return response()->json(
+                [
+                    'status' => 'error',
+                    'message' => $status, //could be no linked employee to user
+                ],
+                400
+            );
+        }
+
+        //$isCasualOrCompen = $request->isCasualOrCompen;
+
+        [$owner, $owner_can_approve] = $this->getLeaveForwardableSeatForLeave( true, $me->employee_id, $seat_ids_of_loggedinuser );
+        //find the details of this seat
+        $seats = Seat::where('id', $owner)->get();
+
+        return response()->json(
+            [
+                'status' => 'success',
+                'seats' => $seats
+
+            ],
+            200
+        );
+    }
+
     private function leaveStoreOrUpdate(Request $request, $isUpdate)
     {
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
@@ -270,42 +330,24 @@ class LeaveApiController extends Controller
             }
         }
 
-        [$sectionOfficerSeat,$controllerSeat] = AttendanceRouting::getLeaveForwardableSeat($me->employee_id, $seat_ids_of_loggedinuser);
-        if( !$sectionOfficerSeat && !$controllerSeat){
-            return response()->json(
-                ['status' => 'error',  'message' => "Section officer or controller not found"],
-                400
-            );
-        }
-        \Log::info('sectionOfficerSeat');
-        \Log::info($sectionOfficerSeat);
-        \Log::info('controllerSeat');
-        \Log::info($controllerSeat);
-        \Log::info($seat_ids_of_loggedinuser);
         // return response()->json(
         //     ['status' => 'error',  'message' => "testtetefggdgdfgfdgfdgdfg"],
         //     400
         // );
 
+        [$owner, $owner_can_approve] = $this->getLeaveForwardableSeatForLeave( $isCasualOrCompen, $me->employee_id, $seat_ids_of_loggedinuser );
+
+        if(!$owner){
+            return response()->json(
+                ['status' => 'error',  'message' => "Section officer or controller not found"],
+                400
+            );
+        }
+
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 
-        \DB::transaction(function () use (&$leaf, $request, $me, $seat_ids_of_loggedinuser,  $sectionOfficerSeat,$controllerSeat, $isCasualOrCompen) {
-
-            //when SO, who is the reporting officer submits, has to submit to controller
-            $owner = $sectionOfficerSeat;
-            $owner_can_approve = !$isCasualOrCompen || $sectionOfficerSeat == $controllerSeat; //SO can approve earned, commuted, etc
-            $isSOLoggedIn = $seat_ids_of_loggedinuser->contains($owner);
-
-            if ($isSOLoggedIn) {
-                $owner = $controllerSeat;
-                $owner_can_approve = true;
-            }
-            else
-            if (!$isCasualOrCompen) {
-                $owner = $controllerSeat;
-                $owner_can_approve = true;
-            }
-
+        \DB::transaction(function () use (&$leaf, $request, $me, $owner, $owner_can_approve, $isCasualOrCompen) {
+           
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
 
             if( !$leaf ) {

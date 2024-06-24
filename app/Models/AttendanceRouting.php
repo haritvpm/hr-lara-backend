@@ -170,7 +170,7 @@ class AttendanceRouting extends Model
 
 
     }
-
+    
     public static function getLeaveForwardableSeat( $employee_id, $seat_ids_of_loggedinuser )
     {
          //find the owner seat which is the reporting officer of this employee's section
@@ -229,7 +229,5 @@ class AttendanceRouting extends Model
         return [
             $sectionOfficerSeat,$controllerSeat
         ];
-
-
     }
 }

@@ -173,6 +173,8 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::post('/leaves/{id}/return', 'LeaveApiController@leaveReturn');
     Route::get('/leaves/employee/{aadhaarid}', 'LeaveApiController@getEmployeeLeaves');
     Route::get('/leaves/employee-leave-pending/{aadhaarid}', 'LeaveApiController@getEmployeePendingLeaves');
+    Route::get('/leaves/forwardable-seats', 'LeaveApiController@getLeaveForwardableSeats');
+    
     Route::apiResource('leaves', 'LeaveApiController');
 
     // Office Times
