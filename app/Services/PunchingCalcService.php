@@ -751,7 +751,8 @@ class PunchingCalcService
                 $emp_new_monthly_attendance_data['total_grace_str'] = floor($total_grace_sec / 60);
                 $total_extra_sec = $emp_punchings->sum('extra_sec');
                 $emp_new_monthly_attendance_data['total_extra_sec'] = $total_extra_sec;
-                $emp_new_monthly_attendance_data['total_extra_str'] = gmdate("H:i", $total_extra_sec);
+                $extraHours = floor($total_extra_sec / 3600) . gmdate(":i", $total_extra_sec % 3600);
+                $emp_new_monthly_attendance_data['total_extra_str'] = $extraHours;
 
                 //see MarkHintDrawerComponent in frontend for possible hints
                 $total_half_day_fn =  $emp_punchings->Where('hint', 'casual_fn')->count();
