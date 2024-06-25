@@ -212,7 +212,7 @@ class PunchingCalcService
         $single_punch_type = $punching_existing?->single_punch_type ?? null;
         $fetchComplete = ($calender->attendance_trace_fetch_complete ?? false) && $date_carbon->lt(Carbon::now()->startOfDay());
 
-        //    \Log::info('$punching_existing hint:' . $punching_existing['hint']);
+       // \Log::info('$$aadhaarid:' . $aadhaarid);
         //\Log::info('hint:' . $hint);
         ///////////////////////
         //$single_punch_type =  null; //temp uncomment to reset
@@ -489,7 +489,7 @@ class PunchingCalcService
         {
           //  $flexi_15minutes = 0;
         }
-
+        //\Log::info($time_group);
 
         //use today's date. imagine legislation punching out next day. our flexiend is based on today
         //get employee time group. now assume normal
