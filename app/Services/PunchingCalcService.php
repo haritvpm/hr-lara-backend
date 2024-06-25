@@ -419,6 +419,8 @@ class PunchingCalcService
 
         $canSetUnauthorised = $canSetUnauthorised && !$isHoliday && !$hasLeave ;
         $canSetUnauthorised = $canSetUnauthorised && (!$hint || $hint == 'clear');
+        //desig will be empty if employee has not joined KLA as EmployeeToDesignation will be empty for this date
+        $canSetUnauthorised = $canSetUnauthorised && $emp_new_punching_data['designation']  ; //employee not joined KLA. so no unauthorised
 
         if( $canSetUnauthorised  && $calender?->punching !== 0  ){
             if ($punch_count >= 1) {

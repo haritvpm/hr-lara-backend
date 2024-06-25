@@ -169,7 +169,7 @@ class PunchingApiSectionMontlyController extends Controller
 
                 $dayinfo = [];
 
-                $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
+                $dayinfo['in_section'] = /*$emp_start_date->lessThanOrEqualTo($d) &&*/ $emp_end_date->greaterThanOrEqualTo($d);
                 if( Carbon::createFromFormat(  'Y-m-d H:i:s', $employee['created_at'] )->gt($d) )
                 {
                    // $dayinfo['in_section'] = false;
