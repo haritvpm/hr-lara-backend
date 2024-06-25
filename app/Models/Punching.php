@@ -77,6 +77,7 @@ class Punching extends Model
         'single_punch_regularised_by',
         'duration_sec_needed',
         'flexi_time',
+        'status', //hex 1 = NOT_JOINED_IN_KLA_ON_THIS_DATE
         'created_at',
         'updated_at',
         'deleted_at',

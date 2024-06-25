@@ -12,7 +12,14 @@ class Section extends Model
 
     public $table = 'sections';
 
+    public const STATUS_SELECT = [
+        'enabled'  => 'enabled',
+        'disabled' => 'disabled',
+    ];
+
     protected $dates = [
+        'start_date',
+        'end_date',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -27,6 +34,9 @@ class Section extends Model
         'js_as_ss_employee_id',
         'type',
         'works_nights_during_session',
+        'start_date',
+        'end_date',
+        'status',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -41,6 +51,7 @@ class Section extends Model
         'OFFICE_OF_SECRETARY' => 'OFFICE_OF_SECRETARY',
         'OFFICE_OF_SPEAKER'   => 'OFFICE_OF_SPEAKER',
         'OTHER'               => 'OTHER',
+        'HIDDEN'               => 'HIDDEN',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

@@ -219,7 +219,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('employee_extra_access')
+                            @can('employee_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.employee-extras.index") }}" class="nav-link {{ request()->is("admin/employee-extras") || request()->is("admin/employee-extras/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">

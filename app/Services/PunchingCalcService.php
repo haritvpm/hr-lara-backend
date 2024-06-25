@@ -105,6 +105,7 @@ class PunchingCalcService
             $emp_new_punching_data['aadhaarid'] = $aadhaarid;
             $emp_new_punching_data['employee_id'] = $employee_id;
             $emp_new_punching_data['time_group'] = null;
+            $emp_new_punching_data['status'] = null;
 
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
@@ -156,7 +157,7 @@ class PunchingCalcService
                 'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
                 'single_punch_type',
                 'time_group',
-                'is_unauthorised', 'duration_sec_needed', 'flexi_time'
+                'is_unauthorised', 'duration_sec_needed', 'flexi_time', 'status'
 
             ]
         );
@@ -697,7 +698,7 @@ class PunchingCalcService
         // $emps = Employee::where('status', 'active')->where('has_punching', 1)->get();
         //if( $aadhaar_to_empIds == null)
 
-        
+
         {
             $emps = Employee::with('grace_group')
             ->with(['employeeEmployeeToDesignations' => function ($q) use ($start_date) {
@@ -817,7 +818,7 @@ class PunchingCalcService
                 //if parttime, get default from timegroupname
                 // $employee  = Employee::with('grace_group')
                 // ->with(['employeeEmployeeToDesignations' => function ($q) use ($start_date) {
-        
+
                 //     $q->DesignationDuring($start_date->format('Y-m-d'))->with(['designation', 'designation.default_time_group']);
                 // }])
                 // ->where('aadhaarid', $aadhaarid)->first();
@@ -827,7 +828,7 @@ class PunchingCalcService
                     \Log::info('No designation for aadhaarid:' . $aadhaarid);
                     \Log::info($emp);
                 }
-                $designation = $emp->employeeEmployeeToDesignations()?->first()->designation;
+                $designation = $emp->employeeEmployeeToDesignations()?->first()?->designation;
                 \Log::info($designation);
                 //\Log::info($employee->employeeEmployeeToDesignations?->first()->designation);
                 $default_designation_time_group_name = $designation?->default_time_group?->groupname ?? 'default';

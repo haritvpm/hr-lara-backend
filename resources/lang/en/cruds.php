@@ -323,6 +323,12 @@ return [
             'short_code_helper'                  => 'short code used in files, like \'acca\' for Accounts A',
             'seat_of_controlling_officer'        => 'Seat Of Controlling Officer',
             'seat_of_controlling_officer_helper' => ' ',
+            'start_date'                         => 'Start Date',
+            'start_date_helper'                  => ' ',
+            'end_date'                           => 'End Date',
+            'end_date_helper'                    => ' ',
+            'status'                             => 'Status',
+            'status_helper'                      => ' ',
         ],
     ],
     'attendanceBook' => [
@@ -1023,6 +1029,8 @@ return [
             'duration_sec_needed_helper'           => ' ',
             'flexi_time'                           => 'Flexi Time',
             'flexi_time_helper'                    => ' ',
+            'status'                               => 'Status',
+            'status_helper'                        => '1=NOT_JOINED_ON_THIS_DATE',
         ],
     ],
     'assemblySession' => [

@@ -16,7 +16,7 @@ class EmployeeExtraController extends Controller
 {
     public function index()
     {
-        abort_if(Gate::denies('employee_extra_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeExtras = EmployeeExtra::with(['employee'])->get();
 
@@ -25,7 +25,7 @@ class EmployeeExtraController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('employee_extra_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -41,7 +41,7 @@ class EmployeeExtraController extends Controller
 
     public function edit(EmployeeExtra $employeeExtra)
     {
-        abort_if(Gate::denies('employee_extra_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employees = Employee::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -59,7 +59,7 @@ class EmployeeExtraController extends Controller
 
     public function show(EmployeeExtra $employeeExtra)
     {
-        abort_if(Gate::denies('employee_extra_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeExtra->load('employee');
 
@@ -68,7 +68,7 @@ class EmployeeExtraController extends Controller
 
     public function destroy(EmployeeExtra $employeeExtra)
     {
-        abort_if(Gate::denies('employee_extra_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $employeeExtra->delete();
 
