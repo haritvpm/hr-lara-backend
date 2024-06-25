@@ -105,7 +105,7 @@ class PunchingCalcService
             $emp_new_punching_data['aadhaarid'] = $aadhaarid;
             $emp_new_punching_data['employee_id'] = $employee_id;
             $emp_new_punching_data['time_group'] = null;
-            $emp_new_punching_data['status'] = null;
+          //  $emp_new_punching_data['status'] = null;
 
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
@@ -157,7 +157,8 @@ class PunchingCalcService
                 'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
                 'single_punch_type',
                 'time_group',
-                'is_unauthorised', 'duration_sec_needed', 'flexi_time', 'status'
+                'is_unauthorised', 'duration_sec_needed', 'flexi_time', 
+                //'status'
 
             ]
         );
