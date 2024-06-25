@@ -166,7 +166,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
 
 
-        $employee['designation_now'] = $employee->designation->first()->designation->designation;
+        $employee['designation_now'] = $employee->designation->first()?->designation->designation;
 
       //  $emp_leaves = Leaf::getEmployeeLeaves($aadhaarid);
 

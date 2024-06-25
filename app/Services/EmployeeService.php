@@ -683,7 +683,9 @@ class EmployeeService
         $data = collect($employees);
 
         $mycontrolledseats = AttendanceRouting::getSeatsUnderMyDirectControl($seat_ids_of_loggedinuser);
-        $employeetoSeatmapping = EmployeeToSeat::with(['employee','seat'])->get()->mapWithKeys(function ($item) {
+        $employeetoSeatmapping = EmployeeToSeat::with(['employee','seat'])
+        ->where('employee_id', '!=', null) //ignore vacant seats
+        ->get()->mapWithKeys(function ($item) {
             return [$item->employee->id => $item->seat->id];
         });
         \Log::info('$mycontrolledseats');

@@ -24,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label class="required" for="employee_id">{{ trans('cruds.employeeToSeat.fields.employee') }}</label>
-                <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id" required>
+                <select class="form-control select2 {{ $errors->has('employee') ? 'is-invalid' : '' }}" name="employee_id" id="employee_id" >
                     @foreach($employees as $id => $entry)
                         <option value="{{ $id }}" {{ (old('employee_id') ? old('employee_id') : $employeeToSeat->employee->id ?? '') == $id ? 'selected' : '' }}>{{ $entry }}</option>
                     @endforeach

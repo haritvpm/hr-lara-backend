@@ -17,10 +17,11 @@ class UpdateEmployeeToSeatRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => [
+            //to unassign a seat and make it vacant
+            /*'employee_id' => [
                 'required',
                 'integer',
-            ],
+            ],*/
             'seat_id' => [
                 'required',
                 'integer',
