@@ -312,7 +312,7 @@ class EmployeeService
 
             return [
                 $x->employee->aadhaarid => [
-                    'section' => $x->section->name,
+                    'section' => $x->section->short_name,
                     'section_id' => $x->section->id,
                 ],
             ];
@@ -343,7 +343,7 @@ class EmployeeService
                 $item['employee']['aadhaarid'] => [
                     'name' => $x->employee?->name,
                     'designation' => $desig,
-                    'section' => $x->section->name,
+                    'section' => $x->section->short_name,
                     'section_id' => $x->section->id,
                     'shift' => $x->employee?->is_shift,
                     'time_group_id' => $time_group_id,
@@ -604,7 +604,7 @@ class EmployeeService
 
 
                         $emp->setAttribute('section_id', $section->id);
-                        $emp->setAttribute('section_name', $section->name);
+                        $emp->setAttribute('section_name', $section->short_name);
                     }
                    }
                }
@@ -728,7 +728,7 @@ class EmployeeService
                 'attendance_book_id' => $employeeToSection?->attendance_book_id,
                 'attendance_book' => $employeeToSection?->attendance_book,
                 'section_id' => $employeeToSection?->section_id || $employee['section_id'],
-                'section_name' => $employeeToSection?->section->name ?? $employee['section_name'],
+                'section_name' => $employeeToSection?->section->short_name ?? $employee['section_name'],
                 'works_nights_during_session' => $employeeToSection?->section->works_nights_during_session,
                 'seat_of_controlling_officer_id' => $employeeToSection?->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,

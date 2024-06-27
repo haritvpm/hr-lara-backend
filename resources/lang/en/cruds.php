@@ -329,6 +329,8 @@ return [
             'end_date_helper'                    => ' ',
             'status'                             => 'Status',
             'status_helper'                      => ' ',
+            'short_name'                         => 'Short Name',
+            'short_name_helper'                  => ' ',
         ],
     ],
     'attendanceBook' => [
