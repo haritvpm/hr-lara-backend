@@ -153,7 +153,8 @@ class PunchingApiEmployeeMontlyController extends Controller
             //punching trace might have section null. so get it from employeeToSection
             if ($employeeToSection) {
                 $dayinfo = [
-                    ...$dayinfo,  'section' => $employeeToSection->section->short_name,
+                    ...$dayinfo,  
+                    'section' => $employeeToSection->section->short_name,
                     'name' => $employeeToSection->employee->name,
                 ];
             }
