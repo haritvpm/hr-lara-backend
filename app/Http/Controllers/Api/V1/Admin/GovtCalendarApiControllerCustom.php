@@ -19,12 +19,7 @@ class GovtCalendarApiControllerCustom extends Controller
         $date_start_str = $date->clone()->subMonths(6)->format('Y-m-d');
         $date_end_str = $date->clone()->addMonths(2)->format('Y-m-d');
 
-        $holidays = GovtCalendar::
-            where('date', '>=', $date_start_str)
-            ->where('date', '<=', $date_end_str)
-            ->where('govtholidaystatus', 1)
-            ->orderby('date')
-            ->get();
+        $holidays = GovtCalendar::getHolidaysForPeriod($date_start_str, $date_end_str);
 
         return response()->json([
             'holidays'=> $holidays

@@ -16,3 +16,9 @@
   2024-05-15 13:31:17 App\Jobs\ProcessLeavesJob ..................... 31s FAIL
   2024-05-17 13:30:02 App\Jobs\ProcessLeavesJob ...................... RUNNING
   2024-05-17 13:57:27 App\Jobs\ProcessLeavesJob ................. 27m 25s DONE
+  2024-05-28 15:38:27 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-05-28 16:09:59 App\Jobs\ProcessLeavesJob ................. 31m 32s DONE
+  2024-05-29 12:38:27 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-05-29 13:19:05 App\Jobs\ProcessLeavesJob ................. 40m 38s DONE
+  2024-06-04 12:29:11 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-06-04 13:22:02 App\Jobs\ProcessLeavesJob ................. 52m 50s DONE

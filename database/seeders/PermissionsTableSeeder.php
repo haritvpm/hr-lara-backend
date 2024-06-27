@@ -780,154 +780,164 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 193,
-                'title' => 'seat_to_js_as_ss_create',
-            ],
-            [
-                'id'    => 194,
-                'title' => 'seat_to_js_as_ss_edit',
-            ],
-            [
-                'id'    => 195,
-                'title' => 'seat_to_js_as_ss_show',
-            ],
-            [
-                'id'    => 196,
-                'title' => 'seat_to_js_as_ss_delete',
-            ],
-            [
-                'id'    => 197,
-                'title' => 'seat_to_js_as_ss_access',
-            ],
-            [
-                'id'    => 198,
                 'title' => 'employee_ot_setting_create',
             ],
             [
-                'id'    => 199,
+                'id'    => 194,
                 'title' => 'employee_ot_setting_edit',
             ],
             [
-                'id'    => 200,
+                'id'    => 195,
                 'title' => 'employee_ot_setting_show',
             ],
             [
-                'id'    => 201,
+                'id'    => 196,
                 'title' => 'employee_ot_setting_delete',
             ],
             [
-                'id'    => 202,
+                'id'    => 197,
                 'title' => 'employee_ot_setting_access',
             ],
             [
-                'id'    => 203,
+                'id'    => 198,
                 'title' => 'monthly_attendance_edit',
             ],
             [
-                'id'    => 204,
+                'id'    => 199,
                 'title' => 'monthly_attendance_show',
             ],
             [
-                'id'    => 205,
+                'id'    => 200,
                 'title' => 'monthly_attendance_delete',
             ],
             [
-                'id'    => 206,
+                'id'    => 201,
                 'title' => 'monthly_attendance_access',
             ],
             [
-                'id'    => 207,
+                'id'    => 202,
                 'title' => 'yearly_attendance_edit',
             ],
             [
-                'id'    => 208,
+                'id'    => 203,
                 'title' => 'yearly_attendance_show',
             ],
             [
-                'id'    => 209,
+                'id'    => 204,
                 'title' => 'yearly_attendance_delete',
             ],
             [
-                'id'    => 210,
+                'id'    => 205,
                 'title' => 'yearly_attendance_access',
             ],
             [
-                'id'    => 211,
+                'id'    => 206,
                 'title' => 'setting_create',
             ],
             [
-                'id'    => 212,
+                'id'    => 207,
                 'title' => 'setting_edit',
             ],
             [
-                'id'    => 213,
+                'id'    => 208,
                 'title' => 'setting_show',
             ],
             [
-                'id'    => 214,
+                'id'    => 209,
                 'title' => 'setting_delete',
             ],
             [
-                'id'    => 215,
+                'id'    => 210,
                 'title' => 'setting_access',
             ],
             [
-                'id'    => 216,
+                'id'    => 211,
                 'title' => 'employee_extra_create',
             ],
             [
-                'id'    => 217,
+                'id'    => 212,
                 'title' => 'employee_extra_edit',
             ],
             [
-                'id'    => 218,
+                'id'    => 213,
                 'title' => 'employee_extra_show',
             ],
             [
-                'id'    => 219,
+                'id'    => 214,
                 'title' => 'employee_extra_delete',
             ],
             [
-                'id'    => 220,
+                'id'    => 215,
                 'title' => 'employee_extra_access',
             ],
             [
-                'id'    => 221,
+                'id'    => 216,
                 'title' => 'grace_time_create',
             ],
             [
-                'id'    => 222,
+                'id'    => 217,
                 'title' => 'grace_time_edit',
             ],
             [
-                'id'    => 223,
+                'id'    => 218,
                 'title' => 'grace_time_delete',
             ],
             [
-                'id'    => 224,
+                'id'    => 219,
                 'title' => 'grace_time_access',
             ],
             [
-                'id'    => 225,
+                'id'    => 220,
                 'title' => 'compen_granted_create',
             ],
             [
-                'id'    => 226,
+                'id'    => 221,
                 'title' => 'compen_granted_edit',
             ],
             [
-                'id'    => 227,
+                'id'    => 222,
                 'title' => 'compen_granted_delete',
             ],
             [
-                'id'    => 228,
+                'id'    => 223,
                 'title' => 'compen_granted_access',
             ],
             [
+                'id'    => 224,
+                'title' => 'database_access',
+            ],
+            [
+                'id'    => 225,
+                'title' => 'casual_leaf_access',
+            ],
+            [
+                'id'    => 226,
+                'title' => 'employee_to_flexi_create',
+            ],
+            [
+                'id'    => 227,
+                'title' => 'employee_to_flexi_edit',
+            ],
+            [
+                'id'    => 228,
+                'title' => 'employee_to_flexi_show',
+            ],
+            [
                 'id'    => 229,
+                'title' => 'employee_to_flexi_delete',
+            ],
+            [
+                'id'    => 230,
+                'title' => 'employee_to_flexi_access',
+            ],
+            [
+                'id'    => 231,
                 'title' => 'profile_password_edit',
             ],
         ];
 
-        Permission::insert($permissions);
+        Permission::upsert(
+            $permissions
+        );
     }
 }

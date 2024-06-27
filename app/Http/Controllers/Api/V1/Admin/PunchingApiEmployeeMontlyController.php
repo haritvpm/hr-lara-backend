@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use Auth;
 use Gate;
 use Carbon\Carbon;
 use App\Models\Leaf;
@@ -12,9 +13,10 @@ use App\Models\Punching;
 use Carbon\CarbonPeriod;
 use App\Models\GovtCalendar;
 use Illuminate\Http\Request;
-use App\Models\PunchingTrace;
+use App\Models\CompenGranted;
 use App\Models\EmployeeToSeat;
 use App\Models\YearlyAttendance;
+use App\Models\AttendanceRouting;
 use App\Models\EmployeeToSection;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
@@ -33,7 +35,7 @@ class PunchingApiEmployeeMontlyController extends Controller
 
         $aadhaarid = $request->aadhaarid;
         $date_str = $request->query('date', Carbon::now()->format('Y-m-d'));
-        //  \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
+        \Log::info('getemployeeMonthlyPunchings: ' . $date_str);
         $date = Carbon::createFromFormat('Y-m-d', $date_str);
 
 
@@ -64,9 +66,15 @@ class PunchingApiEmployeeMontlyController extends Controller
 
 
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
+        $isSecretary = Auth::user()->hasRole('secretary');
 
-        if ($status != 'success') {
-            return response()->json(['status' => $status], 400);
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+
+        } else {
+
+            if ($status != 'success') {
+                return response()->json(['status' => $status, 'message' => 'No seats mapped'], 400);
+            }
         }
 
         $calender_info = GovtCalendar::getCalenderInfoForPeriod($start_date, $end_date);
@@ -93,7 +101,7 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ->duringPeriod($d_str,  $d_str)
                 ->first();
 
-            \Log::info('date: ' . $d_str);
+           // \Log::info('foreach date: ' . $d_str);
 
             //  \Log::info('employeeToSection: ' . $employeeToSection);
 
@@ -109,8 +117,16 @@ class PunchingApiEmployeeMontlyController extends Controller
             // $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
 
             if ($seat_ids_of_loggedinuser && $employeeToSection) {
+
+                $soIstheEmployee = $aadhaarid == $me?->employee->aadhaarid; //SO is also mapped to the section as employee
+
                 $dayinfo['logged_in_user_is_controller'] = $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id);
                 $dayinfo['logged_in_user_is_section_officer'] =  $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_reporting_officer_id);
+
+                $dayinfo['logged_in_user_is_superior_officer'] =   $isSecretary ||
+                    $dayinfo['logged_in_user_is_controller'] ||
+                    ($dayinfo['logged_in_user_is_section_officer'] && !$soIstheEmployee) ||
+                    AttendanceRouting::recurseFindIfSuperiorOfficer($seat_ids_of_loggedinuser, $employeeToSection->section->seat_of_controlling_officer_id);
             }
             // if this is self, no need to check for section
             $dayinfo['in_section'] = $employeeToSection != null || $me->employee->aadhaarid == $aadhaarid;
@@ -125,7 +141,10 @@ class PunchingApiEmployeeMontlyController extends Controller
                 ];
 
                 $total_grace_exceeded300_date =  $total_grace_exceeded300_date ? Carbon::parse($total_grace_exceeded300_date) : null;
-                if ($total_grace_exceeded300_date && $date->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
+                //\Log::info('total_grace_exceeded300_date: ' . $total_grace_exceeded300_date->format('Y-m-d'));
+                //\Log::info('total_grace_exceeded300_datedate: ' . $date->format('Y-m-d'));
+
+                if ($total_grace_exceeded300_date && $d->gte($total_grace_exceeded300_date) && $punching?->grace_sec > 60) {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = true;
                 } else {
                     $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
@@ -147,20 +166,9 @@ class PunchingApiEmployeeMontlyController extends Controller
 
 
 
-        $employee['designation_now'] = $employee->designation->first()->designation->designation;
+        $employee['designation_now'] = $employee->designation->first()?->designation->designation;
 
-        $emp_leaves = Leaf::where('aadhaarid', $aadhaarid)
-            ->orderBy('creation_date', 'desc')
-            ->get()/*->transform(function ($item) {
-
-               // $date_start = Carbon::parse($item->start_date);
-              //  $date_to = $item->end_date ? Carbon::parse($item->end_date) : null;
-             //   $diff = $date_start->diffInDays($date_to) + 1;
-
-                return [
-                    ...$item->toArray(), 'day_count' => $diff,
-                ];
-            })*/;
+      //  $emp_leaves = Leaf::getEmployeeLeaves($aadhaarid);
 
         $now_str = Carbon::now()->format('Y-m-d');
         $employeeToSectionNow =  EmployeeToSection::with('section')->where('employee_id', $employee->id)
@@ -180,14 +188,14 @@ class PunchingApiEmployeeMontlyController extends Controller
             'data_monthly' => $data_monthly,
             'data_yearly' => $data_yearly,
             'employee_punching' => $empMonPunchings,
-            'emp_leaves' =>  $emp_leaves,
+          //  'emp_leaves' =>  $emp_leaves,
             'logged_in_user_is_controller' => $logged_in_user_is_controller,
         ], 200);
     }
     public function saveEmployeeHint(Request $request)
     {
         \Log::info('saveEmployeeHint: ' . $request);
-        \Log::info('date: ' . $request->date);
+        //\Log::info('date: ' . $request->date);
 
         $aadhaarid = $request->aadhaarid;
         $hint = $request->hint;
@@ -195,6 +203,7 @@ class PunchingApiEmployeeMontlyController extends Controller
         $isSinglePunch= $request?->isSinglePunch ?? false;
         $single_punch_type =  $isSinglePunch ? $request?->single_punch_type : null;
         $regulariseSinglePunch = $request?->regulariseSinglePunch ?? false;
+       
 
         //check if logged in user is controller for this employee
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
@@ -207,11 +216,37 @@ class PunchingApiEmployeeMontlyController extends Controller
         //get this section's controller and reporting officer
         $loggedInUserIsController = $seat_ids_of_loggedinuser->contains($section->seat_of_controlling_officer_id);
         $loggedInUserIsSectionOfficer = $seat_ids_of_loggedinuser->contains($section->seat_of_reporting_officer_id);
+        $loggedInUserIsSuperiorOfficer = AttendanceRouting::recurseFindIfSuperiorOfficer(
+                                            $seat_ids_of_loggedinuser, $section->seat_of_controlling_officer_id);
 
-        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer) {
-            return response()->json(['status' => 'Not authorized'], 400);
+        if (!$loggedInUserIsController && !$loggedInUserIsSectionOfficer && !$loggedInUserIsSuperiorOfficer) {
+            return response()->json(['status' => 'Not authorized'], 403);
         }
 
+        $missingDateTime = $request->missingDateTime ?? null;
+        if ($missingDateTime) {
+            $c_missingDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $missingDateTime);
+
+            //make sure this is after punchin if this is punchout
+            if($single_punch_type == 'out' || $single_punch_type == 'in'){
+
+                $punching = Punching::where('aadhaarid', $aadhaarid)->where('date', $request->date)->first();
+                if ($single_punch_type == 'in') {
+                    if ($punching && Carbon::parse($punching->in_datetime)->gte($c_missingDateTime)) {
+                        return response()->json(['message' => 'Punchout time should be after punchin time'], 400);
+                    }
+                } else if ($single_punch_type == 'out') {
+
+                    if ($punching && Carbon::parse($punching->out_datetime)->lte($c_missingDateTime)) {
+                        return response()->json(['message' => 'Punchin time should be before punchout time'], 400);
+                    }
+                }
+            }
+        }
+        
+        if($regulariseSinglePunch ){
+            $hint = 'clear'; //remove unauthorized hint
+        }
 
         //since this might be first time, insert if not exists
         $punching = Punching::updateOrCreate(
@@ -222,7 +257,8 @@ class PunchingApiEmployeeMontlyController extends Controller
                 'finalized_by_controller' => $loggedInUserIsController,
                 'single_punch_type' => $single_punch_type,
                 'single_punch_regularised_by' => $regulariseSinglePunch ? $me->employee->aadhaarid : null,
-
+                'controller_set_punch_in' => $single_punch_type == 'out' ? $missingDateTime : null,
+                'controller_set_punch_out' => $single_punch_type == 'in' ? $missingDateTime : null,
             ]
         );
 

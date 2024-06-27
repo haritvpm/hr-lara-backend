@@ -9,6 +9,7 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Employee;
 use App\Models\GraceTime;
+use App\Models\LeaveGroup;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ class EmployeeController extends Controller
         abort_if(Gate::denies('employee_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Employee::with(['grace_group'])->select(sprintf('%s.*', (new Employee)->table));
+            $query = Employee::with(['grace_group', 'leave_group'])->select(sprintf('%s.*', (new Employee)->table));
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -93,7 +94,9 @@ class EmployeeController extends Controller
 
         $grace_groups = GraceTime::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.employees.create', compact('grace_groups'));
+        $leave_groups = LeaveGroup::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
+
+        return view('admin.employees.create', compact('grace_groups', 'leave_groups'));
     }
 
     public function store(StoreEmployeeRequest $request)
@@ -109,9 +112,11 @@ class EmployeeController extends Controller
 
         $grace_groups = GraceTime::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $employee->load('grace_group');
+        $leave_groups = LeaveGroup::pluck('groupname', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.employees.edit', compact('employee', 'grace_groups'));
+        $employee->load('grace_group', 'leave_group');
+
+        return view('admin.employees.edit', compact('employee', 'grace_groups', 'leave_groups'));
     }
 
     public function update(UpdateEmployeeRequest $request, Employee $employee)
@@ -125,7 +130,7 @@ class EmployeeController extends Controller
     {
         abort_if(Gate::denies('employee_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $employee->load('grace_group', 'employeeEmployeeToDesignations');
+        $employee->load('grace_group', 'leave_group', 'employeeEmployeeToDesignations', 'employeeCompenGranteds');
 
         return view('admin.employees.show', compact('employee'));
     }

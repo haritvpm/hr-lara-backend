@@ -42,6 +42,7 @@ class Employee extends Model
         'status',
         'is_shift',
         'grace_group_id',
+        'leave_group_id',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -77,7 +78,7 @@ class Employee extends Model
 
          return $employees;
     }
-    public static function getEmployeesWithAadhaarDesig( $activeOnly=null, $whereidnotin = null, $plain=true)
+    public static function getEmployeesWithAadhaarDesig( $activeOnly=null, $whereidnotin = null, $plain=true, $includepen=false)
     {
         $employees = Employee::with('designation')
             ->when($whereidnotin, function ($query) use ($whereidnotin) {
@@ -86,13 +87,18 @@ class Employee extends Model
             ->when($activeOnly, function ($query) {
                 return $query->where(fn ($query) => $query->where('status', 'active')->orWherenull('status'));
             })
+            ->orderBy('name')
             ->get();
 
             if($plain){
-                $employees = $employees->mapWithKeys(function ($employee) {
+                $employees = $employees->mapWithKeys(function ($employee) use ($includepen){
                 $desig = $employee?->designation?->first()?->designation->designation;
                // dd($employee->designation);
+                if($includepen){
+                    return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid . ($desig ? ' - ' . $desig : '') . ($employee->pen ? ' - ' . $employee->pen : '')];
+                }
                 return [$employee->id   =>  $employee->name .'-' .$employee->aadhaarid . ($desig ? ' - ' . $desig : '')];
+
                 });
             } else {
                 $employees = $employees->map(function ($employee) {
@@ -120,4 +126,21 @@ class Employee extends Model
     {
         return $this->hasMany(CompenGranted::class, 'employee_id', 'id');
     }
+     public function leave_group()
+    {
+        return $this->belongsTo(LeaveGroup::class, 'leave_group_id');
+    }
+    public function employeeSectionMapping()
+    {
+        return $this->hasMany(EmployeeToSection::class, 'employee_id', 'id');
+    }
+    public function employeeToSeatmapping()
+    {
+        return $this->hasMany(EmployeeToSeat::class, 'employee_id', 'id');
+    }
+    public function employeeToFlexi()
+    {
+        return $this->hasMany(EmployeeToFlexi::class, 'employee_id', 'id');
+    }
+    
 }

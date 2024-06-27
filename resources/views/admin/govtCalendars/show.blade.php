@@ -135,7 +135,15 @@
                                     <a class="btn btn-dark btn-sm " href="{{ route('admin.govt-calendars.edit', $govtCalendar->id) }}">
                                         {{ trans('global.edit') }}
                                     </a>
+
+                                    <a href="{{ route('admin.govt-calendars.fetch',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-danger">Fetch</a>
+                                <!-- <a href="{{ route('admin.govt-calendars.fetch-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">FetchLeaves</a> -->
+                                <a href="{{ route('admin.govt-calendars.calculate',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-primary">Calc</a>
+                                <!-- <a href="{{ route('admin.govt-calendars.download-leaves',['date'=> $govtCalendar->date ]) }}"  class="btn btn-sm btn-info">DownloadLeaves</a> -->
+
                                 @endcan
+
+                
 
                 <a class="btn btn-default" href="{{ route('admin.govt-calendars.index') }}">
                     {{ trans('global.back_to_list') }}

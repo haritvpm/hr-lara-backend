@@ -12,6 +12,8 @@ class AuthGates
     {
         $user = auth()->user();
 
+        //\Log::info('AuthGates middleware');
+
         if (! $user) {
             return $next($request);
         }

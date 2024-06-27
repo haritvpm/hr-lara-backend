@@ -74,7 +74,7 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.attendance_today_trace_rows_fetched_helper') }}</span>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <div class="form-check {{ $errors->has('is_sitting_day') ? 'is-invalid' : '' }}">
                     <input type="hidden" name="is_sitting_day" value="0">
                     <input class="form-check-input" type="checkbox" name="is_sitting_day" id="is_sitting_day" value="1" {{ $govtCalendar->is_sitting_day || old('is_sitting_day', 0) === 1 ? 'checked' : '' }}>
@@ -84,14 +84,14 @@
                     <span class="text-danger">{{ $errors->first('is_sitting_day') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.is_sitting_day_helper') }}</span>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label for="punching">{{ trans('cruds.govtCalendar.fields.punching') }}</label>
                 <input class="form-control {{ $errors->has('punching') ? 'is-invalid' : '' }}" type="number" name="punching" id="punching" value="{{ old('punching', $govtCalendar->punching) }}" step="1">
                 @if($errors->has('punching'))
                     <span class="text-danger">{{ $errors->first('punching') }}</span>
                 @endif
-                <span class="help-block">{{ trans('cruds.govtCalendar.fields.punching_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.govtCalendar.fields.punching_helper') }}. (0 = No Punching. 1 = Default)</span>
             </div>
             <div class="form-group">
                 <label for="session_id">{{ trans('cruds.govtCalendar.fields.session') }}</label>
@@ -105,6 +105,20 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.session_helper') }}</span>
             </div>
+            <div class="form-group">
+                <label>{{ trans('cruds.govtCalendar.fields.day_type') }}</label>
+                <select class="form-control {{ $errors->has('day_type') ? 'is-invalid' : '' }}" name="day_type" id="day_type">
+                    <option value disabled {{ old('day_type', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\GovtCalendar::DAY_TYPE_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('day_type', $govtCalendar->day_type) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('day_type'))
+                    <span class="text-danger">{{ $errors->first('day_type') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.govtCalendar.fields.day_type_helper') }}</span>
+            </div>
+
             <div class="form-group">
                 <label>{{ trans('cruds.govtCalendar.fields.office_ends_at') }}</label>
                 <select class="form-control {{ $errors->has('office_ends_at') ? 'is-invalid' : '' }}" name="office_ends_at" id="office_ends_at">
@@ -129,6 +143,8 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.govtCalendar.fields.attendance_trace_fetch_complete_helper') }}</span>
             </div>
+
+
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}

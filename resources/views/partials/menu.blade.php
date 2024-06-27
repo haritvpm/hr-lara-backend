@@ -119,7 +119,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('setting_access')
+                            @can('govt_calendar_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.settings.index") }}" class="nav-link {{ request()->is("admin/settings") || request()->is("admin/settings/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -135,8 +135,8 @@
                     </li>
                 @endcan
                 @can('employee_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/employee-extras*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/seat-to-js-as-sses*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/employee-extras*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/employees*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-seats*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-sections*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-designations*") ? "menu-open" : "" }} {{ request()->is("admin/designations*") ? "menu-open" : "" }} {{ request()->is("admin/seniorities*") ? "menu-open" : "" }} {{ request()->is("admin/employee-extras*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/employees*") ? "active" : "" }} {{ request()->is("admin/employee-to-seats*") ? "active" : "" }} {{ request()->is("admin/employee-to-sections*") ? "active" : "" }} {{ request()->is("admin/employee-to-designations*") ? "active" : "" }} {{ request()->is("admin/designations*") ? "active" : "" }} {{ request()->is("admin/seniorities*") ? "active" : "" }} {{ request()->is("admin/employee-extras*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-users">
 
                             </i>
@@ -219,7 +219,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('employee_extra_access')
+                            @can('employee_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.employee-extras.index") }}" class="nav-link {{ request()->is("admin/employee-extras") || request()->is("admin/employee-extras/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -248,7 +248,7 @@
                         <ul class="nav nav-treeview">
                             @can('exemption_access')
                                 <li class="nav-item">
-                                    <a href="{{ route("admin.exemptions.index") }}" class="nav-link {{ request()->is("admin/exemptions") || request()->is("admin/exemptions/*") ? "active" : "" }}">
+                                    <a href="{{ route("admin.exemptions.exemptedIndex") }}" class="nav-link {{ request()->is("admin/exemptions") || request()->is("admin/exemptions/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-user-minus">
 
                                         </i>
@@ -547,8 +547,8 @@
                     </li>
                 @endcan
                 @can('time_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/office-times*") ? "menu-open" : "" }} {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }} {{ request()->is("admin/grace-times*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/office-times*") ? "active" : "" }} {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }} {{ request()->is("admin/grace-times*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/office-times*") ? "menu-open" : "" }} {{ request()->is("admin/shifts*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "menu-open" : "" }} {{ request()->is("admin/grace-times*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-flexis*") ? "menu-open" : "" }} {{ request()->is("admin/leave-groups*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/office-times*") ? "active" : "" }} {{ request()->is("admin/shifts*") ? "active" : "" }} {{ request()->is("admin/employee-to-shifts*") ? "active" : "" }} {{ request()->is("admin/grace-times*") ? "active" : "" }} {{ request()->is("admin/employee-to-flexis*") ? "active" : "" }} {{ request()->is("admin/leave-groups*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon far fa-clock">
 
                             </i>
@@ -594,7 +594,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('grace_time_access')
+                            @can('time_management_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.grace-times.index") }}" class="nav-link {{ request()->is("admin/grace-times") || request()->is("admin/grace-times/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -606,12 +606,36 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('time_management_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.employee-to-flexis.index") }}" class="nav-link {{ request()->is("admin/employee-to-flexis") || request()->is("admin/employee-to-flexis/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.employeeToFlexi.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('time_management_access')
+                                <li class="nav-item">
+                                    <a href="{{ route("admin.leave-groups.index") }}" class="nav-link {{ request()->is("admin/leave-groups") || request()->is("admin/leave-groups/*") ? "active" : "" }}">
+                                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                                        </i>
+                                        <p>
+                                            {{ trans('cruds.leaveGroup.title') }}
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                         </ul>
                     </li>
                 @endcan
                 @can('user_management_access')
-                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/compen-granteds*") ? "menu-open" : "" }} {{ request()->is("admin/casual-leaves*") ? "menu-open" : "" }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/compen-granteds*") ? "active" : "" }} {{ request()->is("admin/casual-leaves*") ? "active" : "" }}" href="#">
+                    <li class="nav-item has-treeview {{ request()->is("admin/punching-traces*") ? "menu-open" : "" }} {{ request()->is("admin/success-punchings*") ? "menu-open" : "" }} {{ request()->is("admin/punching-devices*") ? "menu-open" : "" }} {{ request()->is("admin/punchings*") ? "menu-open" : "" }} {{ request()->is("admin/monthly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/leaves*") ? "menu-open" : "" }} {{ request()->is("admin/yearly-attendances*") ? "menu-open" : "" }} {{ request()->is("admin/compen-granteds*") ? "menu-open" : "" }} {{ request()->is("admin/flexi-applications*") ? "menu-open" : "" }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/punching-traces*") ? "active" : "" }} {{ request()->is("admin/success-punchings*") ? "active" : "" }} {{ request()->is("admin/punching-devices*") ? "active" : "" }} {{ request()->is("admin/punchings*") ? "active" : "" }} {{ request()->is("admin/monthly-attendances*") ? "active" : "" }} {{ request()->is("admin/leaves*") ? "active" : "" }} {{ request()->is("admin/yearly-attendances*") ? "active" : "" }} {{ request()->is("admin/compen-granteds*") ? "active" : "" }} {{ request()->is("admin/flexi-applications*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-database">
 
                             </i>
@@ -705,7 +729,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('compen_granted_access')
+                            @can('leaf_access')
                                 <li class="nav-item">
                                     <a href="{{ route("admin.compen-granteds.index") }}" class="nav-link {{ request()->is("admin/compen-granteds") || request()->is("admin/compen-granteds/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
@@ -717,14 +741,14 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('casual_leaf_access')
+                            @can('leaf_access')
                                 <li class="nav-item">
-                                    <a href="{{ route("admin.casual-leaves.index") }}" class="nav-link {{ request()->is("admin/casual-leaves") || request()->is("admin/casual-leaves/*") ? "active" : "" }}">
+                                    <a href="{{ route("admin.flexi-applications.index") }}" class="nav-link {{ request()->is("admin/flexi-applications") || request()->is("admin/flexi-applications/*") ? "active" : "" }}">
                                         <i class="fa-fw nav-icon fas fa-cogs">
 
                                         </i>
                                         <p>
-                                            {{ trans('cruds.casualLeaf.title') }}
+                                            {{ trans('cruds.flexiApplication.title') }}
                                         </p>
                                     </a>
                                 </li>

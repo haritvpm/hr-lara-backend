@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
-use Gate;
+use Auth;
 use Carbon\Carbon;
+use App\Models\Seat;
 use App\Models\User;
 use App\Models\Punching;
 use Carbon\CarbonPeriod;
@@ -22,6 +23,8 @@ class PunchingApiSectionMontlyController extends Controller
     public function getmonthlypunchings(Request $request)
     {
 
+        $start_time = microtime(true);
+
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::today(); //today
         $start_date = $date->clone()->startOfMonth()->format('Y-m-d');
         $end_date = $date->clone()->endOfMonth()->format('Y-m-d');
@@ -38,36 +41,59 @@ class PunchingApiSectionMontlyController extends Controller
 
         //get current logged in user's charges
         [$me, $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
-        if ($status != 'success' || count($seat_ids_of_loggedinuser) == 0) {
 
-            return response()->json([
-                'status' => $status,
-                'month' => $date->format('F Y'),
-                'calender_info' => $calender_info,
-                'monthlypunchings' => [],
-            ], 200);
+        $isSecretary = Auth::user()->hasRole('secretary');
+
+        //$sec_seat_id = Seat::where('slug', 'secretary')->first()?->id ?? -1;
+        $loadRouting = !$isSecretary; //hack
+        $userIsSuperiorOfficer = $isSecretary;
+
+        $empService = new EmployeeService();
+        $employee_section_maps = null;
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+            $employee_section_maps = $empService->getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+                $seat_ids_of_loggedinuser, $start_date,$end_date,null,null,null,null,null,null);
         }
+        else {
+
+            if ($status != 'success' || count($seat_ids_of_loggedinuser) == 0) {
+
+                return response()->json([
+                    'status' => $status,
+                    'month' => $date->format('F Y'),
+                    'calender_info' => $calender_info,
+                    'monthlypunchings' => [],
+                ], 200);
+            }
+            $userIsSuperiorOfficer = true;
+
+            //todo. make this a period
+            $employee_section_maps =  $empService->getLoggedUserSubordinateEmployees(
+                $start_date,
+                $end_date,
+                $seat_ids_of_loggedinuser,
+                $me,
+                $loadRouting
+            );
+        }
+        $employees_in_view = $empService->employeeToResource($employee_section_maps, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
 
-        //todo. make this a period
-        $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $start_date,
-            $end_date,
-            $seat_ids_of_loggedinuser,
-            $me
-        );
+
         // \Log::info('employees_in_view: ' . $employees_in_view);
 
 
         if (!$employees_in_view || $employees_in_view->count() == 0) {
             return response()->json([
-                'status' => 'No employees in view', 'month' => $date->format('F Y'),
+                'status' => 'No employees in view',
+                'month' => $date->format('F Y'),
                 'calender_info' => $calender_info,
                 'monthlypunchings' => [],
             ], 200);
         }
         //get all govtcalender between start data and enddate
         $aadhaarids = $employees_in_view->pluck('aadhaarid')->unique();
+        //$punchings_of_employees = Punching::with('leave')->wherein('aadhaarid',  $aadhaarids)->whereBetween('date', [$start_date, $end_date])->get();
 
         $data_monthly = MonthlyAttendance::forEmployeesInMonth($date, $aadhaarids);
         $data_yearly = YearlyAttendance::forEmployeesInYear($date, $aadhaarids);
@@ -80,8 +106,11 @@ class PunchingApiSectionMontlyController extends Controller
 
             $item =  $employee;
             $aadhaarid = $employee['aadhaarid'];
-            $sections[] = $employee['section_name'];
-            $section_ids[] = $employee['section_id'];
+            if($employee['section_name']){
+                $sections[] = $employee['section_name'];
+                $section_ids[] = $employee['section_id'];
+            }
+
             //mapped after fetching. so no need to check if it exists
             $item['start_date'] = $start_date;
             $item['e'] = $end_date;
@@ -118,11 +147,16 @@ class PunchingApiSectionMontlyController extends Controller
                 $item['start_with_compen'] = 0;
                 $item['start_with_cl'] = 0;
             }
+            $item['grace_left'] = ceil(($item['grace_limit'] - $item['total_grace_sec']/60));
+            $item['extraMin'] =  ceil($item['total_extra_sec']/60);
+
 
             $total_grace_exceeded300_date = $item['total_grace_exceeded300_date'] ? Carbon::parse($item['total_grace_exceeded300_date']) : null;
 
             //for each employee in punching as a row, show columns for each day of month
             //{position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+
+           // $punchings_of_employee = Punching::with('leave')->where('aadhaarid', $aadhaarid)->whereBetween('date', [$start_date, $end_date])->get();
 
             $period = CarbonPeriod::create(Carbon::parse($start_date), Carbon::parse($end_date));
             $i=1;
@@ -135,7 +169,12 @@ class PunchingApiSectionMontlyController extends Controller
 
                 $dayinfo = [];
 
-                $dayinfo['in_section'] = $emp_start_date->lessThanOrEqualTo($d) && $emp_end_date->greaterThanOrEqualTo($d);
+                $dayinfo['in_section'] = /*$emp_start_date->lessThanOrEqualTo($d) &&*/ $emp_end_date->greaterThanOrEqualTo($d);
+                if( Carbon::createFromFormat(  'Y-m-d H:i:s', $employee['created_at'] )->gt($d) )
+                {
+                   // $dayinfo['in_section'] = false;
+                }
+
                 $dayinfo['punching_count'] = 0; //this will be overwritten when punching is got below
 
                 $dayinfo['attendance_trace_fetch_complete'] =  $calender_info['day' . $i]['attendance_trace_fetch_complete'];
@@ -145,6 +184,8 @@ class PunchingApiSectionMontlyController extends Controller
                 $dayinfo['date'] = $d_str;
 
                 $punching = Punching::with('leave')->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
+                //$punching = $punchings_of_employee->where('date', $d_str)->first();
+                //$punching = $punchings_of_employees->where('aadhaarid', $aadhaarid)->where('date', $d_str)->first();
                 if ($punching) {
                     //copy all properties of $punching to $dayinfo
                     $dayinfo = [
@@ -158,12 +199,14 @@ class PunchingApiSectionMontlyController extends Controller
                     } else {
                         $dayinfo['grace_exceeded300_and_today_has_grace'] = false;
                     }
+                    $dayinfo['section'] =  $punching->section ? $punching->section : $employee['section_name'];
                 } else {
                     //no punching found
                     //set name, designation,
                     $dayinfo = [...$dayinfo, 'name' => $employee['name'], 'aadhaarid' => $aadhaarid];
+                    $dayinfo['section'] =   $employee['section_name'];;
                 }
-                $dayinfo['section'] = $employee['section_name'];;
+                
 
                 //sometimes, if there is only leave in punching, name, desig etc will be overwritten
                 if($dayinfo['name']==null){
@@ -188,6 +231,7 @@ class PunchingApiSectionMontlyController extends Controller
         $sections = [...$sections, ...$attendancebooks->toArray()];
 
 
+        \Log::info('time taken: ' . (microtime(true) - $start_time));
 
         return response()->json([
             'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021

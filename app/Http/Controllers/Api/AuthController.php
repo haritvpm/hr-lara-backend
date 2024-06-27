@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Role;
 use App\Models\Seat;
 use App\Models\User;
-use Carbon\Carbon;
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -28,9 +31,17 @@ class AuthController extends Controller
 
         $token = Auth::guard('api')->attempt($credentials);
         if (! $token) {
+
+            //see if username exists
+            $user = User::where('username', $request->username)->first();
+
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unauthorized login',
+                'message' =>   $user ? 'Invalid password' : 'User not found',
+                "errors"=>
+                     !$user ? ["username" => ["User not found"]]  :  ["password"=> ["Invalid password"]],
+
+
             ], 401);
         }
 
@@ -61,19 +72,83 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            //  'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
+        $validator = Validator::make($request->all(), [
+            'pen' => 'required|string|max:255|min:6',
+            'aadhaarid' => 'required|string|max:255|min:8',
+            'username' => 'required|string|min:6|max:255|unique:users',
             'password' => 'required|string|min:6',
         ]);
 
+        if ($validator->fails()) {
+            $response['response'] = $validator->messages();
+
+            return response()->json([
+                'message' => $validator->errors()->first(),
+            ], 422);
+        }
+
+        $request->merge(['username' => trim($request->username)]);
+        $request->merge(['pen' => strtoupper(trim($request->pen))]);
+        $request->merge(['aadhaarid' => trim($request->aadhaarid)]);
+
+        //check if employee exists
+
+        $employee = Employee::where('aadhaarid', $request->aadhaarid)->first();
+        if (! $employee) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Employee with AttendanceId not found',
+                "errors"=>
+                     ["aadhaarid" => ["invalid AttendanceId"]],
+
+            ], 422);
+        }
+        //make sure username does not exist
+
+        $user = User::where('username', $request->username)->first();
+        if ($user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already exists',
+                "errors"=>
+                     ["username" => ["username already exists"]],
+
+            ], 422);
+        }
+
+        //make sure user with this employee id does not exist
+        $user = User::where('employee_id', $employee->id)->first();
+        if ($user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User already exists with this employee id',
+                "errors"=>
+                     ["username" => ["Username {$user->username} exists for this employee "]],
+
+            ], 422);
+        }
+
         $user = User::create([
-            // 'name' => $request->name,
-            'username' => $request->name,
+            'username' => $request->username,
             'password' => Hash::make($request->password),
+            'employee_id' => $employee->id,
         ]);
 
-        $token = Auth::login($user);
+        $employee->update(['pen' => $request->pen]);
+
+        //$employee->save();
+
+        //assign 'employee' role to this user
+        $role = Role::where('title', 'employee')->first();
+        $user->roles()->attach($role->id);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User created successfully',
+            'user' => $user,
+        ]);
+
+      /*  $token = Auth::login($user);
 
         return response()->json([
             'status' => 'success',
@@ -83,7 +158,7 @@ class AuthController extends Controller
             'refresh_token' => $token,
             'type' => 'bearer',
 
-        ]);
+        ]);*/
     }
 
     public function logout()
@@ -148,7 +223,7 @@ class AuthController extends Controller
         return response()->json([
             'id' => $user->id,
             'username' => $user->username,
-            // 'email' => $user->email,
+             'name' => $user->employee?->name ?? null,
             // 'avatar' => '',
             'roles' => $allroles->pluck('title')->unique(),
             'permissions' => $permList->unique(),
@@ -195,6 +270,7 @@ class AuthController extends Controller
             'email' => $user?->employee?->employeeExtra?->email ?? null,
             'avatar' => '',
             'aadhaarid' => $user?->employee?->aadhaarid ?? null,
+            'pen' => $user?->employee?->pen ?? null,
             'srismt' => $user?->employee?->srismt ?? null,
             'name_mal' => $user?->employee?->name_mal ?? null,
             'name' => $user?->employee?->name ?? null,
@@ -202,6 +278,11 @@ class AuthController extends Controller
             'pan' => $user?->employee?->employeeExtra?->pan ?? null,
             'klaid' => $user?->employee?->employeeExtra?->klaid ?? null,
             'dateOfJoinInKLA' => $user?->employee?->employeeExtra?->date_of_joining_kla ?? null,
+            'electionid' => $user?->employee?->employeeExtra?->electionid ?? null,
+            'dob' => $user?->employee?->employeeExtra?->dob ?? null,
+            'dateOfEntryInService' => $user?->employee?->employeeExtra?->date_of_entry_in_service ?? null,
+            'dateOfCommencementOfContinousService' => $user?->employee?->employeeExtra?->date_of_commencement_of_continous_service ?? null,
+            'address' => $user?->employee?->employeeExtra?->address ?? null,
         ]);
     }
 
@@ -209,13 +290,19 @@ class AuthController extends Controller
     {
         $user = User::with(['employee', 'employee.employeeExtra'])->find(Auth::id());
 
+        $dob = $request->dob ? Carbon::parse($request->dob)->format('Y-m-d') : null;
         $dateOfJoinInKLA = $request->dateOfJoinInKLA ? Carbon::parse($request->dateOfJoinInKLA)->format('Y-m-d') : null;
+        $dateOfEntryInService = $request->dateOfEntryInService ? Carbon::parse($request->dateOfEntryInService)->format('Y-m-d') : null;
+        $dateOfCommencementOfContinousService = $request->dateOfCommencementOfContinousService ? Carbon::parse($request->dateOfCommencementOfContinousService)->format('Y-m-d') : null;
 
         \Log::info('in save profile', $request->all());
         $validator = Validator::make($request->all(), [
-           // 'email' => 'email'|'unique:employee_extras,email,' . $user->employee?->employeeExtra?->id,
-            'mobile' => 'required|numeric|digits:10',
-            'dateOfJoinInKLA' => 'date',
+
+            'email' =>  [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'pan' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'klaid' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'electionid' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
+            'mobile' => [Rule::unique('employee_extras')->ignore($user->employee?->employeeExtra?->id),],
         ]);
 
         if ($validator->fails()) {
@@ -237,6 +324,11 @@ class AuthController extends Controller
             'date_of_joining_kla' => $dateOfJoinInKLA,
             'pan' => $request->pan,
             'klaid' => $request->klaid,
+            'electionid' => $request->electionid ?? null,
+            'dob' => $dob,
+            'date_of_entry_in_service' => $dateOfEntryInService,
+            'date_of_commencement_of_continous_service' => $dateOfCommencementOfContinousService,
+            'address'   => $request->address,
 
         ];
         if($user->employee->employeeExtra){

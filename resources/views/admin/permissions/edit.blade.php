@@ -12,7 +12,7 @@
             @csrf
             <div class="form-group">
                 <label class="required" for="title">{{ trans('cruds.permission.fields.title') }}</label>
-                <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $permission->title) }}" required>
+                <input style="text-transform: lowercase" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', $permission->title) }}" required>
                 @if($errors->has('title'))
                     <span class="text-danger">{{ $errors->first('title') }}</span>
                 @endif

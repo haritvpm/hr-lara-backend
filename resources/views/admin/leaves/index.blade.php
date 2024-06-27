@@ -86,9 +86,7 @@
                     <th>
                         {{ trans('cruds.leaf.fields.remarks') }}
                     </th>
-                    <th>
-                        {{ trans('cruds.leaf.fields.casual_dates') }}
-                    </th>
+                   
                     <th>
                         &nbsp;
                     </th>
@@ -162,7 +160,7 @@
 { data: 'processed', name: 'processed' },
 { data: 'owner_seat', name: 'owner_seat' },
 { data: 'remarks', name: 'remarks' },
-{ data: 'casual_dates', name: 'casual_dates' },
+//{ data: 'casual_dates', name: 'casual_dates' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

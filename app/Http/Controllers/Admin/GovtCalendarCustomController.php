@@ -79,9 +79,10 @@ class GovtCalendarCustomController extends Controller
        //get last day of GovtCalendar
        $from = GovtCalendar::orderBy('date', 'desc')->first();
 
-       if(!$from) $from = Carbon::parse('2024-01-01');
+       if(!$from) $from = Carbon::today()->startOfYear();
        else $from = Carbon::parse($from->date);
-       $today = Carbon::now()->endOfMonth();
+
+       $today = Carbon::now()->endOfYear();
        $today->setTime(0,0,0);
         \Log::info("fetchmonth --".  $from->toString() . " to " . $today->toString());
 

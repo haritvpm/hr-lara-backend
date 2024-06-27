@@ -72,10 +72,12 @@ class Punching extends Model
         'grace_total_exceeded_one_hour',
         'computer_hint',
         'single_punch_type',
-        'single_punch_regularised_by',
         'time_group',
         'is_unauthorised',
+        'single_punch_regularised_by',
         'duration_sec_needed',
+        'flexi_time',
+        'status', //hex 1 = NOT_JOINED_IN_KLA_ON_THIS_DATE
         'created_at',
         'updated_at',
         'deleted_at',

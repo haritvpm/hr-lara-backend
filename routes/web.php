@@ -101,6 +101,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('punching-devices', 'PunchingDeviceController');
 
     // Exemption
+    Route::get('exemptions/showadd', 'ExemptionControllerCustom@showadd')->name('exemptions.showadd');
+    Route::post('exemptions/storeexemption', 'ExemptionControllerCustom@storeexemption')->name('exemptions.storeexemption');
+    Route::get('exemptions/exemptedIndex', 'ExemptionControllerCustom@exemptedIndex')->name('exemptions.exemptedIndex');
     Route::delete('exemptions/destroy', 'ExemptionController@massDestroy')->name('exemptions.massDestroy');
     Route::resource('exemptions', 'ExemptionController');
 
@@ -260,6 +263,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('compen-granteds', 'CompenGrantedController', ['except' => ['show']]);
 
 
+    // Employee To Flexi
+    Route::delete('employee-to-flexis/destroy', 'EmployeeToFlexiController@massDestroy')->name('employee-to-flexis.massDestroy');
+    Route::resource('employee-to-flexis', 'EmployeeToFlexiController');
+
+    // Leave Group
+    Route::delete('leave-groups/destroy', 'LeaveGroupController@massDestroy')->name('leave-groups.massDestroy');
+    Route::resource('leave-groups', 'LeaveGroupController');
+
+    // Flexi Application
+    Route::delete('flexi-applications/destroy', 'FlexiApplicationController@massDestroy')->name('flexi-applications.massDestroy');
+    Route::resource('flexi-applications', 'FlexiApplicationController');
 });
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
     // Change password

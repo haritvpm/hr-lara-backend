@@ -18,6 +18,20 @@ class GovtCalendar extends Model
         'noon' => 'noon',
         '3pm'  => '3 p.m.',
     ];
+    
+    
+    public const DAY_TYPE_SELECT = [
+        'sitting'     => 'SittingDay',
+        'intervening' => 'InterveningDay',
+        'prior'       => 'PriorDay',
+    ];
+    
+    
+
+    public const PUNCHING_SELECT = [
+        0 => 'No Punching',
+        1  => 'Has Punching',
+    ];
 
     protected $dates = [
         'date',
@@ -37,12 +51,13 @@ class GovtCalendar extends Model
         'success_attendance_rows_fetched',
         'attendancetodaytrace_lastfetchtime',
         'attendance_today_trace_rows_fetched',
-        'is_sitting_day',
+      //  'is_sitting_day', unused. use day_type
         'punching',
         'session_id',
         'office_ends_at',
         'attendance_trace_fetch_complete',
         'calc_count',
+        'day_type',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -53,15 +68,15 @@ class GovtCalendar extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function getDateAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
-    }
+    // public function getDateAttribute($value)
+    // {
+    //     return $value ? Carbon::parse($value)->format(config('panel.date_format')) : null;
+    // }
 
-    public function setDateAttribute($value)
-    {
-        $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
-    }
+    // public function setDateAttribute($value)
+    // {
+    //     $this->attributes['date'] = $value ? Carbon::createFromFormat(config('panel.date_format'), $value)->format('Y-m-d') : null;
+    // }
 
     public function getSuccessAttendanceLastfetchtimeAttribute($value)
     {
@@ -123,6 +138,7 @@ class GovtCalendar extends Model
             $calender->attendance_today_trace_rows_fetched = 0;
             //$calender->success_attendance_fetched = 0;
             $calender->success_attendance_rows_fetched = 0;
+            $calender->punching = 1;
             $calender->save();
         }
         return  $calender;
@@ -174,4 +190,82 @@ class GovtCalendar extends Model
 
         return $calender_info;
     }
+    public static function getHolidaysForPeriod ($date_start_str, $date_end_str)
+    {
+        $holidays = GovtCalendar::
+        where('date', '>=', $date_start_str)
+        ->where('date', '<=', $date_end_str)
+        ->where('govtholidaystatus', 1)
+        ->orderby('date')
+        ->get();
+
+        return $holidays;
+    }
+
+    public static function isHolidayForEmployee($date_str, $aadhaarid)
+    {
+        $calender = GovtCalendar::where('date', $date_str)->first();
+
+        if($calender->govtholidaystatus == 1){
+           return true;
+        }
+
+        if( $calender->restrictedholidaystatus == 1){
+            //if so punching for this date has for this employee, marked as RH
+            $punching = Punching::where('aadhaarid', $aadhaarid)
+                ->whereDate('date', $date_str)
+                ->first();
+            //consider as holiday
+            if( $punching && ($punching->hint == 'restricted' || $punching->hint == 'RH')){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function getAdjacentHolidays($date_start_str, $isprefix)
+    {
+        $prefix = [];
+        $date = Carbon::parse($date_start_str);
+
+        $date = $isprefix ? $date->subDay() : $date->addDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if(!$cal || $cal->govtholidaystatus != 1){
+                break;
+            }
+            $prefix[] = $cal->date;
+            $date = $isprefix ? $date->subDay() : $date->addDay();
+        }
+        return $prefix;
+    }
+
+    public static function getAdjacentWorkingDates($start_date, $end_date)
+    {
+        $leftWorking = null;
+        $date = Carbon::parse($start_date)->subDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if($cal->govtholidaystatus !== 1){
+              $leftWorking = $cal->date;
+              break;
+            }
+            $date = $date->subDay();
+        }
+
+        $rightWorking = null;
+        $date = Carbon::parse($end_date)->addDay();
+        while(1){
+            $cal = GovtCalendar::where('date', $date->format('Y-m-d'))->first();
+            if($cal->govtholidaystatus !== 1){
+              $rightWorking = $cal->date;
+              break;
+            }
+            $date = $date->addDay();
+        }
+
+        return [$leftWorking, $rightWorking];
+
+    }
+
 }

@@ -107,6 +107,18 @@
                 <span class="help-block">{{ trans('cruds.employee.fields.grace_group_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="leave_group_id">{{ trans('cruds.employee.fields.leave_group') }}</label>
+                <select class="form-control select2 {{ $errors->has('leave_group') ? 'is-invalid' : '' }}" name="leave_group_id" id="leave_group_id">
+                    @foreach($leave_groups as $id => $entry)
+                        <option value="{{ $id }}" {{ old('leave_group_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('leave_group'))
+                    <span class="text-danger">{{ $errors->first('leave_group') }}</span>
+                @endif
+                <span class="help-block">{{ trans('cruds.employee.fields.leave_group_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>

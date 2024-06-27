@@ -57,6 +57,15 @@
                             {{ trans('cruds.section.fields.works_nights_during_session') }}
                         </th>
                         <th>
+                            {{ trans('cruds.section.fields.start_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.end_date') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.section.fields.status') }}
+                        </th>
+                        <th>
                             &nbsp;
                         </th>
                     </tr>
@@ -97,6 +106,15 @@
                             <td>
                                 <span style="display:none">{{ $section->works_nights_during_session ?? '' }}</span>
                                 <input type="checkbox" disabled="disabled" {{ $section->works_nights_during_session ? 'checked' : '' }}>
+                            </td>
+                            <td>
+                                {{ $section->start_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ $section->end_date ?? '' }}
+                            </td>
+                            <td>
+                                {{ App\Models\Section::STATUS_SELECT[$section->status] ?? '' }}
                             </td>
                             <td>
                                 @can('section_show')

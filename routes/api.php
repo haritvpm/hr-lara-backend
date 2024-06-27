@@ -8,7 +8,7 @@ Route::group([
 ], function ($router) {
     Route::post('login', [AuthController::class,'login']);
     Route::get('me', [AuthController::class,'me']);
-  //  Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('resetpassword', [AuthController::class, 'resetpassword']);
@@ -136,6 +136,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('tax-entries', 'TaxEntriesApiController');
 
     // Punching
+    Route::post('/search-punchings', 'PunchingApiSearchController@search');
 
 
     Route::get('/emp-punchings-yearly/{aadhaarid}/{date?}', 'PunchingApiEmployeeMontlyController@getemployeeYearlyPunchingsMontwise');
@@ -148,7 +149,14 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::post('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@saveUserSectionEmployee');
     Route::get('/my-sectionemployees', 'EmployeeToSectionApiControllerCustom@getUserSectionEmployees');
     Route::get('/my-sectionemployees/unposted-employees', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployees');
+    Route::get('/my-sectionemployees/unposted-employees-ajax', 'EmployeeToSectionApiControllerCustom@getUnpostedEmployeesAjax');
     Route::patch('/my-sectionemployees/{id}', 'EmployeeToSectionApiControllerCustom@endPosting');
+    Route::patch('/my-sectionemployees/setting/{id}', 'EmployeeToSectionApiControllerCustom@editSetting');
+
+    Route::get('/user-flexi-setting', 'EmployeeToSectionApiControllerCustom@getUserSettings');
+    Route::get('/my-flexi-applications', 'EmployeeToSectionApiControllerCustom@getUserFlexiApplications');
+    Route::post('/my-flexi-applications', 'EmployeeToSectionApiControllerCustom@storeUserFlexiApplication');
+    Route::delete('/my-flexi-applications/{id}', 'EmployeeToSectionApiControllerCustom@deleteUserFlexiApplication');
 
     Route::apiResource('punchings', 'PunchingApiController', ['except' => ['store', 'destroy']]);
 
@@ -156,11 +164,17 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
     Route::apiResource('assembly-sessions', 'AssemblySessionApiController');
 
     // Leave
-    
+
+    Route::post('/precheck-leave', 'LeaveApiController@precheckLeave');
+    Route::patch('/leaves/{id}', 'LeaveApiController@updateLeave');
     Route::delete('/leaves/{id}', 'LeaveApiController@deleteLeave');
     Route::post('/leaves/{id}/forward', 'LeaveApiController@leaveForward');
     Route::post('/leaves/{id}/approve', 'LeaveApiController@leaveApprove');
     Route::post('/leaves/{id}/return', 'LeaveApiController@leaveReturn');
+    Route::get('/leaves/employee/{aadhaarid}', 'LeaveApiController@getEmployeeLeaves');
+    Route::get('/leaves/employee-leave-pending/{aadhaarid}', 'LeaveApiController@getEmployeePendingLeaves');
+    Route::get('/leaves/forwardable-seats', 'LeaveApiController@getLeaveForwardableSeats');
+    
     Route::apiResource('leaves', 'LeaveApiController');
 
     // Office Times
@@ -189,4 +203,19 @@ Route::group(['prefix' => 'v1', 'as' => 'api.', 'namespace' => 'Api\V1\Admin', '
 
     // Compen Granted
     Route::apiResource('compen-granteds', 'CompenGrantedApiController', ['except' => ['show']]);
+
+    // Employee To Flexi
+    Route::apiResource('employee-to-flexis', 'EmployeeToFlexiApiController');
+
+    // Leave Group
+    Route::apiResource('leave-groups', 'LeaveGroupApiController');
+
+    // Flexi Application
+    Route::apiResource('flexi-applications', 'FlexiApplicationApiController');
+
+    // Duty Posting Item
+    Route::apiResource('duty-posting-items', 'DutyPostingItemApiController');
+
+    // Duty Posting Form
+    Route::apiResource('duty-posting-forms', 'DutyPostingFormApiController');
 });

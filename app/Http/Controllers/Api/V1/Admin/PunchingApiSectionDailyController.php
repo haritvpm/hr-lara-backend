@@ -12,30 +12,56 @@ use App\Models\YearlyAttendance;
 use App\Models\MonthlyAttendance;
 use App\Services\EmployeeService;
 use App\Http\Controllers\Controller;
-
+use Auth;
 class PunchingApiSectionDailyController extends Controller
 {
     public function getpunchings(Request $request)
     {
 
+        //jwt does not set these permissions??
+        if(!Auth::user()->canDoAny(['section_access', 'can_view_all_section_attendance'])){
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
         $date = $request->date ? Carbon::createFromFormat('Y-m-d', $request->date) : Carbon::now()->startOfDay(); //today
         $date_str = $date->format('Y-m-d');
 
-        //get current logged in user's charges
-
         [$me , $seat_ids_of_loggedinuser, $status] = User::getLoggedInUserSeats();
 
-        if ($status != 'success') {
-            return response()->json(['status' => $status], 400);
+        $isSecretary = Auth::user()->hasRole('secretary');
+        $userIsSuperiorOfficer = $isSecretary;
+
+        //get current logged in user's charges
+        $employees_in_view = null;
+        $empService = new EmployeeService();
+        $employees = null;
+        if (Auth::user()->canDo('can_view_all_section_attendance')) {
+            // the user can view all section attendance
+            $employees = $empService->getEmployeesToShowFromSeatsAndSectionsAndEmpIDs(
+                $seat_ids_of_loggedinuser, $date_str,$date_str,null,null,null,null,null,null);
+
+        }
+        else {
+            // the user can only view his/her section attendance
+            $userIsSuperiorOfficer = true;
+
+
+            if ($status != 'success') {
+                return response()->json([
+                    'status' => $status, 'message' => 'User not mapped to any seats'], 400);
+            }
+
+            //call employeeservice get loggedusersubordinate
+            $employees = $empService->getLoggedUserSubordinateEmployees(
+                $date_str,
+                $date_str,
+                $seat_ids_of_loggedinuser,
+                $me
+            );
         }
 
-        //call employeeservice get loggedusersubordinate
-        $employees_in_view = (new EmployeeService())->getLoggedUserSubordinateEmployees(
-            $date_str,
-            $date_str,
-            $seat_ids_of_loggedinuser,
-            $me
-        );
+        $employees_in_view = $empService->employeeToResource(
+            $employees, $seat_ids_of_loggedinuser,  $userIsSuperiorOfficer);
 
         if(!$employees_in_view){
             return response()->json(['status' => 'success', 'message' => 'No employees found'], 200);
@@ -67,16 +93,20 @@ class PunchingApiSectionDailyController extends Controller
             $item['name'] = $employee['name'];
             $item['aadhaarid'] = $employee['aadhaarid'];
 
-            $sections[] = $employee['section_name'];
-            $section_ids[] = $employee['section_id'];
+            if($employee['section_name']){
+                $sections[] = $employee['section_name'];
+                $section_ids[] = $employee['section_id'];
+            }
 
             if ($data_monthly && $data_monthly->has($aadhaarid)) {
+                $item['grace_limit'] = $data_monthly[$aadhaarid]['grace_minutes'];
                 $item['total_grace_sec'] = $data_monthly[$aadhaarid]['total_grace_sec'];
                 $item['total_extra_sec'] = $data_monthly[$aadhaarid]['total_extra_sec'];
                 $item['total_grace_str'] = $data_monthly[$aadhaarid]['total_grace_str'];
                 $item['total_extra_str'] = $data_monthly[$aadhaarid]['total_extra_str'];
                 $item['total_grace_exceeded300_date'] = $data_monthly[$aadhaarid]['total_grace_exceeded300_date'];
             } else {
+                $item['grace_limit'] = 300;
                 $item['total_grace_sec'] = 0;
                 $item['total_extra_sec'] = 0;
                 $item['total_grace_exceeded300_date'] = null;
@@ -102,6 +132,7 @@ class PunchingApiSectionDailyController extends Controller
 
             $item['logged_in_user_is_controller'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_controller'];
             $item['logged_in_user_is_section_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_section_officer'];
+            $item['logged_in_user_is_superior_officer'] = $employees_in_view_mapped[$aadhaarid]['logged_in_user_is_superior_officer'];
 
             $item['attendance_book_id'] = $employees_in_view_mapped[$aadhaarid]['attendance_book_id'];
             $item['attendance_book'] = $employees_in_view_mapped[$aadhaarid]['attendance_book'];

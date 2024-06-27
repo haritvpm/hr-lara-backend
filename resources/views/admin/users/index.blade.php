@@ -32,9 +32,9 @@
                         <th>
                             {{ trans('cruds.user.fields.username') }}
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.user.fields.name') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.user.fields.employee') }}
                         </th>
@@ -76,9 +76,9 @@
                             <td>
                                 {{ $user->name ?? '' }}
                             </td>
-                            <td>
+                            <!-- <td>
                                 {{ $user->employee->name ?? '' }}
-                            </td>
+                            </td> -->
                             <td>
                                 {{ $user->employee->pen ?? '' }}
                             </td>
