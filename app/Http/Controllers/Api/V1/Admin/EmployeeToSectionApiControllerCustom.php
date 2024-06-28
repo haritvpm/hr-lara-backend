@@ -83,7 +83,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
         $controller = $employee_section_map?->section?->seat_of_controlling_officer_id ;
 
 
-        $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser);
+        $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser, true);
 
         $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
 

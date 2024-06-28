@@ -11,6 +11,7 @@ use App\Models\AttendanceRouting;
 use App\Models\EmployeeToSection;
 use App\Models\EmployeeToDesignation;
 use Carbon\Carbon;
+use Auth;
 
 class EmployeeService
 {
@@ -691,9 +692,9 @@ class EmployeeService
         });
         \Log::info('$mycontrolledseats');
         \Log::info($mycontrolledseats);
-
+        $isSecretary = Auth::user()->hasRole('secretary');
         $my_emp_id = auth()->user()->employee_id;
-        $data = $data->unique('id')->map(function ($employee, $key) use ($my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
+        $data = $data->unique('id')->map(function ($employee, $key) use ( $isSecretary, $my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employee)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee_employee_to_designations)
@@ -714,8 +715,15 @@ class EmployeeService
             if(!$logged_in_user_is_controller && !$this_is_me){
                 $logged_in_user_is_controller = $employee?->subordinate_seat_controlled_by_me ?? false;
             }
+            if($userIsSuperiorOfficer && (!$employee?->employeeLoadedDirectly)){
+                $userIsSuperiorOfficer = false;
+            }
+
             if($userIsSuperiorOfficer && $this_is_me){
                 $userIsSuperiorOfficer = false;
+            }
+            if($isSecretary){
+                $userIsSuperiorOfficer = true;
             }
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
@@ -734,7 +742,7 @@ class EmployeeService
                 'seat_of_controlling_officer_id' => $employeeToSection?->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,
                 'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_reporting_officer_id) ?? false,
-                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer && (!$employee?->employeeLoadedDirectly ?? false),
+                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer,
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
