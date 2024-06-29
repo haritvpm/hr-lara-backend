@@ -109,6 +109,8 @@ class PunchingApiSectionMontlyController extends Controller
             if($employee['section_name']){
                 $sections[] = $employee['section_name'];
                 $section_ids[] = $employee['section_id'];
+                //\Log::info('section_id : ' . $employee['section_id']);
+                //\Log::info('section_name : ' . $employee['section_name']);
             }
 
             //mapped after fetching. so no need to check if it exists
@@ -223,6 +225,11 @@ class PunchingApiSectionMontlyController extends Controller
             $data[] = $item;
         }
 
+        //\Log::info('section_ids : ' );
+       // \Log::info($section_ids);
+       // \Log::info('sections : ' );
+
+       // \Log::info($sections);
         $attendancebooks = AttendanceBook::wherein('section_id', $section_ids)->pluck('title')
             ->transform(function ($item) {
                 return "/{$item}";
@@ -231,7 +238,7 @@ class PunchingApiSectionMontlyController extends Controller
         $sections = [...$sections, ...$attendancebooks->toArray()];
 
 
-        \Log::info('time taken: ' . (microtime(true) - $start_time));
+      //  \Log::info('time taken: ' . (microtime(true) - $start_time));
 
         return response()->json([
             'month' => Carbon::parse($start_date)->format('F Y'), // 'January 2021

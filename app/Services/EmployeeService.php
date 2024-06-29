@@ -11,6 +11,7 @@ use App\Models\AttendanceRouting;
 use App\Models\EmployeeToSection;
 use App\Models\EmployeeToDesignation;
 use Carbon\Carbon;
+use Auth;
 
 class EmployeeService
 {
@@ -312,7 +313,7 @@ class EmployeeService
 
             return [
                 $x->employee->aadhaarid => [
-                    'section' => $x->section->name,
+                    'section' => $x->section->short_name,
                     'section_id' => $x->section->id,
                 ],
             ];
@@ -343,7 +344,8 @@ class EmployeeService
                 $item['employee']['aadhaarid'] => [
                     'name' => $x->employee?->name,
                     'designation' => $desig,
-                    'section' => $x->section->name,
+                    'section' => $x->section->short_name,
+                    'section_name' => $x->section->short_name,
                     'section_id' => $x->section->id,
                     'shift' => $x->employee?->is_shift,
                     'time_group_id' => $time_group_id,
@@ -604,7 +606,7 @@ class EmployeeService
 
 
                         $emp->setAttribute('section_id', $section->id);
-                        $emp->setAttribute('section_name', $section->name);
+                        $emp->setAttribute('section_name', $section->short_name);
                     }
                    }
                }
@@ -690,9 +692,9 @@ class EmployeeService
         });
         \Log::info('$mycontrolledseats');
         \Log::info($mycontrolledseats);
-
+        $isSecretary = Auth::user()->hasRole('secretary');
         $my_emp_id = auth()->user()->employee_id;
-        $data = $data->unique('id')->map(function ($employee, $key) use ($my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
+        $data = $data->unique('id')->map(function ($employee, $key) use ( $isSecretary, $my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
             // $employee_to_designation = $employeeToSection->employee->employee_employee_to_designations
             $results = json_decode(json_encode($employee)); //somehow cant get above line to work
             $employee_to_designation = count($results->employee_employee_to_designations)
@@ -713,8 +715,15 @@ class EmployeeService
             if(!$logged_in_user_is_controller && !$this_is_me){
                 $logged_in_user_is_controller = $employee?->subordinate_seat_controlled_by_me ?? false;
             }
+            if($userIsSuperiorOfficer && (!$employee?->employeeLoadedDirectly)){
+                $userIsSuperiorOfficer = false;
+            }
+
             if($userIsSuperiorOfficer && $this_is_me){
                 $userIsSuperiorOfficer = false;
+            }
+            if($isSecretary){
+                $userIsSuperiorOfficer = true;
             }
             // \Log::info($employeeToSection);
             //if we loaded employee through AttendanceRoutings' viewable_js_as_ss_employees, then we need to mark it as such
@@ -727,13 +736,13 @@ class EmployeeService
                 'aadhaarid' => $employee->aadhaarid,
                 'attendance_book_id' => $employeeToSection?->attendance_book_id,
                 'attendance_book' => $employeeToSection?->attendance_book,
-                'section_id' => $employeeToSection?->section_id || $employee['section_id'],
-                'section_name' => $employeeToSection?->section->name ?? $employee['section_name'],
+                'section_id' => $employeeToSection?->section_id ?? $employee['section_id'],
+                'section_name' => $employeeToSection?->section->short_name ?? $employee['section_name'],
                 'works_nights_during_session' => $employeeToSection?->section->works_nights_during_session,
                 'seat_of_controlling_officer_id' => $employeeToSection?->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $logged_in_user_is_controller,
                 'logged_in_user_is_section_officer' => $seat_ids_of_loggedinuser?->contains($employeeToSection?->section->seat_of_reporting_officer_id) ?? false,
-                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer && (!$employee?->employeeLoadedDirectly ?? false),
+                'logged_in_user_is_superior_officer' => $userIsSuperiorOfficer,
                 'designation' => $employee_to_designation?->designation->designation,
                 'designation_sortindex' => $employee_to_designation?->designation?->sort_index ?? 1000,
                 'default_time_group_id' => $employee_to_designation?->designation?->default_time_group_id,
@@ -790,7 +799,7 @@ class EmployeeService
                 'aadhaarid' => $employeeToSection->employee->aadhaarid,
                 'attendance_book_id' => $employeeToSection->attendance_book_id,
                 'attendance_book' => $employeeToSection->attendance_book,
-                'section_id' => $employeeToSection->section_id,
+                'section_id' => $employeeToSection->section->id,
                 'section_name' => $employeeToSection->section->name,
                 'seat_of_controlling_officer_id' => $employeeToSection->section->seat_of_controlling_officer_id,
                 'logged_in_user_is_controller' => $seat_ids_of_loggedinuser->contains($employeeToSection->section->seat_of_controlling_officer_id),

@@ -176,7 +176,7 @@ class LeaveApiController extends Controller
         }
         else
         if (!$isCasualOrCompen) {
-            $owner = $controllerSeat;
+          //  $owner = $controllerSeat;
             $owner_can_approve = true;
         }
 

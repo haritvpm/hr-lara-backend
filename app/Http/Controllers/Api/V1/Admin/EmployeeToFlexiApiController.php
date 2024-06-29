@@ -67,7 +67,7 @@ class EmployeeToFlexiApiController extends Controller
                    // 'employee_to_flexi' => $employee->employeeToFlexi,
                   //  'employee_section_mapping' => $employee->employeeSectionMapping,
                     'aadhaarid' => $employee->aadhaarid,
-                    'section_name' => $employee->employeeSectionMapping?->first()?->section->name ?? '',
+                    'section_name' => $employee->employeeSectionMapping?->first()?->section->short_name ?? '',
                     'flexi_minutes' => $flexi_minutes,
                     //'designation' => $employee->designation,
                     'designation_name' => $employee->employeeEmployeeToDesignations->first()?->designation->designation ?? '',

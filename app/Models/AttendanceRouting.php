@@ -109,7 +109,7 @@ class AttendanceRouting extends Model
         return $seats;
 
     }
-    public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser)
+    public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser, $js_or_above_only = false)
     {
         //also get reporting officer seat, controller, and all seat above this user in routing
         $forwardable_seats = [];
@@ -153,6 +153,12 @@ class AttendanceRouting extends Model
         }
         \Log::info('forwardable_seats');
         \Log::info($forwardable_seats );
+
+        if($js_or_above_only)
+        {
+            $forwardable_seats = Seat::whereIn('id', $forwardable_seats)->where('level', '>=', 50)->pluck('id');
+        }
+
 
         $seats = EmployeeToSeat::with(['seat', 'employee'])
         ->wherein('seat_id', $forwardable_seats)

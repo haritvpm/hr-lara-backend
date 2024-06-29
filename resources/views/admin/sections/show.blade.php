@@ -87,6 +87,38 @@
                             <input type="checkbox" disabled="disabled" {{ $section->works_nights_during_session ? 'checked' : '' }}>
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.start_date') }}
+                        </th>
+                        <td>
+                            {{ $section->start_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.end_date') }}
+                        </th>
+                        <td>
+                            {{ $section->end_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.status') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Section::STATUS_SELECT[$section->status] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.section.fields.short_name') }}
+                        </th>
+                        <td>
+                            {{ $section->short_name }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

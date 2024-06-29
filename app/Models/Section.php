@@ -37,6 +37,7 @@ class Section extends Model
         'start_date',
         'end_date',
         'status',
+        'short_name',
         'created_at',
         'updated_at',
         'deleted_at',

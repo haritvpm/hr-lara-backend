@@ -936,7 +936,7 @@ class PermissionsTableSeeder extends Seeder
             ],
         ];
 
-        Permission::upsert(
+        Permission::insert(
             $permissions
         );
     }
