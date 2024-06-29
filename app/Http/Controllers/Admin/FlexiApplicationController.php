@@ -68,7 +68,7 @@ class FlexiApplicationController extends Controller
 
     public function destroy(FlexiApplication $flexiApplication)
     {
-        abort_if(Gate::denies('office_time_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('designation_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $flexiApplication->delete();
 

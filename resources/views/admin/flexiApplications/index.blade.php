@@ -94,7 +94,7 @@
                                     </a>
                                 @endcan
 
-                                @can('flexi_application_delete')
+                                @can('designation_delete')
                                     <form action="{{ route('admin.flexi-applications.destroy', $flexiApplication->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
                                         <input type="hidden" name="_method" value="DELETE">
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -160,7 +160,7 @@
       $($.fn.dataTable.tables(true)).DataTable()
           .columns.adjust();
   });
-  
+
 })
 
 </script>
