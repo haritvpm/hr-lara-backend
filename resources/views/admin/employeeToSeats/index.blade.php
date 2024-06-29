@@ -34,12 +34,12 @@
                     <th>
                         {{ trans('cruds.employeeToSeat.fields.employee') }}
                     </th>
-                    <th>
+                    <!-- <th>
                         {{ trans('cruds.employeeToSeat.fields.start_date') }}
                     </th>
                     <th>
                         {{ trans('cruds.employeeToSeat.fields.end_date') }}
-                    </th>
+                    </th> -->
                     <th>
                         &nbsp;
                     </th>
@@ -99,8 +99,8 @@
 { data: 'id', name: 'id' },
 { data: 'seat_title', name: 'seat.title' },
 { data: 'employee_name', name: 'employee.name' },
-{ data: 'start_date', name: 'start_date' },
-{ data: 'end_date', name: 'end_date' },
+//{ data: 'start_date', name: 'start_date' },
+// { data: 'end_date', name: 'end_date' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,

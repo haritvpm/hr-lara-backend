@@ -25,12 +25,12 @@
                         <th>
                             {{ trans('cruds.attendanceRouting.fields.id') }}
                         </th>
-                        <th>
+                        <!-- <th>
                             {{ trans('cruds.attendanceRouting.fields.viewer_js_as_ss_employee') }}
-                        </th>
-                        <th>
+                        </th> -->
+                        <!-- <th>
                             {{ trans('cruds.employee.fields.pen') }}
-                        </th>
+                        </th> -->
                         <th>
                             {{ trans('cruds.attendanceRouting.fields.viewer_seat') }}
                         </th>
@@ -54,12 +54,12 @@
                             <td>
                                 {{ $attendanceRouting->id ?? '' }}
                             </td>
-                            <td>
+                            <!-- <td>
                                 {{ $attendanceRouting->viewer_js_as_ss_employee->name ?? '' }}
                             </td>
                             <td>
                                 {{ $attendanceRouting->viewer_js_as_ss_employee->pen ?? '' }}
-                            </td>
+                            </td> -->
                             <td>
                                 {{ $attendanceRouting->viewer_seat->title ?? '' }}
                             </td>
