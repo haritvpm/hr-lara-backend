@@ -398,12 +398,17 @@ class PunchingCalcService
             }
 
             $grace_sec = $grace_morning + $grace_evening;
-            $emp_new_punching_data['grace_sec'] = $grace_sec;
-            $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
+
             if($grace_sec > 3600){
                 $grace_total_exceeded_one_hour = $grace_sec - 3600;
                 $emp_new_punching_data['grace_total_exceeded_one_hour'] = $grace_total_exceeded_one_hour;
+                //if total grace exceeds 1 hour, set unauthorised
+                $emp_new_punching_data['is_unauthorised'] = true;
+                //IN SUCH CASE SET GRACE TO ZERO
+                $grace_sec = 0;
             }
+            $emp_new_punching_data['grace_sec'] = $grace_sec;
+            $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
 
             //extra time is only calculated if there is no leave
             $extra_sec = $extra_morning + $extra_evening;
@@ -426,6 +431,8 @@ class PunchingCalcService
         if( $canSetUnauthorised  && $calender?->punching !== 0  ){
             if ($punch_count >= 1) {
 
+                //this might be redundant as we have already set unauthorised if grace exceeded 1 hour
+/*
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['is_unauthorised'] = true;
 
@@ -437,7 +444,7 @@ class PunchingCalcService
                 //if total time exceeds 1 hour including morning and eve, set unauthorised
                 if( $c_punch_in && $c_punch_out && $grace_total_exceeded_one_hour > 0){
                     $emp_new_punching_data['is_unauthorised'] = true;
-                }
+                } */
             }
             else
             if ($punch_count == 0){
