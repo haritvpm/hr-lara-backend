@@ -28,6 +28,7 @@ class OfficeTime extends Model
         'an_from',
         'an_to',
         'with_effect_from',
+        'flexi_minutes',
         'created_at',
         'updated_at',
         'deleted_at',

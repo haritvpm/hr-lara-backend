@@ -234,7 +234,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('assembly_related_access')
+                @can('assembly_related_access_removeafterthispart_to_enable')
                     <li class="nav-item has-treeview {{ request()->is("admin/exemptions*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/exemptions*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-archway">
@@ -324,7 +324,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('overtime_related_access')
+                @can('overtime_related_access_removeafterthispart_to_enable')
                     <li class="nav-item has-treeview {{ request()->is("admin/ot-categories*") ? "menu-open" : "" }} {{ request()->is("admin/dept-employees*") ? "menu-open" : "" }} {{ request()->is("admin/dept-designations*") ? "menu-open" : "" }} {{ request()->is("admin/ot-forms*") ? "menu-open" : "" }} {{ request()->is("admin/ot-form-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtimes*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-others*") ? "menu-open" : "" }} {{ request()->is("admin/overtime-sittings*") ? "menu-open" : "" }} {{ request()->is("admin/ot-routings*") ? "menu-open" : "" }} {{ request()->is("admin/assembly-sessions*") ? "menu-open" : "" }} {{ request()->is("admin/employee-ot-settings*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/ot-categories*") ? "active" : "" }} {{ request()->is("admin/dept-employees*") ? "active" : "" }} {{ request()->is("admin/dept-designations*") ? "active" : "" }} {{ request()->is("admin/ot-forms*") ? "active" : "" }} {{ request()->is("admin/ot-form-others*") ? "active" : "" }} {{ request()->is("admin/overtimes*") ? "active" : "" }} {{ request()->is("admin/overtime-others*") ? "active" : "" }} {{ request()->is("admin/overtime-sittings*") ? "active" : "" }} {{ request()->is("admin/ot-routings*") ? "active" : "" }} {{ request()->is("admin/assembly-sessions*") ? "active" : "" }} {{ request()->is("admin/employee-ot-settings*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-money-bill-wave">
@@ -471,7 +471,7 @@
                         </ul>
                     </li>
                 @endcan
-                @can('account_access')
+                @can('account_access_removeafterthispart_to_enable')
                     <li class="nav-item has-treeview {{ request()->is("admin/ddos*") ? "menu-open" : "" }} {{ request()->is("admin/acquittances*") ? "menu-open" : "" }} {{ request()->is("admin/employee-to-acquittances*") ? "menu-open" : "" }} {{ request()->is("admin/tax-entries*") ? "menu-open" : "" }} {{ request()->is("admin/tds*") ? "menu-open" : "" }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is("admin/ddos*") ? "active" : "" }} {{ request()->is("admin/acquittances*") ? "active" : "" }} {{ request()->is("admin/employee-to-acquittances*") ? "active" : "" }} {{ request()->is("admin/tax-entries*") ? "active" : "" }} {{ request()->is("admin/tds*") ? "active" : "" }}" href="#">
                             <i class="fa-fw nav-icon fas fa-dollar-sign">

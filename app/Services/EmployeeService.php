@@ -204,7 +204,7 @@ class EmployeeService
 
                 //designation does not exist. create it
                 $this->createDesigMapping($emp,  $aebas_desig_to_ourId, $empployee);
-                
+
             } else {
 
                 $empployee->update([
@@ -842,6 +842,7 @@ class EmployeeService
     public static function createOrUpdateFlexi($employee_id, $flexi_minutes, $wef)
     {
         \Log::info($employee_id);
+        //\Log::info('createOrUpdateFlexi');
 
         //get current flexi time
         $current_flexi = EmployeeToFlexi::getEmployeeFlexiTime(Carbon::today()->format('Y-m-d'), $employee_id);
@@ -850,6 +851,8 @@ class EmployeeService
 
         //check last updated date
         if ($current_flexi) {
+           // \Log::info('$current_flexi');
+            //\Log::info($current_flexi);
             $last_updated = Carbon::parse($current_flexi->with_effect_from);
             $today = Carbon::today();
             if ($last_updated->diffInDays($today, true) < 20) {
@@ -870,6 +873,7 @@ class EmployeeService
         //we should check if the employee has any flexi time set for the future
         $upcoming_flexi = EmployeeToFlexi::getEmployeeUpcomingFlexiTime($employee_id);
         if ($upcoming_flexi) {
+           // \Log::info('$upcoming_flexi update');
             $upcoming_flexi->update([
                 'employee_id' => $employee_id,
                 'flexi_minutes' => $flexi_minutes,

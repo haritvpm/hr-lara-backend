@@ -66,7 +66,7 @@ class EmployeeToSectionApiControllerCustom extends Controller
             //$emp_office_time = OfficeTime::where('groupname', $time_group)->first();
         \Log::info('time group');
         //\Log::info($employee_section_map);
-        
+
         $data =
 
              [
@@ -82,8 +82,13 @@ class EmployeeToSectionApiControllerCustom extends Controller
         //also get reporting officer seat, controller, and all seat above this user in routing
         $controller = $employee_section_map?->section?->seat_of_controlling_officer_id ;
 
+        $minLevel = 50;
+        //if Faircopy, then flexi is approved by DS and above since they dont have JS in their routing
+        if($employee_section_map?->section?->type == 'FAIRCOPY'){
+            $minLevel = 40;
+        }
 
-        $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser, true);
+        $seats = AttendanceRouting::getForwardableSeats($controller, null, $seat_ids_of_loggedinuser, $minLevel);
 
         $prev_flexi_applications = FlexiApplication::where('employee_id', $employee_id)->orderby('created_at', 'desc')->get();
 

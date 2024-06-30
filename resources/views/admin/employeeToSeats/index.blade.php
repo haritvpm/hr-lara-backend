@@ -13,6 +13,12 @@
         </div>
     </div>
 @endcan
+
+
+<div class="alert alert-primary " role="alert">
+<strong> Note:</strong>  Do not reassign, if JS/AS/SS, on promotions. In such cases, rename the existing seats in the Seats page.
+Keep the seat id same for JS/AS/SS. If a JS/AS/SS seat becomes vacant, assign it to the new JS/AS/SS employee.
+</div>
 <div class="card_">
     <div class="card-header_">
         {{ trans('cruds.employeeToSeat.title_singular') }} {{ trans('global.list') }}

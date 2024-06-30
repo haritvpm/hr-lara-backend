@@ -109,7 +109,7 @@ class AttendanceRouting extends Model
         return $seats;
 
     }
-    public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser, $js_or_above_only = false)
+    public static function getForwardableSeats( $seatIdOfEmployeeController, $seatIdOfSO, $seat_ids_of_loggedinuser, $minLevel = -1)
     {
         //also get reporting officer seat, controller, and all seat above this user in routing
         $forwardable_seats = [];
@@ -122,8 +122,8 @@ class AttendanceRouting extends Model
         else
         if(!$seatIdOfEmployeeController && $seat_ids_of_loggedinuser)
             $baseSeatIds = $seat_ids_of_loggedinuser;
-        
-           
+
+
 
         if($seatIdOfSO)
         {
@@ -151,32 +151,48 @@ class AttendanceRouting extends Model
             $forwardable_seats = array_merge($forwardable_seats, $controllers->toArray());
 
         }
-        \Log::info('forwardable_seats');
-        \Log::info($forwardable_seats );
+       // \Log::info('forwardable_seats');
+        //\Log::info($forwardable_seats );
 
-        if($js_or_above_only)
+        $forwardable_seats_backup = $forwardable_seats;
+        \Log::info('minLevel');
+        \Log::info($minLevel);
+        if($minLevel > 0)
         {
-            $forwardable_seats = Seat::whereIn('id', $forwardable_seats)->where('level', '>=', 50)->pluck('id');
+            $forwardable_seats = Seat::whereIn('id', $forwardable_seats)
+                                    ->where('level', '>=', $minLevel)
+                                    ->pluck('id');
+
+            //\Log::info('forwardable_seats');
+            //\Log::info($forwardable_seats );
+            //if no seat found at this level, then find all seats above this level
+            if(count($forwardable_seats) == 0)
+            {
+
+                $forwardable_seats = Seat::where('level', '>=', $minLevel)->pluck('id');
+            }
+
         }
 
 
         $seats = EmployeeToSeat::with(['seat', 'employee'])
-        ->wherein('seat_id', $forwardable_seats)
-        ->get()->transform( function($seat) {
-            return [
-                'seat_id' => $seat->seat->id,
-                'seat_name' => $seat->seat->title,
-                'employee_name' => $seat->employee->name,
-                'employee_id' => $seat->employee->id,
-                'level' => $seat->seat->level,
-            ];
-        })->sortBy('level')->values();
+                    ->wherenotnull('employee_id')
+                    ->wherein('seat_id', $forwardable_seats)
+                    ->get()->transform( function($seat) {
+                        return [
+                            'seat_id' => $seat->seat->id,
+                            'seat_name' => $seat->seat->title,
+                            'employee_name' => $seat->employee->name,
+                            'employee_id' => $seat->employee->id,
+                            'level' => $seat->seat->level,
+                        ];
+                    })->sortBy('level')->values();
 
         return $seats;
 
 
     }
-    
+
     public static function getLeaveForwardableSeat( $employee_id, $seat_ids_of_loggedinuser )
     {
          //find the owner seat which is the reporting officer of this employee's section
