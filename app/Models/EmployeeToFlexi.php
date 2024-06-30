@@ -13,6 +13,11 @@ class EmployeeToFlexi extends Model
     use HasFactory;
 
     public $table = 'employee_to_flexis';
+    public const FLEXI_MINUTES_SELECT = [
+        '-15' => '-15 Minutes',
+        '0'   => 'Normal',
+        '15'  => '+15 Minutes',
+    ];
 
     protected $dates = [
         'with_effect_from',

@@ -22,13 +22,25 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeToFlexi.fields.employee_helper') }}</span>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="required" for="flexi_minutes">{{ trans('cruds.employeeToFlexi.fields.flexi_minutes') }}</label>
                 <input class="form-control {{ $errors->has('flexi_minutes') ? 'is-invalid' : '' }}" type="number" name="flexi_minutes" id="flexi_minutes" value="{{ old('flexi_minutes', $employeeToFlexi->flexi_minutes) }}" step="1" required>
                 @if($errors->has('flexi_minutes'))
                     <span class="text-danger">{{ $errors->first('flexi_minutes') }}</span>
                 @endif
                 <span class="help-block">{{ trans('cruds.employeeToFlexi.fields.flexi_minutes_helper') }}</span>
+            </div> -->
+            <div class="form-group">
+                <label>{{ trans('cruds.employeeToFlexi.fields.flexi_minutes') }}</label>
+                <select class="form-control {{ $errors->has('flexi_minutes') ? 'is-invalid' : '' }}" name="flexi_minutes" id="flexi_minutes">
+                    <option value disabled {{ old('flexi_minutes', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
+                    @foreach(App\Models\EmployeeToFlexi::FLEXI_MINUTES_SELECT as $key => $label)
+                        <option value="{{ $key }}" {{ old('flexi_minutes', $employeeToFlexi->flexi_minutes) == (string) $key ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+                @if($errors->has('flexi_minutes'))
+                    <span class="text-danger">{{ $errors->first('flexi_minutes') }}</span>
+                @endif
             </div>
             <div class="form-group">
                 <label class="required" for="with_effect_from">{{ trans('cruds.employeeToFlexi.fields.with_effect_from') }}</label>

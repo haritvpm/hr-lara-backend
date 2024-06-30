@@ -157,7 +157,7 @@ class PunchingCalcService
                 'grace_total_exceeded_one_hour', 'computer_hint', 'hint',
                 'single_punch_type',
                 'time_group',
-                'is_unauthorised', 'duration_sec_needed', 'flexi_time', 
+                'is_unauthorised', 'duration_sec_needed', 'flexi_time',
                 //'status'
 
             ]
@@ -431,7 +431,12 @@ class PunchingCalcService
 
                 }
                 if( $c_punch_out && $c_punch_out->lessThan($time_before_which_unauthorised)){
-                  // just ignore now  $emp_new_punching_data['is_unauthorised'] = true;
+                  // just ignore now
+                  $emp_new_punching_data['is_unauthorised'] = true;
+                }
+                //if total time exceeds 1 hour including morning and eve, set unauthorised
+                if( $c_punch_in && $c_punch_out && $grace_total_exceeded_one_hour > 0){
+                    $emp_new_punching_data['is_unauthorised'] = true;
                 }
             }
             else
@@ -712,7 +717,12 @@ class PunchingCalcService
             $aadhaar_to_empIds = $emps->pluck('id', 'aadhaarid');
         }
 
+        //get list of holidays in this month\
+        $holidays = GovtCalendar::getHolidaysForPeriod($start_date->format('Y-m-d') , $end_date->format('Y-m-d'))->pluck('date');
+
+
         $punchings = Punching::with('leave')->whereBetween('date', [$start_date, $end_date])
+            ->wherenotin('date',$holidays)
             ->wherein('aadhaarid', $aadhaar_ids)
             ->get();
 
@@ -720,6 +730,8 @@ class PunchingCalcService
         //\Log::info('aadhaar_to_empIds count:' . $aadhaar_to_empIds);
 
         $grace_groups = GraceTime::getGraceGroups($start_date);
+
+
 
         $data = collect([]);
 
@@ -802,6 +814,7 @@ class PunchingCalcService
                 // $total_single_punchings =  $emp_punchings->where('punching_count', 1)->where('date', '<>', Carbon::today()->format('Y-m-d'))->count();
                 //if this is calculated today, exclude today's single punchings
                 $total_single_punchings = $emp_punchings->where('date', '<>', Carbon::today()->format('Y-m-d'))
+
                                     ->filter(function ($value, $key) {
                                     return $value->punching_count == 1 || $value->single_punch_type != null ;
                                 });
