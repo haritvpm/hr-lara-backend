@@ -91,10 +91,7 @@
                             <td>
                                 {{ App\Models\Section::TYPE_SELECT[$section->type] ?? '' }}
                             </td>
-                            <td>
-                                <span style="display:none">{{ $section->works_nights_during_session ?? '' }}</span>
-                                <input type="checkbox" disabled="disabled" {{ $section->works_nights_during_session ? 'checked' : '' }}>
-                            </td>
+                           
                             <td>
                                 {{ $section->start_date ?? '' }}
                             </td>
