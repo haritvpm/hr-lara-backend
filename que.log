@@ -22,3 +22,15 @@
   2024-05-29 13:19:05 App\Jobs\ProcessLeavesJob ................. 40m 38s DONE
   2024-06-04 12:29:11 App\Jobs\ProcessLeavesJob ...................... RUNNING
   2024-06-04 13:22:02 App\Jobs\ProcessLeavesJob ................. 52m 50s DONE
+  2024-07-01 16:55:17 App\Jobs\ProcessLeavesJob  2024-07-01 16:55:17 App\Jobs\ProcessLeavesJob ...................... ...................... RUNNING
+ RUNNING
+  2024-07-01 16:55:19 App\Jobs\ProcessLeavesJob ...................... 1s FAIL
+  2024-07-01 16:55:19 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-07-01 16:55:19 App\Jobs\ProcessLeavesJob ...................... 1s FAIL
+  2024-07-01 16:55:19 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-07-01 16:55:20 App\Jobs\ProcessLeavesJob ...................... 1s FAIL
+  2024-07-01 16:55:20 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-07-01 16:55:20 App\Jobs\ProcessLeavesJob ...................... 1s FAIL
+  2024-07-01 16:55:20 App\Jobs\ProcessLeavesJob ...................... RUNNING
+  2024-07-01 16:55:21 App\Jobs\ProcessLeavesJob ...................... 1s FAIL
+  2024-07-01 16:55:21 App\Jobs\ProcessLeavesJob ...................... 1s FAIL

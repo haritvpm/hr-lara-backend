@@ -100,6 +100,21 @@ class User extends Authenticatable implements JWTSubject
             $query->where('title', $permission);
         })->exists();
 
+        //also check role from seats
+        if (!$e) {
+            [  $me , $seat_ids_of_loggedinuser, $status] =  User::getLoggedInUserSeats();
+
+            if ($status != 'success') {
+                return false;
+            }
+            //get roles from this user's seats
+            $e = Seat::whereIn('id', $seat_ids_of_loggedinuser)->whereHas('roles', function ($query) use ($permission) {
+                $query->whereHas('permissions', function ($query) use ($permission) {
+                    $query->where('title', $permission);
+                });
+            })->exists();
+        }
+
         \Log::info('canDo' . $permission . ' ' . $e);
         return $e;
     }
@@ -110,6 +125,23 @@ class User extends Authenticatable implements JWTSubject
         })->exists();
 
         \Log::info('canDoAny' . implode($permission) . ' ' . $e);
+
+        //also check role from seats
+        if (!$e) {
+            [  $me , $seat_ids_of_loggedinuser, $status] =  User::getLoggedInUserSeats();
+
+            if ($status != 'success') {
+                return false;
+            }
+            //get roles from this user's seats
+            $e = Seat::whereIn('id', $seat_ids_of_loggedinuser)->whereHas('roles', function ($query) use ($permission) {
+                $query->whereHas('permissions', function ($query) use ($permission) {
+                    $query->whereIn('title', $permission);
+                });
+            })->exists();
+            
+        }
+
         return $e;
     }
     public function hasRole($role)

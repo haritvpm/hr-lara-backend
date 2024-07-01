@@ -19,7 +19,7 @@ class PunchingApiSectionDailyController extends Controller
     {
 
         //jwt does not set these permissions??
-        if(!Auth::user()->canDoAny(['section_access', 'can_view_all_section_attendance'])){
+        if(!Auth::user()->canDo('section_access') && !Auth::user()->canDo('can_view_all_section_attendance')){
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
 
