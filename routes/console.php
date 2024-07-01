@@ -26,6 +26,9 @@ Artisan::command('inspire', function () {
 //* * * * * cd /home/kla/hrApp/hrmsapp-lara && php artisan schedule:run >> /dev/null 2>&1
 
 Schedule::command('app:fetch-attendace-trace-today')
+->cron('15,45 8-9 * * *'); //half hourly from  8 to 9
+
+Schedule::command('app:fetch-attendace-trace-today')
 ->cron('0-59/15 10-12 * * *'); //every 15 min between 10 to 12
 
 Schedule::command('app:fetch-attendace-trace-today')
