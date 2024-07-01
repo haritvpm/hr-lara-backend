@@ -375,7 +375,7 @@ class PunchingCalcService
             $grace_morning =  $grace_evening = 0;
             $extra_morning =  $extra_evening = 0;
 
-            if( $c_punch_in && !$isFullDayleave ){
+            if( $c_punch_in && !$isFullLeave ){
                 //calculate grace
                 if( $c_punch_in->gt($c_flexi_10am)){
                     $grace_morning = $c_punch_in->diffInSeconds($c_flexi_10am, true);
@@ -385,7 +385,7 @@ class PunchingCalcService
                     $extra_morning = $c_punch_in->diffInSeconds($c_flexi_10am, true);
                 }
             }
-            if( $c_punch_out && !$isFullDayleave){
+            if( $c_punch_out && !$isFullLeave){
                 //calculate grace
                 if( $c_punch_out->lt($c_flexi_530pm)){
                     $grace_evening = $c_punch_out->diffInSeconds($c_flexi_530pm, true);
@@ -432,7 +432,8 @@ class PunchingCalcService
             if ($punch_count >= 1) {
 
                 //this might be redundant as we have already set unauthorised if grace exceeded 1 hour
-/*
+
+
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['is_unauthorised'] = true;
 
@@ -444,7 +445,7 @@ class PunchingCalcService
                 //if total time exceeds 1 hour including morning and eve, set unauthorised
                 if( $c_punch_in && $c_punch_out && $grace_total_exceeded_one_hour > 0){
                     $emp_new_punching_data['is_unauthorised'] = true;
-                } */
+                }
             }
             else
             if ($punch_count == 0){

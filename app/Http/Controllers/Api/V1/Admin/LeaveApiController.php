@@ -156,7 +156,7 @@ class LeaveApiController extends Controller
 
     private function getLeaveForwardableSeatForLeave( $isCasualOrCompen, $employee_id, $seat_ids_of_loggedinuser )
     {
-        
+
         $owner = null;
         $owner_can_approve = false;
 
@@ -347,7 +347,7 @@ class LeaveApiController extends Controller
         $leaf = $isUpdate ? Leaf::findOrFail($request->id) : null;
 
         \DB::transaction(function () use (&$leaf, $request, $me, $owner, $owner_can_approve, $isCasualOrCompen) {
-           
+
             //TODO.if compen, check if this date is not already taken where is_for_extra_hours = false
 
             if( !$leaf ) {
@@ -765,7 +765,7 @@ class LeaveApiController extends Controller
        ->where( 'date', '<', $today)
        //->Wherenotin('hint', ['clear', 'tour'])
        ->where( fn ($query) => $query->where('punching_count',  0)
-            //->orWhere('is_unauthorised',  1)
+            ->orWhere('is_unauthorised',  1)
             ->orWhere( fn ($query) =>
                 $query->where('hint', '<>', 'clear')
                 ->where('hint', '<>', 'tour')
