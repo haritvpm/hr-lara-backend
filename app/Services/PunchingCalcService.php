@@ -272,7 +272,7 @@ class PunchingCalcService
  //if real hint set by so exists, use that instead of computer hint
             //adjust punching times  based on computer hint or hint. so for example, only half day is calculated
         {
-            if (($can_take_casual_fn && $hint == 'casual_fn') || ($hasLeave && $isFnLeave)) {
+            if (/*($can_take_casual_fn && $hint == 'casual_fn') ||*/ ($hasLeave && $isFnLeave)) {
 
                 //$c_flexi_10am = $normal_an_in->clone()->subMinutes($flexi_15minutes); //2pm -15
                 $c_flexi_10am = $normal_an_in->clone()->addMinutes($flexi_15minutes); //2pm -15
@@ -280,7 +280,7 @@ class PunchingCalcService
                 $duration_seconds_needed =  $normal_an_in->diffInSeconds($normal_an_out); //3.15 hour
 
             } else
-            if (($can_take_casual_an && $hint == 'casual_an') || ($hasLeave && $isAnLeave)) {
+            if (/*($can_take_casual_an && $hint == 'casual_an') ||*/ ($hasLeave && $isAnLeave)) {
                 $c_flexi_530pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
                 $c_flexi_5pm = $normal_fn_out->clone()->addMinutes($flexi_15minutes); //1.15 +15
                 $duration_seconds_needed =  $normal_fn_in->diffInSeconds($normal_fn_out); //3.00 hour
