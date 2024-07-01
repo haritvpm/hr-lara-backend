@@ -435,8 +435,11 @@ class EmployeeService
         $employee_ids,
         $all_subordinates = true
     ) {
-        // \Log::info('subordinate_seats_waydown ');
-      //   \Log::info($subordinate_seats_waydown);
+         //\Log::info('subordinate_seats_waydown ');
+         //\Log::info($subordinate_seats_waydown);
+
+        // \Log::info('subordinate   gfdgfd_seats_controlled_by_me ');
+          //  \Log::info($subordinate_seats_controlled_by_me);
 
 
         $seat_ids = collect($subordinate_seats_controlled_by_me)->concat($subordinate_seats_waydown)->unique();
@@ -444,9 +447,9 @@ class EmployeeService
         $sections_controlled_by_me = $all_subordinates ?
 
             Section::wherein('seat_of_controlling_officer_id', $seat_ids_of_loggedinuser)
-
             ->orwherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)
-            ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            //->orwherein('js_as_ss_employee_id', $emp_ids)
+            ->get()
             :
 
             Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
@@ -457,7 +460,8 @@ class EmployeeService
             ->orwherein('seat_of_controlling_officer_id', $subordinate_seats_controlled_by_me)
             ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_controlled_by_me)
             ->orwherein('seat_of_reporting_officer_id', $subordinate_seats_waydown)
-            ->orwherein('js_as_ss_employee_id', $emp_ids)->get()
+            //->orwherein('js_as_ss_employee_id', $emp_ids)
+            ->get()
             :
 
             Section::wherein('seat_of_reporting_officer_id', $seat_ids_of_loggedinuser)->get();
@@ -470,6 +474,9 @@ class EmployeeService
 
         $section_officers_controlled_by_me = $sections_controlled_by_me->pluck('seat_of_reporting_officer_id');
         $subordinate_seats_controlled_by_me =  $subordinate_seats_controlled_by_me->concat($section_officers_controlled_by_me)->unique();
+
+        //\Log::info('section_officers_controlled_by_me ' . $section_officers_controlled_by_me);
+
         $section_officers_waydown = $sections_waydown->pluck('seat_of_reporting_officer_id');
         $subordinate_seats_waydown = $subordinate_seats_waydown->concat($section_officers_waydown)->unique();
 
@@ -502,6 +509,8 @@ class EmployeeService
     ) {
 
         $seat_ids = collect($subordinate_seats_controlled_by_me);
+
+        //\Log::info('subordinate_seats_controlled_by_me ' . $subordinate_seats_controlled_by_me);
 
         //$seat_ids = collect($subordinate_seats_controlled_by_me);
         if( $subordinate_seats_waydown){
@@ -658,7 +667,7 @@ class EmployeeService
         }
 
          \Log::info('all_subordinate_seats ' . $subordinate_seats_controlled_by_me );
-        //  \Log::info('employee_ids ' . $employee_ids );
+         \Log::info('employee_ids ' . $employee_ids );
 
 
         $employees = $this->getEmployeesToShow(
