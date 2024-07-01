@@ -423,17 +423,17 @@ class PunchingCalcService
         $canSetUnauthorised = $date_carbon->lt(Carbon::today()) ||
                                 ($date_carbon->isToday() && Carbon::now()->greaterThan($time_after_which_unauthorised)) ;
 
-        $canSetUnauthorised = $canSetUnauthorised && !$isHoliday && !$hasLeave ;
+        $canSetUnauthorised = $canSetUnauthorised && !$isHoliday  ;
         $canSetUnauthorised = $canSetUnauthorised && (!$hint || $hint == 'clear');
         //desig will be empty if employee has not joined KLA as EmployeeToDesignation will be empty for this date
         $canSetUnauthorised = $canSetUnauthorised && $emp_new_punching_data['designation']  ; //employee not joined KLA. so no unauthorised
 
         if( $canSetUnauthorised  && $calender?->punching !== 0  ){
-            if ($punch_count >= 1) {
+            if ($punch_count >= 1 && !$hasLeave) {
 
                 //this might be redundant as we have already set unauthorised if grace exceeded 1 hour
-
-
+                //this also seems to not take into account if there is a leave submitted
+/*
                 if( $c_punch_in && $c_punch_in->greaterThan($time_after_which_unauthorised)){
                     $emp_new_punching_data['is_unauthorised'] = true;
 
@@ -446,6 +446,7 @@ class PunchingCalcService
                 if( $c_punch_in && $c_punch_out && $grace_total_exceeded_one_hour > 0){
                     $emp_new_punching_data['is_unauthorised'] = true;
                 }
+                    */
             }
             else
             if ($punch_count == 0){
@@ -453,7 +454,9 @@ class PunchingCalcService
              //   \Log::info('Carbon::now() ' . Carbon::now());
                // \Log::info('time_after_which_unauthorised ' . $time_after_which_unauthorised);
 
+               if(!$hasLeave || !$isFullLeave){
                 $emp_new_punching_data['is_unauthorised'] = true;
+               }
 
 
             }
@@ -592,7 +595,7 @@ class PunchingCalcService
         if ($punching_existing && $punching_existing->leave_id) {
             $leave = $punching_existing->leave_id ? $punching_existing->leave : null;
 
-            if ($leave && $leave->leave_type && (/*$leave->active_status == 'N' ||*/ $leave->active_status == 'Y')) {
+            if ($leave && $leave->leave_type && ($leave->active_status == 'N' || $leave->active_status == 'Y')) {
                 $hasLeave = true;
                 if($leave->leave_cat == 'F'){
                     $isFullLeave = true;
