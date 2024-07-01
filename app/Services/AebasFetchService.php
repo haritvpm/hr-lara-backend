@@ -75,7 +75,7 @@ class AebasFetchService {
 
             if ($response->status() !== 200) {
               //  \Session::flash('message-danger',  $response->status());
-                Log::error('Response for fetchAPI:' . $response->status());
+                \Log::error('Response for fetchAPI:' . $response->status());
                 return ;
                 //break;
             }
