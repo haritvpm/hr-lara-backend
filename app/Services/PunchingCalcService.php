@@ -96,6 +96,8 @@ class PunchingCalcService
         $calender = GovtCalendar::where('date', $date)->first();
 
         $all_flexi_times = EmployeeToFlexi::getAllFlexiTimes($date);
+        $c_date = Carbon::createFromFormat('Y-m-d', $date);
+        $data_monthly = MonthlyAttendance::forEmployeesInMonth($c_date, $aadhaar_ids);
 
         $data = collect([]);
 
@@ -107,8 +109,14 @@ class PunchingCalcService
             $emp_new_punching_data['time_group'] = null;
             $emp_new_punching_data['status'] = null;
 
+
+
             //this employee might not have been mapped to a section
             if ($employee_section_maps->has($aadhaarid)) {
+
+                $employee_monthly_data = $data_monthly->has($aadhaarid) ?
+                    $data_monthly[$aadhaarid] : null;
+
                 $emp_new_punching_data['designation'] = $employee_section_maps[$aadhaarid]['designation'];
                 $emp_new_punching_data['section'] = $employee_section_maps2->has($aadhaarid) ? $employee_section_maps2[$aadhaarid]['section'] : null;
                 //\Log::info('section' . $emp_new_punching_data['section']);
@@ -138,7 +146,8 @@ class PunchingCalcService
                     $emp_new_punching_data,
                   //  $allemp_punchings_existing,
                     $time_group, $all_flexi_times,
-                    $calender
+                    $calender,
+                    $employee_monthly_data
                 );
             }
         }
@@ -188,7 +197,8 @@ class PunchingCalcService
         $emp_new_punching_data,
      //   $allemp_punchings_existing,
         $time_group, $all_flexi_times,
-        $calender
+        $calender,
+        $employee_monthly_data
     ) {
         $date_carbon = Carbon::createFromFormat('Y-m-d', $date);
 
@@ -407,6 +417,28 @@ class PunchingCalcService
                 //IN SUCH CASE SET GRACE TO ZERO
                 $grace_sec = 0;
             }
+
+            //if this date is after the date of limit exceeded, grace exceeded monthly limit, set unauthorised
+            if($grace_sec > 60 && $employee_monthly_data && !$hasLeave  ){
+                //date_carbon
+                $grace_exceeded_date = $employee_monthly_data['total_grace_exceeded300_date'] ?? null;
+                $total_grace_sec = $employee_monthly_data['total_grace_sec'];
+
+                $grace_limit = $employee_monthly_data['grace_minutes'] ?? 300;
+                if($total_grace_sec && $grace_exceeded_date ){
+                    \Log::info('grace_exceeded_date ' . $grace_exceeded_date);
+                    \Log::info('total_grace_sec ' . $total_grace_sec);
+                    $grace_exceeded_date = Carbon::createFromFormat('Y-m-d', $grace_exceeded_date);
+                    if($date_carbon->gt($grace_exceeded_date)){
+                        $total_grace_minutes = $total_grace_sec / 60;
+                        if($total_grace_minutes > $grace_limit ){
+                            $emp_new_punching_data['is_unauthorised'] = true;
+                        }
+                    }
+                }
+
+            }
+
             $emp_new_punching_data['grace_sec'] = $grace_sec;
             $emp_new_punching_data['grace_str'] = (int)($grace_sec / 60);
 
@@ -853,10 +885,10 @@ class PunchingCalcService
 
                 if(!$emp->employeeEmployeeToDesignations()?->first()){
                     \Log::info('No designation for aadhaarid:' . $aadhaarid);
-                    \Log::info($emp);
+                  //  \Log::info($emp);
                 }
                 $designation = $emp->employeeEmployeeToDesignations()?->first()?->designation;
-                \Log::info($designation);
+              //  \Log::info($designation);
                 //\Log::info($employee->employeeEmployeeToDesignations?->first()->designation);
                 $default_designation_time_group_name = $designation?->default_time_group?->groupname ?? 'default';
 
