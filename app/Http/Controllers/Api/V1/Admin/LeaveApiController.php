@@ -795,7 +795,7 @@ class LeaveApiController extends Controller
            return [$punching->date => [
                'date' => $punching->date,
                'punching_count' => $punching->punching_count,
-               'unauthorised' => $punching->unauthorised,
+               'unauthorised' => $punching->is_unauthorised,
                'hint' => $punching->hint ? $punching->hint : '',
            ]];
        });
