@@ -53,20 +53,28 @@ class FlexiApplicationApiController extends Controller
         //do this in a transaction, so user cannot delete it while we are approving it
 
         //if under has not appproved the application before the witheffect date, make witheffect date the next day of approval
-      
 
-        \DB::transaction( function() use ($id, $seat_ids_of_loggedinuser, $me){
+        $message = null;
+        $status = 'success';
+
+        \DB::transaction( function() use ($id, $seat_ids_of_loggedinuser, $me, &$message, &$status){
             $flexi_application = FlexiApplication::with('employee')->find($id);
 
             if(!$flexi_application){
-                return response()->json(['status' => 'failed', 'message' => 'Application not found'], 400);
+                $status = 'failed';
+                $message = 'Application not found';
+                return ;
             }
             if( $seat_ids_of_loggedinuser->contains($flexi_application->owner_seat) == false){
-                return response()->json(['status' => 'failed', 'message' => 'Application not with user'], 400);
+                $status = 'failed';
+                $message = 'Application not with user';
+                return ;
             }
             //also make sure it has not been approved during delete
             if($flexi_application->approved_on){
-                return response()->json(['status' => 'failed', 'message' => 'Application already approved'], 400);
+                $status = 'failed';
+                $message = 'Application already approved';
+                return ;
             }
 
             $c_wef = Carbon::parse($flexi_application->with_effect_from);
@@ -75,9 +83,31 @@ class FlexiApplicationApiController extends Controller
             if($c_wef->lte($c_now)){
                 //employee expected date has passed, so we need to update the with effect date to the next day
                 //$c_wef = $c_now->addDay();
-                
+              //  $status = 'failed';
+              //  $message = 'WithEffect date has passed';
+               // return ;
             }
 
+
+            //also update the flexi minutes of the employee
+
+            $res = EmployeeService::createOrUpdateFlexi(
+                $flexi_application->employee->id,
+                $flexi_application->flexi_minutes,
+                $c_wef->format('Y-m-d')
+
+                );
+              //  \Log::info($res);
+             //   \Log::info($res->content());
+            $resData = json_decode($res->content(), true);
+           // \Log::info('Flexi update response');
+          //  \Log::info($resData);
+
+            if($resData['status'] == 'failed'){
+                $status = 'failed';
+                $message = $resData['message'];
+                return ;
+            }
 
             $flexi_application->update([
                 'approved_on' => now(),
@@ -85,20 +115,10 @@ class FlexiApplicationApiController extends Controller
 
             ]);
 
-            //also update the flexi minutes of the employee
-
-            return EmployeeService::createOrUpdateFlexi(
-                $flexi_application->employee->id,
-                $flexi_application->flexi_minutes,
-                $c_wef->format('Y-m-d')
-                
-                );
-
-
 
         });
 
-        return response()->json(['status' => 'success'], 200);
+        return response()->json(['status' => $status, 'message' => $message],  $status == 'success' ? 200 : 400);
     }
 
     public function show(FlexiApplication $flexiApplication)
