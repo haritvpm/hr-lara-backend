@@ -81,8 +81,8 @@ class AttendanceRouting extends Model
             $q->wherein('id', $baseSeatIds);
         })->get();
         $seniorOfficerseats = $seniorOfficerseats->pluck('viewer_seat_id')->flatten()->toArray();
-\Log::info("seniorOfficerseats");
-\Log::info($seniorOfficerseats);
+//\Log::info("seniorOfficerseats");
+//\Log::info($seniorOfficerseats);
         if(count($seniorOfficerseats))
         {
            // $seniorOfficerseats = $seats->pluck('viewer_seats')->flatten()->pluck('id');
@@ -101,10 +101,10 @@ class AttendanceRouting extends Model
         ->whereHas('viewer_seat', function($q) use ($seat_ids_of_loggedinuser){
             $q->wherein('id', $seat_ids_of_loggedinuser);
         })->get();
-        \Log::info('seats');
-        \Log::info($seats);
+       // \Log::info('seats');
+        //\Log::info($seats);
         $seats = $seats->pluck('viewable_seats')->flatten()->pluck('id');
-        \Log::info($seats);
+        //\Log::info($seats);
 
         return $seats;
 

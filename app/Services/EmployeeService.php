@@ -699,8 +699,8 @@ class EmployeeService
         ->get()->mapWithKeys(function ($item) {
             return [$item->employee->id => $item->seat->id];
         });
-        \Log::info('$mycontrolledseats');
-        \Log::info($mycontrolledseats);
+        //\Log::info('$mycontrolledseats');
+        //\Log::info($mycontrolledseats);
         $isSecretary = Auth::user()->hasRole('secretary');
         $my_emp_id = auth()->user()->employee_id;
         $data = $data->unique('id')->map(function ($employee, $key) use ( $isSecretary, $my_emp_id,$seat_ids_of_loggedinuser,  $employeetoSeatmapping,$mycontrolledseats, $userIsSuperiorOfficer) {
